@@ -1,0 +1,870 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+   
+<div class="govuk-width-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+        Run calculations again
+      </button>
+    </div>
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ data['caseStatus']}}</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations2">
+              Calculations
+            </a>
+          </li>
+
+ 
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>          -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+<!-- 
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li> -->
+          {% if (data.agreementStage) %} 
+           <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li>
+          {% else %} 
+          {% endif %} 
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <div class="radio-flex-box">
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+      Tasks
+        </h1>
+      </legend>
+      
+
+    </div>
+
+
+
+      {% if (data.caseStage === 'start') %}
+
+      <p>You cannot complete any tasks until you start the case.</p>
+
+
+
+      <ul class="govuk-task-list">
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-1" aria-describedby="company-details-1-status">
+        Check customer details 
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status"> 
+    {% if (data.decisionTask1) %}      
+      {% if (data.decisionTask1 === 'Accepted') %} {{ data['detailsStatus'] }} 
+      {% else %}<strong class="{{ data['detailsTag'] }}">{{ data['detailsStatus'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2" aria-describedby="company-details-1-status">
+        Review land parcel rule calculations
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTask2) %}    
+        {% if (data.decisionTask2 === 'Accepted') %} {{ data['calcsStatus'] }} 
+        {% else %}<strong class="{{ data['calcsTag'] }}">{{ data['calcsStatus'] }}</strong>
+        {% endif %} 
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-3" aria-describedby="company-details-1-status">
+        Check if any land parcels are within an SSSI
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask3) %}  
+        {% if (data.decisionTask3 === 'Accepted') %} {{ data['sssiStatus'] }} 
+        {% else %}<strong class="{{ data['sssiTag'] }}">{{ data['sssiStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+      {% endif %}
+      </div>
+  </li>
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
+        Check payment amount
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask5) %}  
+        {% if (data.decisionTask5 === 'Accepted') %} {{ data['paymentStatus'] }} 
+        {% else %}<strong class="{{ data['paymentTag'] }}">{{ data['paymentStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+      {% endif %}
+      </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      {% if (data.financeOfficer === 'yes') %}<a class="govuk-link govuk-task-list__link" href="task-6-fo" aria-describedby="company-details-1-status">{% else %}<a class="govuk-link govuk-task-list__link" href="task-6" aria-describedby="company-details-1-status">{% endif %}
+        Review scheme budget as a finance officer
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask6) %}  
+        {% if (data.decisionTask6 === 'Accepted') %} {{ data['budgetStatus'] }} 
+        {% else %}<strong class="{{ data['budgetTag'] }}">{{ data['budgetStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+      {% endif %}
+      </div>
+  </li>
+
+
+</ul>
+
+
+      <a href="/tasklistStage1" role="button" draggable="false" class="govuk-button">
+  Start
+</a>
+
+      {% elseif (data.caseStage === 'review') %}
+<form action="/app-approve1" method="post">
+      <p>You cannot approve the application until all tasks have been accepted.</p>
+      <h2 class="govuk-heading-m">Application review tasks</h2>
+      <ul class="govuk-task-list">
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-1" aria-describedby="company-details-1-status">
+        Check customer details
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status"> 
+    {% if (data.decisionTask1) %}      
+      {% if (data.decisionTask1 === 'Accepted') %} {{ data['detailsStatus'] }} 
+      {% else %}<strong class="{{ data['detailsTag'] }}">{{ data['detailsStatus'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2" aria-describedby="company-details-1-status">
+        Review land parcel rule calculations
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTask2) %}    
+        {% if (data.decisionTask2 === 'Accepted') %} {{ data['calcsStatus'] }} 
+        {% else %}<strong class="{{ data['calcsTag'] }}">{{ data['calcsStatus'] }}</strong>
+        {% endif %} 
+    {% else %}
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-3" aria-describedby="company-details-1-status">
+        Check if any land parcels are within an SSSI
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask3) %}  
+        {% if (data.decisionTask3 === 'Accepted') %} {{ data['sssiStatus'] }} 
+        {% else %}<strong class="{{ data['sssiTag'] }}">{{ data['sssiStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
+        Check payment amount
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask5) %}  
+        {% if (data.decisionTask5 === 'Accepted') %} {{ data['paymentStatus'] }} 
+        {% else %}<strong class="{{ data['paymentTag'] }}">{{ data['paymentStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      {% if (data.financeOfficer === 'yes') %}<a class="govuk-link govuk-task-list__link" href="task-6-fo" aria-describedby="company-details-1-status">{% else %}<a class="govuk-link govuk-task-list__link" href="task-6" aria-describedby="company-details-1-status">{% endif %}
+        Review scheme budget as a finance officer
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask6) %}  
+        {% if (data.decisionTask6 === 'Accepted') %} {{ data['budgetStatus'] }} 
+        {% else %}<strong class="{{ data['budgetTag'] }}">{{ data['budgetStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+
+</ul>
+
+<div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+         Decision
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+          {% if (data.decisionTask1 === 'Accepted' and data.decisionTask2 === 'Accepted'  and data.decisionTask3 === 'Accepted'  and data.decisionTask5 === 'Accepted' and data.decisionTask6 === 'Accepted' ) %}
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision1" type="radio" value="Approve" data-aria-controls="conditional-decision1" {{ checked("decision", "Approve") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Approve
+            </label>
+          </div>
+          {% endif %}
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="reviewNote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decision1" type="radio" value="Put on hold" data-aria-controls="conditional-decision2" {{ checked("decision", "Put on hold") }}>
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Put on hold
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+            
+            <textarea class="govuk-textarea" id="more-detail1" name="reviewNote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision1" type="radio" value="Reject" data-aria-controls="conditional-decision3" {{ checked("decision", "Reject") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Reject
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision3">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+          <textarea class="govuk-textarea" id="more-detail1" name="reviewNote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+           <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision1" type="radio" value="Withdraw" data-aria-controls="conditional-decision4" {{ checked("decision", "Withdraw") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Withdraw
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision4">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>            
+            <textarea class="govuk-textarea" id="more-detail1" name="reviewNote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <br>
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Confirm
+</button>
+
+{% elseif (data.caseStage === 'on-hold') %}
+<form action="/resume1" method="post">
+      <p>You cannot do any work on tasks whilst the case is on hold.</p>
+      <h2 class="govuk-heading-m">Application review tasks</h2>
+      <ul class="govuk-task-list">
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-1" aria-describedby="company-details-1-status">
+        Check customer details
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status"> 
+    {% if (data.decisionTask1) %}      
+      {% if (data.decisionTask1 === 'Accepted') %} {{ data['detailsStatus'] }} 
+      {% else %}<strong class="{{ data['detailsTag'] }}">{{ data['detailsStatus'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2" aria-describedby="company-details-1-status">
+        Review land parcel rule checks
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTask2) %}    
+        {% if (data.decisionTask2 === 'Accepted') %} {{ data['calcsStatus'] }} 
+        {% else %}<strong class="{{ data['calcsTag'] }}">{{ data['calcsStatus'] }}</strong>
+        {% endif %} 
+    {% else %}
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-3" aria-describedby="company-details-1-status">
+        Check if SSSI consent has been requested
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask3) %}  
+        {% if (data.decisionTask3 === 'Accepted') %} {{ data['sssiStatus'] }} 
+        {% else %}<strong class="{{ data['sssiTag'] }}">{{ data['sssiStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
+        Check payment amount
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask5) %}  
+        {% if (data.decisionTask5 === 'Accepted') %} {{ data['paymentStatus'] }} 
+        {% else %}<strong class="{{ data['paymentTag'] }}">{{ data['paymentStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      {% if (data.financeOfficer === 'yes') %}<a class="govuk-link govuk-task-list__link" href="task-6-fo" aria-describedby="company-details-1-status">{% else %}<a class="govuk-link govuk-task-list__link" href="task-6" aria-describedby="company-details-1-status">{% endif %}
+        Review scheme budget as a finance officer
+      </a>
+    </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask6) %}  
+        {% if (data.decisionTask6 === 'Accepted') %} {{ data['budgetStatus'] }} 
+        {% else %}<strong class="{{ data['budgetTag'] }}">{{ data['budgetStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+  </li>
+
+
+</ul>
+
+
+    <br>
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Resume
+</button>
+
+      {% elseif (data.caseStage === 'agree') %}
+<form action="/aggSent1" method="post">
+<p>Draft agreement is live and can be accepted by the customer.</p>
+  <h2 class="govuk-heading-m">Draft agreement review tasks</h2>
+  <ul class="govuk-task-list">
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-1Ag" aria-describedby="company-details-1-status">
+          Check draft funding agreement
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status"> 
+      {% if (data.decisionAgreeTask1) %}      
+        {% if (data.decisionAgreeTask1 === 'Confirm') %} {{ data['agreeStatus'] }} 
+        {% else %}<strong class="{{ data['agreeTag'] }}">{{ data['agreeStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+    </li>
+
+     <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-2Ag" aria-describedby="company-details-1-status">
+          Notify customer that draft agreement is ready
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status"> 
+      {% if (data.decisionAgreeTask2) %}      
+        {% if (data.decisionAgreeTask2 === 'Confirm') %} {{ data['agreeSStatus'] }} 
+        {% else %}<strong class="{{ data['agreeSTag'] }}">{{ data['agreeSStatus'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+      {% endif %}
+      </div>
+    </li>
+
+  </ul>
+
+<div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+         Decision
+        </legend>
+        {% if (data.decisionAgreeTask2) %} 
+
+
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAg" type="radio" value="Agreement sent" data-aria-controls="conditional-decision1" {{ checked("decisionAg", "Agreement sent") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Agreement sent
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+        </div>
+        {% else %}
+         {% endif %}
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAg" type="radio" value="Reject" data-aria-controls="conditional-decision2" {{ checked("decisionAg", "Reject") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Reject
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+        </div>
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAg" type="radio" value="Withdraw" data-aria-controls="conditional-decision3" {{ checked("decisionAg", "Withdraw") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Withdraw
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision3">
+            <p>Explain this decision</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes.
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          </div>
+      </fieldset>
+    </div>
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Confirm
+    </button>
+    <!--<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Decision</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['decision1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredReviewNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table> -->
+
+    {% elseif (data.caseStage === 'agree2') %}
+
+    <div role="region" class="moj-alert moj-alert--success moj-alert--with-heading" aria-label="success: File uploaded successfully" data-module="moj-alert">
+      <div>
+        <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
+          <path d="M11.2869 24.6726L2.00415 15.3899L4.62189 12.7722L11.2869 19.4186L25.3781 5.32739L27.9958 7.96369L11.2869 24.6726Z" fill="currentColor" />
+        </svg>
+      </div>
+      <div class="moj-alert__content">
+        <h2 class="moj-alert__heading">Agreement sent
+        </h2>There is nothing more you need to do. 
+      </div>
+      <div class="moj-alert__action">
+        <button class="moj-alert__dismiss" hidden>Dismiss</button>
+      </div>
+    </div>
+
+    <form action="confirmation" method="post">
+    <div class="govuk-form-group">
+    <p>You can still withdraw the agreement until the customer has accepted or rejected.</p>
+      <h2 class="govuk-heading-m">Agreement with customer for review</h2>
+      <p>There are no tasks to complete. </p>
+
+      <h2 class="govuk-heading-m">You can still withdraw this agreement </h2>
+      <p>You may want to withdraw this agreement if:
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the customer needs to update their application </li>
+        <li>the customer has not responded to the agreement offer within 10 working days</li>
+        <li>there is an error in the agreement</li>
+      </ul></p>
+
+      <h3 class="govuk-heading-s">Reason for withdrawal</h3>
+      <div id="more-detail-hint" class="govuk-hint">
+        You must include an explanation for auditing purposes. 
+      </div>
+      <textarea class="govuk-textarea" id="more-detail1" name="case4Note" rows="5" aria-describedby="more-detail-hint"></textarea>    
+    <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+      Withdraw
+    </button>
+  </div>
+  <!--
+    <table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Decision</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['decision1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredReviewNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+      <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">26th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['decisionAg']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredAggNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table> -->
+
+    {% elseif (data.caseStage === 'pay') %}
+      
+    <h2 class="govuk-heading-m">Post-agreement monitoring and compliance tasks</h2>
+    <p>There are no tasks to complete yet.</p>
+
+   <!-- <table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Decision</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['decision1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredReviewNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+      <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">26th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['decisionAg']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredAggNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table> -->
+
+
+       {% elseif (data.caseStage === 'withdraw') %}
+      
+    <h2 class="govuk-heading-m">Application withdrawn</h2>
+    <p>There are no tasks to complete.</p>
+
+       {% elseif (data.caseStage === 'reject') %}
+      
+    <h2 class="govuk-heading-m">Application rejected</h2>
+    <p>There are no tasks to complete.</p>
+
+
+
+        {% endif %}
+  </fieldset>
+</div>
+
+
+    </form>
+
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+{% endblock %}
+{% block footer %}
+ {{ govukFooter({
+   meta: {
+     items: [
+       {
+         href: "/setUserFo1",
+         text: "Set user finance officer"
+       },
+      {
+         href: "/tasklistStage1",
+         text: "Set agreement signed"
+       },
+       {
+         href: "/manage-prototype/clear-data",
+         text: "Clear data"
+       }
+     ],
+     visuallyHiddenTitle: "Footer links"
+   }
+ }) }}
+{% endblock %}

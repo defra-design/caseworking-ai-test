@@ -1,0 +1,646 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+{% endblock %}
+
+{% block content %}
+
+
+<form action="assignment" method="post">
+
+
+  <div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        SFI applications (20)
+    </li>
+
+  </ul>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="my-cases">
+  
+  </div>
+  <div class="govuk-tabs__panel" id="caselist-team">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full-width govuk-!-margin-left-3 govuk-!-margin-right-3">
+       
+      <div class="govuk-form-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+         Assign
+        </button>          
+        <table class="govuk-table" data-module="moj-sortable-table" data-id-prefix="cases-">
+
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+
+              <th class="govuk-table__header" scope="col" id="cases-select-all">
+                Select
+              </th>
+
+              <th scope="col" class="govuk-table__header" aria-sort="ascending">ID</th>
+              <th scope="col" class="govuk-table__header" aria-sort="none">Business</th>
+              <th scope="col" class="govuk-table__header" aria-sort="none">SBI</th>
+              <th scope="col" class="govuk-table__header" aria-sort="none">Submitted</th>
+              <th scope="col" class="govuk-table__header custom-width-130" aria-sort="none">Status</th>
+              <th scope="col" class="govuk-table__header" aria-sort="none">Assignee</th>
+            </tr>
+          </thead>
+
+          <tbody class="govuk-table__body">
+
+           <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1789200">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100300</a></td>
+              <td class="govuk-table__cell">Berkshire Estate Limited</td>
+              <td class="govuk-table__cell">112849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell">
+                {% if (data.caseApproved === 'yes') %}<strong class="govuk-tag govuk-tag--green">Approved</strong>
+                {% else %}<strong class="govuk-tag govuk-tag--grey">Received</strong>
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">Not assigned</td>
+  </tr>
+                      <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1781454">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100301</a></td>
+              <td class="govuk-table__cell">DAVID ROGER-HOGGS</td>
+              <td class="govuk-table__cell">112849000</td>
+              <td class="govuk-table__cell">11 Sept 2025</td>
+              <td class="govuk-table__cell">
+                <strong class="govuk-tag govuk-tag--grey">
+                Received
+              </strong>
+              </td>
+              <td class="govuk-table__cell">Not assigned</td>
+            </tr>
+
+            </tr>
+                      <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1781455">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100302</a></td>
+              <td class="govuk-table__cell">Alton Farms</td>
+              <td class="govuk-table__cell">112841023</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">
+                Received
+              </strong>
+              </td>
+              <td class="govuk-table__cell">Not assigned</td>
+            </tr>
+
+                 <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="178000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100303</a></td>
+              <td class="govuk-table__cell">M TUCKER & PARTNERS</td>
+              <td class="govuk-table__cell">112841024</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">
+                In progress
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+            </tr>
+                             <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1781000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100304</a></td>
+              <td class="govuk-table__cell">SF RICHARDS & SONS</td>
+              <td class="govuk-table__cell">113849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+               <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">
+                In progress 
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+            </tr>
+                      <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+               <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1781668">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100305</a></td>
+              <td class="govuk-table__cell">MESSRS J WICKHAM</td>
+              <td class="govuk-table__cell">110049012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">
+                In progress 
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+            </tr>
+               <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1781669">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100306</a></td>
+              <td class="govuk-table__cell">T and F Farms</td>
+              <td class="govuk-table__cell">102849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">
+                In progress
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+            </tr>
+                      <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="0782319">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100307</a></td>
+              <td class="govuk-table__cell">J RENNER AND SONS</td>
+              <td class="govuk-table__cell">012849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">
+                In progress 
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+            </tr>
+                      <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="2782319">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100308</a></td>
+              <td class="govuk-table__cell">North Sussex Farm Partnership</td>
+              <td class="govuk-table__cell">112850012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+             <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">
+                On hold
+              </strong>
+              <td class="govuk-table__cell">E Carter</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="3782342">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100309</a></td>
+              <td class="govuk-table__cell">Harvest Horizon</td>
+              <td class="govuk-table__cell">112846012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+               <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">
+                On hold 
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1700019">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100310</a></td>
+              <td class="govuk-table__cell">J F HODGES</td>
+              <td class="govuk-table__cell">112849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">
+                Approved 
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="0082319">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100311</a></td>
+              <td class="govuk-table__cell">Fresh Fields Farm</td>
+              <td class="govuk-table__cell">112849019</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">
+                Approved
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="0002319">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100312</a></td>
+              <td class="govuk-table__cell">Greater Massingham Farm</td>
+              <td class="govuk-table__cell">022849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--mid-grey">
+                Rejected
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+
+ 
+
+            </tr>
+
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1720001">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100313</a></td>
+              <td class="govuk-table__cell">CE FAIRFAX & PARTNERS</td>
+              <td class="govuk-table__cell">003849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--mid-grey">
+                Rejected
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+
+ 
+
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1730000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100314</a></td>
+              <td class="govuk-table__cell">VW RICHARDS & PARTNERS</td>
+              <td class="govuk-table__cell">187849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">
+                Withdrawn
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+
+ 
+
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1790000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100315</a></td>
+              <td class="govuk-table__cell">GRAHAM & SONS</td>
+              <td class="govuk-table__cell">188849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">
+                Agreement sent
+              </strong>
+              </td>
+              <td class="govuk-table__cell">J Jones</td>
+ 
+
+            </tr>
+                        <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1790000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100316</a></td>
+              <td class="govuk-table__cell">Sunrise Agriculture</td>
+              <td class="govuk-table__cell">112865012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">
+                Agreement sent
+              </strong>
+              </td>
+              <td class="govuk-table__cell">J Jones</td>
+ 
+
+            </tr>
+
+                                    <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1790000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100317</a></td>
+              <td class="govuk-table__cell">Buttermere Farm Ltd</td>
+              <td class="govuk-table__cell">116549012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--light-green">
+                Agreement accepted
+              </strong>
+              </td>
+              <td class="govuk-table__cell">J Jones</td>
+ 
+
+            </tr>
+
+                                                <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1790000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100318</a></td>
+              <td class="govuk-table__cell">Moors Farm Ltd</td>
+              <td class="govuk-table__cell">612849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--light-green">
+                Agreement accepted
+              </strong>
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+ 
+
+            </tr>
+
+                                                            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1790000">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+             <td class="govuk-table__cell"><a href="task1">100319</a></td>
+              <td class="govuk-table__cell">Ennerdale Farm Ltd</td>
+              <td class="govuk-table__cell">712849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--light-green">
+                Agreement accepted
+              </strong>
+              </td>
+              <td class="govuk-table__cell">J Jones</td>
+ 
+
+            </tr>
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="whereDoYouLive" name="whereDoYouLive" type="radio" value="1782300">
+                  <label class="govuk-label govuk-radios__label" for="whereDoYouLive">
+           
+                  </label>
+                </div>
+              </div> 
+              </td>
+
+              <td class="govuk-table__cell"><a href="task1">100320</a></td>
+              <td class="govuk-table__cell">Eskdale Farm Ltd</td>
+              <td class="govuk-table__cell">912849012</td>
+              <td class="govuk-table__cell">10 Sept 2025</td>
+    
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--light-green">
+                Agreement accepted
+              </strong>
+              </td>
+              <td class="govuk-table__cell">E Carter</td>
+    
+ 
+
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!--
+  <nav class="govuk-pagination" aria-label="Pagination">
+  <div class="govuk-pagination__prev">
+    <a class="govuk-link govuk-pagination__link" href="#" rel="prev">
+      <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+        <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+      </svg>
+      <span class="govuk-pagination__link-title">
+        Previous<span class="govuk-visually-hidden"> page</span>
+      </span>
+    </a>
+  </div>
+  <ul class="govuk-pagination__list">
+    <li class="govuk-pagination__item govuk-pagination__item--current">
+      <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 1">
+        1
+      </a>
+    </li>
+    <li class="govuk-pagination__item">
+      <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 2" aria-current="page">
+        2
+      </a>
+    </li>
+    <li class="govuk-pagination__item">
+      <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 3">
+        3
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-pagination__next">
+    <a class="govuk-link govuk-pagination__link" href="#" rel="next">
+      <span class="govuk-pagination__link-title">
+        Next<span class="govuk-visually-hidden"> page</span>
+      </span>
+      <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+        <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+      </svg>
+    </a>
+  </div>
+</nav>
+-->
+  </div>
+
+
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="all-cases">
+    
+  </div>
+</div>
+
+
+          
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

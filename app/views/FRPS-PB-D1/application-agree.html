@@ -1,0 +1,640 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="tasklist-agree" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> -->
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land-agree">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+          <!-- <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li> -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+    <p>Application submitted: <strong>10 Sept 2025</strong></p>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+          Customr details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+         <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Sarah Watson
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Business name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Berkshire Estate Limited
+        </dd>
+
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Address
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Agile Farm<br>
+          10 Skirbeck Way<br>
+          Maidstone<br>
+          SK22 1DL
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          SBI number
+        </dt>
+        <dd class="govuk-summary-list__value">
+          112849012
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Contact details
+        </dt>
+        <dd class="govuk-summary-list__value">
+          sarahfarmer@gmail.com<br>
+          07700 900457           
+        </dd>
+
+      </div>
+    </dl>
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-2">
+          Confirm eligibility 
+          </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-2" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Confirm you will be eligible
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Yes
+            </dd>
+          </div>
+      </dl>
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
+          Land details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-3" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Digital maps show correct land details
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Yes
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
+         Land parcel selected: SO3757 3159
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-4" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land parcel 
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3159
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Moderate livestock grazing on moorland - UPL1
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125 ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £20 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £70.25
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total available area for action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £18 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £63.23
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+
+    <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
+         Land parcel selected: SO3757 3164
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-4" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land parcel 
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3164
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Moderate livestock grazing on moorland - UPL1
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125 ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £20 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £70.25
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total available area for action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £18 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £63.23
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+
+    <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
+         Land parcel selected: SO3757 3169
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-4" class="govuk-accordion__section-content">
+ <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land parcel 
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3169
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Moderate livestock grazing on moorland - UPL1
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125 ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £20 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £70.25
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total available area for action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £18 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £63.23
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+
+    <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-4">
+         Land parcel selected: SO3757 3172
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-4" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land parcel 
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3172
+            </dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Moderate livestock grazing on moorland - UPL1
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125 ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £20 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £70.25
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Keep cattle and ponies on moorland supplement (minimum 70% GLU): UPL5
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total available area for action
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity (ha)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              3.5125  ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Payment rate per year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £18 per ha
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+             Yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £63.23
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-3">
+          Total yearly payment
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-3" class="govuk-accordion__section-content">
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total yearly payment
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £323.17
+            </dd>
+          </div>
+        </dl>
+    </div>
+  </div>
+</div>
+</fieldset>
+</div>
+
+
+
+
+
+
+
+     
+
+
+    
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+

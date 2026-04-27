@@ -1,0 +1,224 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="tasklist1">
+              Tasks
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="test4">
+              Land details
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<!--
+<div class="tabs my-custom-tab govuk-!-margin-bottom-5">
+  <a href="#ingredients" class="tab active govuk-link">Ingredients</a>
+  <a href="#method" class="tab govuk-link">Method</a>
+  <a href="#history" class="tab govuk-link">History</a>
+</div>
+-->
+
+<form action="test4" method="post">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+    <p>Application submitted: <strong>1 Jul 2024</strong></p>
+          <h2 class="govuk-heading-m">
+    Applicant details
+      </h2>
+    
+<dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              John
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Surname
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Heart
+            </dd>
+
+          </div>
+        </dl>
+        <h2 class="govuk-heading-m">
+        Business details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Business name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Valley Farm
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              SBI number
+            </dt>
+            <dd class="govuk-summary-list__value">
+              112849012
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">
+        Land details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Do digital maps show correct land details?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Yes
+            </dd>
+          </div>
+        </dl>
+          
+        <h2 class="govuk-heading-m">
+        Land parcels
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land parcel ID
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3158
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total size
+            </dt>
+            <dd class="govuk-summary-list__value">
+              32.0404 ha
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">
+        Actions
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Selected land parcel for action 1
+            </dt>
+            <dd class="govuk-summary-list__value">
+              SO3757 3158
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Action 1
+            </dt>
+            <dd class="govuk-summary-list__value">
+              CIGL1: Take grassland field corners
+ or blocks out of management
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Available
+            </dt>
+            <dd class="govuk-summary-list__value">
+              8.3405
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Quantity
+            </dt>
+            <dd class="govuk-summary-list__value">
+              100 ha
+            </dd>
+          </div>
+        </dl>
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+

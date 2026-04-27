@@ -1,0 +1,263 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+   
+<div class="govuk-width-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+        Rerun rules
+      </button>
+    </div>
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ data['caseStatus']}}</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+   
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" {% if (data.agreementStage === 'yes') %}href="tasklist-agree"{% else %}href="tasklist"{% endif %} aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations">
+              Calculations
+            </a>
+          </li>
+
+ 
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>          -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li> -->
+          {% if (data.agreementStage) %} 
+           <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li>
+          {% else %} 
+          {% endif %} 
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="/task3AgT1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Move case on to next stage
+      </h1>
+    </legend>
+
+
+<p>Instructional text for this task</p>
+
+
+
+
+
+
+    <h2 class="govuk-heading-m">
+         Record check outcome
+      </h2>
+
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+          <h2 class="govuk-fieldset__heading">
+            Note
+          </h2>
+        </legend>
+          <div id="more-detail-hint" class="govuk-hint">All notes will be saved for auditing purposes
+          </div>
+          {% if (data.task3AgreeNote) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task3AgreeNote2" rows="5" aria-describedby="more-detail-hint">{{ data['task3AgreeNote2']}}</textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task3AgreeNote" rows="5" aria-describedby="more-detail-hint">{{ data['task3AgreeNote']}}</textarea>
+          {% endif %}
+
+
+  <div class="govuk-radios" data-module="govuk-radios">
+        
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAgreeTask3" type="radio" value="Accepted"  {{ checked("decisionAgreeTask3", "Accepted") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Accept
+            </label>
+          </div>
+
+          
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionAgreeTask3" type="radio" value="Information requested"  {{ checked("decisionAgreeTask3", "Information requested") }}>
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Request information from customer
+            </label>
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAgreeTask3" type="radio" value="Internal investigation"  {{ checked("decisionAgreeTask3", "Internal investigation") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Pause for internal investigation
+            </label>
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAgreeTask3" type="radio" value="Cannot accept"  {{ checked("decisionAgreeTask3", "Cannot accept") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Cannot accept
+            </label>
+          </div>
+          
+        </div>
+      </fieldset>
+    </div>
+<button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+ Continue
+</button>
+
+{% if (data.task3AgreeNote) %}
+<h2 class="govuk-heading-m">Note history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Action</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionAgreeTask3']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['task3AgreeNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endif %}
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

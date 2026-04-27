@@ -1,0 +1,224 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="task1" aria-current="true">
+              Tasks
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline">
+              Timeline
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2 govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Customer contact</strong>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="test3" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group govuk-!-margin-bottom-0">
+  <fieldset class="govuk-fieldset" aria-describedby="message-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Customer communication
+      </h1>
+    </legend>
+<div class="govuk-form-group">
+  <h3 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--s" for="more-detail">
+      Send message
+    </label>
+  </h3>
+  <p>This message will be sent to John Hart (agent) at <strong>johnhart@farm.com</strong></p> 
+  <textarea class="govuk-textarea" id="more-detail" name="moreDetail" rows="5" aria-describedby="more-detail-hint"></textarea>
+  <p>250 characters left</p>
+
+  <h3 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--s" for="more-detail">
+      Attach a file
+    </label>
+  </h3>
+  <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file" aria-describedby="file-upload-1-hint">
+  </div>
+  <button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+  Send
+</button>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-0">Message history</h2>
+  </div>
+</div>
+
+<div class="govuk-grid-column-full-width">
+
+<div id="messages" class="moj-messages-container-local">
+
+  <div class="moj-message-list-local">
+
+    <time class="moj-message-list__date" datetime="16 March 2019">3 July 2024</time>
+
+    <div class="moj-message-item moj-message-item--received">
+      <div class="moj-message-item__text moj-message-item__text--received govuk-!-margin-bottom-4">
+        <div class="govuk-heading-s">Subject: Missing Water Management application document  received - ref 1100300</div>
+        Dear John Hart,<br> <br>
+Project reference number: 1100300<br>
+Grant: Water Management Round 3<br>
+Business name: Valley Farm<br> <br>
+We have successfully added your business accounts document to your Water management application.<br> <br>
+<a href="messages2">View more</a></div>
+      <div class="moj-message-item__meta">
+        <span class="moj-message-item__meta--sender">Emily Carter</span> at <time class="moj-message-item__meta--timestamp" datetime="10:30am">10.30am</time>
+      </div>
+    </div>
+
+
+    <time class="moj-message-list__date" datetime="17 March 2019">2 July 2024</time>
+
+    <div class="moj-message-item moj-message-item--sent-local">
+      <div class="moj-message-item__text moj-message-item__text--sent">
+        <div class="govuk-heading-s-w">Subject: Missing Water Management application document  received - ref 1100300</div>
+        Dear Grants services,<br> <br>
+        See accounts for 2023/4 attached.<br>
+        Regards,<br>
+        John Hart<br>
+        <br>
+
+        1 attachment<br>
+          <a class="govuk-link" href="#">
+            <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+              <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z" />
+            </svg>2023.4-accounts.jpeg 129KB</a>
+          </p>
+        </div>
+      <div class="moj-message-item__meta">
+        <span class="moj-message-item__meta--sender">John Hart</span> at <time class="moj-message-item__meta--timestamp" datetime="4:02pm">4:02pm</time>
+      </div>
+    </div>
+
+    <time class="moj-message-list__date" datetime="19 March 2019">5 Dec 2024</time>
+
+    <div class="moj-message-item moj-message-item--received">
+      <div class="moj-message-item__text moj-message-item__text--received govuk-!-margin-bottom-4">
+<div class="govuk-heading-s">Subject: Missing Water Management application document  received - ref 1100300</div>
+        Dear John Hart,<br> <br>
+        Project reference number: 1100300<br>
+        Grant: Water Management Round 3<br>
+        Business name: Valley Farm<br> <br>
+        You have not provided 3 years of business accounts for this application.<br>
+        <h3 class="govuk-heading-s">What you need to do</h3>
+
+        Sign in to the Rural Payments service to upload the last 3 years of full accounts for Valley Farm. <br> <br>
+
+        Do not upload abbreviated accounts. <br> <br>
+
+        You must upload this evidence by 11 July.<br>
+        The accounts must include:<br>
+
+        <ul class="govuk-list--bullet">
+          <li>the business name</li>
+          <li>balance sheet </li>
+          <li>profit and loss</li>
+          <li>cover title and introduction pages</li>
+        </ul>
+
+        <a href="messages2">View more</a>
+
+      </div>
+      <div class="moj-message-item__meta">
+        <span class="moj-message-item__meta--sender">Emily Carter</span> at <time class="moj-message-item__meta--timestamp" datetime="10:53am">10:53am</time>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

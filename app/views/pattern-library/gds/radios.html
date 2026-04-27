@@ -1,0 +1,131 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "radios" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Radios" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Radios</h1>
+      <p class="govuk-body-l">Use the radios component when users can only select one option from a list.</p>
+
+      <h2 class="govuk-heading-l">Default radios</h2>
+      <p class="govuk-body">Used on review and decision screens throughout the casework flow — for example selecting Accepted, Information requested, or Cannot accept.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-radios-default">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-radios-default-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                  <h2 class="govuk-fieldset__heading">What is your decision?</h2>
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="decision" name="decision" type="radio" value="Accepted">
+                    <label class="govuk-label govuk-radios__label" for="decision">Accepted</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="decision-2" name="decision" type="radio" value="Information requested">
+                    <label class="govuk-label govuk-radios__label" for="decision-2">Information requested</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="decision-3" name="decision" type="radio" value="Cannot accept">
+                    <label class="govuk-label govuk-radios__label" for="decision-3">Cannot accept</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-radios-default" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-radios-default-code">&lt;div class="govuk-form-group"&gt;
+  &lt;fieldset class="govuk-fieldset"&gt;
+    &lt;legend class="govuk-fieldset__legend govuk-fieldset__legend--m"&gt;
+      &lt;h2 class="govuk-fieldset__heading"&gt;What is your decision?&lt;/h2&gt;
+    &lt;/legend&gt;
+    &lt;div class="govuk-radios" data-module="govuk-radios"&gt;
+      &lt;div class="govuk-radios__item"&gt;
+        &lt;input class="govuk-radios__input" id="decision" name="decision" type="radio" value="Accepted"&gt;
+        &lt;label class="govuk-label govuk-radios__label" for="decision"&gt;Accepted&lt;/label&gt;
+      &lt;/div&gt;
+      &lt;div class="govuk-radios__item"&gt;
+        &lt;input class="govuk-radios__input" id="decision-2" name="decision" type="radio" value="Information requested"&gt;
+        &lt;label class="govuk-label govuk-radios__label" for="decision-2"&gt;Information requested&lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/fieldset&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Radios with hint text</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-radios-hint">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-radios-hint-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                  <h2 class="govuk-fieldset__heading">Approval decision</h2>
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="approve" name="approve" type="radio" value="Approve">
+                    <label class="govuk-label govuk-radios__label" for="approve">Approve</label>
+                    <div id="approve-item-hint" class="govuk-hint govuk-radios__hint">Applicant meets all criteria</div>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="approve-2" name="approve" type="radio" value="Reject">
+                    <label class="govuk-label govuk-radios__label" for="approve-2">Reject</label>
+                    <div id="approve-2-item-hint" class="govuk-hint govuk-radios__hint">Applicant does not meet criteria</div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-radios-hint" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-radios-hint-code">&lt;div class="govuk-radios__item"&gt;
+  &lt;input class="govuk-radios__input" id="approve" name="approve" type="radio" value="Approve"&gt;
+  &lt;label class="govuk-label govuk-radios__label" for="approve"&gt;Approve&lt;/label&gt;
+  &lt;div id="approve-item-hint" class="govuk-hint govuk-radios__hint"&gt;
+    Applicant meets all criteria
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

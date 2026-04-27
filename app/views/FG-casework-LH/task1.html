@@ -1,0 +1,176 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2 govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="review-passed2" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Application review
+      </h1>
+    </legend>
+    <div class="govuk-inset-text">You cannot do this review if you have a <a class="govuk-link" href="#">conflict of interest</a> with a person or organisation on this project.</div>
+
+    <h2 class="govuk-heading-m">Review checklist</h2>
+    <p><a class="govuk-link" href="application-review-documents">View review checklist guide</a></p>
+    <ul class="govuk-list govuk-list--number">
+      <li>Check the applicant and project are eligible.
+      </li>
+      <li class="govuk-!-margin-top-3">Check all documents are correct and uploaded.
+      </li>
+      <li class="govuk-!-margin-top-3">Check items, suppliers and quotes meet requirements.
+      </li>
+      <li class="govuk-!-margin-top-3">Check if the applicant has already applied for funding for project items.
+      </li>
+      <li class="govuk-!-margin-top-3">Complete due diligence checks.
+      </li>
+    </ul>
+  
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+         Decision
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision" type="radio" value="Pass" data-aria-controls="conditional-contact" {{ checked("decision", "Pass") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Pass
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact">
+            <div id="more-detail-hint" class="govuk-hint">
+              Record the reason for your decision
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1']}}</textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decision" type="radio" value="Request more informationRequest more information" {{ checked("decision", "Request more information") }}>
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Request more information
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision" type="radio" value="Record the reason for your decision" data-aria-controls="conditional-contact2" {{ checked("decision", "Record the reason for your decision") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Recommend rejection
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-contact2">
+            <div id="more-detail-hint" class="govuk-hint">
+              Record the reason for your decision
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1']}}</textarea>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+  </fieldset>
+</div>
+
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Save and continue
+</button>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

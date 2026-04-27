@@ -1,0 +1,127 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+{% endblock %}
+
+{% block content %}
+
+
+<form action="test2" method="post">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-width govuk-!-margin-left-3 govuk-!-margin-right-3">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+    Applications
+      </h1>
+    </legend>
+    
+<table class="govuk-table" data-module="moj-sortable-table">
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header" aria-sort="ascending">ID</th>
+
+      <th scope="col" class="govuk-table__header" aria-sort="none">Business</th>
+
+      <th scope="col" class="govuk-table__header govuk-table__header--date" aria-sort="none">Date received</th>
+
+      <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
+
+          <th scope="col" class="govuk-table__header" aria-sort="none">Assigned</th>
+
+    </tr>
+  </thead>
+
+  <tbody class="govuk-table__body">
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell"><a href="tasklist1">1781288</a></td>
+
+      <td class="govuk-table__cell">Valley Farm</td>
+
+      <td class="govuk-table__cell">1 Jul 24</td>
+
+      <td class="govuk-table__cell" ><strong class="govuk-tag govuk-tag--green">
+  In Progress
+</strong></td>
+      <td class="govuk-table__cell">J Smith</td>
+
+    </tr>
+
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell"><a href="test2">1781454</a></td>
+
+      <td class="govuk-table__cell">Harvest Horizon</td>
+
+      <td class="govuk-table__cell">1 Jul 24</td>
+
+      <td class="govuk-table__cell" ><strong class="govuk-tag govuk-tag--yellow">
+  Approved
+</strong></td>
+      <td class="govuk-table__cell">J Smith</td>
+
+    </tr>
+
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell"><a href="test2">1781669</a></td>
+
+      <td class="govuk-table__cell">Fresh Fields Farm</td>
+
+      <td class="govuk-table__cell">1 Jul 24</td>
+
+      <td class="govuk-table__cell" ><strong class="govuk-tag govuk-tag--grey">
+  Not started
+</strong></td>
+      <td class="govuk-table__cell">J Smith</td>
+
+    </tr>
+
+
+  </tbody>
+</table>
+          
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,448 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="tasklist" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Calculations</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application" aria-current="true">
+              Application
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land-agree">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+          <!-- <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li> -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+
+    <details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Find an application
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <div class="moj-search">
+
+      <form action="/search1" method="post">
+
+        <div class="govuk-form-group">
+        <h2 class="govuk-heading-m">Search for cases</h2>
+
+          <div id="search-hint" class="govuk-hint moj-search__hint ">
+            You can search by project ID, business name, status or assignee.
+          </div>
+
+          <input class="govuk-input moj-search__input " id="search" name="search" type="search" aria-describedby="search-hint">
+
+        </div>
+
+        <button type="submit" class="govuk-button moj-search__button " data-module="govuk-button">
+          Search
+        </button>
+      </form>
+    </div>
+      
+      <br>
+        <h2 class="govuk-heading-m">Apply filters</h2>
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+          Apply
+        </button>
+      <div class="govuk-form-group radio-container">
+
+        <div class="govuk-form-group column govuk-!-margin-bottom-0">
+
+        <fieldset class="govuk-fieldset">
+
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+
+            Assignee
+
+          </legend>
+
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type" name="type" type="checkbox" value="1" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type">
+                Unassigned (4)
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type-2" name="type" type="checkbox" value="2" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type-2">
+                R Singh (5)
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type-3" name="type" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type-3">
+                J Jonestone (6)
+              </label>
+
+            </div>
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type-3" name="type" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type-3">
+                M Walker (5)
+              </label>
+
+            </div>
+
+          </div>
+
+        </fieldset>
+
+      </div>
+      <div class="govuk-form-group column govuk-!-margin-bottom-0">
+
+        <fieldset class="govuk-fieldset">
+
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+
+            Grant
+
+          </legend>
+
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2" name="type2" type="checkbox" value="1" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type2">
+                Adding value (2)
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-2" name="type2" type="checkbox" value="2" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type2-2">
+                Improving farm productivity (1) 
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-3" name="type2" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type2-3">
+                Slurry <br>infrastructure (2)
+              </label>
+
+            </div>
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-3" name="type2" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type2-3">
+                Water <br>management (14)
+              </label>
+
+            </div>
+
+          </div>
+
+        </fieldset>
+
+      </div>
+           <div class="govuk-form-group column govuk-!-margin-bottom-0">
+
+        <fieldset class="govuk-fieldset">
+
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+
+            Status
+
+          </legend>
+
+          <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2" name="type2" type="checkbox" value="1" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type2">
+                Not started (9)
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-2" name="type2" type="checkbox" value="2" checked>
+              <label class="govuk-label govuk-checkboxes__label" for="type2-2">
+                In progress (8)
+              </label>
+
+            </div>
+
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-3" name="type2" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type2-3">
+                At QC (1)
+              </label>
+
+            </div>
+            <div class="govuk-checkboxes__item custom-width">
+              <input class="govuk-checkboxes__input" id="type2-3" name="type2" type="checkbox" value="3">
+              <label class="govuk-label govuk-checkboxes__label" for="type2-3">
+                At decision (1)
+              </label>
+            </div>
+
+          </div>
+
+        </fieldset>
+
+      </div>
+    </div>
+  </div>
+</details>
+    <h2 class="govuk-heading-m">Available area checks</h2>
+  <ul class="govuk-task-list">
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-2a-pass3059" aria-describedby="company-details-1-status">
+          SO3757 3159: SFI available area check 
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-2a-pass3064" aria-describedby="company-details-1-status">
+          SO3757 3164: SFI available area check 
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-1-status">
+          SO3757 3169: SFI available area check 
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-1-status">
+          SO3757 3172: SFI available area check 
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+  </ul>
+       
+
+
+  <h2 class="govuk-heading-m">Intersecting data layers checks</h2>
+  <ul class="govuk-task-list">
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-2b-pass3059" aria-describedby="company-details-1-status">
+          SO3757 3159: 50% moorland intersection on chosen land
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-2b-pass3064" aria-describedby="company-details-1-status">
+          SO3757 3164: 50% moorland intersection on chosen land
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-1-status">
+          SO3757 3169: 50% moorland intersection on chosen land
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-1-status">
+          SO3757 3172: 50% moorland intersection on chosen land
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+        <strong class="govuk-tag govuk-tag--green">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+      </strong>
+      </div>
+    </li>
+</ul>
+
+
+
+
+
+
+
+     
+
+
+    
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+

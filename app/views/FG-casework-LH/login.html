@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+{% endblock %}
+
+
+{% block content %}
+<form action="caselist-my" method="post">
+<main class="govuk-main-wrapper">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+    Login SSO
+      </h1>
+    </legend>
+    
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="width-10">
+        Email
+      </label>
+      <input class="govuk-input govuk-input--width-10" id="width-10" name="width10" type="text">
+    </div>
+    <div class="govuk-form-group">
+      <label class="govuk-label" for="width-10">
+        Password
+      </label>
+      <input class="govuk-input govuk-input--width-10" id="width-10" name="width10" type="text">
+    </div>
+          
+
+
+
+
+
+
+      <div class="govuk-button-group">
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+      Sign in
+    </button>
+    
+</div>
+<p><a href="">Forgot password</a></p>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+</main>
+
+{% endblock %}

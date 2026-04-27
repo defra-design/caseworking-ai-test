@@ -1,0 +1,109 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "accordion" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Accordion" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Accordion</h1>
+      <p class="govuk-body-l">The accordion component lets users show and hide sections of related content on a page.</p>
+      <p class="govuk-body">In this prototype, accordions are used on the Application tab to organise application sections such as customer details, land details and payment information so caseworkers can expand only what they need.</p>
+
+      <h2 class="govuk-heading-l">Default accordion</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-accordion">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-accordion-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-example">
+              <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                  <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-example-heading-1">Customer details</span>
+                  </h2>
+                </div>
+                <div id="accordion-example-content-1" class="govuk-accordion__section-content">
+                  <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">Name</dt>
+                      <dd class="govuk-summary-list__value">Sarah Watson</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">SBI number</dt>
+                      <dd class="govuk-summary-list__value">112849012</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+              <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                  <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-example-heading-2">Land details</span>
+                  </h2>
+                </div>
+                <div id="accordion-example-content-2" class="govuk-accordion__section-content">
+                  <p class="govuk-body">Digital maps show correct land details: <strong>Yes</strong></p>
+                </div>
+              </div>
+              <div class="govuk-accordion__section">
+                <div class="govuk-accordion__section-header">
+                  <h2 class="govuk-accordion__section-heading">
+                    <span class="govuk-accordion__section-button" id="accordion-example-heading-3">Payment</span>
+                  </h2>
+                </div>
+                <div id="accordion-example-content-3" class="govuk-accordion__section-content">
+                  <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key">Total yearly payment</dt>
+                      <dd class="govuk-summary-list__value">£408.20</dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-accordion" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-accordion-code">&lt;div class="govuk-accordion" data-module="govuk-accordion" id="accordion-example"&gt;
+  &lt;div class="govuk-accordion__section"&gt;
+    &lt;div class="govuk-accordion__section-header"&gt;
+      &lt;h2 class="govuk-accordion__section-heading"&gt;
+        &lt;span class="govuk-accordion__section-button" id="accordion-example-heading-1"&gt;
+          Customer details
+        &lt;/span&gt;
+      &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="accordion-example-content-1" class="govuk-accordion__section-content"&gt;
+      &lt;!-- section content --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

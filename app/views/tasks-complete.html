@@ -1,0 +1,107 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="test3">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="test4">
+              Land details
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="tasks-complete" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+        <div class="govuk-panel govuk-panel--confirmation govuk-!-margin-top-8">
+            <h1 class="govuk-panel__title">
+              Application approved
+            </h1>
+         
+          
+          <div class="govuk-panel__body">
+            subtext here
+          </div>
+        </div>
+
+          
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

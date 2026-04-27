@@ -1,0 +1,207 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="task1" aria-current="true">
+              Tasks
+            </a>
+          </li> 
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Notes</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="test3" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Case notes
+      </h1>
+    </legend>
+    <h2 class="govuk-heading-m">Add note</h2>
+    <div class="govuk-form-group">
+  <label class="govuk-label govuk-label--s" for="sort">
+    Type
+  </label>
+  <select class="govuk-select" id="sort" name="sort">
+    <option value="published">Call to applicant</option>
+    <option value="updated" selected>Type 2</option>
+    <option value="views">Type 3</option>
+    <option value="comments">Type 4</option>
+  </select>
+</div>
+<div class="govuk-form-group">
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--s" for="more-detail">
+      Can you provide more detail?
+    </label>
+  </h1>
+
+  <textarea class="govuk-textarea" id="more-detail" name="moreDetail" rows="5" aria-describedby="more-detail-hint">Called applicant to chase up email sent about prep work for the project.</textarea>
+</div>
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+  Create note
+</button>
+
+<h2 class="govuk-heading-m">All notes</h2>
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header" aria-sort="ascending">Date</th>
+
+      <th scope="col" class="govuk-table__header reduced-width">Note</th>
+
+      <th scope="col" class="govuk-table__header" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">27 Nov 24</td>
+
+      <td class="govuk-table__cell">
+        <details class="govuk-details">        
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Documentation request
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            Two of the pictures of the original site were blurred so these were sent to the applicant with a request to resupply.
+          </div>
+        </details>
+      </td>
+
+      <td class="govuk-table__cell">Emily Carter</td>
+
+    </tr>
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25 Nov 24</td>
+
+      <td class="govuk-table__cell">
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            Reassigned application handover
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          I have barely looked at this so there is nothing to hand over. You are starting afresh! 
+        </div>
+      </details>
+      </td>
+
+      <td class="govuk-table__cell">Sophia Johnson</td>
+
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

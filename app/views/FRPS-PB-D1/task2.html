@@ -1,0 +1,181 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>12849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="review-Passeded2" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Available area check
+      </h1>
+    </legend>
+
+
+    <h2 class="govuk-heading-m">Error reason</h2>
+    <p>The available area has changed since the applicant submitted the application.</p>
+
+    <p>This is because part of the parcel does not have declared land uses.<br> <br>
+    <a class="govuk-link" href="">Add data</a></p>
+
+     <h2 class="govuk-heading-m">What you need to do</h2>
+
+     <ol class="govuk-list govuk-list--number">
+      <li>Go to the the Graphical Land Use (GLU) screen in SITI Agri.</li>
+      <li>Use the Wizard Tool or manually update land use data.</li>
+      <li>Set the land use plan status to Official.</li>
+    </ol>
+
+    <p>If you cannot update the land data, complete the <a class="govuk-link" href="">SFI Issues proforma</a> and send it to the Issue Resolution Team.</p>
+
+    <p>If you need to contact the applicant, put the application on hold.</p>
+  
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+         Decision
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision" type="radio" value="Passed" data-aria-controls="conditional-decision1" {{ checked("decision", "Passed") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Mark as resolved
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <p>Describe what you did to resolve this error</p>
+            <div id="more-detail-hint" class="govuk-hint">
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1']}}</textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decision" type="radio" value="Request more informationRequest more information" data-aria-controls="conditional-decision2" {{ checked("decision", "Request more information") }}>
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Put on hold
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            
+            <div id="more-detail-hint" class="govuk-hint">
+              
+            </div>
+            <p>Add note</p>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1`']}}</textarea>
+          </div>
+          
+        </div>
+      </fieldset>
+    </div>
+
+  </fieldset>
+</div>
+
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Save
+</button>
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

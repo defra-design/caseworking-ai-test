@@ -1,0 +1,53 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users">Users</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      Create user
+    </li>
+
+  </ol>
+</nav>
+<h1 class="govuk-heading-l">Create user</h1>
+<p>Pre create users to allow application roles to be allocated before user's first login</p>
+<div class="govuk-form-group">
+  <label class="govuk-label govuk-date-input__label govuk-label--s" for="dob-year">
+    Name 
+  </label>
+  <input class="govuk-input govuk-date-input__input govuk-input--width-20" id="description" name="name" type="text" >
+</div>
+<div class="govuk-form-group">
+  <label class="govuk-label govuk-date-input__label govuk-label--s" for="dob-year">
+    Email 
+  </label>
+  <input class="govuk-input govuk-date-input__input govuk-input--width-20" id="description" name="email" type="email" >
+</div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="roles" class="govuk-link">Cancel</a>
+
+
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

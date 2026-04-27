@@ -1,0 +1,528 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="task1" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+<form action="test4" method="post">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+    <p>Application submitted: <strong>1 Jul 2024</strong></p>
+
+    <h2 class="govuk-heading-m">
+    Applicant details
+    </h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          First name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          John
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Last name
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Heart
+        </dd>
+
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Age
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Prefer not to say
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Gender
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Prefer not to say
+        </dd>
+
+      </div>
+    </dl>
+    <p>No changes from online application</p>
+    <br>
+
+        <h2 class="govuk-heading-m">
+        Contact details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Email
+            </dt>
+            <dd class="govuk-summary-list__value">
+              johnhart@farm.com
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Phone
+            </dt>
+            <dd class="govuk-summary-list__value">
+              01604 123456
+            </dd>
+          </div>
+        </dl>
+        <p>No changes from online application</p>
+        <h2 class="govuk-heading-m">
+        Agent details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Agent name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Agent t email address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Agent phone number
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Agent organisation name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Agent address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+        </dl>
+        <p>No changes from online application</p>
+        <br>
+        <h2 class="govuk-heading-m">
+        Organisation details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Northampton Farm
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Northampton Farm<br>
+              Cogenhoe<br>
+              Northampton<br>
+              Northamptonshire<br>
+              NN7 1NN
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              SBI
+            </dt>
+            <dd class="govuk-summary-list__value">
+              112849012
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation size
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Small
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Sole trader
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Annual turnover
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £1,000,000
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Farming type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Arable farmer
+            </dd>
+          </div>
+        </dl>
+        <p>No changes from online application</p>
+        <br>
+        <h2 class="govuk-heading-m">
+        Organisational activity
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What does your organisation do?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Farming
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              How long has the organisation been trading?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              15 years
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">
+        Project details
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Project name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Northampton Reservoir
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Description
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Construction of reservoir wall boom<br>
+Equipment to monitor soil moisture levels and schedule irrigation<br>
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Project type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Water management
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Project postcode
+            </dt>
+            <dd class="govuk-summary-list__value">
+              NN7 2NN
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Site of Special Scientific Interest (SSSI)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              No
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Land owned by farm
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Yes
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Tenancy for next 5 years
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Not provided
+            </dd>
+          </div>
+        </dl>
+          
+        <h2 class="govuk-heading-m">
+       Project costs, funding and quotes
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total grant-funded expenditure (£)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total grant amount applied for (£)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £....
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Grant intervention rate applied for
+            </dt>
+            <dd class="govuk-summary-list__value">
+              40%
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Private match funding
+            </dt>
+            <dd class="govuk-summary-list__value">
+              £.....
+            </dd>
+          </div>
+                    <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Private match funding sources
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Bank loan or overdraft
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Total non-grant funded expenditure
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              How will you cover non grant-funded costs?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              How will you pay for project costs before you claim?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Are you including irrecoverable VAT in your costs and grant?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              No
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Will you buy any items second hand?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              No
+            </dd>
+          </div>
+                    <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Have you applied for other public sector funding for this or another water project?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              No
+            </dd>
+          </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">
+        Project history and need
+        </h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              How has the project come about?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Why do you want to do the project?
+            </dt>
+            <dd class="govuk-summary-list__value">
+             Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Why do you need grant funding for this project?
+            </dt>
+            <dd class="govuk-summary-list__value">
+             Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What other options have you thought about for your project?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What will happen to the project if you do not get this grant?
+            </dt>
+            <dd class="govuk-summary-list__value">
+             Add answer
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What will the project achieve?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Add answer
+            </dd>
+          </div>
+        </dl>
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+

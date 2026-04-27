@@ -1,19 +1,83 @@
 {% extends "layouts/main.html" %}
 
 {% set pageName="Home" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+{% endblock %}
+
 
 {% block content %}
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {% include "govuk-prototype-kit/includes/homepage-top.njk" %}
 
-    <h1 class="govuk-heading-xl">
-      {{ serviceName }}
+
+    <h1 class="govuk-heading-l">
+      frps Target D1
+    </h1>
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a href="/tasklistStage1">FRPS D1 target (final) (03/12/25)</a></li>
+    </ul>
+
+    <h1 class="govuk-heading-l">
+      frps Target D2
     </h1>
 
-    {% include "govuk-prototype-kit/includes/homepage-bottom.njk" %}
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li><a href="/setPay1">terminate test</a></li>
+      <li><a href="/tasklistStage2C2">D2 WIP (05/12/25)</a></li>
+      <li><a href="/case2-1">Work 100297 first (04/03/25)</a></li>
+      <li><a href="/setLinked1">set linked case (19/02/25)</a></li>
+      <li><a href="/FRPS-D2/UM/users-and-roles">User management (14/01/26)</a></li> 
+      <li><a href="/5month1">5 month checks (27/01/26)</a></li> 
+      <li><a href="/tasklistStage2C2">Second case D2 test</a></li> 
+    </ul>
+
+
+    <h1 class="govuk-heading-l">
+      frps iterative design, working area
+    </h1>
+
+    <p><a href="FRPS-D1_linear/task-1">linear task flow (12/08/25)</a></p> 
+    <hr>
+    <p><a href="FRPS-PB-D1/agreement2">Agreement screen (20/07/25)</a></p>
+    <p><a href="FRPS-PB-D1/timeline2">Full timeline and notes (20/07/25)</a></p> 
+
+    <hr>
+    <p><a href="FRPS-PB-D1/home">Private Beta D1 (all pass) (01/07/25)</a></p>
+    <p><a href="failTest1">Private Beta D1 (failures) (01/07/25)</a></p>
+   
+
+  </div>
+    <div class="govuk-grid-column-two-thirds">
+
+
+
+    <h1 class="govuk-heading-l">
+      FTF focussed caseworking prototytpe (05/25)
+    </h1>
+<p><a href="FG-casework/login">start</a></p>
+
+<p><a href="FG-casework-LH/login">alt treatment start</a></p>
+
   </div>
 </div>
 

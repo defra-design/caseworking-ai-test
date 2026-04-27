@@ -1,0 +1,417 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users">Users</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="martin">Martin Smith</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      Martin Smith's roles
+    </li>
+  </ol>
+</nav>
+<h1 class="govuk-heading-l">Martin Smith roles</h1>
+
+<p>Leave the start date blank for the role to start immediately. Leave the end date blank for the role to go on indefinitely.</p>
+
+<p>Date format is 12/09/2025</p>
+<p><a href="martin-roles-native">see native date picker</a></p>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5 govuk-!-margin-bottom-2">Selected roles</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header"></th>
+      <th scope="col" class="govuk-table__header">Role</th>
+      <th scope="col" class="govuk-table__header">Description</th>
+      <th scope="col" class="govuk-table__header">Start date (optional)</th>
+      <th scope="col" class="govuk-table__header">End date (optional)</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="PMF_READ" checked>
+          <label class="govuk-label govuk-checkboxes__label" for="PMF_READ">
+            <span class="govuk-visually-hidden">Select PMF_READ</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">PMF_READ</th>
+      <td class="govuk-table__cell">Pigs Might Fly read only</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+           <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="PMF_WRITE" checked>
+          <label class="govuk-label govuk-checkboxes__label" for="PMF_WRITE">
+            <span class="govuk-visually-hidden">Select PMF_WRITE</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">PMF_WRITE</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5 govuk-!-margin-bottom-2">Unselected roles</h2>
+
+<table class="govuk-table">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header"></th>
+      <th scope="col" class="govuk-table__header">Role</th>
+      <th scope="col" class="govuk-table__header">Description</th>
+      <th scope="col" class="govuk-table__header">Start date (optional)</th>
+      <th scope="col" class="govuk-table__header">End date (optional)</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="PMF-THREE">
+          <label class="govuk-label govuk-checkboxes__label" for="PMF-THREE">
+            <span class="govuk-visually-hidden">Select PMF-THREE</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">PMF-THREE</th>
+      <td class="govuk-table__cell">Pigs Might Fly thrid role</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="PMF-FOUR">
+          <label class="govuk-label govuk-checkboxes__label" for="PMF-FOUR">
+            <span class="govuk-visually-hidden">Select PMF-FOUR</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">PMF-FOUR</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="PMF-FIVE">
+          <label class="govuk-label govuk-checkboxes__label" for="PMF-FIVE">
+            <span class="govuk-visually-hidden">Select PMF-FIVE</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">PMF-FIVE</th>
+      <td class="govuk-table__cell">Pigs Might Fly thrid role</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC">
+            <span class="govuk-visually-hidden">Select ABC_ABC</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC1">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC1">
+            <span class="govuk-visually-hidden">Select ABC_ABC1</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC1</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC2">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC2">
+            <span class="govuk-visually-hidden">Select ABC_ABC2</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC2</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC3">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC3">
+            <span class="govuk-visually-hidden">Select ABC_ABC3</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC3</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC4">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC4">
+            <span class="govuk-visually-hidden">Select ABC_ABC4</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC4</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC5">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC5">
+            <span class="govuk-visually-hidden">Select ABC_ABC5</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC5</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC6">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC6">
+            <span class="govuk-visually-hidden">Select ABC_ABC6</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC6</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC7">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC7">
+            <span class="govuk-visually-hidden">Select ABC_ABC7</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC7</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+        <div class="govuk-checkboxes__item govuk-checkboxes--small">
+          <input type="checkbox" class="govuk-checkboxes__input" id="ABC_ABC8">
+          <label class="govuk-label govuk-checkboxes__label" for="ABC_ABC8">
+            <span class="govuk-visually-hidden">Select ABC_ABC8</span>
+          </label>
+        </div>
+      </td>
+      <th scope="row" class="govuk-table__header">ABC_ABC8</th>
+      <td class="govuk-table__cell">Pigs Might Fly read write</td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off" >
+          </div>
+        </div>
+      </td>
+      <td class="govuk-table__cell"><div class="moj-datepicker" data-module="moj-date-picker">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <input class="govuk-input moj-js-datepicker-input " id="date" name="date" type="text" aria-describedby="date-hint" autocomplete="off">
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+ Save
+</button> <br>
+<button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+  Check, edit or create roles
+</button>
+<br>
+<a href="roles" class="govuk-link">Cancel and return</a>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

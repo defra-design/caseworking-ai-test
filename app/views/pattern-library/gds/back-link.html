@@ -1,0 +1,83 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "back-link" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Back link" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Back link</h1>
+      <p class="govuk-body-l">Use the back link component to help users go back to the previous page in a multi-page transaction.</p>
+      <p class="govuk-body">In this prototype the back link appears in the green context strip below the Defra header, allowing caseworkers to return to the case list from any case detail page.</p>
+
+      <h2 class="govuk-heading-l">Default back link</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-back-link">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-back-link-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <a href="#" class="govuk-back-link">Back</a>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-back-link" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-back-link-code">&lt;a href="/caselist" class="govuk-back-link"&gt;Back&lt;/a&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Back link in context strip</h2>
+      <p class="govuk-body">In this prototype the back link sits inside the <a href="/pattern-library/custom/context-strip" class="govuk-link">context strip</a> alongside case metadata. The GOV.UK guidance recommends placing it at the top of the page, which this pattern satisfies.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-back-link-strip">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-back-link-strip-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <div class="lg-div govuk-!-padding-4">
+              <a href="#" class="govuk-back-link govuk-!-margin-bottom-2">Back to case list</a>
+              <h1 class="govuk-heading-m govuk-!-margin-bottom-1">Berkshire Estate Limited</h1>
+              <p class="govuk-body-s govuk-!-margin-bottom-0">Application: 100300 &nbsp;&nbsp; <strong class="govuk-tag govuk-tag--blue">In review</strong></p>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-back-link-strip" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-back-link-strip-code">&lt;div class="lg-div govuk-!-padding-4"&gt;
+  &lt;a href="/caselist" class="govuk-back-link govuk-!-margin-bottom-2"&gt;Back to case list&lt;/a&gt;
+  &lt;h1 class="govuk-heading-m govuk-!-margin-bottom-1"&gt;Berkshire Estate Limited&lt;/h1&gt;
+  &lt;p class="govuk-body-s govuk-!-margin-bottom-0"&gt;
+    Application: 100300
+    &lt;strong class="govuk-tag govuk-tag--blue"&gt;In review&lt;/strong&gt;
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

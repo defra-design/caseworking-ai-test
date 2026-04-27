@@ -1,0 +1,54 @@
+<div class="govuk-service-navigation govuk-service-navigation-white" data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+
+          <li class="govuk-service-navigation__item-c{% if activeNavItem === 'tasks' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="tasklist-stage">
+              {% if activeNavItem === 'tasks' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Tasks{% if activeNavItem === 'tasks' %}</strong>{% endif %}
+            </a>
+          </li>
+
+          {% if data.caseStageC2 !== '5month' %}
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="application">
+              {% if activeNavItem === 'application' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Application{% if activeNavItem === 'application' %}</strong>{% endif %}
+            </a>
+          </li>
+          {% endif %}
+
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'calculations' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="calculations2">
+              {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'timeline' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="timeline">
+              {% if activeNavItem === 'timeline' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Timeline{% if data.linkedCase %} (2){% endif %}{% if activeNavItem === 'timeline' %}</strong>{% endif %}
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'notes' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="notes">
+              {% if activeNavItem === 'notes' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Notes{% if activeNavItem === 'notes' %}</strong>{% endif %}
+            </a>
+          </li>
+
+          {% if data.agreementStageC2 or data.caseStageC2 === '5month' %}
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'agreement' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="agreement">
+              {% if activeNavItem === 'agreement' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Agreement{% if activeNavItem === 'agreement' %}</strong>{% endif %}
+            </a>
+          </li>
+          {% endif %}
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

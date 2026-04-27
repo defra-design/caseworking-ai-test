@@ -1,0 +1,222 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+   
+<div class="govuk-width-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+        Rerun rules
+      </button>
+    </div>
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ data['caseStatus']}}</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+{% endblock %} 
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="tasklist-stage" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations2">
+              Calculations
+            </a>
+          </li>
+
+ 
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>          -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li> -->
+          {% if (data.agreementStage) %} 
+           <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li>
+          {% else %} 
+          {% endif %} 
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="/task6T1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Review scheme budget as a finance officer
+      </h1>
+    </legend>
+
+    <p>You cannot complete this task. </p>
+    <details class="govuk-details govuk-!-margin-top-0 govuk-!-margin-bottom-7">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Who can complete this task 
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p>Someone who is a:
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>FINANCE_OFFICER</li>
+          <li>SENIOR_ADMIN</li>
+        </ul>
+        </p>
+      </div>
+    </details>
+
+
+
+        <p>You must check there is enough budget left for the total yearly payment the customer has applied for.
+
+
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Total yearly payment applied for</th>
+              <td class="govuk-table__cell">£323.17</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><a href="#" class="govuk-link">View SFI budget spreadsheet</a></p>
+
+
+
+
+
+
+    
+{% if (data.task6Note) %}
+<h2 class="govuk-heading-m">Note history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Action</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionTask6']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['task6Note']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endif %}
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

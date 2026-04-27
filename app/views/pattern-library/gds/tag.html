@@ -1,0 +1,134 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "tag" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Tag" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Tag</h1>
+      <p class="govuk-body-l">Use the tag component to show users the status of something — for example whether an application is submitted, in progress or approved.</p>
+
+      <h2 class="govuk-heading-l">Default tag colours</h2>
+      <p class="govuk-body">The available colour modifiers are designed to convey meaning. Use them consistently so users can build familiarity across the service.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-colours">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-colours-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p><strong class="govuk-tag">Alpha</strong></p>
+            <p><strong class="govuk-tag govuk-tag--grey">Inactive</strong></p>
+            <p><strong class="govuk-tag govuk-tag--green">Confirmed</strong></p>
+            <p><strong class="govuk-tag govuk-tag--turquoise">Active</strong></p>
+            <p><strong class="govuk-tag govuk-tag--blue">In review</strong></p>
+            <p><strong class="govuk-tag govuk-tag--light-blue">Pending</strong></p>
+            <p><strong class="govuk-tag govuk-tag--purple">Received</strong></p>
+            <p><strong class="govuk-tag govuk-tag--pink">Sent</strong></p>
+            <p><strong class="govuk-tag govuk-tag--red">Rejected</strong></p>
+            <p><strong class="govuk-tag govuk-tag--orange">Withdrawn</strong></p>
+            <p><strong class="govuk-tag govuk-tag--yellow">On hold</strong></p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-colours" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-colours-code">&lt;strong class="govuk-tag"&gt;Alpha&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--grey"&gt;Inactive&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--green"&gt;Confirmed&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--turquoise"&gt;Active&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--blue"&gt;In review&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--light-blue"&gt;Pending&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--purple"&gt;Received&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--pink"&gt;Sent&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--red"&gt;Rejected&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--orange"&gt;Withdrawn&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--yellow"&gt;On hold&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Tags in tables</h2>
+      <p class="govuk-body">Tags are most commonly used in case lists to show status at a glance. Here is how they appear in a table context.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-table">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-table-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Application</th>
+                  <th class="govuk-table__header">Applicant</th>
+                  <th class="govuk-table__header">Status</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">100300</td>
+                  <td class="govuk-table__cell">Berkshire Estate Limited</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">In review</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">100297</td>
+                  <td class="govuk-table__cell">Watson Farms Ltd</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Confirmed</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">100284</td>
+                  <td class="govuk-table__cell">Greenfield Agricultural</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">On hold</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-table" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-table-code">&lt;table class="govuk-table"&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th class="govuk-table__header"&gt;Application&lt;/th&gt;
+      &lt;th class="govuk-table__header"&gt;Applicant&lt;/th&gt;
+      &lt;th class="govuk-table__header"&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;td class="govuk-table__cell"&gt;100300&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;Berkshire Estate Limited&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;
+        &lt;strong class="govuk-tag govuk-tag--blue"&gt;In review&lt;/strong&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

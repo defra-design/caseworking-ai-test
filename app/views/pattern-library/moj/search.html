@@ -1,0 +1,79 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "search" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Search" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Search</h1>
+      <p class="govuk-body-l">Use the MOJ search component to let users find cases, records or documents by entering a search term.</p>
+      <p class="govuk-body">In this prototype, the search bar appears at the top of the case list, allowing caseworkers to search by applicant name, SBI number or application ID.</p>
+
+      <h2 class="govuk-heading-l">Default search</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-search">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-search-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="moj-search govuk-!-margin-bottom-6" data-module="moj-search">
+              <form action="#" method="get" role="search">
+                <div class="govuk-form-group">
+                  <label class="govuk-label moj-search__label govuk-!-font-weight-bold" for="search">
+                    Search cases
+                  </label>
+                  <div class="govuk-hint" id="search-hint">
+                    Search by applicant name, SBI number or application ID
+                  </div>
+                  <input class="govuk-input moj-search__input" id="search" name="search" type="search" aria-describedby="search-hint">
+                </div>
+                <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">Search</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-search" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-search-code">&lt;div class="moj-search" data-module="moj-search"&gt;
+  &lt;form action="/caselist" method="get" role="search"&gt;
+    &lt;div class="govuk-form-group"&gt;
+      &lt;label class="govuk-label moj-search__label govuk-!-font-weight-bold" for="search"&gt;
+        Search cases
+      &lt;/label&gt;
+      &lt;div class="govuk-hint" id="search-hint"&gt;
+        Search by applicant name, SBI number or application ID
+      &lt;/div&gt;
+      &lt;input class="govuk-input moj-search__input" id="search"
+             name="search" type="search" aria-describedby="search-hint"&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="govuk-button moj-search__button"
+            data-module="govuk-button"&gt;Search&lt;/button&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

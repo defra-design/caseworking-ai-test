@@ -1,0 +1,132 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "button" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Button" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Button</h1>
+      <p class="govuk-body-l">Use the button component to help users carry out an action like starting an application, submitting a form or saving progress.</p>
+
+      <h2 class="govuk-heading-l">Default button</h2>
+      <p class="govuk-body">Use a default button for the main call to action on a page. Avoid using multiple default buttons on one page.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-btn-default">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-btn-default-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-btn-default" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-btn-default-code">&lt;button type="submit" class="govuk-button" data-module="govuk-button"&gt;
+  Save and continue
+&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Secondary button</h2>
+      <p class="govuk-body">Use secondary buttons for secondary calls to action on a page. Pages should only have one primary action.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-btn-secondary">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-btn-secondary-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">Find address</button>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-btn-secondary" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-btn-secondary-code">&lt;button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"&gt;
+  Find address
+&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Warning button</h2>
+      <p class="govuk-body">Warning buttons are for destructive actions like permanently deleting data. Give careful consideration to when to use these.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-btn-warning">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-btn-warning-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <button type="button" class="govuk-button govuk-button--warning" data-module="govuk-button">Delete account</button>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-btn-warning" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-btn-warning-code">&lt;button type="button" class="govuk-button govuk-button--warning" data-module="govuk-button"&gt;
+  Delete account
+&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Button group</h2>
+      <p class="govuk-body">Use button groups to display a primary action alongside a secondary action or link.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-btn-group">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-btn-group-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-button-group">
+              <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+              <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">Save as draft</button>
+              <a class="govuk-link" href="#">Cancel</a>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-btn-group" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-btn-group-code">&lt;div class="govuk-button-group"&gt;
+  &lt;button type="submit" class="govuk-button" data-module="govuk-button"&gt;
+    Save and continue
+  &lt;/button&gt;
+  &lt;button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button"&gt;
+    Save as draft
+  &lt;/button&gt;
+  &lt;a class="govuk-link" href="#"&gt;Cancel&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

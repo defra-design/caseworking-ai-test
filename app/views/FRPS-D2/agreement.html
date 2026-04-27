@@ -1,0 +1,130 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "agreement" %}
+{% include "FRPS-D2/includes/_case-nav.html" %}
+<form action="withdraw-confirm" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group govuk-!-margin-bottom-0">
+  <fieldset class="govuk-fieldset" aria-describedby="message-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Funding agreement
+      </h1>
+    </legend>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Agreement status
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <strong class="govuk-tag">Agreement drafted</strong>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Reference
+        </dt>
+        <dd class="govuk-summary-list__value">
+          AD2456781
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Date created
+        </dt>
+        <dd class="govuk-summary-list__value">
+          14 Sept 2025
+        </dd>
+      </div>
+                  <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Date accepted
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Not accepted 
+        </dd>
+      </div>
+                  <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Start date
+        </dt>
+        <dd class="govuk-summary-list__value">
+          Not started
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          View
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <a href="" class="govuk-link">View agreement</a>
+        </dd>
+      </div>
+    </dl>
+
+
+
+
+
+  
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5">Version history</h2>
+
+<table class="govuk-table" >
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header custom-width-110">Reference</th>
+      <th scope="col" class="govuk-table__header custom-width-130">Date</th> 
+      <th scope="col" class="govuk-table__header custom-width-130">Status</th>
+      <th scope="col" class="govuk-table__header custom-width"></th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1356769</td>
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Rejected</strong></td>
+      <td class="govuk-table__cell"><a href="" class="govuk-link">View this version</a>  </td>    
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1356768</td>
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Withdrawn</strong></td>
+      <td class="govuk-table__cell"><a href="" class="govuk-link">View this version</a>  </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

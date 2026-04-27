@@ -1,0 +1,119 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "summary-list" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Summary list" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Summary list</h1>
+      <p class="govuk-body-l">Use the summary list to summarise information, for example a user's responses at the end of a form.</p>
+
+      <h2 class="govuk-heading-l">Default summary list</h2>
+      <p class="govuk-body">The most common usage in this prototype is displaying application details on case overview pages.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-summary-default">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-summary-default-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">Sarah Watson</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Business name</dt>
+                <dd class="govuk-summary-list__value">Berkshire Estate Limited</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">SBI number</dt>
+                <dd class="govuk-summary-list__value">112849012</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Contact details</dt>
+                <dd class="govuk-summary-list__value">sarahfarmer@gmail.com<br>07700 900457</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-summary-default" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-summary-default-code">&lt;dl class="govuk-summary-list"&gt;
+  &lt;div class="govuk-summary-list__row"&gt;
+    &lt;dt class="govuk-summary-list__key"&gt;Name&lt;/dt&gt;
+    &lt;dd class="govuk-summary-list__value"&gt;Sarah Watson&lt;/dd&gt;
+  &lt;/div&gt;
+  &lt;div class="govuk-summary-list__row"&gt;
+    &lt;dt class="govuk-summary-list__key"&gt;Business name&lt;/dt&gt;
+    &lt;dd class="govuk-summary-list__value"&gt;Berkshire Estate Limited&lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Summary list with actions</h2>
+      <p class="govuk-body">Include a change link alongside each row when users need to be able to amend their answers.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-summary-actions">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-summary-actions-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">Sarah Watson</dd>
+                <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change <span class="govuk-visually-hidden">name</span></a></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date of birth</dt>
+                <dd class="govuk-summary-list__value">5 January 1978</dd>
+                <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change <span class="govuk-visually-hidden">date of birth</span></a></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-summary-actions" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-summary-actions-code">&lt;dl class="govuk-summary-list"&gt;
+  &lt;div class="govuk-summary-list__row"&gt;
+    &lt;dt class="govuk-summary-list__key"&gt;Name&lt;/dt&gt;
+    &lt;dd class="govuk-summary-list__value"&gt;Sarah Watson&lt;/dd&gt;
+    &lt;dd class="govuk-summary-list__actions"&gt;
+      &lt;a class="govuk-link" href="#"&gt;
+        Change &lt;span class="govuk-visually-hidden"&gt;name&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/dd&gt;
+  &lt;/div&gt;
+&lt;/dl&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

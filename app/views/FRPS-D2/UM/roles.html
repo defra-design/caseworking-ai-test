@@ -1,0 +1,62 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      Roles
+    </li>
+
+  </ol>
+</nav>
+<form action="create-role" method="post">
+  <h1 class="govuk-heading-l">Roles</h1>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Create role
+        </button>
+      </div>
+
+  <table class="govuk-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Code</th>
+        <th scope="col" class="govuk-table__header">Description</th>
+        <th scope="col" class="govuk-table__header">Assignable</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header"><a class="govuk-link" href="pmf_read">PMF_READ</a></th>
+        <td class="govuk-table__cell">Pigs Might Fly read only</td>
+        <td class="govuk-table__cell">Yes</td>
+      </tr>
+      <tr class="govuk-table__row"><th scope="row" class="govuk-table__header"><a class="govuk-link" href="pmf_read">PMF_WRITE</a></th>
+        <td class="govuk-table__cell">Pigs Might Fly read write</td>
+        <td class="govuk-table__cell">Yes</td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+
+
+
+
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

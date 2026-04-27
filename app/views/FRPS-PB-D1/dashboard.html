@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{% set pageName="Home" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+{% endblock %}
+
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+
+    <h1 class="govuk-heading-l">
+      Dashboard
+    </h1>
+
+    <h1 class="govuk-heading-m">
+      SFI expanded offer applications dashboard
+    </h1>
+
+
+<div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <table class="govuk-table govuk-!-margin-bottom-9">
+          <caption class="govuk-visually-hidden">
+            Sectors using pay
+          </caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Applications received</th>
+              <th scope="col" class="govuk-table__header"> Applications approved</th>
+              <th scope="col" class="govuk-table__header"> Remaining budget</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">20</td>
+              <td class="govuk-table__cell">0</td>
+              <td class="govuk-table__cell">
+                £3m
+              </td>
+            </tr>
+
+           
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

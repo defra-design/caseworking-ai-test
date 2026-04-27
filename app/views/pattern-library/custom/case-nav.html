@@ -1,0 +1,122 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "case-nav" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Case navigation" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Case navigation</h1>
+      <p class="govuk-body-l">A horizontal service navigation bar that lets caseworkers move between the main tabs on a case: Tasks, Application, Calculations, Timeline, Notes and Agreement.</p>
+      <p class="govuk-body">Built on the GOV.UK <code class="govuk-body">govuk-service-navigation</code> component with two custom item classes: <code class="govuk-body">.govuk-service-navigation__item-c</code> (Tasks, wider margin) and <code class="govuk-body">.govuk-service-navigation__item-c2</code> (all other tabs, wider right margin at desktop). Do not change these classes globally — they affect all case pages.</p>
+      <p class="govuk-body">The active tab is driven by the <code class="govuk-body">activeNavItem</code> Nunjucks variable set before including the nav partial. Tabs are conditionally shown based on session state: Application is hidden in the 5-month stage; Agreement is only shown once the case reaches that stage.</p>
+
+      <h2 class="govuk-heading-l">Main case navigation</h2>
+      <p class="govuk-body">Used on the main case (application 100300). References <code class="govuk-body">data.caseStage</code> and <code class="govuk-body">data.agreementStage</code>.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example — Application tab active</span>
+            <button class="app-show-code-button" data-toggle="ex-nav-main">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-nav-main-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <div class="govuk-service-navigation-white" data-module="govuk-service-navigation">
+              <div class="govuk-width-container">
+                <div class="govuk-service-navigation__container">
+                  <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+                    <ul class="govuk-service-navigation__list" id="nav-example">
+                      <li class="govuk-service-navigation__item-c">
+                        <a class="govuk-service-navigation__link" href="#">Tasks</a>
+                      </li>
+                      <li class="govuk-service-navigation__item-c2 govuk-service-navigation__item--active">
+                        <a class="govuk-service-navigation__link" href="#"><strong class="govuk-service-navigation__active-fallback">Application</strong></a>
+                      </li>
+                      <li class="govuk-service-navigation__item-c2">
+                        <a class="govuk-service-navigation__link" href="#">Calculations</a>
+                      </li>
+                      <li class="govuk-service-navigation__item-c2">
+                        <a class="govuk-service-navigation__link" href="#">Timeline</a>
+                      </li>
+                      <li class="govuk-service-navigation__item-c2">
+                        <a class="govuk-service-navigation__link" href="#">Notes</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-nav-main" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-nav-main-code">{# In the page template — set before including the nav partial #}
+{% set activeNavItem = "application" %}
+{% include "FRPS-D2/includes/_case-nav.html" %}
+
+{# Inside _case-nav.html — conditional active state #}
+&lt;li class="govuk-service-navigation__item-c2
+  {% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}"&gt;
+  &lt;a class="govuk-service-navigation__link" href="application"&gt;
+    {% if activeNavItem === 'application' %}
+      &lt;strong class="govuk-service-navigation__active-fallback"&gt;Application&lt;/strong&gt;
+    {% else %}
+      Application
+    {% endif %}
+  &lt;/a&gt;
+&lt;/li&gt;
+
+{# Agreement tab — only shown once agreementStage is set #}
+{% if data.agreementStage or data.caseStage === '5month' %}
+&lt;li class="govuk-service-navigation__item-c2
+  {% if activeNavItem === 'agreement' %} govuk-service-navigation__item--active{% endif %}"&gt;
+  &lt;a class="govuk-service-navigation__link" href="agreement"&gt;Agreement&lt;/a&gt;
+&lt;/li&gt;
+{% endif %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Includes reference</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header">File</th>
+            <th class="govuk-table__header">Used on</th>
+            <th class="govuk-table__header">Session keys</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>_case-nav.html</code></td>
+            <td class="govuk-table__cell">Main case pages (application 100300)</td>
+            <td class="govuk-table__cell"><code>caseStage</code>, <code>agreementStage</code>, <code>linkedCase</code></td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>_case2-nav.html</code></td>
+            <td class="govuk-table__cell">Linked case pages (application 100297)</td>
+            <td class="govuk-table__cell"><code>caseStageC2</code>, <code>agreementStageC2</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

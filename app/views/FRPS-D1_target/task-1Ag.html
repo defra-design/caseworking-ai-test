@@ -1,0 +1,242 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+   
+<div class="govuk-width-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+        Run calculations again
+      </button>
+    </div>
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ data['caseStatus']}}</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  </div>
+   
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="tasklist-stage" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations2">
+              Calculations
+            </a>
+          </li>
+
+ 
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>          -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li> -->
+          {% if (data.agreementStage) %} 
+           <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li>
+          {% else %} 
+          {% endif %} 
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="/task1AgT1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+       Check funding agreement 
+      </h1>
+    </legend>
+
+
+    <p>Check the <a href="agreement" class="govuk-link">agreement</a> is accurate. </p>
+
+
+
+
+
+    
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <div class="govuk-radios" data-module="govuk-radios">
+        
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionAgreeTask1" type="radio" value="Confirm" data-aria-controls="conditional-decision1">
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Confirm
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task1ANote) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1ANote2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1ANote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionAgreeTask1" type="radio" value="There’s a problem"  data-aria-controls="conditional-decision2">
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              There’s a problem
+            </label>
+          </div>  
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task1ANote) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1ANote2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1ANote" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>     
+        </div>
+      </fieldset>
+    </div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+
+{% if (data.task1ANote) %}
+<h2 class="govuk-heading-m">Note history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Action</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionAgreeTask1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote1A']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endif %}
+
+
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

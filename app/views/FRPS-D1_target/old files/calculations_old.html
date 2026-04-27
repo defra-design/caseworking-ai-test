@@ -1,0 +1,653 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="tasklist" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations">
+              Calculations
+            </a>
+          </li>
+          -->
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Calculations</strong>
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> 
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>-->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+<!-- 
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li> -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Land parcel calculations
+      </h1>
+    </legend>
+    <p>Rules check last run: 12:50am 12 Sept 2025</p>
+   
+
+
+    <h3 class="govuk-heading-s">Parcel ID: SO3757 3159 checks</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check         <strong class="govuk-tag govuk-tag--green margin-left-150">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3059</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">100 ha</td>
+    </tr>  
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 70%</td>
+    </tr>  
+
+
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 70%, SSI 40%</td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+
+        <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">90 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Intersecting data layer check         <strong class="govuk-tag govuk-tag--green margin-left-80">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3059 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3059</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">100 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">60 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+
+
+
+  <h3 class="govuk-heading-s">Parcel ID: SO3757 3164 checks</h3>
+
+  <details class="govuk-details govuk-!-margin-bottom-">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check         <strong class="govuk-tag govuk-tag--red-new margin-left-150"> Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+         <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <ol class="govuk-list govuk-list--number">
+      <li>Applicant has applied for more than the total available area in the land parcel for this action.</li>
+      <li>The land details and calculation have changed after the application was submitted.</li>
+    </ol>
+
+
+
+<table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3064</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">100 ha</td>
+    </tr>  
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Heaps 20%, moorland 70%</td>
+    </tr>  
+
+
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 70%, SSI 40%, Heaps 20%</td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+
+        <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">80 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">80 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">90 ha (112.5%)</td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+
+<h2 class="govuk-heading-m">Suggested action</h2>
+<ol class="govuk-list govuk-list--number">
+  <li>With reference to system X to make your own calculations</li>
+  <li>If the Rules engine check has the wrong calculation, contact <a href="#" class="govuk-link">@responsible_person</a></li>
+</ol>
+
+  </div>
+</details>
+
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Intersecting data layer check         <strong class="govuk-tag govuk-tag--red-new margin-left-80"> Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>Parcel SO3757 3064 is not at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3064</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">100 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">45 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">45%</td>
+        </tr>
+      </tbody>
+    </table>
+
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+<h2 class="govuk-heading-m">Suggested action</h2>
+<ol class="govuk-list govuk-list--number">
+  <li>With reference to system X to make your own calculations</li>
+  <li>If the Rules engine check has the wrong calculation, contact <a href="#" class="govuk-link">@responsible_person</a></li>
+</ol>
+  </div>
+</details>
+
+
+  <h3 class="govuk-heading-s">Parcel ID: SO3757 3169 checks</h3>
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check         <strong class="govuk-tag govuk-tag--green margin-left-150">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3059</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">100 ha</td>
+    </tr>  
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 70%</td>
+    </tr>  
+
+
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 70%, SSI 40%</td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+
+        <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">90 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Intersecting data layer check         <strong class="govuk-tag govuk-tag--green margin-left-80">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3059 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3059</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">100 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">60 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+  <h3 class="govuk-heading-s">Parcel ID: SO3757 3172 checks</h3>
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check         <strong class="govuk-tag govuk-tag--green margin-left-150">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3059</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">100 ha</td>
+    </tr>  
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 70%</td>
+    </tr>  
+
+
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 70%, SSI 40%</td>
+    </tr>
+
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+
+        <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">90 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">90 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Intersecting data layer check         <strong class="govuk-tag govuk-tag--green margin-left-80">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3059 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3059</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">100 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">60 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+<p><a href="/public/images/Land_Calculation_Output.pdf">View detailed check data (PDF)</a></p>
+  </div>
+</details>
+
+
+
+
+
+
+
+     
+
+
+    
+
+
+    </form>
+
+  </div>
+</div>
+<div class="govuk-grid-column-one-third">
+    <div class="govuk-form-group"><p><h3 class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-7">Set version</h3>
+            <select class="govuk-select " id="sort" name="sort">
+              <option value="published" selected>12:50am 12 Sept 2025</option>
+              <option value="updated">11:00am 12 Sept 2025</option>
+              <option value="views">03:20pm 11 Sept 2025</option>
+            </select>
+               <button type="submit" class="govuk-button moj-search__button " data-module="govuk-button">
+          Set
+        </button>
+          </p>
+
+
+      </div>
+    </div>
+
+
+
+
+{% endblock %}
+

@@ -1,0 +1,115 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "filter" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Filter" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Filter</h1>
+      <p class="govuk-body-l">Use the MOJ filter component to help users narrow down a list of results by one or more criteria.</p>
+      <p class="govuk-body">In this prototype the filter panel appears on the case list to let caseworkers filter by status, assigned officer and scheme year.</p>
+
+      <h2 class="govuk-heading-l">Filter panel</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-filter">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-filter-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="moj-filter">
+              <div class="moj-filter__header moj-filter__header_grey">
+                <div class="moj-filter__header-title">
+                  <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Filter</h2>
+                </div>
+                <div class="moj-filter__header-action">
+                  <a href="#" class="govuk-link govuk-!-font-size-16">Clear filters</a>
+                </div>
+              </div>
+              <div class="moj-filter__content">
+                <div class="moj-filter__selected">
+                  <div class="moj-filter__selected-heading">
+                    <div class="moj-filter__heading-title">
+                      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Selected filters</h3>
+                    </div>
+                  </div>
+                  <ul class="moj-filter-tags">
+                    <li><a href="#" class="moj-filter__tag govuk-link">In review <span class="govuk-visually-hidden">Remove filter</span></a></li>
+                    <li><a href="#" class="moj-filter__tag govuk-link">Jane Smith <span class="govuk-visually-hidden">Remove filter</span></a></li>
+                  </ul>
+                </div>
+                <div class="moj-filter__options">
+                  <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                      <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="status-1" name="status" type="checkbox" value="in-review" checked>
+                          <label class="govuk-label govuk-checkboxes__label" for="status-1">In review</label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="status-2" name="status" type="checkbox" value="on-hold">
+                          <label class="govuk-label govuk-checkboxes__label" for="status-2">On hold</label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="status-3" name="status" type="checkbox" value="agreement-drafted">
+                          <label class="govuk-label govuk-checkboxes__label" for="status-3">Agreement drafted</label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                  <button class="govuk-button" data-module="govuk-button">Apply filters</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-filter" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-filter-code">&lt;div class="moj-filter"&gt;
+  &lt;div class="moj-filter__header moj-filter__header_grey"&gt;
+    &lt;div class="moj-filter__header-title"&gt;
+      &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Filter&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class="moj-filter__header-action"&gt;
+      &lt;a href="#" class="govuk-link"&gt;Clear filters&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="moj-filter__content"&gt;
+    &lt;div class="moj-filter__selected"&gt;
+      &lt;ul class="moj-filter-tags"&gt;
+        &lt;li&gt;&lt;a href="#" class="moj-filter__tag govuk-link"&gt;In review&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;div class="moj-filter__options"&gt;
+      &lt;!-- filter form fields --&gt;
+      &lt;button class="govuk-button"&gt;Apply filters&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

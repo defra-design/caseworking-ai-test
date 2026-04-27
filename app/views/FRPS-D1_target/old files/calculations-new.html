@@ -1,0 +1,390 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+
+  <div class="lg-div"> 
+   
+<div class="govuk-width-container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+        Rerun rules
+      </button>
+    </div>
+  </div>
+
+
+     
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="tasklist" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="calculations">
+              Calculations
+            </a>
+          </li>
+          -->
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Calculations</strong>
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> 
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>-->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li> -->
+          {% if (data.agreementStage) %} 
+           <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li>
+          {% else %} 
+          {% endif %} 
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations</h1>
+    
+    <p >Rules check last run: 12:50am 12 Sept 2025</p>
+
+
+       <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+          Version history
+        </h3>
+
+      <div class="flex-box-version">
+        
+          <a href="#">11:00am 12 Sept 2025</a>
+          <a href="#">09:00am 12 Sept 2025</a>
+          <a href="#">03:20pm 11 Sept 2025</a>
+      </div>
+
+
+
+      
+
+
+<form action="test4" method="post">
+<div class="govuk-form-group govuk-!-margin-top-8">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <h2 class="govuk-heading-m">Parcel ID: SO3757 3159 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Total available area matches area applied for         <strong class="govuk-tag govuk-tag--red-new margin-left-130">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>The total available area (1.1506 ha) does not match the area applied for (1 ha). This can happen when land parcel data is updated after an application has been submitted.</p>
+<h2 class="govuk-heading-m">What to do</h2>
+
+<ol class="govuk-list govuk-list--number">
+  <li>Check the land parcel data for errors</li>
+  <li>If there are no errors, reject the application and ask the customer to reapply with the correct total available area</li>
+</ol>
+
+<p>Date application submitted: 14 October 2025</br>
+Latest land parcel update: 21 October 2025 </p>
+
+<h3 class="govuk-heading-s">Area applied for by customer</h3>
+<p>1 ha</p>
+
+<h3 class="govuk-heading-s">Total available area</h3>
+<p>1.1506 ha</p>
+
+  <h2 class="govuk-heading-m">Total available area calculation</h2>
+<p>Action code<br>
+CMOR1 </p>
+
+<p>Valid land covers for CMOR1 <br>
+Permanent grassland (130) <br>
+Permanent grassland (131)<br>
+Water/irrigation features (240)<br>
+Drain/ditch/dyke (241)<br>
+Water/irrigation features (240)<br>
+Pond (243), Rock (250)<br>
+Scree (251)<br>
+Rock (250)<br>
+Boulders (252)<br>
+Rock (250)<br>
+Rocky outcrop (253)<br>
+Heaps (270)<br>
+Heaps (271)</p>
+
+<p>Land covers for this land parcel <br>
+Arable land (110),  7.98900188 ha   <br>
+Hard standing (551), 0.0076 ha    <br>
+Permanent grassland (130), 3.1540 ha  
+</p>
+
+<p>Existing incompatible actions on this land parcel:<br>
+CHRW1, 10 ha<br>
+CHRW2, 8 ha<br>
+CHRW3, 7 ha</p>
+
+<p>Incompatible stacks<br>
+These will be subtracted from the total valid landcovers<br>
+Stack 1 - CHRW1 (10 ha), CHRW2 (8 ha), CHRW3 (7 ha): Total = 10 ha</p>
+
+<p>Do incompatible stacks overlap with valid land covers?<br>
+Yes</p>
+
+<p>Total land parcel area: 11.1506 ha<br>
+Total incompatible stacks: 10 ha<br>
+Total valid land covers: 3.1540 ha<br>
+Incompatible stacks on valid land covers: 2.0034 ha</p>
+
+<p>Total available area<br>
+1.1506 ha</p>
+
+
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      At least 51% of land parcel is moorland<strong class="govuk-tag govuk-tag--red-new margin-left-180">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>CMOR1 requires at least 51% of an area to be moorland. Parcel SO3757 3059 is only 28.28% moorland. </p>
+    <h2 class="govuk-heading-m">What to do</h2>
+
+<ol class="govuk-list govuk-list--number">
+  <li>Check the land parcel data for errors</li>
+  <li>If there are no errors, reject the application</li>
+</ol>
+
+<h2 class="govuk-heading-m">Moorland percentage </h2>
+<p>Parcel area <br>
+Taken from SITI Agri<br>
+11.1506 ha</p>
+
+<p>Area on moorland <br>
+Taken from SITI Agri data layer<br>
+3.1540 ha</p>
+
+<p>Percentage calculation <br>
+3.1540 / 11.1506 = 0.2828<br>
+0.2828 X 100 = 28.28%</p>
+
+
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: UPL1: Moderate livestock grazing on moorland</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+     Total available area matches area applied for         <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>The total available area (6.2 ha) matches the area applied for (6.2 ha).
+</p>
+   <p>Action code<br>
+UPL1 </p>
+
+<p>Valid land covers for UPL1 <br> 
+Permanent grassland (130) <br>
+Permanent grassland (131)<br>
+Water/irrigation features (240)<br>
+Drain/ditch/dyke (241)<br>
+Water/irrigation features (240)<br>
+Pond (243), Rock (250)<br>
+Scree (251)<br>
+Rock (250)<br>
+Boulders (252)<br>
+Rock (250)<br>
+Rocky outcrop (253)<br>
+Heaps (270)<br>
+Heaps (271)</p>
+
+<p>Land covers for this land parcel <br>
+Arable land (110),  3.2 ha    <br>
+Hard standing (551), 3 ha  <br> 
+Permanent grassland (130), 6.2 ha </p>
+
+<p>Existing incompatible actions on this land parcel:<br>
+None</p>
+
+<p>Incompatible stacks<br>
+These will be subtracted from the total valid landcovers<br>
+None</p>
+
+<p>Do incompatible stacks overlap with valid land covers?<br>
+No</p>
+
+<p>Total available area<br>
+6.2 ha</p>
+
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      At least 51% of land parcel is moorland <strong class="govuk-tag govuk-tag--green margin-left-177">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>The minimum amount of moorland required on a land parcel for CMOR1 is 51%. However, there is a 1% tolerance for error. Parcel SO3757 3059 is only 50% moorland, but has passed because of this tolerance. </p>
+
+    <p>Parcel area <br>
+    Taken from SITI Agri<br>
+    12.4 ha</p>
+
+    <p>Area on moorland <br>
+    Taken from SITI Agri data layer<br>
+    6.2 ha</p>
+
+    <p>Percentage calculation <br>
+    6.2 / 12.4 = 0.5<br>
+    0.5 X 100 = 50%</p>
+
+
+
+  </div>
+</details>
+
+
+    </form>
+
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}
+

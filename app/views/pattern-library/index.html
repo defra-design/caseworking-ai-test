@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% set plSection = "" %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="app-pl-masthead">
+  <div class="govuk-width-container">
+    <p class="app-pl-masthead__title">FRPS Pattern Library</p>
+    <p class="app-pl-masthead__desc">Design your service using components and patterns from the GOV.UK Design System, the MOJ Design System, and established custom patterns used consistently across this prototype.</p>
+  </div>
+</div>
+
+<div class="govuk-width-container govuk-!-margin-top-8">
+  <div class="govuk-grid-row">
+
+    <div class="govuk-grid-column-one-third">
+      <a href="/pattern-library/gds/button" class="app-pl-category-card">
+        <p class="app-pl-category-card__title">GDS components</p>
+        <p class="app-pl-category-card__desc">Components from the GOV.UK Design System used in this service. Includes buttons, tags, summary lists, tables, radios and more.</p>
+        <p class="app-pl-category-card__count">10 components</p>
+      </a>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <a href="/pattern-library/moj/timeline" class="app-pl-category-card">
+        <p class="app-pl-category-card__title">MOJ components</p>
+        <p class="app-pl-category-card__desc">Components from the Ministry of Justice Design System. Covers internal casework patterns including timelines, filters, search, messages and pagination.</p>
+        <p class="app-pl-category-card__count">6 components</p>
+      </a>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <a href="/pattern-library/custom/status-tags" class="app-pl-category-card">
+        <p class="app-pl-category-card__title">Custom patterns</p>
+        <p class="app-pl-category-card__desc">Patterns that deviate from or extend GOV.UK and MOJ design systems, used consistently throughout this prototype. Includes the Defra header, context strip, case navigation and custom tag colours.</p>
+        <p class="app-pl-category-card__count">5 patterns</p>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

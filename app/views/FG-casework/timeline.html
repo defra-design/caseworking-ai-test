@@ -1,0 +1,267 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>Water Management Round 3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="tasklist">
+              Tasks
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Timeline</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="notes">
+              Case notes
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer communication
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c">
+            <a class="govuk-service-navigation__link" href="assignment">
+              Assignment history
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="test2" method="post">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Timeline
+      </h1>
+    </legend>
+    
+
+
+
+    <div class="moj-timeline">
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Documents received</h2>
+
+      <p class="moj-timeline__byline">by Joe Bloggs</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-05-28T10:15:00.000Z">28 May 2019 at 10:15am</time>
+    </p>
+    <div class="moj-timeline__description">
+      <p><a class="govuk-link" href="notes#note2">View applicant message</a></p>
+      
+    </div>
+    <div class="moj-timeline__description">
+      <ul class="moj-timeline__documents">
+        <li class="moj-timeline__document-item">
+          <a class="govuk-link" href="#">
+            <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+              <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z" />
+            </svg>
+            Document 1
+          </a>
+        </li>
+        <li class="moj-timeline__document-item">
+          <a class="govuk-link" href="#">
+            <svg class="moj-timeline__document-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 20" width="20" height="16">
+              <path d="M9 7V1.5L14.5 7H9zM2 0C.9 0 0 .9 0 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6l-6-6H2z" />
+            </svg>
+            Document 2
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+    <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Customer communication</h2>
+
+      <p class="moj-timeline__byline">by Emily Carter</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-14T14:01:00.000Z">27 Nov 2024 at 11:02pm</time>
+    </p>
+
+    <div class="moj-timeline__description">
+      <p><a class="govuk-link" href="notes#note2">View caseworker message</a></p>
+      
+    </div>
+
+  </div>
+
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Note added</h2>
+
+      <p class="moj-timeline__byline">by Emily Carter</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-14T14:01:00.000Z">26 Nov 2024 at 4:47pm</time>
+    </p>
+
+    <div class="moj-timeline__description">
+      <p><a class="govuk-link" href="notes#note2">View note</a></p>
+      
+    </div>
+
+  </div>
+
+
+    <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Emily Carter assigned to case</h2>
+
+      <p class="moj-timeline__byline">by Allan Fullerton</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-07T12:32:00.000Z">25 Nov 2024 at 11:52am</time>
+    </p>
+
+  </div>
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Sophia Johnson assigned to case</h2>
+
+      <p class="moj-timeline__byline">by Allan Fullerton</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-07T12:32:00.000Z">25 Nov 2024 at 10:13am</time>
+    </p>
+
+  </div>
+
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Automatic checks completed</h2>
+
+      <p class="moj-timeline__byline">by System</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-05-28T10:45:00.000Z">23 Nov 2024 at 3:10pm</time>
+    </p>
+
+  </div>
+
+
+
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Application received</h2>
+
+      <p class="moj-timeline__byline">by System</p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-05-21T13:15:00.000Z">23 Nov 2024 at 3:05pm</time>
+    </p>
+
+
+  </div>
+</div>
+
+</div>
+          
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

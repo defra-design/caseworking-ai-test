@@ -1,0 +1,362 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#" aria-current="true">
+              <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="application-agree">
+              Application
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land-agree">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+          <!-- <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li> -->
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="/app-approve1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+      Tasks
+        </h1>
+      </legend>
+
+      
+         <h2 class="govuk-heading-m">1. Review application</h2>
+  <ul class="govuk-task-list">
+  {% if (data.customerCheck === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-1-agree" aria-describedby="company-details-1-status">
+        Check customer details 
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+        Complete
+    </div>
+  </li>
+
+  {% else %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-1-agree" aria-describedby="company-details-1-status">
+        Check customer details 
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    </div>
+  </li>
+  {% endif %}
+</ul>
+
+       
+
+
+  <h2 class="govuk-heading-m">2. Review intersecting data layers</h2>
+  <ul class="govuk-task-list">
+  {% if (data.areaChecks === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2a-agree" aria-describedby="company-details-1-status">
+        Available area checks
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+        Complete
+    </div>
+  </li>
+  {% elseif (data.customerCheck === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2a-agree" aria-describedby="company-details-1-status">
+        Available area checks
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    </div>
+  </li>
+  {% else %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+
+        Available area checks
+
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+      <strong class="govuk-tag govuk-tag--grey">
+        Cannot start yet
+      </strong>
+    </div>
+  </li>
+  {% endif %}
+    {% if (data.intersectingData === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2b-agree" aria-describedby="company-details-1-status">
+        Intersecting data layer checks
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+        Complete
+    </div>
+  </li>
+  {% elseif (data.customerCheck === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-2b-agree" aria-describedby="company-details-1-status">
+        Intersecting data layer checks
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    </div>
+  </li>
+  {% else %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+        Intersecting data layer checks
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+      <strong class="govuk-tag govuk-tag--grey">
+        Cannot start yet
+      </strong>
+    </div>
+  </li>
+  {% endif %}
+
+</ul>
+  
+
+<h2 class="govuk-heading-m">3. Review scheme budget</h2>
+  <ul class="govuk-task-list">
+  {% if (data.budgetCheck === 'yes') %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-3-agree" aria-describedby="company-details-1-status">
+        Budget check
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+        Complete
+    </div>
+  </li>
+
+  {% elseif (data.customerCheck === 'yes' and data.intersectingData === 'yes' and data.areaChecks === 'yes' ) %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-3-agree" aria-describedby="company-details-1-status">
+        Budget check
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">   
+      <strong class="govuk-tag govuk-tag--blue">
+        Incomplete
+      </strong>
+    </div>
+  </li>
+  {% else %}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+        Budget check
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+      <strong class="govuk-tag govuk-tag--grey">
+        Cannot start yet
+      </strong>
+    </div>
+  </li>
+  {% endif %}
+</ul>
+
+
+<div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+         Decision
+        </legend>
+        <div class="govuk-radios" data-module="govuk-radios">
+          {% if (data.customerCheck === 'yes' and data.intersectingData === 'yes' and data.areaChecks === 'yes' and data.budgetCheck === 'yes' ) %}
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision" type="radio" value="Approve" data-aria-controls="conditional-decision1" {{ checked("decision", "Approve") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Approve
+            </label>
+          </div>
+          {% endif %}
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <p> Approval reason note</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              All notes will be saved for auditing purposes
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1']}}</textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decision" type="radio" value="Request more informationRequest more information" data-aria-controls="conditional-decision2" {{ checked("decision", "Request more information") }}>
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Put on hold
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <p>Note (optional)</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              All notes will be saved for auditing purposes
+            </div>
+            
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1`']}}</textarea>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decision" type="radio" value="Reject" data-aria-controls="conditional-decision3" {{ checked("decision", "Reject") }}>
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Reject
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision3">
+            <p>Rejection reason note</p>
+            <div id="more-detail-hint" class="govuk-hint">
+              All notes will be saved for auditing purposes
+            </div>
+            <textarea class="govuk-textarea" id="more-detail1" name="moreDetail1" rows="5" aria-describedby="more-detail-hint">{{ data['moreDetail1']}}</textarea>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+  </fieldset>
+</div>
+
+<button type="submit" class="govuk-button" data-module="govuk-button">
+  Save
+</button>
+    </form>
+
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}
+{% block footer %}
+ {{ govukFooter({
+   meta: {
+     items: [
+       {
+         href: "/setUserFo1",
+         text: "Set user finance officer"
+       },
+       {
+         href: "/manage-prototype",
+         text: "Manage your prototype"
+       },
+       {
+         href: "/manage-prototype/clear-data",
+         text: "Clear data"
+       }
+     ],
+     visuallyHiddenTitle: "Footer links"
+   }
+ }) }}
+{% endblock %}

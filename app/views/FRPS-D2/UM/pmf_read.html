@@ -1,0 +1,71 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="roles">Roles</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      PMF_READ
+    </li>
+
+  </ol>
+</nav>
+<h1 class="govuk-heading-l">Update PMF_READ</h1>
+<p><a href="pmf-users">View all users with this role</a></p>
+<h3 class="govuk-heading-s govuk-!-margin-bottom-0">Code</h3>
+<p>PMF_READ</p>
+<div class="govuk-form-group">
+  <label class="govuk-label govuk-date-input__label govuk-label--s" for="dob-year">
+    Description 
+  </label>
+  <input class="govuk-input govuk-date-input__input govuk-input--width-20" id="description" name="description" type="text" value="Pigs Might Fly read only">
+</div>
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="changedName-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      <h3 class="govuk-fieldset__heading">
+        Allow this role to be assigned?
+      </h3>
+    </legend>
+    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="changedName" name="changedName" type="radio" value="yes" checked>
+        <label class="govuk-label govuk-radios__label" for="changedName">
+          Yes
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="changedName-2" name="changedName" type="radio" value="no">
+        <label class="govuk-label govuk-radios__label" for="changedName-2">
+          No
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="roles" class="govuk-link">Cancel without update</a>
+
+
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

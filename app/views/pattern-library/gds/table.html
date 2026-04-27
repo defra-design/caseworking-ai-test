@@ -1,0 +1,94 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "table" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Table" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Table</h1>
+      <p class="govuk-body-l">Use the table component to make information easier to compare and scan for users.</p>
+      <p class="govuk-body">Tables are used extensively in this prototype for case lists, calculation breakdowns and task review screens. For case lists with sortable columns, see the MOJ sortable table component.</p>
+
+      <h2 class="govuk-heading-l">Default table</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-table-default">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-table-default-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <caption class="govuk-table__caption govuk-table__caption--m">Land parcels</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Land parcel</th>
+                  <th scope="col" class="govuk-table__header">Action</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Area (ha)</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Payment rate</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Annual payment</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">SO3757 3159</td>
+                  <td class="govuk-table__cell">UPL1</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">6.20</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£20.00</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£124.00</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">SO3757 3159</td>
+                  <td class="govuk-table__cell">CMOR1</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">1.15</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£10.60</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£12.20</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-table-default" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-table-default-code">&lt;table class="govuk-table"&gt;
+  &lt;caption class="govuk-table__caption govuk-table__caption--m"&gt;Land parcels&lt;/caption&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="col" class="govuk-table__header"&gt;Land parcel&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header govuk-table__header--numeric"&gt;Area (ha)&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header govuk-table__header--numeric"&gt;Annual payment&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;td class="govuk-table__cell"&gt;SO3757 3159&lt;/td&gt;
+      &lt;td class="govuk-table__cell govuk-table__cell--numeric"&gt;6.20&lt;/td&gt;
+      &lt;td class="govuk-table__cell govuk-table__cell--numeric"&gt;£124.00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

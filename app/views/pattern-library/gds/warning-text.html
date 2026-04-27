@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "warning-text" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Warning text" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Warning text</h1>
+      <p class="govuk-body-l">Use the warning text component when you need to warn users about something important, such as legal consequences of an action.</p>
+      <p class="govuk-body">Use this for high-stakes information that the caseworker must not overlook — for example confirming that a rejection decision is irreversible.</p>
+
+      <h2 class="govuk-heading-l">Default warning text</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-warning">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-warning-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                Rejecting this application cannot be undone. The applicant will be notified immediately.
+              </strong>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-warning" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-warning-code">&lt;div class="govuk-warning-text"&gt;
+  &lt;span class="govuk-warning-text__icon" aria-hidden="true"&gt;!&lt;/span&gt;
+  &lt;strong class="govuk-warning-text__text"&gt;
+    &lt;span class="govuk-visually-hidden"&gt;Warning&lt;/span&gt;
+    Rejecting this application cannot be undone.
+    The applicant will be notified immediately.
+  &lt;/strong&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

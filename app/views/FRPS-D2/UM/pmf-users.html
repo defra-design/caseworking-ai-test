@@ -1,0 +1,43 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users">Users</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      PMF_READ users
+    </li>
+  </ol>
+</nav>
+
+<form action="martin-roles" method="post">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <h1 class="govuk-heading-l">Users with the PMF_READ role</h1>
+
+          <p><a class="govuk-link" href="martin">Martin Smith</a>,<br>
+          <a class="govuk-link" href="martin">Mark Stead</a>,<br>
+          <a class="govuk-link" href="martin">Admin 5</a></p>
+
+
+      </div>
+    </div>
+  </div>
+</form>
+
+
+
+
+
+{% endblock %}

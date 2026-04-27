@@ -1,0 +1,169 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "javascript:history.back()"
+      }) }}
+      <h2 class="govuk-heading-m">Valley Farm</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 112849012</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Reference:</strong>   1781288</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Grant: </strong>WM R3</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Date received:</strong>  1 Jul 2024</p></div>        
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Not started</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="task1" aria-current="true">
+              Tasks
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Application</strong>
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="documents">
+              Documents
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline" aria-current="true">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application review checklist guide
+      </h1>
+    </legend>
+   <p>Use this guide to help you complete the application review checklist.</p>
+
+       <h2 class="govuk-heading-m">
+    Eligibility
+    </h2>
+    <p>Check the applicant:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>meets the eligibility requirements as set out on <a href="">GOV.UK</a></li>
+      <li>is applying for £35,000 to £500,000 of funding</li>
+      <li>will use the water for irrigation</li>
+    </ul>
+    <p>If the applicant is not eligible, you’ll need to recommend the application for rejection.</p>
+    <h2 class="govuk-heading-m">
+    Documents
+    </h2>
+    <p>Applicants must have uploaded all of the following:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>abstraction licence</li>
+      <li>3 years of business accounts or other financial evidence</li>
+      <li>new and existing irrigation system plans and drawings</li>
+      <li>other licences, permissions and consents</li>
+      <li>planning permission and approved plans</li>
+      <li>project match funding evidence</li>
+    </ul>
+
+    <p>If applicable, they also need to have uploaded:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>a landlord underwriting form</li>
+      <li>supplier confirmation for second-hand funding</li>
+      <li>a tenancy agreement</li>
+      <li>VAT evidence</li>
+    </ul>
+    <p>If any documents are missing or incorrect, contact the applicant.</p>
+
+    <h2 class="govuk-heading-m">
+    Costs, suppliers and quotes
+    </h2>
+    <p>Check all the project items are eligible as set out on <a href="">GOV.UK</a>, and that quotes have been supplied for all items.</p>
+
+           <h2 class="govuk-heading-m">
+    Dual funding
+    </h2>
+    <p>Check if the applicant has applied to fund any project item using the following grants:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Countryside Stewardship (CS)</li>
+      <li>Farming in Protected Landscapes</li>
+    </ul>
+    <p>If the applicant has already applied for funding using another grant, contact the applicant to confirm which grant they want to use to fund the item.</p>
+
+    <h2 class="govuk-heading-m">
+    Due diligence checks
+    </h2>
+    <p>Use the <a href="">bankruptcy and insolvency register</a> and <a href="">disqualified directors register</a> to check if any directors have: </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>been disqualified</li>
+      <li>been declared insolvent</li>
+      <li>gone bankrupt</li>
+    </ul>
+    <p>You should also use the <a href="">get information about a company</a> service to check the business is still trading.</p>
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+

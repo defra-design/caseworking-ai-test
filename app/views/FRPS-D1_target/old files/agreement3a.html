@@ -1,0 +1,228 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications",
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  Approved</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+                <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link"  href="tasklist" aria-current="true">
+              Tasks
+            </a>
+          </li> 
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application">
+              Application
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline">
+              Timeline
+            </a>
+          </li>          
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="notes">
+              Notes
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2 govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Agreement</strong>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="withdraw-confirm" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group govuk-!-margin-bottom-0">
+  <fieldset class="govuk-fieldset" aria-describedby="message-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Case grant funding agreement
+      </h1>
+    </legend>
+    <div class="govuk-inset-text">Check the grant funding agreement system to see the final terms of the agreement.</div>
+    <h2 class="govuk-heading-m">Current agreement</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Status
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <strong class="govuk-tag">Active</strong>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Reference
+        </dt>
+        <dd class="govuk-summary-list__value">
+          AD2456781
+        </dd>
+      </div>
+            <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Date
+        </dt>
+        <dd class="govuk-summary-list__value">
+          14 Sept 2025
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          View
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <a href="" class="govuk-link">view this agreement</a>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Share
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <a href="" class="govuk-link">Copy a link to the agreement</a>
+        </dd>
+      </div>
+    </dl>
+
+
+<p><a role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="withdraw-confirm">Withdraw agreement</a></p>
+
+
+  
+
+<h2 class="govuk-heading-m govuk-!-margin-top-5">Past agreement history</h2>
+
+<table class="govuk-table" >
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header custom-width-110">Reference</th>
+      <th scope="col" class="govuk-table__header custom-width-130">Date</th>
+      <th scope="col" class="govuk-table__header custom-width">View</th>
+      <th scope="col" class="govuk-table__header custom-width-130">Status</th>
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1356790</td>
+
+      <td class="govuk-table__cell">12 Sept 2025</td>
+
+      <td class="govuk-table__cell"><a href="" class="govuk-link">Internal</a>  
+        
+      </td>
+
+      <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Rejected</strong>
+
+    </tr>
+        <tr class="govuk-table__row">
+      <td class="govuk-table__cell">AB1356790</td>
+
+      <td class="govuk-table__cell">12 Sept 2025</td>
+
+      <td class="govuk-table__cell"><a href="" class="govuk-link">Internal</a>  
+        
+      </td>
+
+      <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Withdrawn</strong>
+
+    </tr>
+
+
+
+  </tbody>
+</table>
+
+
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

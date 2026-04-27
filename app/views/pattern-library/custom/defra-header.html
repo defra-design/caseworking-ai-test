@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "defra-header" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Defra header" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Defra header</h1>
+      <p class="govuk-body-l">A fully custom internal header used on all casework pages in place of the standard GOV.UK or MOJ header.</p>
+      <p class="govuk-body">The header uses the <code class="govuk-body">.defra-internal-header</code> class with a 8px solid bottom border in Defra brand green (<code class="govuk-body">#00a33b</code>). It includes the Defra logo on the left and the service name on the right.</p>
+      <p class="govuk-body">Do not replace this with a standard GOV.UK or MOJ header. All changes to this component should remain within the <code class="govuk-body">.defra-*</code> classes in <code class="govuk-body">application.scss</code>.</p>
+
+      <h2 class="govuk-heading-l">Defra internal header</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-defra-header">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-defra-header-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <header class="defra-internal-header" role="banner">
+              <div class="govuk-width-container">
+                <div class="defra-logo">
+                  <a href="/" class="defra-logo__link" title="Go to the Defra Design Library homepage">
+                    <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+                  </a>
+                </div>
+                <div class="defra-internal-service-name">
+                  <a href="/" class="defra-internal-service-name__link">Manage rural grant applications</a>
+                </div>
+              </div>
+            </header>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-defra-header" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-defra-header-code">&lt;header class="defra-internal-header" role="banner"&gt;
+  &lt;div class="govuk-width-container"&gt;
+    &lt;div class="defra-logo"&gt;
+      &lt;a href="/" class="defra-logo__link"
+         title="Go to the Defra Design Library homepage"&gt;
+        &lt;span class="c-defra-logo__title govuk-visually-hidden"&gt;
+          Department for Environment Food &amp;amp; Rural Affairs
+        &lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="defra-internal-service-name"&gt;
+      &lt;a href="/" class="defra-internal-service-name__link"&gt;
+        Manage rural grant applications
+      &lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Key classes</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header">Class</th>
+            <th class="govuk-table__header">Purpose</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-internal-header</code></td>
+            <td class="govuk-table__cell">Outer wrapper — sets padding and the 8px green bottom border</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-logo</code></td>
+            <td class="govuk-table__cell">Logo container — green left border, sets min-width for alignment</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-logo__link</code></td>
+            <td class="govuk-table__cell">Renders the Defra PNG logo via CSS <code>::before</code> pseudo-element</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-internal-service-name</code></td>
+            <td class="govuk-table__cell">Service name container — vertically centred alongside the logo</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-internal-service-name__link</code></td>
+            <td class="govuk-table__cell">Service name link — 21px / 24px font, no underline, black text</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

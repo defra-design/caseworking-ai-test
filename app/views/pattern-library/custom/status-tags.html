@@ -1,0 +1,170 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "status-tags" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Status tags" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Status tags</h1>
+      <p class="govuk-body-l">Two custom tag colour variants extend the standard GOV.UK tag palette to meet specific status display needs in this prototype.</p>
+      <p class="govuk-body">These are defined in <code class="govuk-body">application.scss</code> and should only be used in the same contexts they currently appear — case status and task status indicators. Do not apply them to new contexts without checking existing usage first.</p>
+
+      <h2 class="govuk-heading-l">Neutral tag</h2>
+      <p class="govuk-body"><code class="govuk-body">.govuk-tag--neutral</code> — white background with black text. Used for statuses that require no colour signal, such as a task that is incomplete but not yet overdue.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-neutral">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-neutral-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--neutral">Incomplete</strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-neutral" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-neutral-code">/* application.scss */
+.govuk-tag--neutral {
+  color: black;
+  background-color: white;
+}
+
+&lt;!-- Usage --&gt;
+&lt;strong class="govuk-tag govuk-tag--neutral"&gt;Incomplete&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Red status tag</h2>
+      <p class="govuk-body"><code class="govuk-body">.govuk-tag--red-status</code> — light red background with dark red text. Used for statuses such as "Not accepted", "Cannot accept" or "There's a problem" where a softer red is more appropriate than the standard <code class="govuk-body">govuk-tag--red</code>.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-red-status">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-red-status-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--red-status">Not accepted</strong>
+            &nbsp;
+            <strong class="govuk-tag govuk-tag--red-status">There's a problem</strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-red-status" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-red-status-code">/* application.scss */
+.govuk-tag--red-status {
+  color: rgb(42.4, 10.6, 5.6);
+  background-color: rgb(244.25, 204.5, 198.25);
+}
+
+&lt;!-- Usage --&gt;
+&lt;strong class="govuk-tag govuk-tag--red-status"&gt;Not accepted&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Full status colour reference</h2>
+      <p class="govuk-body">How outcome decisions map to tag colours throughout the review and agreement flows:</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-all">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-all-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Decision</th>
+                  <th class="govuk-table__header">Tag</th>
+                  <th class="govuk-table__header">Class</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Accepted</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag">Accepted</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag</code></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Information requested</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--yellow">Information requested</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--yellow</code></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Cannot accept</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red-status">Not accepted</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--red-status</code> (custom)</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Incomplete</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--neutral">Incomplete</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--neutral</code> (custom)</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">In review</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">In review</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--blue</code></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Rejected</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Rejected</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--red</code></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Withdrawn / On hold</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--orange">Withdrawn</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--orange</code></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Agreement accepted</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Agreement accepted</strong></td>
+                  <td class="govuk-table__cell"><code>govuk-tag--green</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-all" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-all-code">&lt;!-- Standard GDS colours --&gt;
+&lt;strong class="govuk-tag"&gt;Accepted&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--yellow"&gt;Information requested&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--blue"&gt;In review&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--red"&gt;Rejected&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--orange"&gt;Withdrawn&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--green"&gt;Agreement accepted&lt;/strong&gt;
+
+&lt;!-- Custom colours (application.scss) --&gt;
+&lt;strong class="govuk-tag govuk-tag--red-status"&gt;Not accepted&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--neutral"&gt;Incomplete&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

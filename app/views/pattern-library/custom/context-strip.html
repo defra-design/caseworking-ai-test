@@ -1,0 +1,122 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "context-strip" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Context strip" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Context strip</h1>
+      <p class="govuk-body-l">A light-green strip (<code class="govuk-body">.lg-div</code>) below the Defra header that provides persistent case context on every case detail page.</p>
+      <p class="govuk-body">The strip contains the back link, the applicant name as the page heading, and key case metadata (application ID and status tag). This keeps caseworkers oriented without needing to scroll back to the top of dense task lists.</p>
+      <p class="govuk-body">Background colour: <code class="govuk-body">#E7F4EB</code>. Do not change this to a GOV.UK colour token — the specific green tint is intentional branding.</p>
+
+      <h2 class="govuk-heading-l">Main case context strip</h2>
+      <p class="govuk-body">Used on all main-case casework pages. References <code class="govuk-body">data['caseStatus']</code> for the status tag.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-strip-main">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-strip-main-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <div class="lg-div govuk-!-padding-top-4 govuk-!-padding-bottom-4">
+              <div class="govuk-width-container">
+                <a href="/caselist" class="govuk-back-link">Back to case list</a>
+                <h1 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-1">Berkshire Estate Limited</h1>
+                <p class="govuk-body-s govuk-!-margin-bottom-0">
+                  Application: <strong>100300</strong>
+                  &nbsp;&nbsp;
+                  <strong class="govuk-tag govuk-tag--blue">In review</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-strip-main" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-strip-main-code">&lt;div class="lg-div govuk-!-padding-4"&gt;
+  &lt;div class="govuk-width-container"&gt;
+    &lt;a href="/caselist" class="govuk-back-link"&gt;Back to case list&lt;/a&gt;
+    &lt;h1 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-1"&gt;
+      Berkshire Estate Limited
+    &lt;/h1&gt;
+    &lt;p class="govuk-body-s govuk-!-margin-bottom-0"&gt;
+      Application: &lt;strong&gt;100300&lt;/strong&gt;
+      &lt;strong class="govuk-tag {{ data['caseStatusTag'] }}"&gt;
+        {{ data['caseStatus'] }}
+      &lt;/strong&gt;
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Linked case (case2) context strip</h2>
+      <p class="govuk-body">Used on case2 pages. Has a conditional back link — returns to <code class="govuk-body">/setLinked1</code> when in return stage, otherwise returns to caselist. References <code class="govuk-body">data['caseStatusC2']</code> for the status tag.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-strip-case2">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-strip-case2-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <div class="lg-div govuk-!-padding-top-4 govuk-!-padding-bottom-4">
+              <div class="govuk-width-container">
+                <a href="/caselist" class="govuk-back-link">Back to case list</a>
+                <h1 class="govuk-heading-m govuk-!-margin-top-2 govuk-!-margin-bottom-1">Watson Farms Ltd</h1>
+                <p class="govuk-body-s govuk-!-margin-bottom-0">
+                  Application: <strong>100297</strong>
+                  &nbsp;&nbsp;
+                  <strong class="govuk-tag govuk-tag--blue">In review</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-strip-case2" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-strip-case2-code">&lt;div class="lg-div govuk-!-padding-4"&gt;
+  &lt;div class="govuk-width-container"&gt;
+    {% if data.caseStageC2 === 'return' %}
+      &lt;a href="/setLinked1" class="govuk-back-link"&gt;Back&lt;/a&gt;
+    {% else %}
+      &lt;a href="/caselist" class="govuk-back-link"&gt;Back to case list&lt;/a&gt;
+    {% endif %}
+    &lt;h1 class="govuk-heading-m"&gt;Watson Farms Ltd&lt;/h1&gt;
+    &lt;p class="govuk-body-s"&gt;
+      Application: &lt;strong&gt;100297&lt;/strong&gt;
+      &lt;strong class="govuk-tag {{ data['caseStatusTagC2'] }}"&gt;
+        {{ data['caseStatusC2'] }}
+      &lt;/strong&gt;
+    &lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

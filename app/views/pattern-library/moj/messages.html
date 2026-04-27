@@ -1,0 +1,83 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "messages" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Messages" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Messages</h1>
+      <p class="govuk-body-l">Use the MOJ messages component to show a conversation thread between caseworkers and applicants.</p>
+      <p class="govuk-body">This prototype uses locally-styled variants of the MOJ messages component — <code class="govuk-body">moj-messages-container-local</code>, <code class="govuk-body">moj-message-list-local</code> and <code class="govuk-body">moj-message-item--sent-local</code> — to accommodate layout differences in the casework interface. See the <a class="govuk-link" href="/pattern-library/custom/case-nav">custom patterns</a> section for more detail on these variants.</p>
+
+      <h2 class="govuk-heading-l">Standard message thread</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-messages">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-messages-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="moj-messages-container-local">
+              <ul class="moj-message-list-local govuk-list">
+
+                <li class="moj-message-item moj-message-item__text moj-message-item__text--received">
+                  <span class="govuk-heading-s-w govuk-!-margin-bottom-1" style="color:#0b0c0c;">Sarah Watson</span>
+                  <p class="govuk-body govuk-!-margin-bottom-1">Hello, I wanted to check whether my application has been received and when I can expect a decision.</p>
+                  <span class="govuk-body-s" style="color:#505a5f;">10 Sep 2025, 09:14am</span>
+                </li>
+
+                <li class="moj-message-item moj-message-item--sent-local moj-message-item__text">
+                  <span class="govuk-heading-s-w govuk-!-margin-bottom-1">Jane Smith, Case officer</span>
+                  <p class="govuk-body govuk-!-margin-bottom-1">Thank you for getting in touch. Your application has been received and is currently under review. We aim to complete the review within 20 working days.</p>
+                  <span class="govuk-body-s">10 Sep 2025, 11:02am</span>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-messages" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-messages-code">&lt;div class="moj-messages-container-local"&gt;
+  &lt;ul class="moj-message-list-local govuk-list"&gt;
+
+    &lt;!-- Received message --&gt;
+    &lt;li class="moj-message-item moj-message-item__text moj-message-item__text--received"&gt;
+      &lt;p class="govuk-body"&gt;Hello, I wanted to check on my application.&lt;/p&gt;
+      &lt;span class="govuk-body-s"&gt;10 Sep 2025, 09:14am&lt;/span&gt;
+    &lt;/li&gt;
+
+    &lt;!-- Sent message (caseworker) --&gt;
+    &lt;li class="moj-message-item moj-message-item--sent-local moj-message-item__text"&gt;
+      &lt;p class="govuk-body"&gt;Your application is under review.&lt;/p&gt;
+      &lt;span class="govuk-body-s"&gt;10 Sep 2025, 11:02am&lt;/span&gt;
+    &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

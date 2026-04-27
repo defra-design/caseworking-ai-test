@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "pagination" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Pagination" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Pagination</h1>
+      <p class="govuk-body-l">Use the MOJ pagination component to allow users to navigate between pages of results in a case list or search results view.</p>
+
+      <h2 class="govuk-heading-l">Default pagination</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-pagination">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-pagination-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <nav class="moj-pagination" aria-label="results">
+              <p class="moj-pagination__results">Showing <b>1</b> to <b>25</b> of <b>143</b> results</p>
+              <ul class="moj-pagination__list">
+                <li class="moj-pagination__item moj-pagination__item--prev">
+                  <a class="moj-pagination__link" href="#">Previous<span class="govuk-visually-hidden"> set of pages</span></a>
+                </li>
+                <li class="moj-pagination__item">
+                  <a class="moj-pagination__link" href="#">1</a>
+                </li>
+                <li class="moj-pagination__item moj-pagination__item--active">
+                  <a class="moj-pagination__link" href="#">2</a>
+                </li>
+                <li class="moj-pagination__item">
+                  <a class="moj-pagination__link" href="#">3</a>
+                </li>
+                <li class="moj-pagination__item moj-pagination__item--dots">
+                  &ctdot;
+                </li>
+                <li class="moj-pagination__item">
+                  <a class="moj-pagination__link" href="#">6</a>
+                </li>
+                <li class="moj-pagination__item moj-pagination__item--next">
+                  <a class="moj-pagination__link" href="#">Next<span class="govuk-visually-hidden"> set of pages</span></a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-pagination" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-pagination-code">&lt;nav class="moj-pagination" aria-label="results"&gt;
+  &lt;p class="moj-pagination__results"&gt;
+    Showing &lt;b&gt;1&lt;/b&gt; to &lt;b&gt;25&lt;/b&gt; of &lt;b&gt;143&lt;/b&gt; results
+  &lt;/p&gt;
+  &lt;ul class="moj-pagination__list"&gt;
+    &lt;li class="moj-pagination__item moj-pagination__item--prev"&gt;
+      &lt;a class="moj-pagination__link" href="#"&gt;Previous&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class="moj-pagination__item moj-pagination__item--active"&gt;
+      &lt;a class="moj-pagination__link" href="#"&gt;2&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class="moj-pagination__item moj-pagination__item--next"&gt;
+      &lt;a class="moj-pagination__link" href="#"&gt;Next&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

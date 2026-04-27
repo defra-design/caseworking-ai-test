@@ -1,0 +1,547 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case-context-strip.html" %}
+{% endblock %}
+
+ 
+{% block content %}
+{% set activeNavItem = "notes" %}
+{% include "FRPS-D2/includes/_case-nav.html" %}
+<form action="test3" method="post">
+    <div class="govuk-tabs govuk-!-margin-top-6" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        Notes
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a href="add-a-note">
+        Add a note
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="Notes">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-width">
+     
+<div class="govuk-form-group govuk-!-padding-left-3 govuk-!-padding-right-2">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    All notes
+      </h1>
+    </legend>
+
+    
+<div class="govuk-form-group">
+
+  <!--
+
+{% if not data.decision1 and not data.noteActionTask6 and not data.noteActionTask5 and not data.noteActionTask4 and not data.noteActionTask3 and not data.noteActionTask2 and not data.noteActionTask1 %} 
+
+  <H3 class="govuk-heading-s">There are no notes to display yet</H3>
+
+{% else %}
+
+<h2 class="govuk-heading-m">Review notes</h2>
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="descending">Date</th>
+      <th scope="col" class="govuk-table__header custom-width-160" aria-sort="none">Progress</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+
+    {% if (data.decision1 ) %} 
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">15 Feb 2026 at 11:12am</td>
+
+      <td class="govuk-table__cell">
+        Review decision: {{ data['decision1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredReviewNote']}}
+      </td>
+
+      <td class="govuk-table__cell">A Jones</td>
+
+
+    </tr>
+    {% endif %}
+    {% if (data.task6Note2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 11:04am</td>
+      <td class="govuk-table__cell">
+        Budget: {{ data['decisionTask6']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote6_2']}}
+      </td>
+      <td class="govuk-table__cell">  J Smith</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask6 ) %} 
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">15 Feb 2026 at 11:02am</td>
+
+      <td class="govuk-table__cell">
+        Budget: {{ data['noteActionTask6']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote6']}}
+      </td>
+
+      <td class="govuk-table__cell"> J Smith</td>
+
+
+    </tr>
+    {% endif %}
+    {% if (data.task5Note2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:52am</td>
+      <td class="govuk-table__cell">
+        Payment: {{ data['decisionTask5']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote5_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask5 ) %}  
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">15 Feb 2026 at 10:42am</td>
+
+      <td class="govuk-table__cell">
+        Payment: {{ data['noteActionTask5']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote5']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+    {% endif %}
+    {% if (data.task3Note2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:38am</td>
+      <td class="govuk-table__cell">
+        SSSI planning: {{ data['decisionTask3']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote3_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask3 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:36am</td>
+      <td class="govuk-table__cell">
+        SSSI planning: {{ data['noteActionTask3']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote3']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task2Note2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:34am</td>
+      <td class="govuk-table__cell">
+        Calculations: {{ data['decisionTask2']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote2_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask2 ) %} 
+      <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">15 Feb 2026 at 10:32am</td>
+
+      <td class="govuk-table__cell">
+        Calculations: {{ data['noteActionTask2']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote2']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+    </tr>
+    {% endif %}
+    {% if (data.task1Note2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:30am</td>
+      <td class="govuk-table__cell">
+        Customer details: {{ data['decisionTask1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote1_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask1 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">15 Feb 2026 at 10:30am</td>
+      <td class="govuk-table__cell">
+        Customer details: {{ data['noteActionTask1']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote1']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+      </tbody>
+</table>
+{% endif %}
+
+<!-- agree phase -->
+
+{% if (data.decision1 ) %} 
+
+    <h2 class="govuk-heading-m">Agreement notes</h2>
+
+    {% if not data.noteActionAgreeTask1 and not data.noteActionAgreeTask2 %} 
+
+      <H3 class="govuk-heading-s">There are no agreement notes to display yet</H3>
+
+    {% else %}
+      <table class="govuk-table" data-module="moj-sortable-table">
+
+
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+
+            <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+            <th scope="col" class="govuk-table__header custom-width-160" aria-sort="none">Type</th>
+
+            <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+            <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+          </tr>
+        </thead> 
+
+        <tbody class="govuk-table__body">
+
+          {% if (data.decisionAg) %} 
+          <tr class="govuk-table__row">
+
+            <td class="govuk-table__cell">16 Feb 2026 at 17:02am</td>
+
+            <td class="govuk-table__cell">
+              Decision: {{ data['decisionAg']}}
+            </td>
+            <td class="govuk-table__cell">
+              {{ data['filteredAggNote']}}
+            </td>
+
+            <td class="govuk-table__cell"> A Jones</td>
+
+
+          </tr>
+          {% endif %}
+          {% if (data.task2ANote2 ) %} 
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">16 Feb 2026 at 13:45am</td>
+            <td class="govuk-table__cell">
+              Customer contacted: {{ data['decisionAgreeTask2']}}
+            </td>
+            <td class="govuk-table__cell">
+              {{ data['filteredNote2A_2']}}
+            </td>
+            <td class="govuk-table__cell"> A Jones</td>
+          </tr>
+          {% endif %}
+          {% if (data.noteActionAgreeTask2 ) %} 
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">16 Feb 2026 at 13:30am</td>
+            <td class="govuk-table__cell">
+              Customer contacted: {{ data['noteActionAgreeTask2']}}
+            </td>
+            <td class="govuk-table__cell">
+              {{ data['filteredNote2A']}}
+            </td>
+            <td class="govuk-table__cell"> A Jones</td>
+          </tr>
+          {% endif %}
+          {% if (data.task1ANote2 ) %} 
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">16 Feb 2026 at 12:30am</td>
+            <td class="govuk-table__cell">
+              Check agreement: {{ data['decisionAgreeTask1']}}
+            </td>
+            <td class="govuk-table__cell">
+              {{ data['filteredNote1A_2']}}
+            </td>
+            <td class="govuk-table__cell"> A Jones</td>
+          </tr>
+          {% endif %}
+          {% if (data.noteActionAgreeTask1 ) %} 
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">16 Feb 2026 at 12:15am</td>
+            <td class="govuk-table__cell">
+              Check agreement: {{ data['noteActionAgreeTask1']}}
+            </td>
+            <td class="govuk-table__cell">
+              {{ data['filteredNote1A']}}
+            </td>
+            <td class="govuk-table__cell"> A Jones</td>
+          </tr>
+          {% endif %}
+            </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+
+
+  
+<!-- 5month phase -->
+
+  {% if (data.caseStage === '5month') %}
+
+
+
+  <h2 class="govuk-heading-m">5 month notes</h2>
+
+  {% if not data.decisionTask1m and not data.decisionTask2m and not data.decisionTask3m and not data.decisionTask4m and not data.decisionTask5m and not data.decisionTask6m %} 
+
+  <H3 class="govuk-heading-s">There are no 5 month check notes to display yet</H3>
+
+
+{% else %}
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header custom-width-230" aria-sort="none">Type</th>
+
+      <th scope="col" class="govuk-table__header notes-width2">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+
+    {% if (data.decision5m) %} 
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">20 Sept 2026 at 11:02am</td>
+
+      <td class="govuk-table__cell">
+        5 Month Decision: {{ data['decision5m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['agreeNote']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+    {% endif %}
+    {% if (data.task6mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:48am</td>
+      <td class="govuk-table__cell">
+        Hedgerow CS conflict: <br>{{ data['decisionTask6m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote6m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask6m ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:35am</td>
+      <td class="govuk-table__cell">
+        Hedgerow CS conflict: <br>{{ data['noteActionTask6m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote6m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}    
+    {% if (data.task5mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:28am</td>
+      <td class="govuk-table__cell">
+        Hedge tolerance: <br>{{ data['decisionTask5m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote5m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask5m ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:26am</td>
+      <td class="govuk-table__cell">
+        Hedge tolerance: <br>{{ data['noteActionTask5m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote5m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task4mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:25am</td>
+      <td class="govuk-table__cell">
+        ITE assessment: <br>{{ data['decisionTask4m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote4m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask4m) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:18am</td>
+      <td class="govuk-table__cell">
+        ITE assessment: <br>{{ data['noteActionTask4m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote4m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task3mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:15am</td>
+      <td class="govuk-table__cell">
+        Overlapping agreements: <br>{{ data['decisionTask3m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote3m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask3m ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 10:05am</td>
+      <td class="govuk-table__cell">
+        Overlapping agreements: <br>{{ data['noteActionTask3m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote3m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task2mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 09:55am</td>
+      <td class="govuk-table__cell">
+        Confirm parcels linked: <br>{{ data['decisionTask2m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote2m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask2m ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 09:35am</td>
+      <td class="govuk-table__cell">
+        Confirm parcels linked: <br>{{ data['noteActionTask2m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote2m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task1mNote2 ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 09:30am</td>
+      <td class="govuk-table__cell">
+        Check calculations: <br>{{ data['decisionTask1m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote1m_2']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask1m ) %} 
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">20 Sept 2026 at 09:15am</td>
+      <td class="govuk-table__cell">
+        Check calculations: <br>{{ data['noteActionTask1m']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote1m']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+      </tbody>
+</table>
+  {% endif %}
+
+
+
+
+
+{% endif %}
+
+
+
+</fieldset>
+</div>
+
+
+
+
+
+  </div>
+
+
+    </form>
+
+
+</div>
+</div>
+
+
+
+
+
+{% endblock %}

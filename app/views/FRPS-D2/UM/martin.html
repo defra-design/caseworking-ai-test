@@ -1,0 +1,99 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+
+<nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+  <ol class="govuk-breadcrumbs__list">
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      <a class="govuk-breadcrumbs__link" href="users">Users</a>
+    </li>
+    <li class="govuk-breadcrumbs__list-item">
+      Martin Smith
+    </li>
+  </ol>
+</nav>
+
+<form action="martin-roles" method="post">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-form-group">
+        <h1 class="govuk-heading-l">Martin Smith details </h1>
+
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Email
+            </dt>
+            <dd class="govuk-summary-list__value">
+              martin.smith@defra.gov.uk
+            </dd>
+
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Last login
+            </dt>
+            <dd class="govuk-summary-list__value">
+              14 December 2025, 18:45
+            </dd>
+
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Identity provider (IDP) roles
+            </dt>
+            <dd class="govuk-summary-list__value">
+              Role 1,<br>
+              Role 2,<br>
+              Role 3
+            </dd>
+
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Manage grants roles
+            </dt>
+            <dd class="govuk-summary-list__value">
+              ABD_ABC,<br>
+              ABD_ABC1,<br>              
+              ABD_ABC2,<br>              
+              ABD_ABC3,<br>            
+              BN_TAG_CHECKER,<br>
+              BN_TAG_CHECKER2,<br>              
+              BN_TAG_CHECKER4,<br>              
+              BN_TAG_CHECKER5,<br>
+              BN_TAG_CHECKER6,<br>
+              BN_TAG_CHECKER11,<br>              
+              BN_TAG_CHECKER12,<br>              
+              BN_TAG_CHECKER21,<br>
+              DCA_FRV,<br>
+              DCA_FRV3,<br>              
+              DCA_FRV4,<br>              
+              DCA_FRV7,<br>  
+              PMF_READ,<br>
+              PMF_WRITE,<br>
+              PMF_WRITE2<BR>
+            </dd>
+          </div>
+        </dl>
+
+        <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Update roles
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+
+
+
+{% endblock %}

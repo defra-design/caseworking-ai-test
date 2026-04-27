@@ -1,0 +1,60 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case2-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_case2-nav.html" %}
+<form action="/endTerminateC2" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Are you sure you want to end the termination process?
+      </h1>
+    </legend>
+
+<p>Ending the termination process will:</p>
+<ul class="govuk-list govuk-list--bullet">
+  <li>reset tasks to Incomplete</li>
+  <li>persist any note you have created</li>
+</ul>
+
+  <h3 class="govuk-heading-s">End the termination process</h3>
+
+  <div class="govuk-form-group">
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="terminateDecision" name="terminateDecision" type="radio" value="yes">
+        <label class="govuk-label govuk-radios__label" for="terminateDecision">
+          Yes
+        </label>
+      </div>
+
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="terminateDecision-2" name="terminateDecision" type="radio" value="no">
+        <label class="govuk-label govuk-radios__label" for="terminateDecision-2">
+          No
+        </label>
+      </div>
+    </div>
+  </div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-4 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+  Confirm
+</button><br>
+<a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}

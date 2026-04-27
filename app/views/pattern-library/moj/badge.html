@@ -1,0 +1,65 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "badge" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Badge" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Badge</h1>
+      <p class="govuk-body-l">Use the MOJ badge to display a count or highlight important status information at a glance, for example an unread message count in navigation.</p>
+
+      <h2 class="govuk-heading-l">Default badge</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-badge">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-badge-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body">
+              Messages <span class="moj-badge moj-badge--red">3</span>
+            </p>
+            <p class="govuk-body">
+              Tasks <span class="moj-badge moj-badge--blue">12</span>
+            </p>
+            <p class="govuk-body">
+              Notifications <span class="moj-badge">5</span>
+            </p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-badge" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-badge-code">&lt;!-- Red badge (urgent/alert) --&gt;
+Messages &lt;span class="moj-badge moj-badge--red"&gt;3&lt;/span&gt;
+
+&lt;!-- Blue badge --&gt;
+Tasks &lt;span class="moj-badge moj-badge--blue"&gt;12&lt;/span&gt;
+
+&lt;!-- Default badge (grey) --&gt;
+Notifications &lt;span class="moj-badge"&gt;5&lt;/span&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

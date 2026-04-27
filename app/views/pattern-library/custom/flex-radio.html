@@ -1,0 +1,151 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "flex-radio" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Flex radio layout" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Flex radio layout</h1>
+      <p class="govuk-body-l">A horizontal flexbox layout for radio groups and checkboxes used where vertical stacking is too space-inefficient for dense decision forms.</p>
+      <p class="govuk-body">The GOV.UK Design System recommends vertical stacking for radios in most cases. This deviation is used selectively on task review screens where the decision label and radio options sit side by side to reduce vertical scroll on data-heavy pages.</p>
+
+      <div class="govuk-warning-text govuk-!-margin-bottom-6">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          Only use this pattern in contexts where it already appears. Use standard GOV.UK vertical stacking for any new radio groups unless the surrounding pattern already uses the flex layout.
+        </strong>
+      </div>
+
+      <h2 class="govuk-heading-l">radio-flex-box</h2>
+      <p class="govuk-body">Places a label and a radio group inline with a 1rem gap. Used on task review screens where a short action label precedes a small set of options.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-flex-radio">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-flex-radio-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <div class="radio-flex-box">
+                <label class="govuk-label govuk-!-font-weight-bold" style="white-space: nowrap;">Decision</label>
+                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="flex-decision" name="flex-decision" type="radio" value="Accepted">
+                    <label class="govuk-label govuk-radios__label" for="flex-decision">Accepted</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="flex-decision-2" name="flex-decision" type="radio" value="Cannot accept">
+                    <label class="govuk-label govuk-radios__label" for="flex-decision-2">Cannot accept</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-flex-radio" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-flex-radio-code">/* application.scss */
+.radio-flex-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+&lt;!-- Usage --&gt;
+&lt;div class="govuk-form-group"&gt;
+  &lt;div class="radio-flex-box"&gt;
+    &lt;label class="govuk-label govuk-!-font-weight-bold"&gt;Decision&lt;/label&gt;
+    &lt;div class="govuk-radios govuk-radios--inline" data-module="govuk-radios"&gt;
+      &lt;div class="govuk-radios__item"&gt;
+        &lt;input class="govuk-radios__input" id="decision" name="decision"
+               type="radio" value="Accepted"&gt;
+        &lt;label class="govuk-label govuk-radios__label" for="decision"&gt;
+          Accepted
+        &lt;/label&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">radio-flex-box2</h2>
+      <p class="govuk-body"><code class="govuk-body">.radio-flex-box2</code> is a variant with a fixed left margin (<code class="govuk-body">215px</code>) and top margin (<code class="govuk-body">60px</code>) used to align a secondary radio group against a specific label column width in the task review tables. Retain it where it already appears; do not introduce it into new layouts.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-flex-radio2">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-flex-radio2-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <div class="radio-flex-box2">
+                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="flex2-decision" name="flex2-decision" type="radio" value="Confirm">
+                    <label class="govuk-label govuk-radios__label" for="flex2-decision">Confirm</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="flex2-decision-2" name="flex2-decision" type="radio" value="There's a problem">
+                    <label class="govuk-label govuk-radios__label" for="flex2-decision-2">There's a problem</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-flex-radio2" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-flex-radio2-code">/* application.scss */
+.radio-flex-box2 {
+  display: flex;
+  align-items: center;
+  margin-left: 215px;
+  margin-top: 60px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+&lt;!-- Usage --&gt;
+&lt;div class="radio-flex-box2"&gt;
+  &lt;div class="govuk-radios govuk-radios--inline" data-module="govuk-radios"&gt;
+    &lt;div class="govuk-radios__item"&gt;
+      &lt;input class="govuk-radios__input" id="decision" name="decision"
+             type="radio" value="Confirm"&gt;
+      &lt;label class="govuk-label govuk-radios__label" for="decision"&gt;
+        Confirm
+      &lt;/label&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

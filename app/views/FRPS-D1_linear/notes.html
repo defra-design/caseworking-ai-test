@@ -1,0 +1,235 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header> 
+  <div class="lg-div"> 
+    <div class="govuk-width-container">
+      {{ govukBackLink({
+        text: "Back to applications", 
+        href: "caselist-team"
+      }) }}
+      <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+     
+      <div style="display: flex; gap: 20px;">
+        <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100300</p></div>
+        <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>       
+        <div><p><strong class="govuk-!-margin-right-1">Status:</strong>  In progress</p></div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-service-navigation-white"
+  data-module="govuk-service-navigation">
+  <div class="govuk-width-container">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+          Menu
+        </button>
+        <ul class="govuk-service-navigation__list" id="navigation">
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link"  href="tasklist" aria-current="true">
+              Tasks
+            </a>
+          </li> 
+
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="application-data">
+              Application
+            </a>
+          </li>
+          <!--
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="known-data">
+              Business details
+            </a>
+
+          </li> -->
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="land">
+              Land
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="timeline">
+              Timeline
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2  govuk-service-navigation__item--active">
+            <a class="govuk-service-navigation__link" href="#">
+              <strong class="govuk-service-navigation__active-fallback">Notes</strong>
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item-c2">
+            <a class="govuk-service-navigation__link" href="messages">
+              Customer contact
+            </a>
+          </li>
+          <!-- <li class="govuk-service-navigation__item-c2 ">
+            <a class="govuk-service-navigation__link" href="agreement">
+              Agreement
+            </a>
+          </li> -->
+
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<form action="test3" method="post">
+    <div class="govuk-tabs govuk-!-margin-top-6" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        Notes
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a href="add-a-note">
+        Add a note
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="Notes">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-width">
+     
+<div class="govuk-form-group govuk-!-padding-left-3 govuk-!-padding-right-2">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    All notes
+      </h1>
+    </legend>
+
+    
+<div class="govuk-form-group">
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Type</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">12 Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        Approval reason
+      </td>
+      <td class="govuk-table__cell">
+        Approved application as passed available area, intersecting data layers and supplement actions checks. Ready for agreement offer.
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+
+      <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">12 Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        Task<a href="#task1"></a>
+      </td>
+      <td class="govuk-table__cell">
+        Sent Sally an email to check if she wanted to apply for full eligible area for land parcel SO3757 ID0120 on 12 September. Sally {% if (data.readMore === 'Yes') %}  responded on 12 September (see 'customer contact') and said yes. Checked in LIPIS, and updated map in Siti Agri with full eligible area to 3.5125 ha. {% else %} ... <br> <a href="/readMoreT1">read full text</a>{% endif %}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+
+      <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">11 Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        General
+      </td>
+      <td class="govuk-table__cell">
+        Reviewed submitted SFI application
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+
+    <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">10 Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        Assignment
+      </td>
+      <td class="govuk-table__cell">
+        Assigned application to myself
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+
+
+
+
+  </tbody>
+</table>
+</fieldset>
+</div>
+
+
+
+
+
+  </div>
+
+
+    </form>
+
+
+</div>
+</div>
+
+
+
+
+
+{% endblock %}

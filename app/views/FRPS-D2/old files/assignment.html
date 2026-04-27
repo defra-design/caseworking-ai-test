@@ -1,0 +1,84 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+
+  <header class="defra-internal-header" role="banner">
+    <div class="govuk-width-container">
+      <div class="defra-logo">
+          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
+            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+          </a>
+      </div>
+
+      <div class="defra-internal-service-name">
+          <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
+            Manage rural grant applications
+          </a>
+      </div>
+    </div>
+  </header>
+  
+
+  </div>
+  
+{% endblock %}
+
+
+{% block content %}
+
+<form action="caselistTeam2" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Assign 
+      </h1>
+    </legend>
+    
+<p>Assign application ID 100300</p>
+
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--s" for="sort">
+        Caseworker
+      </label>
+      <select class="govuk-select" id="sort" name="sort">
+        <option value="published">A Jones</option>
+        <option value="updated" selected>B Singh</option>
+        <option value="views">T Khan</option>
+        <option value="comments">V Lodge</option>
+      </select>
+    </div>
+<div class="govuk-form-group">
+  <h1 class="govuk-label-wrapper">
+    <label class="govuk-label govuk-label--s" for="more-detail">
+      Notes (optional)
+    </label>
+  </h1>
+
+  <textarea class="govuk-textarea" id="more-detail" name="moreDetail" rows="5" aria-describedby="more-detail-hint"></textarea>
+</div>
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+  Assign 
+</button>
+
+
+
+
+
+
+
+
+
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

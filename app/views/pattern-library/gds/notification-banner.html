@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "notification-banner" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Notification banner" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Notification banner</h1>
+      <p class="govuk-body-l">Use a notification banner to tell the user about something they need to know about, but that's not directly related to the thing they're trying to do.</p>
+
+      <h2 class="govuk-heading-l">Information banner</h2>
+      <p class="govuk-body">The default blue banner is used for important information the caseworker should be aware of before proceeding.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-banner-info">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-banner-info-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+              <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2>
+              </div>
+              <div class="govuk-notification-banner__content">
+                <p class="govuk-body">A SSSI consent is required from Natural England before this application can proceed.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-banner-info" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-banner-info-code">&lt;div class="govuk-notification-banner" role="region"
+     aria-labelledby="govuk-notification-banner-title"
+     data-module="govuk-notification-banner"&gt;
+  &lt;div class="govuk-notification-banner__header"&gt;
+    &lt;h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title"&gt;
+      Important
+    &lt;/h2&gt;
+  &lt;/div&gt;
+  &lt;div class="govuk-notification-banner__content"&gt;
+    &lt;p class="govuk-body"&gt;A SSSI consent is required from Natural England.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Success banner</h2>
+      <p class="govuk-body">The green success banner confirms an action has completed — for example a note has been saved or a decision has been submitted.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-banner-success">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-banner-success-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title-success" data-module="govuk-notification-banner">
+              <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title-success">Success</h2>
+              </div>
+              <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">Decision submitted</h3>
+                <p class="govuk-body">The application has been accepted and moved to the agreement stage.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-banner-success" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-banner-success-code">&lt;div class="govuk-notification-banner govuk-notification-banner--success"
+     role="alert"
+     aria-labelledby="govuk-notification-banner-title-success"
+     data-module="govuk-notification-banner"&gt;
+  &lt;div class="govuk-notification-banner__header"&gt;
+    &lt;h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title-success"&gt;
+      Success
+    &lt;/h2&gt;
+  &lt;/div&gt;
+  &lt;div class="govuk-notification-banner__content"&gt;
+    &lt;h3 class="govuk-notification-banner__heading"&gt;Decision submitted&lt;/h3&gt;
+    &lt;p class="govuk-body"&gt;The application has been accepted.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

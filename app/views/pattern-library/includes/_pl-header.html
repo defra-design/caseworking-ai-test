@@ -1,0 +1,20 @@
+<header class="app-pl-header" role="banner">
+  <div class="govuk-width-container">
+    <div class="app-pl-header__inner">
+      <a href="/pattern-library" class="app-pl-header__logo">FRPS Pattern Library</a>
+      <nav aria-label="Main menu">
+        <ul class="app-pl-header__nav-list">
+          <li>
+            <a href="/pattern-library/gds/button" class="app-pl-header__nav-link{% if plSection == 'gds' %} app-pl-header__nav-link--active{% endif %}">GDS components</a>
+          </li>
+          <li>
+            <a href="/pattern-library/moj/timeline" class="app-pl-header__nav-link{% if plSection == 'moj' %} app-pl-header__nav-link--active{% endif %}">MOJ components</a>
+          </li>
+          <li>
+            <a href="/pattern-library/custom/status-tags" class="app-pl-header__nav-link{% if plSection == 'custom' %} app-pl-header__nav-link--active{% endif %}">Custom patterns</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
