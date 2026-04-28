@@ -1,0 +1,107 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "task-list" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Task list</h1>
+      <p class="govuk-body-l">Use the task list pattern to give users a clear overview of the steps they need to complete in a long or complex transaction.</p>
+
+      <h2 class="govuk-heading-l">Default task list</h2>
+      <p class="govuk-body">Each task has a name, optional hint, and a status tag indicating progress.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-task-list-default">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-task-list-default-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <ul class="govuk-task-list">
+              <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                  <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-status">
+                    Check customer details
+                  </a>
+                </div>
+                <div class="govuk-task-list__status" id="company-details-status">
+                  <strong class="govuk-tag govuk-tag--blue">In progress</strong>
+                </div>
+              </li>
+
+              <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                  <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="land-parcels-status">
+                    Review land parcel rule calculations
+                  </a>
+                </div>
+                <div class="govuk-task-list__status" id="land-parcels-status">
+                  <strong class="govuk-tag govuk-tag--grey">Ready to start</strong>
+                </div>
+              </li>
+
+              <li class="govuk-task-list__item">
+                <div class="govuk-task-list__name-and-hint">
+                  <div>Confirm payment amount</div>
+                </div>
+                <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet">
+                  Cannot start yet
+                </div>
+              </li>
+
+              <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                  <a class="govuk-link govuk-task-list__link" href="#" aria-describedby="finance-review-status">
+                    Review scheme budget as a finance officer
+                  </a>
+                </div>
+                <div class="govuk-task-list__status" id="finance-review-status">
+                  Completed
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-task-list-default" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-task-list-default-code">&lt;ul class="govuk-task-list"&gt;
+  &lt;li class="govuk-task-list__item govuk-task-list__item--with-link"&gt;
+    &lt;div class="govuk-task-list__name-and-hint"&gt;
+      &lt;a class="govuk-link govuk-task-list__link" href="#" aria-describedby="company-details-status"&gt;
+        Check customer details
+      &lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="govuk-task-list__status" id="company-details-status"&gt;
+      &lt;strong class="govuk-tag govuk-tag--blue"&gt;In progress&lt;/strong&gt;
+    &lt;/div&gt;
+  &lt;/li&gt;
+
+  &lt;li class="govuk-task-list__item"&gt;
+    &lt;div class="govuk-task-list__name-and-hint"&gt;
+      &lt;div&gt;Confirm payment amount&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet"&gt;
+      Cannot start yet
+    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

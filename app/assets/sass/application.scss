@@ -732,26 +732,20 @@
   white-space: nowrap;
 }
 
-// --- moj-messages base ---
+// --- moj-messages overrides ---
 
-.moj-message-item {
-  display: flex;
-  margin-bottom: 20px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
+.moj-message-item__meta,
+.moj-message-item__meta--sender {
+  font-size: 1rem;
+  line-height: 1.25;
 }
 
-.moj-message-item__text--received {
-  display: inline-block;
-  max-width: 65%;
-  padding: 12px 15px;
-  background: #f3f2f1;
-  border-radius: 0 8px 8px 8px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #0b0c0c;
+@media (min-width: 40.0625em) {
+  .moj-message-item__meta,
+  .moj-message-item__meta--sender {
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
 }
 
 // ============================================================
@@ -762,7 +756,7 @@
 
 .app-pl-header {
   padding: 12px 0;
-  background: #0b0c0c;
+  background: #008938;
 }
 
 .app-pl-header__inner {
@@ -1004,25 +998,54 @@
 // --- Landing page ---
 
 .app-pl-masthead {
-  padding: 50px 0 40px;
-  background: #0b0c0c;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background: #008938;
   color: #fff;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-masthead {
+    padding-top: 60px;
+    padding-bottom: 50px;
+  }
 }
 
 .app-pl-masthead__title {
   font-family: "GDS Transport", arial, sans-serif;
-  font-size: 36px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1.0454545455;
   color: #fff;
-  margin: 0 0 16px;
+  margin: 0 0 20px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-masthead__title {
+    font-size: 3rem;
+    line-height: 1.0416666667;
+    margin-bottom: 30px;
+  }
 }
 
 .app-pl-masthead__desc {
   font-family: "GDS Transport", arial, sans-serif;
-  font-size: 19px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.1111111111;
   color: #fff;
   margin: 0;
-  max-width: 580px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-masthead__desc {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
 }
 
 .app-pl-category-card {

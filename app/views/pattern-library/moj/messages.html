@@ -9,12 +9,6 @@
 {% block content %}
 <div class="govuk-width-container">
 
-  {{ govukBreadcrumbs({ items: [
-    { text: "Pattern library", href: "/pattern-library" },
-    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
-    { text: "Messages" }
-  ]}) }}
-
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-moj.html" %}
@@ -23,7 +17,7 @@
 
       <h1 class="govuk-heading-xl">Messages</h1>
       <p class="govuk-body-l">Use the MOJ messages component to show a conversation thread between caseworkers and applicants.</p>
-      <p class="govuk-body">This prototype uses locally-styled variants of the MOJ messages component — <code class="govuk-body">moj-messages-container-local</code>, <code class="govuk-body">moj-message-list-local</code> and <code class="govuk-body">moj-message-item--sent-local</code> — to accommodate layout differences in the casework interface. See the <a class="govuk-link" href="/pattern-library/custom/case-nav">custom patterns</a> section for more detail on these variants.</p>
+      <p class="govuk-body">Use the official MOJ messages markup as documented in the <a class="govuk-link" href="https://design-patterns.service.justice.gov.uk/components/messages/">MOJ Design System</a>.</p>
 
       <h2 class="govuk-heading-l">Standard message thread</h2>
 
@@ -35,43 +29,68 @@
             <button class="app-copy-button" data-copy-target="ex-messages-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <div class="moj-messages-container-local">
-              <ul class="moj-message-list-local govuk-list">
-
-                <li class="moj-message-item moj-message-item__text moj-message-item__text--received">
-                  <span class="govuk-heading-s-w govuk-!-margin-bottom-1" style="color:#0b0c0c;">Sarah Watson</span>
-                  <p class="govuk-body govuk-!-margin-bottom-1">Hello, I wanted to check whether my application has been received and when I can expect a decision.</p>
-                  <span class="govuk-body-s" style="color:#505a5f;">10 Sep 2025, 09:14am</span>
-                </li>
-
-                <li class="moj-message-item moj-message-item--sent-local moj-message-item__text">
-                  <span class="govuk-heading-s-w govuk-!-margin-bottom-1">Jane Smith, Case officer</span>
-                  <p class="govuk-body govuk-!-margin-bottom-1">Thank you for getting in touch. Your application has been received and is currently under review. We aim to complete the review within 20 working days.</p>
-                  <span class="govuk-body-s">10 Sep 2025, 11:02am</span>
-                </li>
-
-              </ul>
+            <div id="messages" class="moj-messages-container">
+              <div class="moj-message-list">
+                <time class="moj-message-list__date" datetime="16 March 2019">16 March 2019</time>
+                <div class="moj-message-item moj-message-item--sent">
+                  <div class="moj-message-item__text moj-message-item__text--sent">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+                  <div class="moj-message-item__meta">
+                    <span class="moj-message-item__meta--sender">Person A</span> at <time class="moj-message-item__meta--timestamp" datetime="10:50am">10:50am</time>
+                  </div>
+                </div>
+                <time class="moj-message-list__date" datetime="17 March 2019">17 March 2019</time>
+                <div class="moj-message-item moj-message-item--received">
+                  <div class="moj-message-item__text moj-message-item__text--received">Nullam vestibulum lorem vulputate velit euismod luctus.</div>
+                  <div class="moj-message-item__meta">
+                    <span class="moj-message-item__meta--sender">Person B</span> at <time class="moj-message-item__meta--timestamp" datetime="10:51am">10:51am</time>
+                  </div>
+                </div>
+                <time class="moj-message-list__date" datetime="19 March 2019">19 March 2019</time>
+                <div class="moj-message-item moj-message-item--sent">
+                  <div class="moj-message-item__text moj-message-item__text--sent">Fusce et vulputate justo. Integer suscipit felis non urna lobortis, vel finibus sem tristique.</div>
+                  <div class="moj-message-item__meta">
+                    <span class="moj-message-item__meta--sender">Person A</span> at <time class="moj-message-item__meta--timestamp" datetime="10:53am">10:53am</time>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
         </div>
         <div class="app-example__code-container" id="ex-messages" hidden>
           <div class="app-example__code">
-            <pre><code id="ex-messages-code">&lt;div class="moj-messages-container-local"&gt;
-  &lt;ul class="moj-message-list-local govuk-list"&gt;
+            <pre><code id="ex-messages-code">&lt;div id="messages" class="moj-messages-container"&gt;
+  &lt;div class="moj-message-list"&gt;
 
-    &lt;!-- Received message --&gt;
-    &lt;li class="moj-message-item moj-message-item__text moj-message-item__text--received"&gt;
-      &lt;p class="govuk-body"&gt;Hello, I wanted to check on my application.&lt;/p&gt;
-      &lt;span class="govuk-body-s"&gt;10 Sep 2025, 09:14am&lt;/span&gt;
-    &lt;/li&gt;
+    &lt;time class="moj-message-list__date" datetime="16 March 2019"&gt;16 March 2019&lt;/time&gt;
 
-    &lt;!-- Sent message (caseworker) --&gt;
-    &lt;li class="moj-message-item moj-message-item--sent-local moj-message-item__text"&gt;
-      &lt;p class="govuk-body"&gt;Your application is under review.&lt;/p&gt;
-      &lt;span class="govuk-body-s"&gt;10 Sep 2025, 11:02am&lt;/span&gt;
-    &lt;/li&gt;
+    &lt;div class="moj-message-item moj-message-item--sent"&gt;
+      &lt;div class="moj-message-item__text moj-message-item__text--sent"&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/div&gt;
+      &lt;div class="moj-message-item__meta"&gt;
+        &lt;span class="moj-message-item__meta--sender"&gt;Person A&lt;/span&gt; at
+        &lt;time class="moj-message-item__meta--timestamp" datetime="10:50am"&gt;10:50am&lt;/time&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
 
-  &lt;/ul&gt;
+    &lt;time class="moj-message-list__date" datetime="17 March 2019"&gt;17 March 2019&lt;/time&gt;
+
+    &lt;div class="moj-message-item moj-message-item--received"&gt;
+      &lt;div class="moj-message-item__text moj-message-item__text--received"&gt;Nullam vestibulum lorem vulputate velit euismod luctus.&lt;/div&gt;
+      &lt;div class="moj-message-item__meta"&gt;
+        &lt;span class="moj-message-item__meta--sender"&gt;Person B&lt;/span&gt; at
+        &lt;time class="moj-message-item__meta--timestamp" datetime="10:51am"&gt;10:51am&lt;/time&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;time class="moj-message-list__date" datetime="19 March 2019"&gt;19 March 2019&lt;/time&gt;
+
+    &lt;div class="moj-message-item moj-message-item--sent"&gt;
+      &lt;div class="moj-message-item__text moj-message-item__text--sent"&gt;Fusce et vulputate justo. Integer suscipit felis non urna lobortis, vel finibus sem tristique.&lt;/div&gt;
+      &lt;div class="moj-message-item__meta"&gt;
+        &lt;span class="moj-message-item__meta--sender"&gt;Person A&lt;/span&gt; at
+        &lt;time class="moj-message-item__meta--timestamp" datetime="10:53am"&gt;10:53am&lt;/time&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
           </div>
         </div>

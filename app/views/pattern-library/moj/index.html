@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">MOJ components</h1>
+      <p class="govuk-body-l">Components from the Ministry of Justice Design System used in this service.</p>
+      <p class="govuk-body">Select a component from the list to see usage guidance and code examples.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
