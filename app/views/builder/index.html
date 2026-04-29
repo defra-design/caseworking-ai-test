@@ -1,0 +1,195 @@
+{#
+  Builder — check your answers view of the case 3 tasklist data model.
+  Reads from data.tasklistDraft (in-session edits) when present, otherwise
+  from the persisted tasklistData. The "Save changes" button writes the
+  draft back to app/data/d2-case-tasklist.js.
+#}
+
+{% extends "layouts/main.html" %}
+
+{% set source = data.tasklistDraft if data.tasklistDraft else tasklistData %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Tasklist data — check your answers</h1>
+        <p class="govuk-body-l">Review the case 3 tasklist data model. Use the change links to edit individual tasks, stages or decision groups, then press "Save changes" to write the model back to <code class="govuk-body">app/data/d2-case-tasklist.js</code>.</p>
+
+        {% if data.tasklistDraftDirty %}
+          <div role="region" class="moj-alert moj-alert--warning moj-alert--with-heading" aria-label="warning: Unsaved changes">
+            <div>
+              <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15 2.44922L28.75 26.1992H1.25L15 2.44922Z" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="moj-alert__content">
+              <h2 class="moj-alert__heading">Unsaved changes</h2>
+              You have edited the model. Press "Save changes" to persist to the data file.
+            </div>
+          </div>
+        {% endif %}
+
+        {# ---------------------------------------------------------------- Tasks #}
+        <h2 class="govuk-heading-l">Tasks</h2>
+
+
+        {% for key, task in source.tasks %}
+          <h3 class="govuk-heading-m">{{ key }}</h3>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Link text:</dt>
+              <dd class="govuk-summary-list__value">{{ task.linkText }}</dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/builder/edit-task?key={{ key }}">Change<span class="govuk-visually-hidden"> {{ key }}</span></a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Default href:</dt>
+              <dd class="govuk-summary-list__value">{{ task.href }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Href when finance officer:</dt>
+              <dd class="govuk-summary-list__value">{{ task.hrefIfFinanceOfficer or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Decision field:</dt>
+              <dd class="govuk-summary-list__value">{{ task.decisionField }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Accepted value:</dt>
+              <dd class="govuk-summary-list__value">{{ task.acceptedValue }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Status field:</dt>
+              <dd class="govuk-summary-list__value">{{ task.statusField or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Tag field:</dt>
+              <dd class="govuk-summary-list__value">{{ task.tagField or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+          </dl>
+        {% endfor %}
+
+        {# ---------------------------------------------------------------- Stages #}
+        <h2 class="govuk-heading-l">Stages</h2>
+        {% for key, stage in source.stages %}
+          <h3 class="govuk-heading-m">{{ key }}</h3>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Heading:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.heading or '—' }}</dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/builder/edit-stage?key={{ key }}">Change<span class="govuk-visually-hidden"> {{ key }}</span></a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Intro:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.intro or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Task list heading:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.taskListHeading or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Tasks:</dt>
+              <dd class="govuk-summary-list__value">{{ (stage.tasks or []) | join(', ') or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Default status tag class:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.defaultStatusTag.class if stage.defaultStatusTag else '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Default status tag text:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.defaultStatusTag.text if stage.defaultStatusTag else '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Decision group:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.decision or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Action type:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.action.type if stage.action else '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Action text:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.action.text if stage.action else '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Action href:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.action.href if stage.action and stage.action.href else '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+          </dl>
+        {% endfor %}
+
+        {# ---------------------------------------------------------------- Decisions #}
+        <h2 class="govuk-heading-l">Decision option groups</h2>
+        {% for key, dec in source.decisionOptions %}
+          <h3 class="govuk-heading-m">{{ key }}</h3>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Legend:</dt>
+              <dd class="govuk-summary-list__value">{{ dec.legend or '—' }}</dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/builder/edit-decision?key={{ key }}">Change<span class="govuk-visually-hidden"> {{ key }}</span></a>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Legend hint:</dt>
+              <dd class="govuk-summary-list__value">{{ dec.legendHint or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Form field:</dt>
+              <dd class="govuk-summary-list__value">{{ dec.formField or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Conditional note field:</dt>
+              <dd class="govuk-summary-list__value">{{ dec.conditionalNoteField or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Conditional hint:</dt>
+              <dd class="govuk-summary-list__value">{{ dec.conditionalHint or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            {% for opt in dec.options %}
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Option {{ loop.index }}:</dt>
+                <dd class="govuk-summary-list__value">{{ opt.label }} (value: {{ opt.value }})</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+            {% endfor %}
+          </dl>
+        {% endfor %}
+
+        <form action="/builder/persist" method="post" class="govuk-!-margin-top-6">
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Save changes</button>
+            <a class="govuk-link" href="/builder/discard">Discard changes</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

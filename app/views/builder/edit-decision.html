@@ -1,0 +1,84 @@
+{% extends "layouts/main.html" %}
+{% set source = data.tasklistDraft if data.tasklistDraft else tasklistData %}
+{% set key = data.key %}
+{% set dec = source.decisionOptions[key] %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({ text: "Back", href: "/builder" }) }}
+
+        <h1 class="govuk-heading-xl">Edit decision group: {{ key }}</h1>
+
+        <form action="/builder/save-decision" method="post">
+          <input type="hidden" name="key" value="{{ key }}">
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="legend">Legend</label>
+            <input class="govuk-input" id="legend" name="legend" value="{{ dec.legend or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="legendHint">Legend hint (optional)</label>
+            <input class="govuk-input" id="legendHint" name="legendHint" value="{{ dec.legendHint or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="formField">Form field name</label>
+            <input class="govuk-input" id="formField" name="formField" value="{{ dec.formField or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="conditionalNoteField">Conditional note field name</label>
+            <input class="govuk-input" id="conditionalNoteField" name="conditionalNoteField" value="{{ dec.conditionalNoteField or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="conditionalHint">Conditional hint text</label>
+            <textarea class="govuk-textarea" id="conditionalHint" name="conditionalHint" rows="2">{{ dec.conditionalHint or '' }}</textarea>
+          </div>
+
+          <h2 class="govuk-heading-m">Options</h2>
+          <p class="govuk-hint">One option per row. Edit the value and label, leave empty to remove.</p>
+
+          {% for opt in dec.options %}
+            <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Option {{ loop.index }}</legend>
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="optValue{{ loop.index }}">Value</label>
+                <input class="govuk-input" id="optValue{{ loop.index }}" name="optValue" value="{{ opt.value }}">
+              </div>
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="optLabel{{ loop.index }}">Label</label>
+                <input class="govuk-input" id="optLabel{{ loop.index }}" name="optLabel" value="{{ opt.label }}">
+              </div>
+            </fieldset>
+          {% endfor %}
+
+          {# Spare row for adding a new option #}
+          <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Add new option</legend>
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="optValueNew">Value</label>
+              <input class="govuk-input" id="optValueNew" name="optValue" value="">
+            </div>
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="optLabelNew">Label</label>
+              <input class="govuk-input" id="optLabelNew" name="optLabel" value="">
+            </div>
+          </fieldset>
+
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Save and return</button>
+            <a class="govuk-link" href="/builder">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

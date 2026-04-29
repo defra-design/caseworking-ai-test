@@ -1,0 +1,172 @@
+{% extends "layouts/main.html" %}
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% set plSection = "moj" %}
+{% set activePage = "alert" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Alert</h1>
+      <p class="govuk-body-l">Use alerts to give users feedback after they complete an action, or to draw their attention to important information.</p>
+      <p class="govuk-body">There are four variants — information, success, warning and error. See the <a class="govuk-link" href="https://design-patterns.service.justice.gov.uk/components/alert/">MOJ Design System</a> for full guidance.</p>
+
+      <h2 class="govuk-heading-l">Information</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-alert-info">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-alert-info-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {{ mojAlert({
+              variant: "information",
+              title: "Calculations are being run in the background. The case will be ready to review shortly.",
+              showTitleAsHeading: false
+            }) }}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-alert-info" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-alert-info-code">{% raw %}{{ mojAlert({
+  variant: "information",
+  title: "Calculations are being run in the background. The case will be ready to review shortly."
+}) }}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Success</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-alert-success">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-alert-success-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {{ mojAlert({
+              variant: "success",
+              title: "Application accepted",
+              html: '<p class="govuk-body">The case has been progressed to the agreement stage.</p>',
+              showTitleAsHeading: true
+            }) }}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-alert-success" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-alert-success-code">{% raw %}{{ mojAlert({
+  variant: "success",
+  title: "Application accepted",
+  html: '<p class="govuk-body">The case has been progressed to the agreement stage.</p>',
+  showTitleAsHeading: true
+}) }}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Warning</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-alert-warning">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-alert-warning-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {{ mojAlert({
+              variant: "warning",
+              title: "Some calculations could not be completed",
+              html: '<p class="govuk-body">Review the failed land parcels before progressing this case.</p>',
+              showTitleAsHeading: true
+            }) }}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-alert-warning" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-alert-warning-code">{% raw %}{{ mojAlert({
+  variant: "warning",
+  title: "Some calculations could not be completed",
+  html: '<p class="govuk-body">Review the failed land parcels before progressing this case.</p>',
+  showTitleAsHeading: true
+}) }}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Error</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-alert-error">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-alert-error-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {{ mojAlert({
+              variant: "error",
+              title: "Application could not be saved",
+              html: '<p class="govuk-body">There was a problem connecting to the rural payments service. Try again in a few minutes.</p>',
+              showTitleAsHeading: true
+            }) }}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-alert-error" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-alert-error-code">{% raw %}{{ mojAlert({
+  variant: "error",
+  title: "Application could not be saved",
+  html: '<p class="govuk-body">There was a problem connecting to the rural payments service. Try again in a few minutes.</p>',
+  showTitleAsHeading: true
+}) }}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Dismissible</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-alert-dismiss">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-alert-dismiss-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {{ mojAlert({
+              variant: "success",
+              title: "Note added to the case",
+              dismissible: true,
+              showTitleAsHeading: true
+            }) }}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-alert-dismiss" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-alert-dismiss-code">{% raw %}{{ mojAlert({
+  variant: "success",
+  title: "Note added to the case",
+  dismissible: true,
+  showTitleAsHeading: true
+}) }}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

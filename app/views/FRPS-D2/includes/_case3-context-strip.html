@@ -1,0 +1,31 @@
+<div class="lg-div">
+  <div class="govuk-width-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        {% if (data.caseStageC3 === 'return') %}
+          {{ govukBackLink({
+            text: "Back to applications",
+            href: "/setLinked1"
+          }) }}
+        {% else %}
+          {{ govukBackLink({
+            text: "Back to applications",
+            href: "../caselist"
+          }) }}
+        {% endif %}
+        <h2 class="govuk-heading-m">Berkshire Estate Limited</h2>
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+          Run calculations again
+        </button>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI expanded offer 2025</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100310</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>112849012</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ data['caseStatusC3']}}</p></div>
+    </div>
+  </div>
+</div>

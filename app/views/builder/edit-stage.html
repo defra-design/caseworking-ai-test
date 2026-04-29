@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+{% set source = data.tasklistDraft if data.tasklistDraft else tasklistData %}
+{% set key   = data.key %}
+{% set stage = source.stages[key] %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({ text: "Back", href: "/builder" }) }}
+
+        <h1 class="govuk-heading-xl">Edit stage: {{ key }}</h1>
+
+        <form action="/builder/save-stage" method="post">
+          <input type="hidden" name="key" value="{{ key }}">
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="heading">Heading</label>
+            <input class="govuk-input" id="heading" name="heading" value="{{ stage.heading or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="intro">Intro paragraph</label>
+            <textarea class="govuk-textarea" id="intro" name="intro" rows="3">{{ stage.intro or '' }}</textarea>
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="taskListHeading">Task list heading</label>
+            <input class="govuk-input" id="taskListHeading" name="taskListHeading" value="{{ stage.taskListHeading or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="tasks">Task keys (comma separated, in order)</label>
+            <input class="govuk-input" id="tasks" name="tasks" value="{{ (stage.tasks or []) | join(', ') }}">
+            <div class="govuk-hint">
+              Available: {% for k, _ in source.tasks %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
+            </div>
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="defaultStatusTagClass">Default status tag class</label>
+            <input class="govuk-input" id="defaultStatusTagClass" name="defaultStatusTagClass" value="{{ stage.defaultStatusTag.class if stage.defaultStatusTag else '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="defaultStatusTagText">Default status tag text</label>
+            <input class="govuk-input" id="defaultStatusTagText" name="defaultStatusTagText" value="{{ stage.defaultStatusTag.text if stage.defaultStatusTag else '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="decision">Decision group key (optional)</label>
+            <input class="govuk-input" id="decision" name="decision" value="{{ stage.decision or '' }}">
+            <div class="govuk-hint">
+              Available: {% for k, _ in source.decisionOptions %}{{ k }}{% if not loop.last %}, {% endif %}{% endfor %}
+            </div>
+          </div>
+
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Action button</legend>
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="actionType">Type</label>
+              <select class="govuk-select" id="actionType" name="actionType">
+                <option value="" {% if not stage.action %}selected{% endif %}>(none)</option>
+                <option value="link-button" {% if stage.action and stage.action.type === 'link-button' %}selected{% endif %}>link-button</option>
+                <option value="submit-button" {% if stage.action and stage.action.type === 'submit-button' %}selected{% endif %}>submit-button</option>
+              </select>
+            </div>
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="actionText">Text</label>
+              <input class="govuk-input" id="actionText" name="actionText" value="{{ stage.action.text if stage.action else '' }}">
+            </div>
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="actionHref">Href (link-button only)</label>
+              <input class="govuk-input" id="actionHref" name="actionHref" value="{{ stage.action.href if stage.action else '' }}">
+            </div>
+          </fieldset>
+
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Save and return</button>
+            <a class="govuk-link" href="/builder">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -174,6 +174,31 @@
               </td>
               <td class="govuk-table__cell">M Walker</td>
             </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="case3Radio" name="caseSelect" type="radio" value="100310">
+                  <label class="govuk-label govuk-radios__label" for="case3Radio">
+
+                  </label>
+                </div>
+              </div>
+              </td>
+              {% if (data.linkedCase) %}<td class="govuk-table__cell"></td>{% endif %}
+              <td class="govuk-table__cell"><a href="case3/tasklist-stage">100310</a></td>
+              <td class="govuk-table__cell">Berkshire Estate Limited</td>
+              <td class="govuk-table__cell">112849012</td>
+              <td class="govuk-table__cell">14 Feb 2026</td>
+              <td class="govuk-table__cell">
+                {% if (data.caseStageC3) %}<strong class="{{ data['caseStatusTagC3']}}">{{ data['caseStatusC3']}}</strong>
+                {% else %}
+                    <strong class="govuk-tag govuk-tag--grey">Application received</strong>
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">A Jones</td>
+            </tr>
           {% if not data.caseResults %}
             <tr class="govuk-table__row">
               <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">

@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case3-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_case3-nav.html" %}
+<form action="/amendConf1" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+       Are you sure you want to amend this application? 
+      </h1>
+    </legend>
+
+
+<p>Amending an application will:
+  <ul class="govuk-list govuk-list--bullet">
+    <li>withdraw the current application</li>
+    <li>allow you to amend a duplicate application in Grants-UI and resubmit it</li>
+  </ul>
+
+  <div class="govuk-form-group">
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="conf" name="aConf" type="radio" value="yes" aria-describedby="conf-item-hint">
+        <label class="govuk-label govuk-radios__label" for="conf">
+          Yes, I want to amend this application
+        </label>
+        <div id="conf-item-hint" class="govuk-hint govuk-radios__hint">
+          All review tasks will need to be started again once the amended application is submitted. 
+        </div>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="conf-2" name="aConf" type="radio" value="no" aria-describedby="conf-2-item-hint">
+        <label class="govuk-label govuk-radios__label" for="conf-2">
+           No, I do not want to amend this application 
+        </label>
+        <div id="conf-2-item-hint" class="govuk-hint govuk-radios__hint">
+          Go back to reviewing the current application. 
+        </div>
+      </div>
+    </div>
+  </p>
+
+
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="/amendReturn1" class="govuk-link">Cancel and return</a>
+
+
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{#
+  Case 3 (application 100310) — data-driven tasklist-stage.
+  The structure (stages, tasks, decisions, link text, conditional copy) is
+  defined in app/data/d2-case-tasklist.js and exposed to templates as
+  `tasklistData`. Session-data fields use the C3 suffix (e.g. caseStageC3).
+#}
+
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case3-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_case3-nav.html" %}
+
+{# ---- Pick the stage definition from the data model ---- #}
+{% set caseStage = data.caseStageC3 or 'start' %}
+{% set stage     = tasklistData.stages[caseStage] %}
+{% set decision  = tasklistData.decisionOptions[stage.decision] if stage.decision %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl govuk-!-margin-top-8">{{ stage.heading }}</h1>
+
+    {# ---- Optional banner alert (amendment_sent / agree2) ---- #}
+    {% if stage.banner %}
+      <div role="region" class="moj-alert moj-alert--{{ stage.banner.type }} moj-alert--with-heading" aria-label="{{ stage.banner.type }}: {{ stage.banner.title }}" data-module="moj-alert">
+        <div>
+          <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
+            <path d="M11.2869 24.6726L2.00415 15.3899L4.62189 12.7722L11.2869 19.4186L25.3781 5.32739L27.9958 7.96369L11.2869 24.6726Z" fill="currentColor" />
+          </svg>
+        </div>
+        <div class="moj-alert__content">
+          <h2 class="moj-alert__heading">{{ stage.banner.title }}</h2>{{ stage.banner.body }}
+        </div>
+        <div class="moj-alert__action">
+          <button class="moj-alert__dismiss" hidden>Dismiss</button>
+        </div>
+      </div>
+    {% endif %}
+
+    {# ---- Intro text ---- #}
+    {% if stage.intro %}<p>{{ stage.intro }}</p>{% endif %}
+
+    {# ---- Open the form (if the stage submits) ---- #}
+    {% if stage.form %}<form action="{{ stage.form.action }}" method="{{ stage.form.method or 'post' }}">{% endif %}
+
+    {# ---- Static paragraphs and links (e.g. amend / return / withdraw stages) ---- #}
+    {% for p in stage.paragraphs %}<p>{{ p }}</p>{% endfor %}
+    {% for l in stage.links %}<p><a href="{{ l.href }}" class="govuk-link">{{ l.text }}</a>.</p>{% endfor %}
+
+    {# ---- Task list ---- #}
+    {% if stage.tasks and stage.tasks.length > 0 %}
+      {% if stage.taskListHeading %}<h2 class="govuk-heading-m">{{ stage.taskListHeading }}</h2>{% endif %}
+      <ul class="govuk-task-list">
+        {% for taskKey in stage.tasks %}
+          {% set task     = tasklistData.tasks[taskKey] %}
+          {% set decValue = data[task.decisionField + 'C3'] %}
+          {% set status   = data[task.statusField + 'C3'] %}
+          {% set tagClass = data[task.tagField + 'C3'] %}
+          {% set linkText = task.altLinkText[stage.taskLabelVariant] if (stage.taskLabelVariant and task.altLinkText and task.altLinkText[stage.taskLabelVariant]) else task.linkText %}
+          {% set href     = task.hrefIfFinanceOfficer if (task.hrefIfFinanceOfficer and data.financeOfficer === 'yes') else task.href %}
+
+          <li class="govuk-task-list__item govuk-task-list__item--with-link">
+            <div class="govuk-task-list__name-and-hint">
+              <a class="govuk-link govuk-task-list__link" href="{{ href }}" aria-describedby="status-{{ taskKey }}">{{ linkText }}</a>
+            </div>
+            <div class="govuk-task-list__status" id="status-{{ taskKey }}">
+              {% if decValue %}
+                {% if decValue === task.acceptedValue %}{{ status }}{% else %}<strong class="{{ tagClass }}">{{ status }}</strong>{% endif %}
+              {% else %}
+                <strong class="{{ stage.defaultStatusTag.class }}">{{ stage.defaultStatusTag.text }}</strong>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {# ---- Decision radios (data-driven) ---- #}
+    {% if decision %}
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ decision.legend }}</legend>
+          {% if decision.legendHint %}<p>{{ decision.legendHint }}</p>{% endif %}
+          <div class="govuk-radios" data-module="govuk-radios">
+            {% for opt in decision.options %}
+              {# Approve option is gated on all tasks being accepted #}
+              {% set show = true %}
+              {% if opt.value === 'Approve' %}
+                {% set show = (data.decisionTask1C3 === 'Accepted' and data.decisionTask2C3 === 'Accepted' and data.decisionTask3C3 === 'Accepted' and data.decisionTask5C3 === 'Accepted' and data.decisionTask6C3 === 'Accepted') %}
+              {% endif %}
+              {% if opt.value === 'Agreement sent' %}
+                {% set show = data.decisionAgreeTask2C3 %}
+              {% endif %}
+
+              {% if show %}
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="opt-{{ taskKey }}-{{ loop.index }}" name="{{ decision.formField }}" type="radio" value="{{ opt.value }}" data-aria-controls="cond-{{ loop.index }}" {{ checked(decision.formField, opt.value) }}>
+                  <label class="govuk-label govuk-radios__label" for="opt-{{ taskKey }}-{{ loop.index }}">{{ opt.label }}</label>
+                </div>
+                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="cond-{{ loop.index }}">
+                  <p>Explain this decision</p>
+                  <div class="govuk-hint">
+                    {% if opt.conditionalHintOverride %}{{ decision[opt.conditionalHintOverride] }}{% else %}{{ decision.conditionalHint }}{% endif %}
+                  </div>
+                  <textarea class="govuk-textarea" name="{{ decision.conditionalNoteField }}" rows="5"></textarea>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+    {% endif %}
+
+    {# ---- Withdraw section (agree2 only) ---- #}
+    {% if stage.withdrawSection %}
+      <h2 class="govuk-heading-m">{{ stage.withdrawSection.heading }}</h2>
+      <p>{{ stage.withdrawSection.leadingText }}
+        <ul class="govuk-list govuk-list--bullet">
+          {% for b in stage.withdrawSection.bullets %}<li>{{ b }}</li>{% endfor %}
+        </ul>
+      </p>
+      <h3 class="govuk-heading-s">{{ stage.withdrawSection.reasonHeading }}</h3>
+      <div class="govuk-hint">{{ stage.withdrawSection.reasonHint }}</div>
+      <textarea class="govuk-textarea" name="{{ stage.withdrawSection.reasonField }}" rows="5"></textarea>
+      <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">{{ stage.withdrawSection.action.text }}</button>
+    {% endif %}
+
+    {# ---- Action button ----
+       Data file holds main-case URLs (e.g. /tasklistStage2). Map them to the
+       case 3 equivalents here so the Start button progresses case 3 only. #}
+    {% if stage.action %}
+      {% set actionHref = stage.action.href %}
+      {% if actionHref === '/tasklistStage2' %}{% set actionHref = '/tasklistStage2C3' %}{% endif %}
+      <br>
+      {% if stage.action.type === 'link-button' %}
+        <a href="{{ actionHref }}" role="button" draggable="false" class="govuk-button">{{ stage.action.text }}</a>
+      {% else %}
+        <button type="submit" class="govuk-button" data-module="govuk-button">{{ stage.action.text }}</button>
+      {% endif %}
+    {% endif %}
+
+    {% if stage.form %}</form>{% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+ {{ govukFooter({
+   meta: {
+     items: [
+       { href: "/setUserFo3", text: "Am Finance officer" },
+       { href: "/tasklistStage2C3", text: "Agreement signed" },
+       { href: "/amend2C3", text: "Amendment submitted" },
+       { href: "/manage-prototype/clear-data", text: "Clear data" }
+     ],
+     visuallyHiddenTitle: "Footer links"
+   }
+ }) }}
+{% endblock %}
