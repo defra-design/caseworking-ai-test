@@ -1,0 +1,121 @@
+{# Generic case tasklist template — copied per case at scaffold time. __CASE_DIR__ is replaced.
+   Implements rules 12a/12b/12c from app/views/builder/builder.md and follows the
+   tasklist-stage pattern from app/views/FRPS-D2/tasklist-stage.html. #}
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "cases/__CASE_DIR__/includes/_defra-header.html" %}
+  {% include "cases/__CASE_DIR__/includes/_case-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "cases/__CASE_DIR__/includes/_case-nav.html" %}
+
+{% set stageKey = data.caseStage or firstStageKey %}
+{% set stage = caseData.stages[stageKey] %}
+{% set hasTasks = stage.tasks and stage.tasks.length %}
+{% set decisions = visibleDecisions or stage.decisions or [] %}
+{% set decisionCount = decisions.length %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">{{ stage.heading or 'Tasks' }}</h1>
+        </legend>
+
+        {{ stage.description | safe }}
+
+        {% if showConditional and stage.conditional and stage.conditional.text %}
+          <div class="govuk-inset-text">{{ stage.conditional.text | safe }}</div>
+        {% endif %}
+
+        {# ---------------- Tasks ---------------- #}
+        {% if hasTasks %}
+          <ul class="govuk-task-list">
+            {% for taskKey in stage.tasks %}
+              {% set task = caseData.tasks[taskKey] %}
+              {% set decisionVal = data[task.decisionField] %}
+              <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                <div class="govuk-task-list__name-and-hint">
+                  <a class="govuk-link govuk-task-list__link" href="task/{{ taskKey }}" aria-describedby="status-{{ taskKey }}">{{ task.pageTitle }}</a>
+                </div>
+                <div class="govuk-task-list__status" id="status-{{ taskKey }}">
+                  {% if decisionVal %}
+                    {% if decisionVal === task.acceptedValue %}
+                      {{ data[task.statusField] or decisionVal }}
+                    {% else %}
+                      <strong class="{{ data[task.tagField] or 'govuk-tag govuk-tag--red' }}">{{ data[task.statusField] or decisionVal }}</strong>
+                    {% endif %}
+                  {% else %}
+                    <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {# ---------------- Decision area ---------------- #}
+        {% if decisionCount === 0 %}
+          {# 12a: terminal text-only state, nothing to render #}
+
+        {% elif decisionCount === 1 and not hasTasks %}
+          {# 12b: zero tasks, one decision — reason textarea + button labelled with the decision #}
+          {% set d = decisions[0] %}
+          <form action="decide" method="post" class="govuk-!-margin-top-4">
+            <input type="hidden" name="stageKey" value="{{ stageKey }}">
+            <input type="hidden" name="decision" value="{{ d.label }}">
+            <h3 class="govuk-heading-s">Reason for this decision</h3>
+            <div id="decision-reason-hint" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            <textarea class="govuk-textarea" id="decisionReason" name="{{ d.reasonField or 'decisionReason' }}" rows="5" aria-describedby="decision-reason-hint"></textarea>
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">{{ d.label }}</button>
+          </form>
+
+        {% elif decisionCount === 1 and hasTasks %}
+          {# Start / Resume style — n tasks, 1 decision, no reason field, just the action button #}
+          {% set d = decisions[0] %}
+          <form action="decide" method="post" class="govuk-!-margin-top-4">
+            <input type="hidden" name="stageKey" value="{{ stageKey }}">
+            <input type="hidden" name="decision" value="{{ d.label }}">
+            <button type="submit" class="govuk-button" data-module="govuk-button">{{ d.label }}</button>
+          </form>
+
+        {% else %}
+          {# Standard pattern: 2+ decisions — radio group + Confirm. Each radio
+             reveals an explanation textarea, posting to the decision's reasonField
+             (or a generic name if not set). Gating is applied upstream by the route
+             producing visibleDecisions, so anything reaching here is currently visible. #}
+          <form action="decide" method="post" class="govuk-!-margin-top-4">
+            <input type="hidden" name="stageKey" value="{{ stageKey }}">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ caseData.decisionOptions[stage.decisionGroup].legend or 'Decision' }}</legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  {% for d in decisions %}
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="dec-{{ loop.index }}" name="decision" type="radio" value="{{ d.label }}" data-aria-controls="conditional-dec-{{ loop.index }}">
+                      <label class="govuk-label govuk-radios__label" for="dec-{{ loop.index }}">{{ d.label }}</label>
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dec-{{ loop.index }}">
+                      <p class="govuk-body">Explain this decision</p>
+                      <div class="govuk-hint">You must include an explanation for auditing purposes.</div>
+                      <textarea class="govuk-textarea" name="{{ d.reasonField or 'decisionReason' }}" rows="4"></textarea>
+                    </div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+            </div>
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+          </form>
+        {% endif %}
+
+      </fieldset>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

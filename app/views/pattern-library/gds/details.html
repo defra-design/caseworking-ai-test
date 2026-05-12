@@ -1,0 +1,89 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "details" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Details" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Details</h1>
+      <p class="govuk-body-l">Make a page easier to scan by letting users reveal more detailed information only if they need it.</p>
+      <p class="govuk-body">Use the details component to hide secondary content (for example help text, supporting policy notes or rarely-needed information) behind a disclosure link. It keeps the primary content on the page short while still making detail available without a separate page.</p>
+
+      <h2 class="govuk-heading-l">Default details</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-details">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-details-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Help with this calculation
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">The required area check compares the area the customer has applied for with the total area available for the action on this land parcel. If the figures do not match, the check will fail and the case will need to be reviewed before the calculation can be approved.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-details" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-details-code">&lt;details class="govuk-details"&gt;
+  &lt;summary class="govuk-details__summary"&gt;
+    &lt;span class="govuk-details__summary-text"&gt;
+      Help with this calculation
+    &lt;/span&gt;
+  &lt;/summary&gt;
+  &lt;div class="govuk-details__text"&gt;
+    &lt;p class="govuk-body"&gt;The required area check compares the area the
+    customer has applied for with the total area available for the action
+    on this land parcel.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/details&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To reveal help text or a fuller explanation only when the user asks for it.</li>
+        <li>To collapse a long list of supporting metadata into a single, scannable line.</li>
+        <li>To group rarely-used controls (for example a debug panel) out of the main flow.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To hide content that the user must read to complete the task — keep that on the page.</li>
+        <li>To hide form fields the user is expected to fill in.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+          <li><a class="govuk-link" href="/FRPS-D2/calculations-new">Calculations (new)</a></li>
+        </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

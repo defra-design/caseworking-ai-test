@@ -9,6 +9,12 @@
 {% block content %}
 <div class="govuk-width-container">
 
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Badge" }
+  ]}) }}
+
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-moj.html" %}
@@ -52,6 +58,11 @@ Notifications &lt;span class="moj-badge"&gt;5&lt;/span&gt;</code></pre>
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/timeline">Timeline (linked cases)</a> &mdash; shown next to the case identifier when more than one case is linked.</li>
+      </ul>
 
     </div>
   </div>

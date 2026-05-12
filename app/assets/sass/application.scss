@@ -755,24 +755,53 @@
 // --- Header ---
 
 .app-pl-header {
-  padding: 12px 0;
   background: #008938;
 }
 
-.app-pl-header__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+// Top row — the FRPS Pattern Library wordmark sits on its own line,
+// separated from the navigation row below by a thin white rule.
+.app-pl-header__logo-row {
+  padding: 15px 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-header__logo-row {
+    padding: 20px 0 16px;
+  }
 }
 
 .app-pl-header__logo {
-  font-family: "GDS Transport", arial, sans-serif;
-  font-size: 18px;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 16px;
   color: #fff;
   text-decoration: none;
+}
+
+.app-pl-header__logo-image {
+  height: 64px;
+  width: auto;
+  display: block;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-header__logo-image {
+    height: 72px;
+  }
+}
+
+.app-pl-header__logo-text {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.95rem;
+  line-height: 1;
+  font-weight: 400;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-header__logo-text {
+    font-size: 2.1875rem;
+  }
 }
 
 .app-pl-header__logo:link,
@@ -782,22 +811,37 @@
 
 .app-pl-header__logo:hover {
   text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.1em;
+}
+
+// Bottom row — navigation links, also with a thin white rule below
+// (the outer 10px dark-green band acts as the second separator,
+// matching the GDS Design System header).
+.app-pl-header__nav-row {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .app-pl-header__nav-list {
   display: flex;
+  flex-wrap: wrap;
   margin: 0;
   padding: 0;
   list-style: none;
+  gap: 0 8px;
 }
 
 .app-pl-header__nav-link {
-  display: block;
-  padding: 6px 12px;
+  display: inline-block;
+  padding: 10px 0;
+  margin-right: 24px;
   font-family: "GDS Transport", arial, sans-serif;
-  font-size: 15px;
+  font-size: 1.1875rem;
+  line-height: 1.25;
   color: #fff;
   text-decoration: none;
+  border-bottom: 4px solid transparent;
 }
 
 .app-pl-header__nav-link:link,
@@ -807,11 +851,13 @@
 
 .app-pl-header__nav-link:hover {
   text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.1em;
 }
 
 .app-pl-header__nav-link--active {
-  border-bottom: 3px solid #fff;
   font-weight: 700;
+  border-bottom-color: #fff;
 }
 
 // --- Split pane layout ---
@@ -998,16 +1044,57 @@
 // --- Landing page ---
 
 .app-pl-masthead {
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 0;
   background: #008938;
   color: #fff;
 }
 
 @media (min-width: 40.0625em) {
   .app-pl-masthead {
-    padding-top: 60px;
-    padding-bottom: 50px;
+    padding-top: 30px;
+    padding-bottom: 0;
+  }
+}
+
+// Each column carries its own bottom padding so the green band sits below
+// both the text and the illustration. The illustration gets an extra 10px
+// so it floats slightly above the text baseline.
+.app-pl-masthead__text {
+  padding-bottom: 20px;
+}
+
+.app-pl-masthead__media {
+  padding-bottom: 30px;
+}
+
+// Bottom-align the text column and the illustration column inside the masthead.
+// Width split is 2:1 via the standard govuk-grid columns (two-thirds + one-third).
+@media (min-width: 40.0625em) {
+  .app-pl-masthead__row {
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+// Drop the default bottom margin on the description paragraph so the 20px
+// masthead bottom padding becomes the true gap below the text block.
+.app-pl-masthead__text > .app-pl-masthead__desc {
+  margin-bottom: 0;
+}
+
+.app-pl-masthead__image {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  margin-left: auto;
+  margin-bottom: 0;
+}
+
+@media (max-width: 40em) {
+  .app-pl-masthead__image {
+    display: none;
   }
 }
 
@@ -1048,44 +1135,183 @@
   }
 }
 
-.app-pl-category-card {
-  display: block;
-  padding: 24px;
-  border: 1px solid #b1b4b6;
-  margin-bottom: 30px;
-  text-decoration: none;
-  color: #0b0c0c;
+// Section heading on the index page — used to wrap an .app-pl-link
+.app-pl-section-heading {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
-.app-pl-category-card:hover {
-  background: #f3f2f1;
-}
-
-.app-pl-category-card__title {
-  font-family: "GDS Transport", arial, sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: #1d70b8;
-  margin: 0 0 8px;
+// Primary link style on the pattern-library landing page — green,
+// underlined, mirrors GDS link weight but uses Defra green instead of blue.
+.app-pl-link {
+  color: #008938;
   text-decoration: underline;
+  text-decoration-thickness: max(1px, .0625rem);
+  text-underline-offset: .1578em;
 }
 
-.app-pl-category-card:hover .app-pl-category-card__title {
-  color: #003078;
+.app-pl-link:visited {
+  color: #008938;
 }
 
-.app-pl-category-card__desc {
-  font-family: "GDS Transport", arial, sans-serif;
-  font-size: 16px;
+.app-pl-link:hover {
+  color: #005a25;
+  text-decoration-thickness: max(3px, .1875rem, .12em);
+  text-decoration-skip-ink: none;
+  text-decoration-skip: none;
+}
+
+.app-pl-link:focus {
+  outline: 3px solid transparent;
   color: #0b0c0c;
+  background-color: #ffdd00;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+  text-decoration: none;
+}
+
+.app-pl-count {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  color: #505a5f;
+  margin: 0 0 30px;
+}
+
+// Horizontal rule between landing-page sections
+.app-pl-rule {
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+@media (min-width: 40.0625em) {
+  .app-pl-rule {
+    margin-top: 40px;
+    margin-bottom: 50px;
+  }
+}
+
+// "What's new" list
+.app-pl-news-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.app-pl-news-list > li {
+  padding: 20px 0;
+  border-top: 1px solid #b1b4b6;
+}
+
+.app-pl-news-list > li:last-child {
+  border-bottom: 1px solid #b1b4b6;
+}
+
+.app-pl-news-list > li > a {
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 700;
+}
+
+.app-pl-news-meta {
+  display: block;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  color: #505a5f;
+  margin: 4px 0 8px;
+}
+
+.app-pl-aside-heading {
+  margin-top: 0;
+}
+
+// --- MOJ Timeline (ported from @ministryofjustice/frontend) ---
+// The MOJ Frontend Sass uses Sass modules and is not imported into this
+// @import-based stylesheet, so the timeline styles are reproduced here with
+// literal values. Brand rail uses the MOJ default GOV.UK blue.
+
+.moj-timeline {
+  position: relative;
+  margin-bottom: 20px;
+  padding-left: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.moj-timeline::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #1d70b8;
+}
+
+.moj-timeline--full {
+  margin-bottom: 0;
+}
+
+.moj-timeline--full::before {
+  height: calc(100% - 75px);
+}
+
+.moj-timeline__item {
+  position: relative;
+  padding-bottom: 30px;
+  padding-left: 20px;
   margin: 0;
 }
 
-.app-pl-category-card__count {
+.moj-timeline__item::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 15px;
+  height: 5px;
+  background-color: #1d70b8;
+}
+
+.moj-timeline__header {
+  margin: 0;
+}
+
+.moj-timeline__title {
+  display: inline;
   font-family: "GDS Transport", arial, sans-serif;
-  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1.1875rem;
+  line-height: 1.31579;
+  font-weight: 700;
+  margin: 0;
+}
+
+.moj-timeline__byline {
+  display: inline;
+  margin: 0;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.1875rem;
+  line-height: 1.31579;
   color: #505a5f;
-  margin: 8px 0 0;
+}
+
+.moj-timeline__date {
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.moj-timeline__description {
+  margin-top: 20px;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.1875rem;
+  line-height: 1.31579;
+}
+
+.moj-timeline__description > :last-child {
+  margin-bottom: 0;
 }
 
 

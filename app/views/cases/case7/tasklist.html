@@ -1,0 +1,69 @@
+{# Generic case tasklist template — copied per case at scaffold time. case7 is replaced. #}
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "cases/case7/includes/_defra-header.html" %}
+  {% include "cases/case7/includes/_case-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "cases/case7/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% set stageKey = data.caseStage or firstStageKey %}
+    {% set stage = caseData.stages[stageKey] %}
+
+    <h1 class="govuk-heading-xl govuk-!-margin-top-6">{{ stage.heading }}</h1>
+    {{ stage.description | safe }}
+
+    {% if stage.conditional and stage.conditional.text %}
+      <div class="govuk-inset-text">{{ stage.conditional.text | safe }}</div>
+    {% endif %}
+
+    {% if stage.tasks and stage.tasks.length %}
+      <ol class="govuk-list govuk-list--number">
+        {% for taskKey in stage.tasks %}
+          {% set task = caseData.tasks[taskKey] %}
+          <li><a class="govuk-link" href="task/{{ taskKey }}">{{ task.pageTitle }}</a></li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+
+    {% if stage.decisions and stage.decisions.length %}
+      <form action="decide" method="post" class="govuk-!-margin-top-6">
+        <input type="hidden" name="stageKey" value="{{ stageKey }}">
+
+        {% if stage.decisions.length == 1 and (not stage.tasks or not stage.tasks.length) %}
+          {# 12b: 0 tasks, 1 decision — note + button #}
+          {% set d = stage.decisions[0] %}
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="decisionReason">Reason</label>
+            <textarea class="govuk-textarea" id="decisionReason" name="decisionReason" rows="3"></textarea>
+          </div>
+          <input type="hidden" name="decision" value="{{ d.label }}">
+          <button type="submit" class="govuk-button">{{ d.label }}</button>
+        {% else %}
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ caseData.decisionOptions[stage.decisionGroup].legend or 'Decision' }}</legend>
+              <div class="govuk-radios" data-module="govuk-radios">
+                {% for d in stage.decisions %}
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="dec-{{ loop.index }}" name="decision" type="radio" value="{{ d.label }}">
+                    <label class="govuk-label govuk-radios__label" for="dec-{{ loop.index }}">{{ d.label }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </div>
+          <button type="submit" class="govuk-button">Confirm</button>
+        {% endif %}
+      </form>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

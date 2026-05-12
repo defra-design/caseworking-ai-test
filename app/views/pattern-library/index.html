@@ -3,47 +3,55 @@
 {% block header %}
   {% set plSection = "" %}
   {% include "pattern-library/includes/_pl-header.html" %}
+
+  <div class="app-pl-masthead">
+    <div class="govuk-width-container">
+      <div class="govuk-grid-row app-pl-masthead__row">
+        <div class="govuk-grid-column-two-thirds app-pl-masthead__text">
+          <h1 class="app-pl-masthead__title">A toolkit for designing case working systems using common shared components</h1>
+          <p class="app-pl-masthead__desc">Use components and patterns from the GOV.UK Design System, the MOJ Design System, and our own custom patterns to design and build consistent services across this prototype.</p>
+        </div>
+        <div class="govuk-grid-column-one-third app-pl-masthead__media">
+          <img class="app-pl-masthead__image" src="/public/images/homepage-illustration.svg" alt="" role="presentation">
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block content %}
 
-<div class="app-pl-masthead">
-  <div class="govuk-width-container">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds-from-desktop">
-        <h1 class="app-pl-masthead__title">Design and build services for Defra</h1>
-        <p class="app-pl-masthead__desc">Use components and patterns from the GOV.UK Design System, the MOJ Design System, and established custom patterns to build a consistent caseworking experience.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
+
     <div class="govuk-grid-row">
 
-      <div class="govuk-grid-column-one-third-from-desktop">
-        <h2 class="govuk-heading-m">
-          <a class="govuk-link govuk-link--no-visited-state" href="/pattern-library/gds/button">GDS components</a>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m app-pl-section-heading">
+          <a class="app-pl-link" href="/pattern-library/gds/button">GDS components</a>
         </h2>
         <p class="govuk-body">Components from the GOV.UK Design System used in this service. Includes buttons, tags, summary lists, tables, radios and more.</p>
+        <p class="app-pl-count">12 components</p>
       </div>
 
-      <div class="govuk-grid-column-one-third-from-desktop">
-        <h2 class="govuk-heading-m">
-          <a class="govuk-link govuk-link--no-visited-state" href="/pattern-library/moj/timeline">MOJ components</a>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m app-pl-section-heading">
+          <a class="app-pl-link" href="/pattern-library/moj/timeline">MOJ components</a>
         </h2>
-        <p class="govuk-body">Components from the Ministry of Justice Design System. Covers internal casework patterns including timelines, filters, search, messages and pagination.</p>
+        <p class="govuk-body">Components from the Ministry of Justice Design System. Covers internal casework patterns including timelines, filters, search, sortable tables, messages, alerts and pagination.</p>
+        <p class="app-pl-count">8 components</p>
       </div>
 
-      <div class="govuk-grid-column-one-third-from-desktop">
-        <h2 class="govuk-heading-m">
-          <a class="govuk-link govuk-link--no-visited-state" href="/pattern-library/custom/status-tags">Custom patterns</a>
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m app-pl-section-heading">
+          <a class="app-pl-link" href="/pattern-library/custom/status-tags">Custom patterns</a>
         </h2>
-        <p class="govuk-body">Patterns that deviate from or extend GOV.UK and MOJ design systems, used consistently throughout this prototype. Includes the Defra header, context strip, case navigation and custom tag colours.</p>
+        <p class="govuk-body">Patterns that extend or deviate from GOV.UK and MOJ design systems, used consistently in this prototype. Includes the Defra header, context strip, case navigation, flex-radio and custom tag colours.</p>
+        <p class="app-pl-count">5 patterns</p>
       </div>
 
     </div>
+
   </main>
 </div>
 

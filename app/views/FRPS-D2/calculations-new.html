@@ -1,0 +1,2812 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "calculations" %}
+{% include "FRPS-D2/includes/_case-nav.html" %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations</h1>
+
+    {% if (data.recalc) %}
+
+        <div role="region" class="moj-alert moj-alert--success moj-alert--with-heading" aria-label="success: File uploaded successfully" data-module="moj-alert">
+      <div>
+        <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
+          <path d="M11.2869 24.6726L2.00415 15.3899L4.62189 12.7722L11.2869 19.4186L25.3781 5.32739L27.9958 7.96369L11.2869 24.6726Z" fill="currentColor" />
+        </svg>
+      </div>
+      <div class="moj-alert__content">
+        <h2 class="moj-alert__heading">Calculations successfully rerun
+        </h2>All calculations were successfully rerun at 12:50am today
+      </div>
+      <div class="moj-alert__action">
+        <button class="moj-alert__dismiss" hidden>Dismiss</button>
+      </div>
+    </div>
+
+    {% else %}
+    <p >Rules check last run: 14:25pm 11 Sept 2025</p>
+
+    {% endif %}
+
+  <details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Show version history
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Dates and amounts</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Date/time</th>
+          <th scope="col" class="govuk-table__header">Result</th>
+                <th scope="col" class="govuk-table__header"></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">14:25pm 11 Sept 2025</th>
+          <td class="govuk-table__cell">Fail</td>
+          <td class="govuk-table__cell">Currently showing</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">03:20pm 10 Sept 2025</th>
+          <td class="govuk-table__cell">Pass</td>
+          <td class="govuk-table__cell"><a href="calculations-old" class="govuk-link">View this version</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third ">
+
+    <div class="moj-filter" data-module="moj-filter">
+      <form method="get" action="/largeCalcFilter">
+        <input type="hidden" name="from" value="main-new">
+        <div class="moj-filter__header_grey">
+          <div class="moj-filter__header-title">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Filter</h2>
+          </div>
+          <div class="moj-filter__header-action">
+          </div>
+        </div>
+        <div class="moj-filter__content">
+          <div class="moj-filter__options">
+            <button type="submit" class="govuk-button" data-module="govuk-button" data-test-id="submit-button">
+              Apply filters
+            </button>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="sort">
+                Run date
+              </label>
+              <select class="govuk-select" id="sort" name="sort">
+                <option value="published" selected>14:25pm 11 Sept 2025</option>
+              </select>
+            </div>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                  <h3 class="govuk-fieldset__heading">
+                    Listing ...
+                  </h3>
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-all" name="filter" type="radio" value="all"{% if not data.showFailsOnly and not data.showChangesOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-all">
+                      All checks
+                    </label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-changes" name="filter" type="radio" value="changes"{% if data.showChangesOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-changes">
+                      Calculations with changes
+                    </label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-fails" name="filter" type="radio" value="fails"{% if data.showFailsOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-fails">
+                      Only fails
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+    </div>
+  <div class="govuk-grid-column-two-thirds govuk-!-padding-left-4">
+
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+      {% if data.showChangesOnly %}<p class="govuk-body">There are no changes to show.</p>{% endif %}
+      {% if not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3159 checks</h2>
+
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--red-new margin-left-310">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>The area applied for (1.1506 ha) is less than the total available area (1.6506 ha)</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3159</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">1.6506 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">1.1506 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">1.6506 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3159 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3159</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">12.4 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">7.44 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3159</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">12.4 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 60%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 60%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">6.2 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">6.2 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">6.2 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3159 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3159</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">12.4 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">7.44 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3175 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3175</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">1.7259 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">1.7259 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">1.7259 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3175 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3175</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">18 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">12.96 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">72%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3175</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">18 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 72%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 72%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">9.3 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">9.3 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">9.3 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3175 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3175</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">18 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">12.96 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">72%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3181 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3181</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">0.5753 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">0.5753 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">0.5753 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3181 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3181</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">6.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">3.58 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">55%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3181</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">6.5 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 55%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 55%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">3.1 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">3.1 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">3.1 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3181 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3181</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">6.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">3.58 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">55%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3188 checks</h2>
+
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--red-new margin-left-310">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>The area applied for (2.8765 ha) is less than the total available area (3.45 ha)</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3188</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">3.45 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">2.8765 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">3.45 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3188 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3188</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">32 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">25.6 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">80%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3188</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">32 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 80%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 80%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">15.5 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">15.5 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">15.5 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3188 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3188</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">32 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">25.6 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">80%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3194 checks</h2>
+
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3194</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">1.3807 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">1.3807 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">1.3807 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--red-new margin-left-283">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>Parcel SO3757 3194 is less than 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3194</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">16 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">6.08 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">38%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3194</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">16 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 38%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 38%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">7.44 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">7.44 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">7.44 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--red-new margin-left-283">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>Parcel SO3757 3194 is less than 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3194</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">16 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">6.08 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">38%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3201 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3201</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">0.9205 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">0.9205 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">0.9205 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3201 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3201</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">10.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">6.83 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">65%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3201</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">10.5 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 65%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 65%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">4.96 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">4.96 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">4.96 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3201 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3201</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">10.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">6.83 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">65%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3208 checks</h2>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3208</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">2.3012 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">2.3012 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">2.3012 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3208 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3208</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">26 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">18.2 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">70%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--red-new margin-left-310">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>The area applied for (12.4 ha) is less than the total available area (14.2 ha)</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3208</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">26 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 70%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 70%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">14.2 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">14.2 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">12.4 ha (87.3%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3208 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3208</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">26 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">18.2 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">70%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3215 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3215</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">0.6904 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">0.6904 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">0.6904 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3215 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3215</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">7.8 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">4.52 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">58%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3215</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">7.8 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 58%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 58%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">3.72 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">3.72 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">3.72 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3215 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3215</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">7.8 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">4.52 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">58%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3222 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3222</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">1.956 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">1.956 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">1.956 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3222 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3222</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">22 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">16.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">75%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3222</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">22 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 75%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 75%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">10.54 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">10.54 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">10.54 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3222 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3222</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">22 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">16.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">75%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3229 checks</h2>
+
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3229</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">1.0355 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">1.0355 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">1.0355 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--red-new margin-left-283">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>Parcel SO3757 3229 is less than 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3229</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">12 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">5.04 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">42%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3229</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">12 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 42%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 42%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">5.58 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">5.58 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">5.58 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--red-new margin-left-283">Failed
+      </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Failed</p>
+
+    <h2 class="govuk-heading-m">Fail reason</h2>
+
+    <p>Parcel SO3757 3229 is less than 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3229</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">12 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">5.04 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">42%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SO3757 3236 checks</h2>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3236</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action code</th>
+      <td class="govuk-table__cell">CMOR1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area</th>
+      <td class="govuk-table__cell">2.5313 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Applied for</th>
+      <td class="govuk-table__cell">2.5313 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land Covers For Parcel</th>
+      <td class="govuk-table__cell">Permanent grassland (130)</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Valid land covers for action: CMOR1</th>
+      <td class="govuk-table__cell">Permanent grassland (130) - Permanent grassland (131), Water/irrigation features (240) - Drain/ditch/dyke (241), Water/irrigation features (240) - Pond (243), Rock (250) - Scree (251), Rock (250) - Boulders (252), Rock (250) - Rocky outcrop (253), Heaps (270) - Heaps (271), and others...</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total valid land covers</th>
+      <td class="govuk-table__cell">2.5313 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Common land covers</th>
+      <td class="govuk-table__cell">None</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Find area of existing action that must be on the same land cover as CMOR1</th>
+      <td class="govuk-table__cell">No existing actions</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Stacks</th>
+      <td class="govuk-table__cell">No existing actions so no stacks are needed</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3236 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3236</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">28.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">23.37 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">82%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h3 class="govuk-heading-s">Action: UPL1 checks</h3>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details govuk-!-margin-bottom-3">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Required area check         <strong class="govuk-tag govuk-tag--green margin-left-310">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Applicant has applied for the total available area in the land parcel for this action.</p>
+    <table class="govuk-table">
+  <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+  <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Parcel ID</th>
+      <td class="govuk-table__cell">SO3757 3236</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total size</th>
+      <td class="govuk-table__cell">28.5 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Land covers</th>
+      <td class="govuk-table__cell">SSI 40%, Historic 10%, moorland 82%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Action applied for </th>
+      <td class="govuk-table__cell">Moderate livestock grazing on moorland - UPL1</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Eligible land covers for this action</th>
+      <td class="govuk-table__cell">Moorland 82%, SSI 40%</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Existing actions</th>
+      <td class="govuk-table__cell">none</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area you can enter into this action</th>
+      <td class="govuk-table__cell">13.64 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Total available area for action </th>
+      <td class="govuk-table__cell">13.64 ha</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <th scope="row" class="govuk-table__header">Available area applied for</th>
+      <td class="govuk-table__cell">13.64 ha (100%)</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+</details>
+{% endif %}
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Area on moorland check<strong class="govuk-tag govuk-tag--green margin-left-283">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+    <p>Parcel SO3757 3236 is at least 50% on moorland.<br>
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Check details</caption>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel ID</th>
+          <td class="govuk-table__cell">SO3757 3236</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Parcel area</th>
+          <td class="govuk-table__cell">28.5 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Area on moorland</th>
+          <td class="govuk-table__cell">23.37 ha</td>
+        </tr>
+            <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Percentage on moorland</th>
+          <td class="govuk-table__cell">82%</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+</details>
+{% endif %}
+
+      {% endif %}
+
+    </form>
+
+  </div>
+</div>
+
+
+
+
+{% endblock %}

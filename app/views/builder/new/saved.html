@@ -1,0 +1,34 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">Tasklist data created</h1>
+          <div class="govuk-panel__body">Saved to<br><strong>{{ data.builderFlow.savedPath }}</strong></div>
+        </div>
+
+        {% if data.builderFlow.savedCaseDir %}
+          <h2 class="govuk-heading-m">Case launched</h2>
+          <p class="govuk-body">A new case has been scaffolded from the data file.</p>
+          <p class="govuk-body">
+            <a class="govuk-link" href="/cases/{{ data.builderFlow.savedCaseDir }}">Launch {{ data.builderFlow.savedCaseName }}</a>
+          </p>
+          <p class="govuk-body">A link has also been added to the home page under "New made cases".</p>
+        {% endif %}
+
+        <p class="govuk-body">
+          <a class="govuk-link" href="/builder">Back to builder</a>
+        </p>
+        <p class="govuk-body">
+          <a class="govuk-link" href="/builder/new">Build another</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

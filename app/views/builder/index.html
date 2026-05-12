@@ -57,16 +57,6 @@
               <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Decision field:</dt>
-              <dd class="govuk-summary-list__value">{{ task.decisionField }}</dd>
-              <dd class="govuk-summary-list__actions"></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Accepted value:</dt>
-              <dd class="govuk-summary-list__value">{{ task.acceptedValue }}</dd>
-              <dd class="govuk-summary-list__actions"></dd>
-            </div>
-            <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">Status field:</dt>
               <dd class="govuk-summary-list__value">{{ task.statusField or '—' }}</dd>
               <dd class="govuk-summary-list__actions"></dd>
@@ -157,16 +147,6 @@
               <dd class="govuk-summary-list__actions"></dd>
             </div>
             <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Form field:</dt>
-              <dd class="govuk-summary-list__value">{{ dec.formField or '—' }}</dd>
-              <dd class="govuk-summary-list__actions"></dd>
-            </div>
-            <div class="govuk-summary-list__row">
-              <dt class="govuk-summary-list__key">Conditional note field:</dt>
-              <dd class="govuk-summary-list__value">{{ dec.conditionalNoteField or '—' }}</dd>
-              <dd class="govuk-summary-list__actions"></dd>
-            </div>
-            <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">Conditional hint:</dt>
               <dd class="govuk-summary-list__value">{{ dec.conditionalHint or '—' }}</dd>
               <dd class="govuk-summary-list__actions"></dd>
@@ -174,7 +154,7 @@
             {% for opt in dec.options %}
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Option {{ loop.index }}:</dt>
-                <dd class="govuk-summary-list__value">{{ opt.label }} (value: {{ opt.value }})</dd>
+                <dd class="govuk-summary-list__value">{{ opt.label }}</dd>
                 <dd class="govuk-summary-list__actions"></dd>
               </div>
             {% endfor %}

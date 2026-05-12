@@ -9,6 +9,12 @@
 {% block content %}
 <div class="govuk-width-container">
 
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Notification banner" }
+  ]}) }}
+
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-gds.html" %}
@@ -98,6 +104,11 @@
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/tasklist-stage">Task list (stages)</a> &mdash; shown at certain stages to confirm a key action (for example &ldquo;Amendment sent&rdquo; or &ldquo;Agreement sent&rdquo;).</li>
+      </ul>
 
     </div>
   </div>

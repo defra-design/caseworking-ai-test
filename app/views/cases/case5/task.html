@@ -1,0 +1,42 @@
+{# Generic case task template — copied per case at scaffold time. case5 is replaced. #}
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "cases/case5/includes/_defra-header.html" %}
+  {% include "cases/case5/includes/_case-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "cases/case5/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {{ govukBackLink({ text: "Back to tasks", href: "../tasklist-stage" }) }}
+
+    <h1 class="govuk-heading-xl govuk-!-margin-top-4">{{ task.pageTitle }}</h1>
+
+    {{ task.preOutcomesHtml | safe }}
+
+    <h2 class="govuk-heading-m">{{ stageDecisionGroup.legend or 'Outcome' }}</h2>
+
+    <form action="save" method="post" class="govuk-!-margin-top-4">
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <div class="govuk-radios" data-module="govuk-radios">
+            {% for opt in stageDecisionGroup.options %}
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="outcome-{{ loop.index }}" name="{{ task.decisionField }}" type="radio" value="{{ opt.value }}">
+                <label class="govuk-label govuk-radios__label" for="outcome-{{ loop.index }}">{{ opt.label }}</label>
+              </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Save and return</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

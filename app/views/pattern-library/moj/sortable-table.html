@@ -1,0 +1,127 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "moj" %}
+{% set activePage = "sortable-table" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Sortable table" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-moj.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Sortable table</h1>
+      <p class="govuk-body-l">Let users sort a table of cases or records by clicking any column heading.</p>
+      <p class="govuk-body">Use the MOJ sortable table to make long lists of cases easier to scan. Each sortable column heading is a button — clicking it reorders the rows by that column and toggles between ascending and descending order. The component is progressive: rows remain in their original order if JavaScript is unavailable.</p>
+
+      <h2 class="govuk-heading-l">Default sortable table</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-sortable">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-sortable-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table" data-module="moj-sortable-table">
+              <caption class="govuk-table__caption govuk-table__caption--m">Open cases</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header" aria-sort="ascending">Case ID</th>
+                  <th scope="col" class="govuk-table__header" aria-sort="none">Customer</th>
+                  <th scope="col" class="govuk-table__header" aria-sort="none">Status</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric" aria-sort="none">Days open</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">100297</th>
+                  <td class="govuk-table__cell">Berkshire Estate Limited</td>
+                  <td class="govuk-table__cell">Application received</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">100301</th>
+                  <td class="govuk-table__cell">Aldridge Farm Partnership</td>
+                  <td class="govuk-table__cell">In review</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">11</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">100315</th>
+                  <td class="govuk-table__cell">Sutton Hill Farms</td>
+                  <td class="govuk-table__cell">Agreement sent</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">2</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">100322</th>
+                  <td class="govuk-table__cell">Cotswold Land Co</td>
+                  <td class="govuk-table__cell">Awaiting signature</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">7</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-sortable" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-sortable-code">&lt;table class="govuk-table" data-module="moj-sortable-table"&gt;
+  &lt;caption class="govuk-table__caption govuk-table__caption--m"&gt;Open cases&lt;/caption&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="ascending"&gt;Case ID&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="none"&gt;Customer&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="none"&gt;Status&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header govuk-table__header--numeric" aria-sort="none"&gt;Days open&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="row" class="govuk-table__header"&gt;100297&lt;/th&gt;
+      &lt;td class="govuk-table__cell"&gt;Berkshire Estate Limited&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;Application received&lt;/td&gt;
+      &lt;td class="govuk-table__cell govuk-table__cell--numeric"&gt;3&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- ... more rows ... --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For caselists, worklists or any tabular list users need to reorder.</li>
+        <li>When sorting on the server would be too slow or unnecessary for the data set size.</li>
+        <li>When all the data the user will sort is already on the page.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>If the table is paginated server-side — sorting client-side would only reorder the visible page. Use server-driven sort links instead.</li>
+        <li>For data that needs sorting on derived values the cell doesn&rsquo;t show; supply a <code>data-sort-value</code> attribute on those cells.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Initial sort state</h2>
+      <p class="govuk-body">Set <code>aria-sort="ascending"</code> or <code>aria-sort="descending"</code> on the column heading the table should be sorted by when it first loads. Set <code>aria-sort="none"</code> on every other sortable column.</p>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+          <li><a class="govuk-link" href="/FRPS-D2/case2/caselist-my">My caselist (linked case)</a></li>
+        </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

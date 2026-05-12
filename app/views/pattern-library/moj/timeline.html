@@ -9,6 +9,12 @@
 {% block content %}
 <div class="govuk-width-container">
 
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "MOJ components", href: "/pattern-library/moj/timeline" },
+    { text: "Timeline" }
+  ]}) }}
+
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-moj.html" %}
@@ -29,8 +35,8 @@
             <button class="app-copy-button" data-copy-target="ex-timeline-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <div class="moj-timeline">
-              <div class="moj-timeline__item">
+            <ol class="moj-timeline">
+              <li class="moj-timeline__item">
                 <div class="moj-timeline__header">
                   <h2 class="moj-timeline__title">Decision submitted</h2>
                   <p class="moj-timeline__byline">by Jane Smith, Case officer</p>
@@ -39,8 +45,8 @@
                 <div class="moj-timeline__description">
                   <p class="govuk-body">Application accepted. All tasks reviewed and confirmed. Case progressed to agreement stage.</p>
                 </div>
-              </div>
-              <div class="moj-timeline__item">
+              </li>
+              <li class="moj-timeline__item">
                 <div class="moj-timeline__header">
                   <h2 class="moj-timeline__title">Information requested</h2>
                   <p class="moj-timeline__byline">by James Taylor, Senior officer</p>
@@ -49,8 +55,8 @@
                 <div class="moj-timeline__description">
                   <p class="govuk-body">Additional land mapping documentation requested from applicant. Awaiting response.</p>
                 </div>
-              </div>
-              <div class="moj-timeline__item">
+              </li>
+              <li class="moj-timeline__item">
                 <div class="moj-timeline__header">
                   <h2 class="moj-timeline__title">Application received</h2>
                 </div>
@@ -58,14 +64,14 @@
                 <div class="moj-timeline__description">
                   <p class="govuk-body">Application submitted by Berkshire Estate Limited via the online service.</p>
                 </div>
-              </div>
-            </div>
+              </li>
+            </ol>
           </div>
         </div>
         <div class="app-example__code-container" id="ex-timeline" hidden>
           <div class="app-example__code">
-            <pre><code id="ex-timeline-code">&lt;div class="moj-timeline"&gt;
-  &lt;div class="moj-timeline__item"&gt;
+            <pre><code id="ex-timeline-code">&lt;ol class="moj-timeline"&gt;
+  &lt;li class="moj-timeline__item"&gt;
     &lt;div class="moj-timeline__header"&gt;
       &lt;h2 class="moj-timeline__title"&gt;Decision submitted&lt;/h2&gt;
       &lt;p class="moj-timeline__byline"&gt;by Jane Smith, Case officer&lt;/p&gt;
@@ -76,11 +82,16 @@
     &lt;div class="moj-timeline__description"&gt;
       &lt;p class="govuk-body"&gt;Application accepted.&lt;/p&gt;
     &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</code></pre>
+  &lt;/li&gt;
+&lt;/ol&gt;</code></pre>
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+          <li><a class="govuk-link" href="/FRPS-D2/case2/timeline">Timeline (linked case)</a></li>
+        </ul>
 
     </div>
   </div>

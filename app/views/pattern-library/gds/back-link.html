@@ -9,6 +9,12 @@
 {% block content %}
 <div class="govuk-width-container">
 
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Back link" }
+  ]}) }}
+
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-gds.html" %}
@@ -70,6 +76,11 @@
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/agreement">Case context strip</a> &mdash; the &ldquo;Back to applications&rdquo; link sits in the context strip at the top of every case page.</li>
+      </ul>
 
     </div>
   </div>

@@ -1,48 +1,28 @@
-<header class="defra-internal-header" role="banner">
-    <div class="govuk-width-container">
-      <div class="defra-logo">
-          <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" title="Go to the Defra Design Library homepage" class="defra-logo__link">
-            <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
-          </a>
-      </div>
-
-      <div class="defra-internal-service-name">
-          <a href="/pattern-library" title="Go to the pattern library homepage" class="defra-internal-service-name__link">
-            Case working system patterns library
-          </a>
-      </div>
-    </div>
-  </header>
-
-<div class="govuk-service-navigation govuk-service-navigation-white" data-module="govuk-service-navigation">
+<header class="app-pl-header" role="banner">
   <div class="govuk-width-container">
-    <div class="govuk-service-navigation__container">
-      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
-        <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="pattern-library-navigation" hidden>
-          Menu
-        </button>
-        <ul class="govuk-service-navigation__list" id="pattern-library-navigation">
 
-          <li class="govuk-service-navigation__item-c{% if plSection == 'gds' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="/pattern-library/gds">
-              {% if plSection == 'gds' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}GDS components{% if plSection == 'gds' %}</strong>{% endif %}
-            </a>
+    <div class="app-pl-header__logo-row">
+      <a href="/pattern-library" class="app-pl-header__logo">
+        <img class="app-pl-header__logo-image" src="/public/images/defra-logo-white.png" alt="" role="presentation">
+        <span class="app-pl-header__logo-text">Case working patterns library</span>
+      </a>
+    </div>
+
+    <div class="app-pl-header__nav-row">
+      <nav aria-label="Main menu">
+        <ul class="app-pl-header__nav-list">
+          <li>
+            <a href="/pattern-library/gds/button" class="app-pl-header__nav-link{% if plSection == 'gds' %} app-pl-header__nav-link--active{% endif %}">GDS components</a>
           </li>
-
-          <li class="govuk-service-navigation__item-c2{% if plSection == 'moj' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="/pattern-library/moj">
-              {% if plSection == 'moj' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}MOJ components{% if plSection == 'moj' %}</strong>{% endif %}
-            </a>
+          <li>
+            <a href="/pattern-library/moj/timeline" class="app-pl-header__nav-link{% if plSection == 'moj' %} app-pl-header__nav-link--active{% endif %}">MOJ components</a>
           </li>
-
-          <li class="govuk-service-navigation__item-c2{% if plSection == 'custom' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="/pattern-library/custom">
-              {% if plSection == 'custom' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Custom patterns{% if plSection == 'custom' %}</strong>{% endif %}
-            </a>
+          <li>
+            <a href="/pattern-library/custom/status-tags" class="app-pl-header__nav-link{% if plSection == 'custom' %} app-pl-header__nav-link--active{% endif %}">Custom patterns</a>
           </li>
-
         </ul>
       </nav>
     </div>
+
   </div>
-</div>
+</header>

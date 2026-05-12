@@ -1,0 +1,125 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({ text: "Back", href: "/builder/new/stages-list" }) }}
+
+        <h1 class="govuk-heading-xl">Check your answers</h1>
+
+        {% for stage in data.builderFlow.stages %}
+          {% set sIdx = loop.index0 %}
+          {% set prefix = stage.prefix or '(stage prefix)' %}
+          <h2 class="govuk-heading-l" id="stage-{{ sIdx }}">Stage {{ loop.index }}: {{ stage.name }}</h2>
+
+          <h3 class="govuk-heading-m" id="stage-{{ sIdx }}-details">Stage details</h3>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Name:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.name }}</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/builder/new/edit-stage?stage={{ sIdx }}&amp;return=stage-{{ sIdx }}-details">Change<span class="govuk-visually-hidden"> stage {{ loop.index }}</span></a></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Description:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.description or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Conditional text:</dt>
+              <dd class="govuk-summary-list__value">{% if stage.hasConditional %}When <code>{{ stage.conditionalField }}</code> = <code>{{ stage.conditionalEquals }}</code>: {{ stage.conditionalText }}{% else %}—{% endif %}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Outcomes:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.outcomes or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Accepted outcome:</dt>
+              <dd class="govuk-summary-list__value">{{ stage.acceptedOutcome or '—' }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage prefix:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage key / decision input:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}Stage / {{ prefix }}StageDecision</dd>
+              <dd class="govuk-summary-list__actions"></dd>
+            </div>
+          </dl>
+
+          {% if stage.decisions and stage.decisions.length %}
+            <h3 class="govuk-heading-m" id="stage-{{ sIdx }}-decisions">Stage decisions</h3>
+            {% for dec in stage.decisions %}
+              {% set dIdx = loop.index0 %}
+              <h4 class="govuk-heading-s" id="stage-{{ sIdx }}-decision-{{ dIdx }}">Decision {{ loop.index }}: {{ dec.label or '—' }}</h4>
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Label:</dt>
+                  <dd class="govuk-summary-list__value">{{ dec.label or '—' }}</dd>
+                  <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/builder/new/edit-stage?stage={{ sIdx }}&amp;return=stage-{{ sIdx }}-decision-{{ dIdx }}">Change<span class="govuk-visually-hidden"> decision {{ loop.index }}</span></a></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Changes stage:</dt>
+                  <dd class="govuk-summary-list__value">{{ dec.targetStage if dec.changesStage else 'No' }}</dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Changes status:</dt>
+                  <dd class="govuk-summary-list__value">{% if dec.changesStatus %}{{ dec.statusText }} ({{ dec.tagClass }}){% else %}No{% endif %}</dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Only when all tasks accepted:</dt>
+                  <dd class="govuk-summary-list__value">{% if dec.requiresAllTasksAccepted %}Yes{% else %}No{% endif %}</dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Reason field:</dt>
+                  <dd class="govuk-summary-list__value">{{ dec.reasonField or '—' }}</dd>
+                  <dd class="govuk-summary-list__actions"></dd>
+                </div>
+              </dl>
+            {% endfor %}
+          {% endif %}
+
+          {% for task in stage.tasks %}
+            {% set num = loop.index %}
+            {% set tIdx = loop.index0 %}
+            <h3 class="govuk-heading-m" id="stage-{{ sIdx }}-task-{{ tIdx }}">Task {{ num }}</h3>
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Page title:</dt>
+                <dd class="govuk-summary-list__value">{{ task.pageTitle or '—' }}</dd>
+                <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/builder/new/edit-task?stage={{ sIdx }}&amp;task={{ tIdx }}&amp;return=stage-{{ sIdx }}-task-{{ tIdx }}">Change<span class="govuk-visually-hidden"> task {{ num }}</span></a></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Pre-outcomes content:</dt>
+                <dd class="govuk-summary-list__value">{{ task.preOutcomesHtml | safe if task.preOutcomesHtml else '—' }}</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Auto-generated names:</dt>
+                <dd class="govuk-summary-list__value">href: {{ prefix }}Task{{ num }} / outcome: {{ prefix }}Task{{ num }}Outcome / status: {{ prefix }}Task{{ num }}Status / tag: {{ prefix }}Task{{ num }}Tag</dd>
+                <dd class="govuk-summary-list__actions"></dd>
+              </div>
+            </dl>
+          {% endfor %}
+        {% endfor %}
+
+        <div class="govuk-button-group govuk-!-margin-top-6">
+          <a class="govuk-button" data-module="govuk-button" role="button" href="/builder/new/save-options">Save and create data file</a>
+          <a class="govuk-link" href="/builder/new/discard">Discard</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

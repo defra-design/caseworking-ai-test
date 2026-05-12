@@ -137,6 +137,526 @@ router.get('/builder/discard', function (req, res) {
 })
 
 // ============================================================
+// Builder /new — guided flow that creates a new tasklist data file
+// ============================================================
+
+function getFlow (req) {
+  if (!req.session.data.builderFlow) {
+    req.session.data.builderFlow = { stageCount: 0, stages: [], setupIndex: 0, cur: { stage: 0, task: 0 } }
+  }
+  return req.session.data.builderFlow
+}
+
+function stagePrefix (name) {
+  const alpha = (name || '').replace(/[^a-zA-Z]/g, '')
+  return (alpha.slice(0, 3) || 'stg').toLowerCase()
+}
+
+function newDecisionFromBody (body, idx) {
+  const label = asArray(body.decLabel)[idx] || ''
+  const cs    = asArray(body.decChangesStage)[idx] || ''
+  const ts    = asArray(body.decTargetStage)[idx] || ''
+  const css   = asArray(body.decChangesStatus)[idx] || ''
+  const stxt  = asArray(body.decStatusText)[idx] || ''
+  const tag   = asArray(body.decTagClass)[idx] || ''
+  const reqAllRaw = asArray(body.decReqAllTasks)
+  const reqAll    = reqAllRaw[idx] === 'yes'
+  const reasonF   = asArray(body.decReasonField)[idx] || ''
+  return {
+    label: label,
+    changesStage: cs === 'yes',
+    targetStage: ts,
+    changesStatus: css === 'yes',
+    statusText: stxt,
+    tagClass: tag,
+    requiresAllTasksAccepted: reqAll,
+    reasonField: reasonF
+  }
+}
+
+router.get('/builder/new', function (req, res) {
+  res.render('builder/new/start')
+})
+
+// ----- Loader: open an existing builder-tasklist file in the CYA -----
+
+router.get('/builder/loader', function (req, res) {
+  const dir = path.join(__dirname, 'data')
+  const files = fs.readdirSync(dir).filter(f => /^builder-tasklist-.*\.js$/.test(f)).sort().reverse()
+  res.render('builder/loader', { loaderFiles: files })
+})
+
+function fileToFlow (filePath) {
+  delete require.cache[require.resolve(filePath)]
+  const m = require(filePath)
+  const flow = { stageCount: 0, stages: [], setupIndex: 0, cur: { stage: 0, task: 0 } }
+  const stageKeys = Object.keys(m.stages || {})
+  flow.stageCount = stageKeys.length
+  stageKeys.forEach((sk, sIdx) => {
+    const sObj = m.stages[sk]
+    const decGroup = (m.decisionOptions || {})[sObj.decisionGroup] || {}
+    const outcomes = (decGroup.options || []).map(o => o.label).join(', ')
+    const tasks = (sObj.tasks || []).map(tk => {
+      const t = (m.tasks || {})[tk] || {}
+      return { pageTitle: t.pageTitle || '', preOutcomesHtml: t.preOutcomesHtml || '' }
+    })
+    const cond = sObj.conditional || null
+    flow.stages.push({
+      name: sObj.heading || sk,
+      prefix: sObj.prefix || sk,
+      taskCount: tasks.length,
+      tasks: tasks,
+      description: sObj.description || '',
+      hasConditional: !!(cond && (cond.field || cond.when || cond.text)),
+      conditionalField: cond ? (cond.field || '') : '',
+      conditionalEquals: cond ? (cond.equals !== undefined ? cond.equals : '') : '',
+      conditionalText: cond ? (cond.text || '') : '',
+      outcomes: outcomes,
+      acceptedOutcome: decGroup.acceptedValue || '',
+      decisions: (sObj.decisions || []).map(d => ({
+        label: d.label || '',
+        changesStage: !!d.stageChange,
+        targetStage: d.stageChange || '',
+        changesStatus: !!d.statusChange,
+        statusText: d.statusChange ? d.statusChange.status : '',
+        tagClass: d.statusChange ? d.statusChange.tag : '',
+        requiresAllTasksAccepted: !!d.requiresAllTasksAccepted,
+        reasonField: d.reasonField || ''
+      }))
+    })
+  })
+  return flow
+}
+
+router.post('/builder/loader/load', function (req, res) {
+  const file = req.body.file
+  if (!file || !/^builder-tasklist-.*\.js$/.test(file)) return res.redirect('/builder/loader')
+  const filePath = path.join(__dirname, 'data', file)
+  if (!fs.existsSync(filePath)) return res.redirect('/builder/loader')
+  req.session.data.builderFlow = fileToFlow(filePath)
+  res.redirect('/builder/new/check-answers')
+})
+
+router.post('/builder/new/start', function (req, res) {
+  const n = parseInt(req.body.stageCount, 10) || 0
+  const flow = { stageCount: n, stages: [], setupIndex: 0, cur: { stage: 0, task: 0 } }
+  for (let i = 0; i < n; i++) flow.stages.push({ name: '', prefix: '', taskCount: 0, tasks: [], description: '', hasConditional: false, conditionalField: '', conditionalEquals: '', conditionalText: '', outcomes: '', acceptedOutcome: '', decisions: [{}] })
+  req.session.data.builderFlow = flow
+  res.redirect('/builder/new/stage-setup')
+})
+
+router.get('/builder/new/stage-setup', function (req, res) {
+  res.render('builder/new/stage-setup')
+})
+
+router.post('/builder/new/stage-setup', function (req, res) {
+  const flow = getFlow(req)
+  const i = parseInt(req.body.index, 10)
+  const tc = parseInt(req.body.taskCount, 10) || 0
+  const stage = flow.stages[i]
+  stage.name = req.body.stageName || ('Stage ' + (i + 1))
+  stage.prefix = stagePrefix(stage.name)
+  stage.taskCount = tc
+  if (!stage.tasks || stage.tasks.length !== tc) {
+    stage.tasks = []
+    for (let t = 0; t < tc; t++) stage.tasks.push({})
+  }
+  stage.description = req.body.description || ''
+  const hcRaw = req.body.hasConditional
+  stage.hasConditional = Array.isArray(hcRaw) ? hcRaw.indexOf('yes') !== -1 : hcRaw === 'yes'
+  stage.conditionalField = req.body.conditionalField || ''
+  stage.conditionalEquals = req.body.conditionalEquals || ''
+  stage.conditionalText = req.body.conditionalText || ''
+  stage.outcomes = req.body.outcomes || ''
+  stage.acceptedOutcome = req.body.acceptedOutcome || ''
+
+  const labels = asArray(req.body.decLabel)
+  stage.decisions = []
+  for (let d = 0; d < labels.length; d++) {
+    stage.decisions.push(newDecisionFromBody(req.body, d))
+  }
+  if (stage.decisions.length === 0) stage.decisions.push({})
+
+  if (req.body.action === 'add-decision') {
+    stage.decisions.push({})
+    return res.redirect('/builder/new/stage-setup')
+  }
+
+  if (flow.editReturn) {
+    const anchor = flow.editReturn
+    delete flow.editReturn
+    return res.redirect('/builder/new/check-answers#' + anchor)
+  }
+
+  if (i + 1 < flow.stageCount) {
+    flow.setupIndex = i + 1
+    return res.redirect('/builder/new/stage-setup')
+  }
+  // All stages set up — jump to the first stage that has any tasks.
+  // Stages with 0 tasks (terminal / note-and-button) skip the task capture loop.
+  const firstWithTasks = flow.stages.findIndex(function (s) { return (s.taskCount || 0) > 0 })
+  if (firstWithTasks === -1) return res.redirect('/builder/new/stages-list')
+  flow.cur = { stage: firstWithTasks, task: 0 }
+  res.redirect('/builder/new/task')
+})
+
+router.get('/builder/new/task', function (req, res) {
+  res.render('builder/new/task-form')
+})
+
+router.post('/builder/new/task', function (req, res) {
+  const flow = getFlow(req)
+  const s = parseInt(req.body.stage, 10)
+  const t = parseInt(req.body.task, 10)
+  flow.stages[s].tasks[t] = {
+    pageTitle: req.body.pageTitle || '',
+    preOutcomesHtml: req.body.preOutcomesHtml || ''
+  }
+  flow.cur = { stage: s, task: t }
+  if (flow.editReturn) {
+    const anchor = flow.editReturn
+    delete flow.editReturn
+    return res.redirect('/builder/new/check-answers#' + anchor)
+  }
+  if (t + 1 < flow.stages[s].taskCount) {
+    flow.cur.task = t + 1
+    return res.redirect('/builder/new/task')
+  }
+  res.redirect('/builder/new/tasks-list')
+})
+
+router.get('/builder/new/tasks-list', function (req, res) {
+  res.render('builder/new/tasks-list')
+})
+
+router.post('/builder/new/tasks-list', function (req, res) {
+  const flow = getFlow(req)
+  const s = parseInt(req.body.stage, 10)
+  if (req.body.addAnotherTask === 'yes') {
+    flow.stages[s].tasks.push({})
+    flow.stages[s].taskCount = flow.stages[s].tasks.length
+    flow.cur = { stage: s, task: flow.stages[s].tasks.length - 1 }
+    return res.redirect('/builder/new/task')
+  }
+  // Skip past any later stages that have 0 tasks; they don't need a task-capture loop.
+  let nextIdx = -1
+  for (let i = s + 1; i < flow.stages.length; i++) {
+    if ((flow.stages[i].taskCount || 0) > 0) { nextIdx = i; break }
+  }
+  if (nextIdx === -1) return res.redirect('/builder/new/stages-list')
+  flow.cur = { stage: nextIdx, task: 0 }
+  res.redirect('/builder/new/task')
+})
+
+router.get('/builder/new/stages-list', function (req, res) {
+  res.render('builder/new/stages-list')
+})
+
+router.post('/builder/new/stages-list', function (req, res) {
+  const flow = getFlow(req)
+  if (req.body.addAnotherStage === 'yes') {
+    flow.stages.push({ name: '', prefix: '', taskCount: 0, tasks: [], description: '', hasConditional: false, conditionalField: '', conditionalEquals: '', conditionalText: '', outcomes: '', acceptedOutcome: '', decisions: [{}] })
+    flow.stageCount = flow.stages.length
+    flow.setupIndex = flow.stages.length - 1
+    return res.redirect('/builder/new/stage-setup')
+  }
+  res.redirect('/builder/new/check-answers')
+})
+
+router.get('/builder/new/edit-task', function (req, res) {
+  const flow = getFlow(req)
+  flow.cur = { stage: parseInt(req.query.stage, 10), task: parseInt(req.query.task, 10) }
+  flow.editReturn = req.query.return || null
+  res.render('builder/new/task-form')
+})
+
+router.get('/builder/new/edit-stage', function (req, res) {
+  const flow = getFlow(req)
+  flow.setupIndex = parseInt(req.query.stage, 10)
+  flow.editReturn = req.query.return || null
+  res.render('builder/new/stage-setup')
+})
+
+router.get('/builder/new/check-answers', function (req, res) {
+  res.render('builder/new/check-answers')
+})
+
+router.get('/builder/new/save-options', function (req, res) {
+  res.render('builder/new/save-options')
+})
+
+function slugify (s) {
+  return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}
+
+function buildDataModel (flow) {
+  const tasks = {}
+  const stages = {}
+  const decisionOptions = {}
+  flow.stages.forEach((stage, sIdx) => {
+    const sNum = sIdx + 1
+    const stageKey = 'S' + sNum
+    const taskKeys = []
+    stage.tasks.forEach((task, tIdx) => {
+      const tNum = tIdx + 1
+      const key = 'S' + sNum + 'T' + tNum
+      tasks[key] = {
+        pageTitle: task.pageTitle || '',
+        preOutcomesHtml: task.preOutcomesHtml || '',
+        href: key,
+        decisionField: key + 'Outcome',
+        acceptedValue: stage.acceptedOutcome || '',
+        statusField: key + 'Status',
+        tagField: key + 'Tag'
+      }
+      taskKeys.push(key)
+    })
+    const decKey = stageKey + 'DecisionOptions'
+    const optList = (stage.outcomes || '').split(',').map(s => s.trim()).filter(Boolean)
+    decisionOptions[decKey] = {
+      legend: 'Outcome',
+      formField: stageKey + 'Decision',
+      options: optList.map(label => ({ value: label, label: label })),
+      acceptedValue: stage.acceptedOutcome || ''
+    }
+    stages[stageKey] = {
+      heading: stage.name || stageKey,
+      prefix: stageKey,
+      description: stage.description || '',
+      conditional: stage.hasConditional ? { field: stage.conditionalField || '', equals: stage.conditionalEquals || '', text: stage.conditionalText || '' } : null,
+      tasks: taskKeys,
+      decisionGroup: decKey,
+      stageDecisionField: stageKey + 'Decision',
+      stageStatusField: stageKey + 'Status',
+      stageTagField: stageKey + 'Tag',
+      decisions: (stage.decisions || []).filter(d => d && d.label).map(d => ({
+        label: d.label,
+        stageChange: d.changesStage ? d.targetStage : null,
+        statusChange: d.changesStatus ? { status: d.statusText, tag: d.tagClass } : null,
+        requiresAllTasksAccepted: !!d.requiresAllTasksAccepted,
+        reasonField: d.reasonField || ''
+      }))
+    }
+  })
+  return { tasks, stages, decisionOptions }
+}
+
+function scaffoldCase (caseDir, dataFileBase) {
+  const tplDir   = path.join(__dirname, 'views', 'cases', '_template')
+  const dstDir   = path.join(__dirname, 'views', 'cases', caseDir)
+  const dstInc   = path.join(dstDir, 'includes')
+  const d2Dir    = path.join(__dirname, 'views', 'FRPS-D2')
+  const d2Inc    = path.join(d2Dir, 'includes')
+  if (!fs.existsSync(dstDir)) fs.mkdirSync(dstDir, { recursive: true })
+  if (!fs.existsSync(dstInc)) fs.mkdirSync(dstInc, { recursive: true })
+
+  // Includes copied straight across.
+  ;['_defra-header.html', '_case-context-strip.html', '_case-nav.html'].forEach(function (f) {
+    fs.copyFileSync(path.join(d2Inc, f), path.join(dstInc, f))
+  })
+
+  // The FRPS-D2 case nav references "calculations2" — we don't copy that, so retarget to "calculations".
+  const navPath = path.join(dstInc, '_case-nav.html')
+  fs.writeFileSync(navPath, fs.readFileSync(navPath, 'utf8').replace(/href="calculations2"/g, 'href="calculations"'))
+
+  // Page files copied across with include paths rewritten to point at this case's includes folder.
+  const pages = ['application.html', 'calculations.html', 'timeline.html', 'notes.html', 'agreement.html']
+  pages.forEach(function (f) {
+    const src = path.join(d2Dir, f)
+    if (!fs.existsSync(src)) return
+    let html = fs.readFileSync(src, 'utf8')
+    html = html.replace(/FRPS-D2\/includes\//g, 'cases/' + caseDir + '/includes/')
+    fs.writeFileSync(path.join(dstDir, f), html)
+  })
+
+  // Tasklist + task templates with __CASE_DIR__ replaced.
+  ;['tasklist.html', 'task.html'].forEach(function (f) {
+    let html = fs.readFileSync(path.join(tplDir, f), 'utf8')
+    html = html.replace(/__CASE_DIR__/g, caseDir)
+    fs.writeFileSync(path.join(dstDir, f), html)
+  })
+
+  // Also expose tasklist at the URL the case-nav uses.
+  fs.copyFileSync(path.join(dstDir, 'tasklist.html'), path.join(dstDir, 'tasklist-stage.html'))
+
+  const meta = { dataFile: dataFileBase, caseDir: caseDir }
+  fs.writeFileSync(path.join(dstDir, 'meta.json'), JSON.stringify(meta, null, 2))
+}
+
+function addCaseToIndex (caseName, caseDir, dateStr) {
+  const indexPath = path.join(__dirname, 'views', 'index.html')
+  let content = fs.readFileSync(indexPath, 'utf8')
+  const hrefMarker = 'href="/cases/' + caseDir + '"'
+  if (content.indexOf(hrefMarker) !== -1) return // already linked, don't duplicate
+  const linkLine = '      <li><a href="/cases/' + caseDir + '">launch ' + caseName + ' (' + dateStr + ')</a></li>'
+
+  if (content.indexOf('New made cases') === -1) {
+    const block = '\n    <h2 class="govuk-heading-l">New made cases</h2>\n    <ul class="govuk-list govuk-list--bullet">\n' + linkLine + '\n    </ul>\n  '
+    const lastIdx = content.lastIndexOf('{% endblock %}')
+    if (lastIdx !== -1) {
+      content = content.slice(0, lastIdx) + block + '\n' + content.slice(lastIdx)
+    }
+  } else {
+    const re = /(New made cases[\s\S]*?<ul[^>]*>)([\s\S]*?)(<\/ul>)/
+    content = content.replace(re, function (m, h, body, end) {
+      return h + body + linkLine + '\n    ' + end
+    })
+  }
+  fs.writeFileSync(indexPath, content)
+}
+
+router.post('/builder/new/save', function (req, res) {
+  const flow = getFlow(req)
+  const model = buildDataModel(flow)
+
+  const rawName = (req.body.filename || '').trim()
+  const safe = slugify(rawName) || ('builder-tasklist-' + new Date().toISOString().replace(/[:.]/g, '-'))
+  const baseName = safe.indexOf('builder-tasklist-') === 0 ? safe : ('builder-tasklist-' + safe)
+  const filename = baseName + '.js'
+  const outPath = path.join(__dirname, 'data', filename)
+  const out = '// Saved by /builder/new/save on ' + new Date().toISOString() + '\n' +
+              'module.exports = ' + JSON.stringify(model, null, 2) + ';\n'
+  fs.writeFileSync(outPath, out)
+  flow.savedPath = 'app/data/' + filename
+
+  const ccRaw = req.body.createCase
+  const createCaseChecked = Array.isArray(ccRaw) ? ccRaw.indexOf('yes') !== -1 : ccRaw === 'yes'
+  console.log('[builder/new/save] body =', { filename: req.body.filename, createCase: ccRaw, caseDir: req.body.caseDir, caseName: req.body.caseName, createCaseChecked })
+
+  if (createCaseChecked) {
+    const caseDir = slugify(req.body.caseDir)
+    const caseName = (req.body.caseName || caseDir).trim()
+    console.log('[builder/new/save] createCase branch entered, slugified caseDir =', JSON.stringify(caseDir))
+    if (caseDir) {
+      try {
+        scaffoldCase(caseDir, baseName)
+        const dateStr = new Date().toLocaleDateString('en-GB')
+        addCaseToIndex(caseName, caseDir, dateStr)
+        flow.savedCaseDir = caseDir
+        flow.savedCaseName = caseName
+        console.log('[builder/new/save] scaffold + index update OK for', caseDir)
+      } catch (e) {
+        console.error('[builder/new/save] scaffold/index FAILED:', e)
+      }
+    } else {
+      console.log('[builder/new/save] caseDir was blank after slugify — skipping')
+    }
+  } else {
+    console.log('[builder/new/save] createCase not "yes" — skipping')
+  }
+
+  res.render('builder/new/saved')
+})
+
+// ----- Dynamic case routes -----
+
+function loadCaseMeta (caseDir) {
+  const metaPath = path.join(__dirname, 'views', 'cases', caseDir, 'meta.json')
+  if (!fs.existsSync(metaPath)) return null
+  const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'))
+  const dataPath = path.join(__dirname, 'data', meta.dataFile + '.js')
+  if (!fs.existsSync(dataPath)) return null
+  delete require.cache[require.resolve(dataPath)]
+  meta.caseData = require(dataPath)
+  meta.firstStageKey = Object.keys(meta.caseData.stages)[0]
+  return meta
+}
+
+function renderCaseTasklist (req, res) {
+  const meta = loadCaseMeta(req.params.dir)
+  if (!meta) return res.status(404).send('Case not found')
+  const sessionData = (req.session && req.session.data) || {}
+  const stageKey = sessionData.caseStage || meta.firstStageKey
+  const stage = (meta.caseData.stages || {})[stageKey] || {}
+
+  // Filter decisions by per-decision gating (rule 12c).
+  const allTasksAccepted = (stage.tasks || []).every(function (tk) {
+    const t = meta.caseData.tasks[tk]
+    return t && sessionData[t.decisionField] === t.acceptedValue
+  })
+  const visibleDecisions = (stage.decisions || []).filter(function (d) {
+    return !d.requiresAllTasksAccepted || allTasksAccepted
+  })
+
+  // Evaluate conditional stage text (field === equals).
+  const cond = stage.conditional
+  const showConditional = !!(cond && cond.field && cond.equals !== undefined && sessionData[cond.field] === cond.equals)
+
+  res.render('cases/' + req.params.dir + '/tasklist-stage', {
+    caseData: meta.caseData,
+    caseDir: req.params.dir,
+    caseName: req.params.dir,
+    firstStageKey: meta.firstStageKey,
+    visibleDecisions: visibleDecisions,
+    showConditional: showConditional,
+    allTasksAccepted: allTasksAccepted
+  })
+}
+
+router.get('/cases/:dir', function (req, res) {
+  res.redirect('/cases/' + req.params.dir + '/tasklist-stage')
+})
+
+router.get('/cases/:dir/tasklist-stage', renderCaseTasklist)
+
+router.get('/cases/:dir/task/:taskKey', function (req, res) {
+  const meta = loadCaseMeta(req.params.dir)
+  if (!meta) return res.status(404).send('Case not found')
+  const task = meta.caseData.tasks[req.params.taskKey]
+  if (!task) return res.status(404).send('Task not found')
+  let stageDecisionGroup = null
+  Object.keys(meta.caseData.stages).forEach(function (sk) {
+    const s = meta.caseData.stages[sk]
+    if ((s.tasks || []).indexOf(req.params.taskKey) !== -1) {
+      stageDecisionGroup = meta.caseData.decisionOptions[s.decisionGroup]
+    }
+  })
+  res.render('cases/' + req.params.dir + '/task', {
+    caseData: meta.caseData,
+    caseDir: req.params.dir,
+    taskKey: req.params.taskKey,
+    task: task,
+    stageDecisionGroup: stageDecisionGroup || { legend: 'Outcome', options: [] }
+  })
+})
+
+router.post('/cases/:dir/task/:taskKey/save', function (req, res) {
+  res.redirect('/cases/' + req.params.dir + '/tasklist-stage')
+})
+
+router.post('/cases/:dir/decide', function (req, res) {
+  const meta = loadCaseMeta(req.params.dir)
+  if (!meta) return res.status(404).send('Case not found')
+  const stage = meta.caseData.stages[req.body.stageKey]
+  const chosen = (stage.decisions || []).find(function (d) { return d.label === req.body.decision })
+  if (chosen && chosen.stageChange) req.session.data.caseStage = chosen.stageChange
+  if (chosen && chosen.statusChange) {
+    req.session.data[stage.stageStatusField] = chosen.statusChange.status
+    req.session.data[stage.stageTagField] = chosen.statusChange.tag
+  }
+  res.redirect('/cases/' + req.params.dir + '/tasklist-stage')
+})
+
+// Generic page route for the copied FRPS-D2 pages (application, calculations, timeline, notes, agreement)
+router.get('/cases/:dir/:page', function (req, res) {
+  const dir = req.params.dir
+  const page = req.params.page
+  const filePath = path.join(__dirname, 'views', 'cases', dir, page + '.html')
+  if (!fs.existsSync(filePath)) return res.status(404).send('Page not found')
+  const meta = loadCaseMeta(dir) || {}
+  res.render('cases/' + dir + '/' + page, {
+    caseData: meta.caseData || null,
+    caseDir: dir,
+    firstStageKey: meta.firstStageKey || null
+  })
+})
+
+router.get('/builder/new/discard', function (req, res) {
+  delete req.session.data.builderFlow
+  res.redirect('/builder')
+})
+
+// ============================================================
 // Naming conventions
 // ============================================================
 //
@@ -939,6 +1459,37 @@ router.get('/setLinked1', function (req, res) {
   // Marks the linked case as active, enabling case2 navigation
   req.session.data.linkedCase = 'yes';
   res.redirect('/FRPS-D2/caselist');
+});
+
+router.get('/largeCase1', function (req, res) {
+  // Sets the largeCase flag so the case-nav swaps in application-new and calculations-new,
+  // then forwards to /tasklistStage2C2 to advance case2 to its next stage
+  req.session.data.largeCase = 'yes';
+  res.redirect('/tasklistStage2C2');
+});
+
+router.get('/largeCalcFilter', function (req, res) {
+  // Filter handler for the large-case calculations pages (new and old, top and case2).
+  // Sets/clears showFailsOnly and showChangesOnly based on the radio choice, then
+  // returns to the originating page.
+  const filter = req.query.filter;
+  if (filter === 'fails') {
+    req.session.data.showFailsOnly   = 'yes';
+    req.session.data.showChangesOnly = false;
+  } else if (filter === 'changes') {
+    req.session.data.showChangesOnly = 'yes';
+    req.session.data.showFailsOnly   = false;
+  } else if (filter === 'all') {
+    req.session.data.showFailsOnly   = false;
+    req.session.data.showChangesOnly = false;
+  }
+  const targets = {
+    'main-new':  '/FRPS-D2/calculations-new',
+    'main-old':  '/FRPS-D2/calculations-old',
+    'case2-new': '/FRPS-D2/case2/calculations-new',
+    'case2-old': '/FRPS-D2/case2/calculations-old',
+  };
+  res.redirect(targets[req.query.from] || '/FRPS-D2/calculations-new');
 });
 
 router.get('/setPay1', function (req, res) {

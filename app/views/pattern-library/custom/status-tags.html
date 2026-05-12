@@ -9,6 +9,12 @@
 {% block content %}
 <div class="govuk-width-container">
 
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Status tags" }
+  ]}) }}
+
   <div class="app-split-pane">
     <div class="app-split-pane__nav">
       {% include "pattern-library/includes/_pl-subnav-custom.html" %}
@@ -157,6 +163,9 @@
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">This component is documented in the pattern library but is not yet used in the prototype.</p>
 
     </div>
   </div>

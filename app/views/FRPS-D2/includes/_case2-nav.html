@@ -15,14 +15,14 @@
 
           {% if data.caseStageC2 !== '5month' %}
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="application">
+            <a class="govuk-service-navigation__link" href="{% if data.largeCase %}application-new{% else %}application{% endif %}">
               {% if activeNavItem === 'application' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Application{% if activeNavItem === 'application' %}</strong>{% endif %}
             </a>
           </li>
           {% endif %}
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'calculations' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="calculations2">
+            <a class="govuk-service-navigation__link" href="{% if data.largeCase %}calculations-new{% else %}calculations2{% endif %}">
               {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
             </a>
           </li>

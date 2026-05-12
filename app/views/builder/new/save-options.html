@@ -1,0 +1,59 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({ text: "Back", href: "/builder/new/check-answers" }) }}
+
+        <h1 class="govuk-heading-xl">Save tasklist data</h1>
+
+        <form action="/builder/new/save" method="post">
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="filename">File name</label>
+            <div class="govuk-hint">Saved as <code>app/data/builder-tasklist-{your name}.js</code>. Letters, numbers and dashes only.</div>
+            <div class="govuk-input__wrapper">
+              <div class="govuk-input__prefix" aria-hidden="true">builder-tasklist-</div>
+              <input class="govuk-input" id="filename" name="filename" value="{{ data.builderFlow.suggestedFilename or '' }}">
+              <div class="govuk-input__suffix" aria-hidden="true">.js</div>
+            </div>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Create a new case flow from this file</legend>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="createCase" name="createCase" type="checkbox" value="yes" data-aria-controls="case-dir-block">
+                  <label class="govuk-label govuk-checkboxes__label" for="createCase">Yes, scaffold a case directory and add a launch link to the home page</label>
+                </div>
+                <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="case-dir-block">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="caseDir">Directory name for this case</label>
+                    <div class="govuk-hint">For example, <code>my-test-case</code>. Letters, numbers and dashes only. Used as the URL slug at <code>/cases/&lt;name&gt;</code>.</div>
+                    <input class="govuk-input" id="caseDir" name="caseDir" value="">
+                  </div>
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="caseName">Case display name</label>
+                    <div class="govuk-hint">Shown on the home page link as "launch &lt;name&gt; (date)".</div>
+                    <input class="govuk-input" id="caseName" name="caseName" value="">
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Save</button>
+            <a class="govuk-link" href="/builder/new/check-answers">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

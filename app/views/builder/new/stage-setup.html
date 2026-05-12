@@ -1,0 +1,194 @@
+{% extends "layouts/main.html" %}
+{% set i = data.builderFlow.setupIndex | int %}
+{% set stage = data.builderFlow.stages[i] %}
+{% set prefix = stage.prefix or '(stage prefix)' %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({ text: "Back", href: "javascript:history.back()" }) }}
+
+        <span class="govuk-caption-l">Stage {{ i + 1 }} of {{ data.builderFlow.stageCount }}</span>
+        <h1 class="govuk-heading-xl">Set up this stage</h1>
+
+        <form action="/builder/new/stage-setup" method="post">
+          <input type="hidden" name="index" value="{{ i }}">
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="stageName">Stage name</label>
+            <div class="govuk-hint">For example, "Review" or "Agreement". The first three letters become the auto-generated prefix.</div>
+            <input class="govuk-input" id="stageName" name="stageName" value="{{ stage.name or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="taskCount">How many tasks does this stage have?</label>
+            <div class="govuk-hint">Use 0 for terminal stages (e.g. "Rejected", "Withdrawn") and for stages where the only action is a single labelled button with a reason (e.g. "Withdraw").</div>
+            <input class="govuk-input govuk-input--width-3" id="taskCount" name="taskCount" type="number" min="0" max="20" value="{{ stage.taskCount or 0 }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="description">Stage description</label>
+            <div class="govuk-hint">Content shown on the tasklist-stage page for this stage. HTML allowed.</div>
+            <textarea class="govuk-textarea" id="description" name="description" rows="4">{{ stage.description or '' }}</textarea>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Conditional stage text</legend>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="hasConditional" name="hasConditional" type="checkbox" value="yes" {% if stage.hasConditional %}checked{% endif %} data-aria-controls="conditional-block">
+                  <label class="govuk-label govuk-checkboxes__label" for="hasConditional">Stage text varies by case status</label>
+                </div>
+                <div class="govuk-checkboxes__conditional {% if not stage.hasConditional %}govuk-checkboxes__conditional--hidden{% endif %}" id="conditional-block">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="conditionalField">Session field name</label>
+                    <div class="govuk-hint">For example: <code>caseStatus</code></div>
+                    <input class="govuk-input" id="conditionalField" name="conditionalField" value="{{ stage.conditionalField or '' }}">
+                  </div>
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="conditionalEquals">Field value to match</label>
+                    <div class="govuk-hint">For example: <code>on-hold</code></div>
+                    <input class="govuk-input" id="conditionalEquals" name="conditionalEquals" value="{{ stage.conditionalEquals or '' }}">
+                  </div>
+                  <div class="govuk-form-group">
+                    <label class="govuk-label" for="conditionalText">Conditional text (HTML allowed)</label>
+                    <textarea class="govuk-textarea" id="conditionalText" name="conditionalText" rows="3">{{ stage.conditionalText or '' }}</textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <h2 class="govuk-heading-l">Task outcomes</h2>
+          <p class="govuk-body">All tasks in this stage share these outcome options.</p>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="outcomes">Outcomes (comma separated)</label>
+            <div class="govuk-hint">For example: Accepted, Information requested, Cannot accept</div>
+            <input class="govuk-input" id="outcomes" name="outcomes" value="{{ stage.outcomes or '' }}">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--m" for="acceptedOutcome">Positive / accepted option</label>
+            <div class="govuk-hint">Which outcome above marks the task as accepted? e.g. Accepted</div>
+            <input class="govuk-input" id="acceptedOutcome" name="acceptedOutcome" value="{{ stage.acceptedOutcome or '' }}">
+          </div>
+
+          <h2 class="govuk-heading-l">Stage decisions</h2>
+          <p class="govuk-body">Actions the caseworker can take to move the case forward from this stage.</p>
+
+          {% set decisions = stage.decisions or [{}] %}
+          {% for dec in decisions %}
+            <fieldset class="govuk-fieldset govuk-!-margin-bottom-6">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Decision {{ loop.index }}</legend>
+
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="decLabel{{ loop.index }}">Decision label</label>
+                <div class="govuk-hint">e.g. Approve, Reject, Put on hold</div>
+                <input class="govuk-input" id="decLabel{{ loop.index }}" name="decLabel" value="{{ dec.label or '' }}">
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Stage change?</legend>
+                  <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="decChangesStage{{ loop.index }}" name="decChangesStage" type="radio" value="yes" {% if dec.changesStage %}checked{% endif %}>
+                      <label class="govuk-label govuk-radios__label" for="decChangesStage{{ loop.index }}">Yes</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="decChangesStageNo{{ loop.index }}" name="decChangesStage" type="radio" value="no" {% if not dec.changesStage %}checked{% endif %}>
+                      <label class="govuk-label govuk-radios__label" for="decChangesStageNo{{ loop.index }}">No</label>
+                    </div>
+                  </div>
+                </fieldset>
+                <label class="govuk-label govuk-!-margin-top-2" for="decTargetStage{{ loop.index }}">New case stage (if yes)</label>
+                <input class="govuk-input" id="decTargetStage{{ loop.index }}" name="decTargetStage" value="{{ dec.targetStage or '' }}">
+              </div>
+
+              <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                  <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status change?</legend>
+                  <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="decChangesStatus{{ loop.index }}" name="decChangesStatus" type="radio" value="yes" {% if dec.changesStatus %}checked{% endif %}>
+                      <label class="govuk-label govuk-radios__label" for="decChangesStatus{{ loop.index }}">Yes</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                      <input class="govuk-radios__input" id="decChangesStatusNo{{ loop.index }}" name="decChangesStatus" type="radio" value="no" {% if not dec.changesStatus %}checked{% endif %}>
+                      <label class="govuk-label govuk-radios__label" for="decChangesStatusNo{{ loop.index }}">No</label>
+                    </div>
+                  </div>
+                </fieldset>
+                <label class="govuk-label govuk-!-margin-top-2" for="decStatusText{{ loop.index }}">New status text</label>
+                <input class="govuk-input" id="decStatusText{{ loop.index }}" name="decStatusText" value="{{ dec.statusText or '' }}">
+                <label class="govuk-label govuk-!-margin-top-2" for="decTagClass{{ loop.index }}">Tag CSS class</label>
+                <input class="govuk-input" id="decTagClass{{ loop.index }}" name="decTagClass" value="{{ dec.tagClass or '' }}">
+              </div>
+
+              <div class="govuk-form-group">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="decReqAllTasks{{ loop.index }}" name="decReqAllTasks" type="checkbox" value="yes" {% if dec.requiresAllTasksAccepted %}checked{% endif %}>
+                    <label class="govuk-label govuk-checkboxes__label" for="decReqAllTasks{{ loop.index }}">Only show this option when all tasks have been accepted</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="decReasonField{{ loop.index }}">Reason field name (optional)</label>
+                <div class="govuk-hint">If set, the explanation textarea posts to this session key. Leave blank to use the generic <code>decisionReason</code>.</div>
+                <input class="govuk-input" id="decReasonField{{ loop.index }}" name="decReasonField" value="{{ dec.reasonField or '' }}">
+              </div>
+            </fieldset>
+          {% endfor %}
+
+          <div class="govuk-button-group">
+            <button type="submit" name="action" value="add-decision" class="govuk-button govuk-button--secondary" data-module="govuk-button">Add another decision</button>
+          </div>
+
+          {% if stage.name %}
+          <h2 class="govuk-heading-l govuk-!-margin-top-6">Auto-generated stage data</h2>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage prefix:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#stageName">Change<span class="govuk-visually-hidden"> prefix</span></a></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage key / href:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}Stage</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#stageName">Change<span class="govuk-visually-hidden"> stage key</span></a></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Decision input name:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}StageDecision</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#stageName">Change<span class="govuk-visually-hidden"> decision input name</span></a></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage status field:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}StageStatus</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#stageName">Change<span class="govuk-visually-hidden"> stage status field</span></a></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">Stage tag field:</dt>
+              <dd class="govuk-summary-list__value">{{ prefix }}StageTag</dd>
+              <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#stageName">Change<span class="govuk-visually-hidden"> stage tag field</span></a></dd>
+            </div>
+          </dl>
+          {% endif %}
+
+          <div class="govuk-button-group govuk-!-margin-top-6">
+            <button type="submit" name="action" value="continue" class="govuk-button" data-module="govuk-button">Continue</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
