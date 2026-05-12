@@ -774,7 +774,7 @@
 .app-pl-header__logo {
   display: inline-flex;
   align-items: flex-end;
-  gap: 16px;
+  gap: 50px;
   color: #fff;
   text-decoration: none;
 }
@@ -783,6 +783,7 @@
   height: 64px;
   width: auto;
   display: block;
+  margin-bottom: 5px;
 }
 
 @media (min-width: 40.0625em) {
