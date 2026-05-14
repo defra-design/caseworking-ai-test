@@ -499,6 +499,34 @@
     border: 1px solid #b1b4b6;
 }
 
+// Parcel search (calculations-new2): autocomplete input + Find button on one line.
+// The wrapping panel is placed at the top of the right-hand column so its top
+// aligns with the top of the filter panel in the left column.
+.parcel-search__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.parcel-search__row #parcel-search-container {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.parcel-search__row .autocomplete__wrapper {
+  width: 100%;
+}
+
+// Make accessible-autocomplete use the GDS Transport font (input + dropdown menu).
+.autocomplete__input,
+.autocomplete__menu,
+.autocomplete__option,
+.autocomplete__hint {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .flex-box-version {
   display: flex;
   gap: 10px;

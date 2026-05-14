@@ -1,10 +1,18 @@
 const govukPrototypeKit = require('govuk-prototype-kit')
 const router = govukPrototypeKit.requests.setupRouter()
+// express isn't a direct project dependency; reach it through the kit's bundle.
+const express = require('govuk-prototype-kit/node_modules/express')
 
 // Make the case 3 tasklist data model available to all templates as `tasklistData`.
 // The data file is reloaded on each request so /builder/persist edits are picked up live.
 const path = require('path')
 const fs = require('fs')
+
+// Serve the accessible-autocomplete dist files (CSS/JS) from node_modules.
+// Used by /FRPS-D2/case2/calculations-new2 to power the parcel search.
+router.use('/vendor/accessible-autocomplete', express.static(
+  path.join(__dirname, '..', 'node_modules', 'accessible-autocomplete', 'dist')
+))
 const tasklistDataPath = path.join(__dirname, 'data', 'd2-case-tasklist.js')
 
 function loadTasklistData () {
@@ -1468,26 +1476,69 @@ router.get('/largeCase1', function (req, res) {
   res.redirect('/tasklistStage2C2');
 });
 
+router.get('/largeCase2', function (req, res) {
+  // Sets the largeCase flag to 'new2' so the case-nav swaps in application-new2 and
+  // calculations-new2, then forwards to /tasklistStage2C2 to advance case2.
+  req.session.data.largeCase = 'new2';
+  res.redirect('/tasklistStage2C2');
+});
+
+router.get('/mediumApplication', function (req, res) {
+  // Medium application: routes case-nav to application-new and calculations-new (11 parcels).
+  req.session.data.largeCase = 'yes';
+  res.redirect('/tasklistStage2C2');
+});
+
+router.get('/largeApplication', function (req, res) {
+  // Large application: routes case-nav to application-new2 and calculations-new2 (101 parcels).
+  req.session.data.largeCase = 'new2';
+  res.redirect('/tasklistStage2C2');
+});
+
+// Map calc page URLs to their per-page filter key (matches the `from` value in each page's filter form)
+const calcPageKeys = {
+  '/FRPS-D2/calculations-new':       'main-new',
+  '/FRPS-D2/calculations-old':       'main-old',
+  '/FRPS-D2/case2/calculations-new':  'case2-new',
+  '/FRPS-D2/case2/calculations-new2': 'case2-new2',
+  '/FRPS-D2/case2/calculations-old':  'case2-old',
+  '/FRPS-D2/case2/calculations-old2': 'case2-old2',
+};
+
+// Before rendering any calc page, swap in that page's own filter state so settings on one page
+// don't leak into another. Templates keep reading data.showFailsOnly / data.showChangesOnly.
+router.use((req, res, next) => {
+  const key = calcPageKeys[req.path];
+  if (key) {
+    req.session.data.calcFilters = req.session.data.calcFilters || {};
+    const f = req.session.data.calcFilters[key] || {};
+    req.session.data.showFailsOnly   = f.fails   || false;
+    req.session.data.showChangesOnly = f.changes || false;
+  }
+  next();
+});
+
 router.get('/largeCalcFilter', function (req, res) {
   // Filter handler for the large-case calculations pages (new and old, top and case2).
-  // Sets/clears showFailsOnly and showChangesOnly based on the radio choice, then
-  // returns to the originating page.
+  // Stores the choice under a per-page key so each page keeps its own filter independently.
   const filter = req.query.filter;
-  if (filter === 'fails') {
-    req.session.data.showFailsOnly   = 'yes';
-    req.session.data.showChangesOnly = false;
-  } else if (filter === 'changes') {
-    req.session.data.showChangesOnly = 'yes';
-    req.session.data.showFailsOnly   = false;
-  } else if (filter === 'all') {
-    req.session.data.showFailsOnly   = false;
-    req.session.data.showChangesOnly = false;
-  }
+  const from = req.query.from;
+  req.session.data.calcFilters = req.session.data.calcFilters || {};
+  const entry = { fails: false, changes: false };
+  if (filter === 'fails')   entry.fails   = 'yes';
+  if (filter === 'changes') entry.changes = 'yes';
+  req.session.data.calcFilters[from] = entry;
+  // Reflect on the legacy globals so the upcoming redirect renders correctly even before
+  // the per-page middleware fires.
+  req.session.data.showFailsOnly   = entry.fails;
+  req.session.data.showChangesOnly = entry.changes;
   const targets = {
     'main-new':  '/FRPS-D2/calculations-new',
     'main-old':  '/FRPS-D2/calculations-old',
     'case2-new': '/FRPS-D2/case2/calculations-new',
+    'case2-new2': '/FRPS-D2/case2/calculations-new2',
     'case2-old': '/FRPS-D2/case2/calculations-old',
+    'case2-old2': '/FRPS-D2/case2/calculations-old2',
   };
   res.redirect(targets[req.query.from] || '/FRPS-D2/calculations-new');
 });

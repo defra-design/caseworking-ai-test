@@ -3,6 +3,11 @@
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "FRPS-D2/includes/_case-context-strip.html" %}
 {% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
 
 
 {% block content %}
@@ -131,6 +136,26 @@
 
     </div>
   <div class="govuk-grid-column-two-thirds govuk-!-padding-left-4">
+
+  <div class="parcel-search govuk-!-margin-bottom-6">
+    <form id="parcel-search-form" onsubmit="return false;">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="parcel-search-input">
+          Find a specific land parcel
+        </label>
+        <div class="parcel-search__row">
+          <div id="parcel-search-container"></div>
+          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" id="parcel-find-btn">
+            Find
+          </button>
+        </div>
+        <p id="parcel-search-status" class="govuk-body-s govuk-!-margin-top-2" hidden>
+          Showing only <span id="parcel-search-status-id"></span>.
+          <a href="#" class="govuk-link" id="parcel-search-clear">Show all land parcels</a>
+        </p>
+      </div>
+    </form>
+  </div>
 
 <form action="test4" method="post">
 <div class="govuk-form-group">
@@ -2809,4 +2834,85 @@
 
 
 
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var parcelIds = [];
+      var sectionsById = {};
+      var allParcelElements = [];
+      var headers = document.querySelectorAll('h2.govuk-heading-m');
+      headers.forEach(function (h) {
+        var m = h.textContent.match(/Parcel ID:\s*(SO\d+\s*\d+)\s*checks/);
+        if (!m) return;
+        var id = m[1].replace(/\s+/g, ' ').trim();
+        parcelIds.push(id);
+        var run = [h];
+        var n = h.nextElementSibling;
+        while (n && !(n.tagName === 'H2' && /Parcel ID:/.test(n.textContent))) {
+          run.push(n);
+          n = n.nextElementSibling;
+        }
+        sectionsById[id] = run;
+        allParcelElements = allParcelElements.concat(run);
+      });
+
+      var container = document.getElementById('parcel-search-container');
+      if (!container || typeof accessibleAutocomplete !== 'function') return;
+
+      var selected = '';
+      accessibleAutocomplete({
+        element: container,
+        id: 'parcel-search-input',
+        source: parcelIds,
+        minLength: 1,
+        showAllValues: false,
+        confirmOnBlur: false,
+        displayMenu: 'overlay',
+        placeholder: 'e.g. SO3757 3159',
+        onConfirm: function (value) { selected = value || ''; }
+      });
+
+      var status   = document.getElementById('parcel-search-status');
+      var statusId = document.getElementById('parcel-search-status-id');
+
+      function showOnly(parcelId) {
+        var keep = sectionsById[parcelId] || [];
+        var keepSet = new Set(keep);
+        allParcelElements.forEach(function (el) {
+          if (keepSet.has(el)) el.style.display = '';
+          else el.style.display = 'none';
+        });
+        statusId.textContent = parcelId;
+        status.hidden = false;
+      }
+
+      function showAll() {
+        allParcelElements.forEach(function (el) { el.style.display = ''; });
+        status.hidden = true;
+      }
+
+      function applyFind(value) {
+        if (!value) return;
+        var match = parcelIds.find(function (p) { return p.toLowerCase() === value.toLowerCase().trim(); });
+        if (!match) return;
+        showOnly(match);
+      }
+
+      document.getElementById('parcel-find-btn').addEventListener('click', function () {
+        var input = document.getElementById('parcel-search-input');
+        applyFind(selected || (input && input.value));
+      });
+
+      document.getElementById('parcel-search-clear').addEventListener('click', function (e) {
+        e.preventDefault();
+        selected = '';
+        var input = document.getElementById('parcel-search-input');
+        if (input) input.value = '';
+        showAll();
+      });
+    })();
+  </script>
 {% endblock %}

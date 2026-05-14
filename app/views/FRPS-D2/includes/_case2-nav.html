@@ -1,3 +1,16 @@
+{# Application-size switch: maps the largeCase flag to the matching page slugs.
+   - 'yes'  → medium application (11 parcels)
+   - 'new2' → large application (101 parcels)
+   - unset  → small (default) #}
+{% set appSlug = 'application' %}
+{% set calcSlug = 'calculations2' %}
+{% if data.largeCase === 'new2' %}
+  {% set appSlug = 'application-new2' %}
+  {% set calcSlug = 'calculations-new2' %}
+{% elif data.largeCase %}
+  {% set appSlug = 'application-new' %}
+  {% set calcSlug = 'calculations-new' %}
+{% endif %}
 <div class="govuk-service-navigation govuk-service-navigation-white" data-module="govuk-service-navigation">
   <div class="govuk-width-container">
     <div class="govuk-service-navigation__container">
@@ -15,14 +28,14 @@
 
           {% if data.caseStageC2 !== '5month' %}
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="{% if data.largeCase %}application-new{% else %}application{% endif %}">
+            <a class="govuk-service-navigation__link" href="{{ appSlug }}">
               {% if activeNavItem === 'application' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Application{% if activeNavItem === 'application' %}</strong>{% endif %}
             </a>
           </li>
           {% endif %}
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'calculations' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="{% if data.largeCase %}calculations-new{% else %}calculations2{% endif %}">
+            <a class="govuk-service-navigation__link" href="{{ calcSlug }}">
               {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
             </a>
           </li>
