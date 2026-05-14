@@ -1483,6 +1483,14 @@ router.get('/largeCase2', function (req, res) {
   res.redirect('/tasklistStage2C2');
 });
 
+router.get('/smallApplication', function (req, res) {
+  // Small application: clears any large-case flag so the case-nav uses the default
+  // application + calculations2 templates, then drops the user on the case2 tasklist
+  // (same destination as the D2 WIP link on the index).
+  req.session.data.largeCase = false;
+  res.redirect('/tasklistStage2C2');
+});
+
 router.get('/mediumApplication', function (req, res) {
   // Medium application: routes case-nav to application-new and calculations-new (11 parcels).
   req.session.data.largeCase = 'yes';
