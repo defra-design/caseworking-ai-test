@@ -1506,32 +1506,32 @@ const calcPageKeys = {
 };
 
 // Before rendering any calc page, swap in that page's own filter state so settings on one page
-// don't leak into another. Templates keep reading data.showFailsOnly / data.showChangesOnly.
+// don't leak into another. The kit's autoStoreData has already copied session.data onto
+// res.locals.data (which is what templates read as `data`), so we must update BOTH the session
+// (for persistence) and res.locals.data (for this render).
 router.use((req, res, next) => {
   const key = calcPageKeys[req.path];
   if (key) {
     req.session.data.calcFilters = req.session.data.calcFilters || {};
     const f = req.session.data.calcFilters[key] || {};
-    req.session.data.showFailsOnly   = f.fails   || false;
-    req.session.data.showChangesOnly = f.changes || false;
+    const fails   = f.fails   || false;
+    const changes = f.changes || false;
+    req.session.data.showFailsOnly   = fails;
+    req.session.data.showChangesOnly = changes;
+    if (res.locals && res.locals.data) {
+      res.locals.data.showFailsOnly   = fails;
+      res.locals.data.showChangesOnly = changes;
+    }
   }
   next();
 });
 
 router.get('/largeCalcFilter', function (req, res) {
   // Filter handler for the large-case calculations pages (new and old, top and case2).
-  // Stores the choice under a per-page key so each page keeps its own filter independently.
-  const filter = req.query.filter;
-  const from = req.query.from;
-  req.session.data.calcFilters = req.session.data.calcFilters || {};
-  const entry = { fails: false, changes: false };
-  if (filter === 'fails')   entry.fails   = 'yes';
-  if (filter === 'changes') entry.changes = 'yes';
-  req.session.data.calcFilters[from] = entry;
-  // Reflect on the legacy globals so the upcoming redirect renders correctly even before
-  // the per-page middleware fires.
-  req.session.data.showFailsOnly   = entry.fails;
-  req.session.data.showChangesOnly = entry.changes;
+  // The destination page is taken from `sort` (the Run date dropdown — its option
+  // values are page keys, mirroring the version history). If the user picks a
+  // different version, the chosen filter is applied to THAT version's slot and
+  // the redirect goes there. Falls back to `from` if `sort` isn't a page key.
   const targets = {
     'main-new':  '/FRPS-D2/calculations-new',
     'main-old':  '/FRPS-D2/calculations-old',
@@ -1540,7 +1540,18 @@ router.get('/largeCalcFilter', function (req, res) {
     'case2-old': '/FRPS-D2/case2/calculations-old',
     'case2-old2': '/FRPS-D2/case2/calculations-old2',
   };
-  res.redirect(targets[req.query.from] || '/FRPS-D2/calculations-new');
+  const filter = req.query.filter;
+  const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
+  req.session.data.calcFilters = req.session.data.calcFilters || {};
+  const entry = { fails: false, changes: false };
+  if (filter === 'fails')   entry.fails   = 'yes';
+  if (filter === 'changes') entry.changes = 'yes';
+  req.session.data.calcFilters[dest] = entry;
+  // Reflect on the legacy globals so the upcoming redirect renders correctly even before
+  // the per-page middleware fires.
+  req.session.data.showFailsOnly   = entry.fails;
+  req.session.data.showChangesOnly = entry.changes;
+  res.redirect(targets[dest] || '/FRPS-D2/calculations-new');
 });
 
 router.get('/setPay1', function (req, res) {
