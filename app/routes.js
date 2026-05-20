@@ -1538,11 +1538,17 @@ router.use((req, res, next) => {
     const f = req.session.data.calcFilters[key] || {};
     const fails   = f.fails   || false;
     const changes = f.changes || false;
+    const sssi    = f.sssi    || false;
+    const hefer   = f.hefer   || false;
     req.session.data.showFailsOnly   = fails;
     req.session.data.showChangesOnly = changes;
+    req.session.data.showSssiOnly    = sssi;
+    req.session.data.showHeferOnly   = hefer;
     if (res.locals && res.locals.data) {
       res.locals.data.showFailsOnly   = fails;
       res.locals.data.showChangesOnly = changes;
+      res.locals.data.showSssiOnly    = sssi;
+      res.locals.data.showHeferOnly   = hefer;
     }
   }
   next();
@@ -1569,14 +1575,18 @@ router.get('/largeCalcFilter', function (req, res) {
   const filter = req.query.filter;
   const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
   req.session.data.calcFilters = req.session.data.calcFilters || {};
-  const entry = { fails: false, changes: false };
+  const entry = { fails: false, changes: false, sssi: false, hefer: false };
   if (filter === 'fails')   entry.fails   = 'yes';
   if (filter === 'changes') entry.changes = 'yes';
+  if (filter === 'sssi')    entry.sssi    = 'yes';
+  if (filter === 'hefer')   entry.hefer   = 'yes';
   req.session.data.calcFilters[dest] = entry;
   // Reflect on the legacy globals so the upcoming redirect renders correctly even before
   // the per-page middleware fires.
   req.session.data.showFailsOnly   = entry.fails;
   req.session.data.showChangesOnly = entry.changes;
+  req.session.data.showSssiOnly    = entry.sssi;
+  req.session.data.showHeferOnly   = entry.hefer;
   res.redirect(targets[dest] || '/FRPS-D2/calculations-new');
 });
 

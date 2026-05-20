@@ -137,6 +137,18 @@
                       Only fails
                     </label>
                   </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-sssi" name="filter" type="radio" value="sssi"{% if data.showSssiOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-sssi">
+                      LPs on SSSIs
+                    </label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-hefer" name="filter" type="radio" value="hefer"{% if data.showHeferOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-hefer">
+                      LPs requiring HEFERs
+                    </label>
+                  </div>
                 </div>
               </fieldset>
             </div>
@@ -172,6 +184,7 @@
 <form action="test4" method="post">
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+{% if not data.showHeferOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD5848 9205 checks</h2>
 
 <h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
@@ -451,6 +464,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showHeferOnly %}
 {% if not data.showFailsOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD5649 9215 checks</h2>
 {% endif %}
@@ -725,6 +740,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD6165 9218 checks</h2>
 {% endif %}
@@ -999,6 +1016,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD5763 9223 checks</h2>
 {% endif %}
@@ -1273,6 +1292,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NY2105 1006 checks</h2>
 {% endif %}
@@ -1547,6 +1568,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NU0704 1008 checks</h2>
 {% endif %}
@@ -1821,6 +1844,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NT8726 1015 checks</h2>
 {% endif %}
@@ -2095,6 +2120,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NT9009 1023 checks</h2>
 {% endif %}
@@ -2369,6 +2396,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NU0403 1024 checks</h2>
 {% endif %}
@@ -2643,6 +2672,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showHeferOnly %}
 {% if not data.showFailsOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NU0021 1026 checks</h2>
 {% endif %}
@@ -2917,6 +2948,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showHeferOnly %}
 {% if not data.showFailsOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NY1118 1031 checks</h2>
 {% endif %}
@@ -3191,6 +3224,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NY1914 1032 checks</h2>
 {% endif %}
@@ -3465,6 +3500,7 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NY2119 1042 checks</h2>
 {% endif %}
@@ -3793,6 +3829,7 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NT9326 1045 checks</h2>
 {% endif %}
@@ -4067,6 +4104,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
+{% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD7560 9193 checks</h2>
 {% endif %}
@@ -4341,6 +4380,7 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+{% endif %}
 
     </form>
 

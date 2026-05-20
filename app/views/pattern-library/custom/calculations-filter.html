@@ -78,6 +78,14 @@
                               <input class="govuk-radios__input" id="pl-filter-fails" name="pl-filter" type="radio" value="fails">
                               <label class="govuk-label govuk-radios__label" for="pl-filter-fails">Only fails</label>
                             </div>
+                            <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="pl-filter-sssi" name="pl-filter" type="radio" value="sssi">
+                              <label class="govuk-label govuk-radios__label" for="pl-filter-sssi">LPs on SSSIs</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="pl-filter-hefer" name="pl-filter" type="radio" value="hefer">
+                              <label class="govuk-label govuk-radios__label" for="pl-filter-hefer">LPs requiring HEFERs</label>
+                            </div>
                           </div>
                         </fieldset>
                       </div>
@@ -132,6 +140,16 @@
                        type="radio" value="fails"&gt;
                 &lt;label class="govuk-label govuk-radios__label" for="filter-fails"&gt;Only fails&lt;/label&gt;
               &lt;/div&gt;
+              &lt;div class="govuk-radios__item"&gt;
+                &lt;input class="govuk-radios__input" id="filter-sssi" name="filter"
+                       type="radio" value="sssi"&gt;
+                &lt;label class="govuk-label govuk-radios__label" for="filter-sssi"&gt;LPs on SSSIs&lt;/label&gt;
+              &lt;/div&gt;
+              &lt;div class="govuk-radios__item"&gt;
+                &lt;input class="govuk-radios__input" id="filter-hefer" name="filter"
+                       type="radio" value="hefer"&gt;
+                &lt;label class="govuk-label govuk-radios__label" for="filter-hefer"&gt;LPs requiring HEFERs&lt;/label&gt;
+              &lt;/div&gt;
             &lt;/div&gt;
           &lt;/fieldset&gt;
         &lt;/div&gt;
@@ -142,6 +160,14 @@
           </div>
         </div>
       </div>
+
+      <h2 class="govuk-heading-l">Filter families</h2>
+      <p class="govuk-body">All five radio options share one fieldset (mutually exclusive — one filter at a time) but fall into two conceptual groups:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Check-status filters</strong> — <em>All checks</em>, <em>Calculations with changes</em>, <em>Only fails</em>. These hide individual <code class="govuk-body">&lt;details&gt;</code> blocks based on each check's pass/fail/changed state via <code class="govuk-body">data.showChangesOnly</code> / <code class="govuk-body">data.showFailsOnly</code>.</li>
+        <li><strong>Parcel-attribute filters</strong> — <em>LPs on SSSIs</em>, <em>LPs requiring HEFERs</em>. These hide whole parcel sections based on a per-parcel attribute via <code class="govuk-body">data.showSssiOnly</code> / <code class="govuk-body">data.showHeferOnly</code>. The classification is encoded in the template's per-parcel wrapper at generation time — e.g. a parcel known to be on an SSSI gets <code class="govuk-body">{% raw %}{% if not data.showHeferOnly %}{% endraw %}</code> as its outer wrapper, so the parcel disappears only when the HEFER filter is selected.</li>
+      </ul>
+      <p class="govuk-body">Parcel-attribute filters apply at the <em>parcel</em> level — they don't change which individual checks render inside a parcel, just whether the parcel itself is shown. So <em>LPs on SSSIs</em> hides 8 of the 15 caseReal parcels and shows every check on the remaining 7; the visible parcels still show all their CMOR1 / UPL2 / UPL10 checks (Available area, Moorland, SSSI, HEFER on the kept parcel) regardless of pass/fail/change state.</p>
 
       <h2 class="govuk-heading-l">Differences from the standard MOJ filter</h2>
       <ul class="govuk-list govuk-list--bullet">
