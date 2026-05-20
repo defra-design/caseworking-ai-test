@@ -13,9 +13,15 @@
 {% block content %}
 {% set activeNavItem = "calculations" %}
 {% include "FRPS-D2/includes/_case-nav.html" %}
+<!-- title-row-full -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations (03:20pm 10 Sept 2025)</h1>
+  </div>
+</div>
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations</h1>
+    
 
     {% if (data.recalc) %}
 

@@ -1,0 +1,127 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "changed-value-highlight" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Changed-value highlight" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Changed-value highlight</h1>
+      <p class="govuk-body-l">A paler yellow background applied to a single value (or table cell) to flag that it has changed since the previous run.</p>
+      <p class="govuk-body">Used inside the calculations pages to draw the caseworker's eye to the specific number that has moved between two rule-check runs — for example a recalculated available area, a moorland percentage that has shifted, or an applied-for figure that no longer matches available. Pairs naturally with the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">calculations filter</a>'s "Calculations with changes" view: the filter narrows the page down to checks that have changed, the highlight then narrows the eye down to the value within each check.</p>
+
+      <h2 class="govuk-heading-l">Inline value variant</h2>
+      <p class="govuk-body">Wrap any inline number or short phrase in a <code class="govuk-body">&lt;span class="value-changed"&gt;</code> to highlight it inside flowing text. Use this in body paragraphs (Pass / Fail reason text) and inside the "Available area calculation" explanation lines.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-vc-inline">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-vc-inline-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body">The total available area (<span class="value-changed">165.0000 ha</span>) does not match the area applied for (169.8586 ha). This can happen when land parcel data is updated after an application has been submitted.</p>
+            <p class="govuk-body">This parcel has a <span class="value-changed">47%</span> intersection with the moorland layer. The target is 51%.</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-vc-inline" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-vc-inline-code">&lt;p class="govuk-body"&gt;
+  The total available area (&lt;span class="value-changed"&gt;165.0000 ha&lt;/span&gt;)
+  does not match the area applied for (169.8586 ha).
+&lt;/p&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Table row variant</h2>
+      <p class="govuk-body">Add the <code class="govuk-body">govuk-table__row--changed</code> modifier to a <code class="govuk-body">&lt;tr&gt;</code> to highlight the data cell only — the row header (<code class="govuk-body">&lt;th&gt;</code>) stays unstyled so the field name remains scannable.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-vc-row">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-vc-row-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Available area</th>
+                  <td class="govuk-table__cell">169.8586 ha</td>
+                </tr>
+                <tr class="govuk-table__row govuk-table__row--changed">
+                  <th scope="row" class="govuk-table__header">Applied for</th>
+                  <td class="govuk-table__cell">165.0000 ha</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Action code</th>
+                  <td class="govuk-table__cell">CMOR1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-vc-row" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-vc-row-code">&lt;tr class="govuk-table__row govuk-table__row--changed"&gt;
+  &lt;th scope="row" class="govuk-table__header"&gt;Applied for&lt;/th&gt;
+  &lt;td class="govuk-table__cell"&gt;165.0000 ha&lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Colour choice</h2>
+      <p class="govuk-body">The background colour is <code class="govuk-body">#ffee80</code> — the GOV.UK focus yellow <code class="govuk-body">#ffdd00</code> mixed 50% toward white. It is intentionally paler than the focus colour so highlighted values do not get mistaken for an interactive focus state, while still standing out against the white page background.</p>
+
+      <pre><code>/* application.scss */
+.govuk-table__row--changed &gt; td,
+.value-changed {
+  background-color: #ffee80;
+}</code></pre>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To mark the specific value within a check that has moved between the previous and current rules-check run.</li>
+        <li>Inside a check whose tag already shows <strong>Failed</strong> or whose <code class="govuk-body">&lt;details&gt;</code> is filed under "Calculations with changes" — the highlight points at <em>why</em> the check is in that state.</li>
+        <li>Multiple values within a single check can be highlighted simultaneously (e.g. both <em>Available area</em> and <em>Maximum available area</em> when both reflect the same recalculation).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To indicate validation errors — use the standard <a class="govuk-link" href="/pattern-library/gds/warning-text">warning text</a> / error message pattern instead.</li>
+        <li>To highlight the user's current focus or interaction — that is the browser's job, and a near-yellow background would be confused with the focus state.</li>
+        <li>On every row of a table — at that point the highlight stops drawing the eye.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange, latest run)</a> — inline-value variant inside Fail reasons and the Available area calculation paragraphs.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-mid">Real-case calculations &mdash; middle run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels, latest)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-mid2">Large calculations &mdash; middle run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

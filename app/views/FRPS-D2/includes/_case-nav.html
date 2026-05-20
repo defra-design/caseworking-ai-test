@@ -1,7 +1,9 @@
 {# Application-size switch: maps the largeCase flag to the matching page slugs.
    - 'yes'  → medium application (11 parcels)
    - 'new2' → large application (101 parcels)
-   - unset  → small (default) #}
+   - unset  → small (default)
+   Note: the 'real' case lives in its own /caseReal/ folder with its own nav
+   include, so it isn't handled here. #}
 {% set appSlug = 'application' %}
 {% set calcSlug = 'calculations2' %}
 {% if data.largeCase === 'new2' %}

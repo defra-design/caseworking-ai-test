@@ -179,6 +179,31 @@
               <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
               <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item govuk-!-margin-top-2">
+                  <input class="govuk-radios__input" id="caseRealRadio" name="caseSelect" type="radio" value="100287">
+                  <label class="govuk-label govuk-radios__label" for="caseRealRadio">
+
+                  </label>
+                </div>
+              </div>
+              </td>
+              {% if (data.linkedCase) %}<td class="govuk-table__cell"></td>{% endif %}
+              <td class="govuk-table__cell"><a href="caseReal/tasklist-stage">100287</a></td>
+              <td class="govuk-table__cell">Golden Grange</td>
+              <td class="govuk-table__cell">300000100</td>
+              <td class="govuk-table__cell">13 May 2026</td>
+              <td class="govuk-table__cell">
+                {% if (data.caseStageReal) %}<strong class="{{ data['caseStatusTagReal']}}">{{ data['caseStatusReal']}}</strong>
+                {% else %}
+                    <strong class="govuk-tag govuk-tag--grey">Application received</strong>
+                {% endif %}
+              </td>
+              <td class="govuk-table__cell">M Walker</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item govuk-!-margin-top-2">
                   <input class="govuk-radios__input" id="case3Radio" name="caseSelect" type="radio" value="100310">
                   <label class="govuk-label govuk-radios__label" for="case3Radio">
 

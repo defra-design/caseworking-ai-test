@@ -1503,14 +1503,28 @@ router.get('/largeApplication', function (req, res) {
   res.redirect('/tasklistStage2C2');
 });
 
+router.get('/realApplication', function (req, res) {
+  // Real application: Golden Grange case (15 parcels, real data from
+  // fg-cw-frontend export). Sits in its own /FRPS-D2/caseReal/ folder with its
+  // own nav include and context strip, so we forward to /tasklistStageReal
+  // rather than the shared case2 tasklist.
+  req.session.data.largeCase = 'real';
+  res.redirect('/tasklistStageReal');
+});
+
+
 // Map calc page URLs to their per-page filter key (matches the `from` value in each page's filter form)
 const calcPageKeys = {
   '/FRPS-D2/calculations-new':       'main-new',
   '/FRPS-D2/calculations-old':       'main-old',
   '/FRPS-D2/case2/calculations-new':  'case2-new',
   '/FRPS-D2/case2/calculations-new2': 'case2-new2',
+  '/FRPS-D2/case2/calculations-mid2': 'case2-mid2',
   '/FRPS-D2/case2/calculations-old':  'case2-old',
   '/FRPS-D2/case2/calculations-old2': 'case2-old2',
+  '/FRPS-D2/caseReal/calculations-new': 'caseReal',
+  '/FRPS-D2/caseReal/calculations-mid': 'caseRealMid',
+  '/FRPS-D2/caseReal/calculations-old': 'caseRealOld',
 };
 
 // Before rendering any calc page, swap in that page's own filter state so settings on one page
@@ -1545,8 +1559,12 @@ router.get('/largeCalcFilter', function (req, res) {
     'main-old':  '/FRPS-D2/calculations-old',
     'case2-new': '/FRPS-D2/case2/calculations-new',
     'case2-new2': '/FRPS-D2/case2/calculations-new2',
+    'case2-mid2': '/FRPS-D2/case2/calculations-mid2',
     'case2-old': '/FRPS-D2/case2/calculations-old',
     'case2-old2': '/FRPS-D2/case2/calculations-old2',
+    'caseReal':    '/FRPS-D2/caseReal/calculations-new',
+    'caseRealMid': '/FRPS-D2/caseReal/calculations-mid',
+    'caseRealOld': '/FRPS-D2/caseReal/calculations-old',
   };
   const filter = req.query.filter;
   const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
@@ -1932,6 +1950,18 @@ makeStageRoute('/tasklistStage2C2', {
   tasklistRedirect: '/FRPS-D2/case2/tasklist-stage',
 });
 
+// Real case (Golden Grange) — same lifecycle pattern as case2 so the first hit
+// after clearing data lands on the caselist (with the case row showing 'Application
+// received') and subsequent hits walk the case through its stages.
+makeStageRoute('/tasklistStageReal', {
+  stageCountKey:    'stageCountReal',
+  stageKey:         'caseStageReal',
+  statusKey:        'caseStatusReal',
+  tagKey:           'caseStatusTagReal',
+  firstRedirect:    '/FRPS-D2/caselist',
+  tasklistRedirect: '/FRPS-D2/caseReal/tasklist-stage',
+});
+
 // --- 5-month checks ---
 
 router.get('/5month1C2', function (req, res) {
@@ -2038,6 +2068,461 @@ router.get('/endTerminateC2', function (req, res) {
   res.redirect('/FRPS-D2/case2/tasklist-stage');
 });
 
+
+
+
+// ============================================================
+// FRPS-D2/caseReal routes (Golden Grange — auto-generated from case2 block)
+// ============================================================
+
+// --- Approval/rejection ---
+
+makeApproveRoute('/app-approve2Real', {
+  decisionKey:           'decision1Real',
+  approvedKey:           'caseApprovedReal',
+  agreementStageKey:     'agreementStageReal',
+  reviewNoteKey:         'reviewNoteReal',
+  filteredReviewNoteKey: 'filteredReviewNoteReal',
+  stageKey:              'caseStageReal',
+  statusKey:             'caseStatusReal',
+  tagKey:                'caseStatusTagReal',
+  onApproveRedirect:     '/tasklistStageReal',
+  amendRedirect:         '/FRPS-D2/caseReal/amend-confirm',
+  returnRedirect:        '/FRPS-D2/caseReal/return-confirm',
+  defaultRedirect:       '/FRPS-D2/caseReal/tasklist-stage',
+});
+
+// --- State resets ---
+
+router.get('/resume2Real', function (req, res) {
+  // Returns Real case (Golden Grange) to 'In review' after a pause or rejection reopen
+  req.session.data.caseStageReal     = 'review';
+  req.session.data.caseStatusReal    = 'In review';
+  req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--blue';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+router.get('/amendReturn1Real', function (req, res) {
+  // Cancels amend/return flow and restores Real case (Golden Grange) to 'In review'
+  req.session.data.caseStageReal     = 'review';
+  req.session.data.caseStatusReal    = 'In review';
+  req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--blue';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+// --- Confirmation gates ---
+
+router.get('/returnConf1Real', function (req, res) {
+  // Proceeds with return if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.rConfReal === 'yes') {
+    res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1Real');
+  }
+});
+
+router.get('/terminateConf1Real', function (req, res) {
+  // Finalises termination if confirmed, otherwise leaves Real case (Golden Grange) stage unchanged
+  if (req.session.data.tConfReal === 'yes') {
+    req.session.data.caseStageReal     = 'terminate';
+    req.session.data.caseStatusReal    = 'Terminated';
+    req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--red';
+  }
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+router.get('/amendConf1Real', function (req, res) {
+  // Proceeds with amendment if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.aConfReal === 'yes') {
+    res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1Real');
+  }
+});
+
+// --- Amendment flow ---
+
+makeAmendRoute('/amend1Real', {
+  decisionKey: 'decisionAmReal',
+  stageKey:    'caseStageReal',
+  statusKey:   'caseStatusReal',
+  tagKey:      'caseStatusTagReal',
+  redirectTo:  '/FRPS-D2/caseReal/tasklist-stage',
+});
+
+router.get('/amend2Real', function (req, res) {
+  // Closes Real case (Golden Grange) via amendment submission
+  req.session.data.caseStageReal     = 'amendment_submitted';
+  req.session.data.caseStatusReal    = 'Case close by amendment';
+  req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--orange';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+// --- Agreement sent ---
+
+makeAgreementSentRoute('/aggSent2Real', {
+  decisionKey:     'decisionAgReal',
+  rawNoteKey:      'agreeNoteReal',
+  filteredNoteKey: 'filteredAggNoteReal',
+  stageKey:        'caseStageReal',
+  statusKey:       'caseStatusReal',
+  tagKey:          'caseStatusTagReal',
+  onSentRedirect:  '/tasklistStageReal',
+  defaultRedirect: '/FRPS-D2/caseReal/tasklist-stage',
+});
+
+// --- Termination flow ---
+
+router.get('/terminate1Real', function (req, res) {
+  // Begins termination process for Real case (Golden Grange)
+  req.session.data.caseStageReal     = 'pending-termination';
+  req.session.data.caseStatusReal    = 'Preparing to terminate';
+  req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--orange';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+router.get('/terminatePrepReal', function (req, res) {
+  // Routes termination preparation outcome: confirm page, end process, or default
+  const d = req.session.data;
+  switch (d.decisionTrReal) {
+  case 'Terminate agreement':
+    d.filteredTrNoteReal = stripEmptyAndNulls(d.terminateNoteReal);
+    return res.redirect('/FRPS-D2/caseReal/terminate-confirm');
+  case 'End termination process':
+    d.caseStageReal     = 'pay';
+    d.caseStatusReal    = 'Agreement accepted';
+    d.caseStatusTagReal = 'govuk-tag govuk-tag--green';
+    return res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+  }
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+// --- Termination task routes ---
+
+const D2RealT = '/FRPS-D2/caseReal/tasklist-stage';
+
+// Note: original task1TrT2Real default branch used wrong keys (terminateTagReal/terminateStatusReal). Fixed to terminate1TagReal/terminate1StatusReal.
+makeTaskRoute('/task1TrT2Real', {
+  checkedKey:        'terminateCheckedReal',
+  decisionKey:       'decisionTerminateTask1Real',
+  noteActionKey:     'noteActionTerminateTask1Real',
+  tagKey:            'terminate1TagReal',
+  statusKey:         'terminate1StatusReal',
+  rawNoteKey:        'task1TrNoteReal',
+  filteredNoteKey:   'filteredNote1TrReal',
+  rawNoteKey2:       'task1TrNote2Real',
+  filteredNoteKey2:  'filteredNote1Tr_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task2TrT2Real', {
+  decisionKey:       'decisionTerminateTask2Real',
+  noteActionKey:     'noteActionTerminateTask2Real',
+  tagKey:            'terminate2TagReal',
+  statusKey:         'terminate2StatusReal',
+  rawNoteKey:        'task2TrNoteReal',
+  filteredNoteKey:   'filteredNote2TrReal',
+  rawNoteKey2:       'task2TrNote2Real',
+  filteredNoteKey2:  'filteredNote2Tr_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+// --- Task review routes ---
+
+// Note: task5T2Real and task6T2Real use 'detailsChecked' (not detailsCheckedReal) — preserved from original.
+makeTaskRoute('/task1T2Real', {
+  checkedKey:        'detailsCheckedReal',
+  decisionKey:       'decisionTask1Real',
+  noteActionKey:     'noteActionTask1Real',
+  tagKey:            'detailsTagReal',
+  statusKey:         'detailsStatusReal',
+  rawNoteKey:        'task1NoteReal',
+  filteredNoteKey:   'filteredNote1Real',
+  rawNoteKey2:       'task1Note2Real',
+  filteredNoteKey2:  'filteredNote1_2Real',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task2T2Real', {
+  checkedKey:        'detailsCheckedReal',
+  decisionKey:       'decisionTask2Real',
+  noteActionKey:     'noteActionTask2Real',
+  tagKey:            'calcsTagReal',
+  statusKey:         'calcsStatusReal',
+  rawNoteKey:        'task2NoteReal',
+  filteredNoteKey:   'filteredNote2Real',
+  rawNoteKey2:       'task2Note2Real',
+  filteredNoteKey2:  'filteredNote2_2Real',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task3T2Real', {
+  checkedKey:        'detailsCheckedReal',
+  decisionKey:       'decisionTask3Real',
+  noteActionKey:     'noteActionTask3Real',
+  tagKey:            'sssiTagReal',
+  statusKey:         'sssiStatusReal',
+  rawNoteKey:        'task3NoteReal',
+  filteredNoteKey:   'filteredNote3Real',
+  rawNoteKey2:       'task3Note2Real',
+  filteredNoteKey2:  'filteredNote3_2Real',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5T2Real', {
+  checkedKey:        'detailsCheckedReal',
+  decisionKey:       'decisionTask5Real',
+  noteActionKey:     'noteActionTask5Real',
+  tagKey:            'paymentTagReal',
+  statusKey:         'paymentStatusReal',
+  rawNoteKey:        'task5NoteReal',
+  filteredNoteKey:   'filteredNote5Real',
+  rawNoteKey2:       'task5Note2Real',
+  filteredNoteKey2:  'filteredNote5_2Real',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task6T2Real', {
+  checkedKey:        'detailsCheckedReal',
+  decisionKey:       'decisionTask6Real',
+  noteActionKey:     'noteActionTask6Real',
+  tagKey:            'budgetTagReal',
+  statusKey:         'budgetStatusReal',
+  rawNoteKey:        'task6NoteReal',
+  filteredNoteKey:   'filteredNote6Real',
+  rawNoteKey2:       'task6Note2Real',
+  filteredNoteKey2:  'filteredNote6_2Real',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+// --- Case assignment ---
+
+router.get('/caselistTeam2Real', function (req, res) {
+  // Marks Real case (Golden Grange) as assigned and returns to caselist
+  req.session.data.caseAssignedReal = 'yes';
+  res.redirect('/FRPS-D2/caselist');
+});
+
+router.get('/setUserFo2Real', function (req, res) {
+  // Assigns finance officer role for Real case (Golden Grange)
+  req.session.data.financeOfficerReal = 'yes';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+// --- Amendment task routes ---
+
+makeTaskRoute('/task1T2AmReal', {
+  decisionKey:       'decisionTaskAm1Real',
+  noteActionKey:     'noteActionTaskAm1Real',
+  tagKey:            'amend1TagReal',
+  statusKey:         'amend1StatusReal',
+  rawNoteKey:        'task1AmNoteReal',
+  filteredNoteKey:   'filteredNoteAm1Real',
+  rawNoteKey2:       'task1_2AmNoteReal',
+  filteredNoteKey2:  'filteredNoteAm1_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task2T2AmReal', {
+  decisionKey:       'decisionTaskAm2Real',
+  noteActionKey:     'noteActionTaskAm2Real',
+  tagKey:            'amend2TagReal',
+  statusKey:         'amend2StatusReal',
+  rawNoteKey:        'task2AmNoteReal',
+  filteredNoteKey:   'filteredNoteAm2Real',
+  rawNoteKey2:       'task2_2AmNoteReal',
+  filteredNoteKey2:  'filteredNoteAm2_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task3T2AmReal', {
+  decisionKey:       'decisionTaskAm3Real',
+  noteActionKey:     'noteActionTaskAm3Real',
+  tagKey:            'amend3TagReal',
+  statusKey:         'amend3StatusReal',
+  rawNoteKey:        'task3AmNoteReal',
+  filteredNoteKey:   'filteredNoteAm3Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+// --- Agreement progression ---
+
+router.get('/agreementStage2Real', function (req, res) {
+  // Unlocks the agreement tab in the Real case (Golden Grange) navigation
+  req.session.data.agreementStageReal = 'yes';
+  res.redirect('/FRPS-D2/caselist');
+});
+
+// --- Agreement task routes ---
+
+makeTaskRoute('/task1AgT2Real', {
+  checkedKey:        'AgreeCheckedReal',
+  decisionKey:       'decisionAgreeTask1Real',
+  noteActionKey:     'noteActionAgreeTask1Real',
+  tagKey:            'agreeTagReal',
+  statusKey:         'agreeStatusReal',
+  rawNoteKey:        'task1ANoteReal',
+  filteredNoteKey:   'filteredNote1AReal',
+  rawNoteKey2:       'task1ANote2Real',
+  filteredNoteKey2:  'filteredNote1A_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task2AgT2Real', {
+  decisionKey:       'decisionAgreeTask2Real',
+  noteActionKey:     'noteActionAgreeTask2Real',
+  tagKey:            'agreeSTagReal',
+  statusKey:         'agreeSStatusReal',
+  rawNoteKey:        'task2ANoteReal',
+  filteredNoteKey:   'filteredNoteA2Real',
+  rawNoteKey2:       'task2ANote2Real',
+  filteredNoteKey2:  'filteredNote2A_2Real',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+// --- Agreement signing ---
+
+router.get('/setAgreeSign2Real', function (req, res) {
+  // Records customer signature and advances Real case (Golden Grange) status
+  req.session.data.caseStatusReal = 'Agreement accepted';
+  res.redirect('/tasklistStageReal');
+});
+
+// --- Stage progression ---
+
+router.get('/startReal', function (req, res) {
+  // Resets Real case (Golden Grange) to the start stage (used when re-entering a completed case)
+  req.session.data.caseStageReal     = 'start';
+  req.session.data.caseStatusReal    = 'Application received';
+  req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--grey';
+  req.session.data.stageCountReal    = 1;
+  res.redirect('/FRPS-D2/caselist');
+});
+
+
+// Real case (Golden Grange) — same lifecycle pattern as Real case (Golden Grange) so the first hit
+// after clearing data lands on the caselist (with the case row showing 'Application
+// received') and subsequent hits walk the case through its stages.
+makeStageRoute('/tasklistStageReal', {
+  stageCountKey:    'stageCountReal',
+  stageKey:         'caseStageReal',
+  statusKey:        'caseStatusReal',
+  tagKey:           'caseStatusTagReal',
+  firstRedirect:    '/FRPS-D2/caselist',
+  tasklistRedirect: '/FRPS-D2/caseReal/tasklist-stage',
+});
+
+// --- 5-month checks ---
+
+router.get('/5month1Real', function (req, res) {
+  // Transitions Real case (Golden Grange) into the 5-month check phase
+  req.session.data.caseStatusReal = '5 month checks';
+  req.session.data.caseStageReal  = '5month';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+makeTaskRoute('/task5m1Real', {
+  decisionKey:       'decisionTask1mReal',
+  noteActionKey:     'noteActionTask1mReal',
+  tagKey:            'month5_1TagReal',
+  statusKey:         'month5_1StatusReal',
+  rawNoteKey:        'task1mNoteReal',
+  filteredNoteKey:   'filteredNote1mReal',
+  rawNoteKey2:       'task1mNote2Real',
+  filteredNoteKey2:  'filteredNote1m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5m2Real', {
+  decisionKey:       'decisionTask2mReal',
+  noteActionKey:     'noteActionTask2mReal',
+  tagKey:            'month5_2TagReal',
+  statusKey:         'month5_2StatusReal',
+  rawNoteKey:        'task2mNoteReal',
+  filteredNoteKey:   'filteredNote2mReal',
+  rawNoteKey2:       'task2mNote2Real',
+  filteredNoteKey2:  'filteredNote2m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5m3Real', {
+  decisionKey:       'decisionTask3mReal',
+  noteActionKey:     'noteActionTask3mReal',
+  tagKey:            'month5_3TagReal',
+  statusKey:         'month5_3StatusReal',
+  rawNoteKey:        'task3mNoteReal',
+  filteredNoteKey:   'filteredNote3mReal',
+  rawNoteKey2:       'task3mNote2Real',
+  filteredNoteKey2:  'filteredNote3m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5m4Real', {
+  decisionKey:       'decisionTask4mReal',
+  noteActionKey:     'noteActionTask4mReal',
+  tagKey:            'month5_4TagReal',
+  statusKey:         'month5_4StatusReal',
+  rawNoteKey:        'task4mNoteReal',
+  filteredNoteKey:   'filteredNote4mReal',
+  rawNoteKey2:       'task4mNote2Real',
+  filteredNoteKey2:  'filteredNote4m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5m5Real', {
+  decisionKey:       'decisionTask5mReal',
+  noteActionKey:     'noteActionTask5mReal',
+  tagKey:            'month5_5TagReal',
+  statusKey:         'month5_5StatusReal',
+  rawNoteKey:        'task5mNoteReal',
+  filteredNoteKey:   'filteredNote5mReal',
+  rawNoteKey2:       'task5mNote2Real',
+  filteredNoteKey2:  'filteredNote5m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+makeTaskRoute('/task5m6Real', {
+  decisionKey:       'decisionTask6mReal',
+  noteActionKey:     'noteActionTask6mReal',
+  tagKey:            'month5_6TagReal',
+  statusKey:         'month5_6StatusReal',
+  rawNoteKey:        'task6mNoteReal',
+  filteredNoteKey:   'filteredNote6mReal',
+  rawNoteKey2:       'task6mNote2Real',
+  filteredNoteKey2:  'filteredNote6m_2Real',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2RealT,
+});
+
+// --- Utility routes ---
+
+
+router.get('/endTerminateReal', function (req, res) {
+  // Ends termination process and restores Real case (Golden Grange) to 'Agreement accepted' if confirmed
+  if (req.session.data.terminateDecision === 'yes') {
+    req.session.data.caseStageReal     = 'pay';
+    req.session.data.caseStatusReal    = 'Agreement accepted';
+    req.session.data.caseStatusTagReal = 'govuk-tag govuk-tag--green';
+  }
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
 
 // ============================================================
 // FRPS-D2/case3 routes

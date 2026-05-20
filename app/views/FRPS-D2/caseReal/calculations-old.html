@@ -1,0 +1,4060 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_caseReal-context-strip.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "calculations" %}
+{% include "FRPS-D2/includes/_caseReal-nav.html" %}
+<!-- title-row-full -->
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations (9:08am 13 May 2026)</h1>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+    {% if (data.recalc) %}
+
+        <div role="region" class="moj-alert moj-alert--success moj-alert--with-heading" aria-label="success: File uploaded successfully" data-module="moj-alert">
+      <div>
+        <svg class="moj-alert__icon" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" height="30" width="30">
+          <path d="M11.2869 24.6726L2.00415 15.3899L4.62189 12.7722L11.2869 19.4186L25.3781 5.32739L27.9958 7.96369L11.2869 24.6726Z" fill="currentColor" />
+        </svg>
+      </div>
+      <div class="moj-alert__content">
+        <h2 class="moj-alert__heading">Calculations successfully rerun
+        </h2>All calculations were successfully rerun at 12:50am today
+      </div>
+      <div class="moj-alert__action">
+        <button class="moj-alert__dismiss" hidden>Dismiss</button>
+      </div>
+    </div>
+
+    {% else %}
+    <p >Rules check last run: 9:08am 13 May 2026</p>
+
+    {% endif %}
+
+  <details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Show version history
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--m">Dates and amounts</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Date/time</th>
+          <th scope="col" class="govuk-table__header">Result</th>
+                <th scope="col" class="govuk-table__header"></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">10:30am 19 May 2026</th>
+          <td class="govuk-table__cell">Fail</td>
+          <td class="govuk-table__cell"><a href="calculations-new" class="govuk-link">View this version</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">3:14pm 18 May 2026</th>
+          <td class="govuk-table__cell">Fail</td>
+          <td class="govuk-table__cell"><a href="calculations-mid" class="govuk-link">View this version</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">9:08am 13 May 2026</th>
+          <td class="govuk-table__cell">Pass</td>
+          <td class="govuk-table__cell">Currently showing</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</details>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third ">
+
+    <div class="moj-filter" data-module="moj-filter">
+      <form method="get" action="/largeCalcFilter">
+        <input type="hidden" name="from" value="caseRealOld">
+        <div class="moj-filter__header_grey">
+          <div class="moj-filter__header-title">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Filter</h2>
+          </div>
+          <div class="moj-filter__header-action">
+          </div>
+        </div>
+        <div class="moj-filter__content">
+          <div class="moj-filter__options">
+            <button type="submit" class="govuk-button" data-module="govuk-button" data-test-id="submit-button">
+              Apply filters
+            </button>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="sort">
+                Run date
+              </label>
+              <select class="govuk-select" id="sort" name="sort">
+                <option value="caseReal">10:30am 19 May 2026 - Fail</option>
+                <option value="caseRealMid">3:14pm 18 May 2026 - Fail</option>
+                <option value="caseRealOld" selected>9:08am 13 May 2026 - Pass</option>
+              </select>
+            </div>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                  <h3 class="govuk-fieldset__heading">
+                    Listing ...
+                  </h3>
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-all" name="filter" type="radio" value="all"{% if not data.showFailsOnly and not data.showChangesOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-all">
+                      All checks
+                    </label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-changes" name="filter" type="radio" value="changes"{% if data.showChangesOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-changes">
+                      Calculations with changes
+                    </label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="filter-fails" name="filter" type="radio" value="fails"{% if data.showFailsOnly %} checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="filter-fails">
+                      Only fails
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+    </div>
+  <div class="govuk-grid-column-two-thirds govuk-!-padding-left-4">
+
+  <div class="parcel-search govuk-!-margin-bottom-6">
+    <form id="parcel-search-form" onsubmit="return false;">
+      <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--s" for="parcel-search-input">
+          Find a specific land parcel
+        </label>
+        <div class="parcel-search__row">
+          <div id="parcel-search-container"></div>
+          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" id="parcel-find-btn">
+            Find
+          </button>
+        </div>
+        <p id="parcel-search-status" class="govuk-body-s govuk-!-margin-top-2" hidden>
+          Showing only <span id="parcel-search-status-id"></span>.
+          <a href="#" class="govuk-link" id="parcel-search-clear">Show all land parcels</a>
+        </p>
+      </div>
+    </form>
+  </div>
+
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
+      {% if data.showFailsOnly %}<p class="govuk-body">There are no fails to show.</p>{% endif %}
+      {% if data.showChangesOnly %}<p class="govuk-body">There are no changes to show.</p>{% endif %}
+      {% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SD5848 9205 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (169.8586 ha) the applicant applied for (169.8586 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha total, 0 ha used by existing actions, 169.8586 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 169.8586 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 169.8586 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (169.8586 ha) the applicant applied for (169.8586 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha total, 0 ha used by existing actions, 169.8586 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 169.8586 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 169.8586 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (169.8586 ha) the applicant applied for (169.8586 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 169.8586 ha total, 0 ha used by existing actions, 169.8586 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 169.8586 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 169.8586 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: SD5649 9215 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (762.9068 ha) the applicant applied for (762.9068 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha total, 0 ha used by existing actions, 762.4624 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 762.9068 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 762.9068 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (762.9068 ha) the applicant applied for (762.9068 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha total, 0 ha used by existing actions, 762.4624 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 762.9068 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 762.9068 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (762.9068 ha) the applicant applied for (762.9068 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 762.4624 ha total, 0 ha used by existing actions, 762.4624 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 762.9068 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 762.9068 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: SD6165 9218 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (4.6223 ha) the applicant applied for (4.6223 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha total, 0 ha used by existing actions, 4.6223 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 4.6223 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 4.6223 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (4.6223 ha) the applicant applied for (4.6223 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha total, 0 ha used by existing actions, 4.6223 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 4.6223 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 4.6223 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (4.6223 ha) the applicant applied for (4.6223 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (131): 4.6223 ha total, 0 ha used by existing actions, 4.6223 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 4.6223 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 4.6223 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: SD5763 9223 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (90.3876 ha) the applicant applied for (90.3876 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha total, 0 ha used by existing actions, 90.3876 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 90.3876 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 90.3876 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (90.3876 ha) the applicant applied for (90.3876 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha total, 0 ha used by existing actions, 90.3876 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 90.3876 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 90.3876 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (90.3876 ha) the applicant applied for (90.3876 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (131): 90.3876 ha total, 0 ha used by existing actions, 90.3876 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 90.3876 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 90.3876 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NY2105 1006 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.2071 ha) the applicant applied for (3.2071 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha total, 0 ha used by existing actions, 2.0488 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 3.2071 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 3.2071 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.2071 ha) the applicant applied for (3.2071 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha total, 0 ha used by existing actions, 2.0488 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 3.2071 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 3.2071 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.2071 ha) the applicant applied for (3.2071 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0488 ha total, 0 ha used by existing actions, 2.0488 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 3.2071 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 3.2071 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NU0704 1008 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (505.1647 ha) the applicant applied for (505.1647 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha total, 0 ha used by existing actions, 504.6928 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 505.1647 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 505.1647 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (505.1647 ha) the applicant applied for (505.1647 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha total, 0 ha used by existing actions, 504.6928 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 505.1647 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 505.1647 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (505.1647 ha) the applicant applied for (505.1647 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 504.6928 ha total, 0 ha used by existing actions, 504.6928 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 505.1647 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 505.1647 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NT8726 1015 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1741 ha) the applicant applied for (0.1741 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha total, 0 ha used by existing actions, 0.1741 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 0.1741 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 0.1741 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1741 ha) the applicant applied for (0.1741 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha total, 0 ha used by existing actions, 0.1741 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 0.1741 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 0.1741 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1741 ha) the applicant applied for (0.1741 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1741 ha total, 0 ha used by existing actions, 0.1741 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 0.1741 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 0.1741 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NT9009 1023 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (2.0852 ha) the applicant applied for (2.0852 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha total, 0 ha used by existing actions, 2.0852 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 2.0852 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 2.0852 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (2.0852 ha) the applicant applied for (2.0852 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha total, 0 ha used by existing actions, 2.0852 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 2.0852 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 2.0852 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (2.0852 ha) the applicant applied for (2.0852 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 2.0852 ha total, 0 ha used by existing actions, 2.0852 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 2.0852 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 2.0852 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NU0403 1024 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (5.5583 ha) the applicant applied for (5.5583 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha total, 0 ha used by existing actions, 5.4565 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 5.5583 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 5.5583 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (5.5583 ha) the applicant applied for (5.5583 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha total, 0 ha used by existing actions, 5.4565 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 5.5583 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 5.5583 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (5.5583 ha) the applicant applied for (5.5583 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 5.4565 ha total, 0 ha used by existing actions, 5.4565 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 5.5583 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 5.5583 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NU0021 1026 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1162 ha) the applicant applied for (0.1162 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha total, 0 ha used by existing actions, 0.1162 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 0.1162 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 0.1162 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1162 ha) the applicant applied for (0.1162 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha total, 0 ha used by existing actions, 0.1162 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 0.1162 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 0.1162 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (0.1162 ha) the applicant applied for (0.1162 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 0.1162 ha total, 0 ha used by existing actions, 0.1162 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 0.1162 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 0.1162 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NY1118 1031 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (246.7367 ha) the applicant applied for (246.7367 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha total, 0 ha used by existing actions, 246.7216 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 246.7367 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 246.7367 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (246.7367 ha) the applicant applied for (246.7367 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha total, 0 ha used by existing actions, 246.7216 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 246.7367 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 246.7367 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (246.7367 ha) the applicant applied for (246.7367 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 246.7216 ha total, 0 ha used by existing actions, 246.7216 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 246.7367 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 246.7367 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NY1914 1032 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (21.5269 ha) the applicant applied for (21.5269 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha total, 0 ha used by existing actions, 21.5269 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 21.5269 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 21.5269 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (21.5269 ha) the applicant applied for (21.5269 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha total, 0 ha used by existing actions, 21.5269 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 21.5269 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 21.5269 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (21.5269 ha) the applicant applied for (21.5269 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (131): 21.5269 ha total, 0 ha used by existing actions, 21.5269 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 21.5269 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 21.5269 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NY2119 1042 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (1.0281 ha) the applicant applied for (1.0281 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha total, 0 ha used by existing actions, 1.0281 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 1.0281 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 1.0281 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 96% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (1.0281 ha) the applicant applied for (1.0281 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha total, 0 ha used by existing actions, 1.0281 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 1.0281 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 1.0281 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 96% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (1.0281 ha) the applicant applied for (1.0281 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (131): 1.0281 ha total, 0 ha used by existing actions, 1.0281 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 1.0281 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 1.0281 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 96% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: NT9326 1045 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.8565 ha) the applicant applied for (3.8565 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha total, 0 ha used by existing actions, 3.7224 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 3.8565 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 3.8565 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 91% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.8565 ha) the applicant applied for (3.8565 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha total, 0 ha used by existing actions, 3.7224 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 3.8565 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 3.8565 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 91% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (3.8565 ha) the applicant applied for (3.8565 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (130)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (130): 3.7224 ha total, 0 ha used by existing actions, 3.7224 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 3.8565 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 3.8565 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 91% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h2 class="govuk-heading-m">Parcel ID: SD7560 9193 checks</h2>
+
+<h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (25.3873 ha) the applicant applied for (25.3873 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: CMOR1</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">CMOR1: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for CMOR1</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha total, 0 ha used by existing actions, 25.1632 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for CMOR1: 25.3873 ha</p>
+
+<p class="govuk-body">Maximum available area for CMOR1: 25.3873 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (25.3873 ha) the applicant applied for (25.3873 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL2</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL2: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL2</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha total, 0 ha used by existing actions, 25.1632 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL2: 25.3873 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL2: 25.3873 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+<h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Available area check <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>The available area was (25.3873 ha) the applicant applied for (25.3873 ha).</p>
+
+    <h2 class="govuk-heading-m">Available area calculation</h2>
+
+<p class="govuk-body">Application</p>
+
+<p class="govuk-body">Target action: UPL10</p>
+
+<p class="govuk-body">Land covers on the parcel</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha</p>
+
+<p class="govuk-body">Eligible land covers per action</p>
+
+<p class="govuk-body">UPL10: Permanent grassland (131)</p>
+
+<p class="govuk-body">Available land for UPL10</p>
+
+<p class="govuk-body">Permanent grassland (131): 25.1632 ha total, 0 ha used by existing actions, 25.1632 ha available</p>
+
+<p class="govuk-body">Result</p>
+
+<p class="govuk-body">Total eligible land cover for UPL10: 25.3873 ha</p>
+
+<p class="govuk-body">Maximum available area for UPL10: 25.3873 ha</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Passed
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+        <h2 class="govuk-heading-m">Result</h2>
+
+    <p>Passed</p>
+
+    <h2 class="govuk-heading-m">Pass reason</h2>
+
+<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+
+  </div>
+</details>
+
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? <strong class="govuk-tag govuk-tag--green margin-left-130">
+        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+        </svg>
+        Yes
+        </strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+
+      {% endif %}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var parcelIds = [];
+      var sectionsById = {};
+      var allParcelElements = [];
+      var headers = document.querySelectorAll('h2.govuk-heading-m');
+      headers.forEach(function (h) {
+        var m = h.textContent.match(/Parcel ID:\s*([A-Z]+\d+\s+\d+)\s*checks/);
+        if (!m) return;
+        var id = m[1].replace(/\s+/g, ' ').trim();
+        parcelIds.push(id);
+        var run = [h];
+        var n = h.nextElementSibling;
+        while (n && !(n.tagName === 'H2' && /Parcel ID:/.test(n.textContent))) {
+          run.push(n);
+          n = n.nextElementSibling;
+        }
+        sectionsById[id] = run;
+        allParcelElements = allParcelElements.concat(run);
+      });
+
+      var container = document.getElementById('parcel-search-container');
+      if (!container || typeof accessibleAutocomplete !== 'function') return;
+
+      var selected = '';
+      accessibleAutocomplete({
+        element: container,
+        id: 'parcel-search-input',
+        source: parcelIds,
+        minLength: 1,
+        showAllValues: false,
+        confirmOnBlur: false,
+        displayMenu: 'overlay',
+        placeholder: 'e.g. SD5848 9205',
+        onConfirm: function (value) { selected = value || ''; }
+      });
+
+      var status   = document.getElementById('parcel-search-status');
+      var statusId = document.getElementById('parcel-search-status-id');
+
+      function showOnly(parcelId) {
+        var keep = sectionsById[parcelId] || [];
+        var keepSet = new Set(keep);
+        allParcelElements.forEach(function (el) {
+          if (keepSet.has(el)) el.style.display = '';
+          else el.style.display = 'none';
+        });
+        statusId.textContent = parcelId;
+        status.hidden = false;
+      }
+      function showAll() {
+        allParcelElements.forEach(function (el) { el.style.display = ''; });
+        status.hidden = true;
+      }
+      function applyFind(value) {
+        if (!value) return;
+        var match = parcelIds.find(function (p) { return p.toLowerCase() === value.toLowerCase().trim(); });
+        if (!match) return;
+        showOnly(match);
+      }
+      document.getElementById('parcel-find-btn').addEventListener('click', function () {
+        var input = document.getElementById('parcel-search-input');
+        applyFind(selected || (input && input.value));
+      });
+      document.getElementById('parcel-search-clear').addEventListener('click', function (e) {
+        e.preventDefault();
+        selected = '';
+        var input = document.getElementById('parcel-search-input');
+        if (input) input.value = '';
+        showAll();
+      });
+    })();
+  </script>
+{% endblock %}

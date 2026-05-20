@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "text-input" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Text input" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Text input</h1>
+      <p class="govuk-body-l">A single-line text field for free-text answers that fit on one line.</p>
+      <p class="govuk-body">Used throughout the prototype for short identifiers (case IDs, SBI numbers), search queries, and any one-line input. Apply a width modifier (<code class="govuk-body">govuk-input--width-2</code> through <code class="govuk-body">--width-30</code>) when the expected answer is short and a full-width field would be misleading.</p>
+
+      <h2 class="govuk-heading-l">Default text input</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-input">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-input-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="pl-input">Case ID</label>
+              <div id="pl-input-hint" class="govuk-hint">For example, 100287.</div>
+              <input class="govuk-input govuk-input--width-10" id="pl-input" name="pl-input" type="text" aria-describedby="pl-input-hint">
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-input" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-input-code">&lt;div class="govuk-form-group"&gt;
+  &lt;label class="govuk-label" for="case-id"&gt;Case ID&lt;/label&gt;
+  &lt;div id="case-id-hint" class="govuk-hint"&gt;For example, 100287.&lt;/div&gt;
+  &lt;input class="govuk-input govuk-input--width-10" id="case-id" name="case-id"
+         type="text" aria-describedby="case-id-hint"&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Width modifiers</h2>
+      <p class="govuk-body">Use a width modifier when the answer has a known short length. Sizes are nominal — they assume an unencoded character count.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__content">
+            <p class="govuk-body"><code class="govuk-body">govuk-input--width-20</code> &mdash; SBI numbers, postcodes</p>
+            <input class="govuk-input govuk-input--width-20" type="text" value="300000100">
+            <p class="govuk-body govuk-!-margin-top-4"><code class="govuk-body">govuk-input--width-10</code> &mdash; case IDs</p>
+            <input class="govuk-input govuk-input--width-10" type="text" value="100287">
+            <p class="govuk-body govuk-!-margin-top-4"><code class="govuk-body">govuk-input--width-5</code> &mdash; reference codes</p>
+            <input class="govuk-input govuk-input--width-5" type="text" value="UPL2">
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Search variant</h2>
+      <p class="govuk-body">When the input is the primary search field on the page, pair it with the <a class="govuk-link" href="/pattern-library/moj/search">MOJ search</a> pattern: <code class="govuk-body">type="search"</code> and the <code class="govuk-body">moj-search__input</code> modifier.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__content">
+            <div class="moj-search">
+              <div class="govuk-form-group">
+                <label class="govuk-label" for="pl-search">Search for cases</label>
+                <div id="pl-search-hint" class="govuk-hint">You can search by case ID or SBI.</div>
+                <input class="govuk-input moj-search__input" id="pl-search" name="search" type="search" aria-describedby="pl-search-hint">
+              </div>
+              <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">Search</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For short, single-line answers — case IDs, SBI numbers, names, references.</li>
+        <li>For search boxes (paired with the MOJ search styling and a Search button).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For multi-line free text — use a <a class="govuk-link" href="/pattern-library/gds/textarea">textarea</a>.</li>
+        <li>For picking from a known list — use radios, checkboxes, a select, or the <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">accessible autocomplete</a>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caselist">Case list search</a> (search variant).</li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/assignment">Assignment search</a>.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/caselist-my">My case list filters</a> — also used inline for the input fields inside the filter panel.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

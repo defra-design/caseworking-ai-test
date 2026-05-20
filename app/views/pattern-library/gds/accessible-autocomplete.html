@@ -1,0 +1,134 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "accessible-autocomplete" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Accessible autocomplete" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Accessible autocomplete</h1>
+      <p class="govuk-body-l">An accessible, type-ahead select input from alphagov that lets a user filter a long list of options by typing.</p>
+      <p class="govuk-body">It is published as a separate package (<code class="govuk-body">accessible-autocomplete</code>) and is not part of <code class="govuk-body">govuk-frontend</code> itself. Use it whenever the user needs to pick one value from a long, known list — typically too long for a standard <code class="govuk-body">&lt;select&gt;</code> or a radio group to remain usable.</p>
+
+      <h2 class="govuk-heading-l">Default autocomplete</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-aa">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-aa-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="pl-aa-input">
+                Find a specific land parcel
+              </label>
+              <div id="pl-aa-container"></div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-aa" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-aa-code">&lt;link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css"&gt;
+
+&lt;div class="govuk-form-group"&gt;
+  &lt;label class="govuk-label govuk-label--s" for="pl-aa-input"&gt;
+    Find a specific land parcel
+  &lt;/label&gt;
+  &lt;div id="pl-aa-container"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  accessibleAutocomplete({
+    element: document.getElementById('pl-aa-container'),
+    id: 'pl-aa-input',
+    source: ['SD5848 9205', 'SD5649 9215', 'NY2105 1006', '...'],
+    minLength: 1,
+    confirmOnBlur: false,
+    displayMenu: 'overlay',
+    placeholder: 'e.g. SD5848 9205'
+  });
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The user needs to pick one item from a long, finite list (more than ~20 items) where they probably already know what they want.</li>
+        <li>The list is known up front and small enough to ship to the browser (one-page calculations with up to a few hundred land parcels, for example).</li>
+        <li>You want suggestions as the user types, with full keyboard and screen-reader support out of the box.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For short lists (≤ 10 items) — use radios or a standard <code class="govuk-body">&lt;select&gt;</code>.</li>
+        <li>For free-text input where the answer might not match the list — use a plain <code class="govuk-body">&lt;input&gt;</code> instead.</li>
+        <li>For server-paginated options that cannot all be sent to the page at once — use a paginated search pattern.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Customisation in this prototype</h2>
+      <p class="govuk-body">The autocomplete input and its suggestion menu inherit the GDS Transport font via a small SCSS override on <code class="govuk-body">.autocomplete__input</code>, <code class="govuk-body">.autocomplete__menu</code> and <code class="govuk-body">.autocomplete__option</code> in <code class="govuk-body">application.scss</code> — the upstream stylesheet defaults to a generic sans-serif.</p>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Used in the parcel-search panel above the parcel list on every large calculations page (paired with a <strong>Find</strong> button that hides every other parcel block in place when a parcel is selected).</p>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-mid2">Large calculations — middle run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-old2">Large calculations — baseline</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-old">Medium calculations — previous run</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var container = document.getElementById('pl-aa-container');
+      if (!container || typeof accessibleAutocomplete !== 'function') return;
+      accessibleAutocomplete({
+        element: container,
+        id: 'pl-aa-input',
+        source: [
+          'SD5848 9205', 'SD5649 9215', 'SD6165 9218', 'SD5763 9223',
+          'NY2105 1006', 'NU0704 1008', 'NT8726 1015', 'NT9009 1023',
+          'NU0403 1024', 'NU0021 1026', 'NY1118 1031', 'NY1914 1032',
+          'NY2119 1042', 'NT9326 1045', 'SD7560 9193'
+        ],
+        minLength: 1,
+        showAllValues: false,
+        confirmOnBlur: false,
+        displayMenu: 'overlay',
+        placeholder: 'e.g. SD5848 9205'
+      });
+    })();
+  </script>
+{% endblock %}

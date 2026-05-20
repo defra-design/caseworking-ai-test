@@ -1,0 +1,196 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_caseReal-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_caseReal-nav.html" %}
+<form action="/task6T2Real" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Review scheme budget as a finance officer
+      </h1>
+    </legend>
+
+
+
+
+        <p>You must check there is enough budget left for the total yearly payment the customer has applied for.
+
+
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Total yearly payment applied for</th>
+              <td class="govuk-table__cell">£406.60</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><a href="#" class="govuk-link">View SFI budget spreadsheet</a></p>
+
+
+
+
+
+
+    <h2 class="govuk-heading-m">
+         Outcome
+      </h2>
+
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <div class="govuk-radios" data-module="govuk-radios">
+        
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask6Real" type="radio" value="Accepted" data-aria-controls="conditional-decision1" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Accept
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task6NoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6Note2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6NoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+         </div>
+          
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionTask6Real" type="radio" value="Information requested" data-aria-controls="conditional-decision2" >
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Request information from customer
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task6NoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6Note2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6NoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask6Real" type="radio" value="Internal investigation" data-aria-controls="conditional-decision3" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Pause for internal investigation
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision3">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task6NoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6Note2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6NoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask6Real" type="radio" value="Cannot accept" data-aria-controls="conditional-decision4" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Cannot accept
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision4">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task6NoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6Note2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6NoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <!--<div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask6Real" type="radio" value="Note" data-aria-controls="conditional-decision5" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Just add a note
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision5">
+          {% if (data.task6NoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6Note2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task6NoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div> -->
+        </div>
+      </fieldset>
+    </div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+{% if (data.task6NoteReal) %}
+<h2 class="govuk-heading-m">Outcome history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Outcome</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionTask6Real']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote6Real']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endif %}
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

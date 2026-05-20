@@ -1,0 +1,7232 @@
+
+<!DOCTYPE html>
+<html lang="en" class="govuk-template">
+  <head>
+    <meta charset="utf-8">
+    <title>  Application 100287
+  | fg-cw-frontend
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c0c">
+
+      <link rel="icon" sizes="48x48" href="/public/assets/images/favicon.ico">
+      <link rel="icon" sizes="any" href="/public/assets/images/favicon.svg" type="image/svg+xml">
+      <link rel="mask-icon" href="/public/assets/images/govuk-icon-mask.svg" color="#0b0c0c">
+      <link rel="apple-touch-icon" href="/public/assets/images/govuk-icon-180.png">
+      <link rel="manifest" href="/public/assets/manifest.json">
+
+  <link
+    href="/public/stylesheets/application.1378f49.min.css"
+    rel="stylesheet"
+  />
+
+  </head>
+  <body class="govuk-template__body">
+    <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
+
+      <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
+
+
+  <header class="defra-header">
+  <div class="defra-header__inner">
+    <a
+      href="/"
+      class="defra-header__logo-link"
+      title="Go to the homepage"
+      data-testid="defra-heading-logo"
+    >
+      <img
+        class="logo-light"
+        src="/public/assets/images/defra-logo.svg"
+        alt=""
+      />
+      <span
+        class="defra-header__service-name"
+        data-testid="defra-heading-service-name"
+        >Manage rural grant applications</span
+      >
+    </a>
+      <nav class="nav">
+
+            <a class="nav__link" href="/admin">Admin</a>
+          |
+            <a
+              class="nav__link nav__link--disabled"
+              role="link"
+              aria-disabled="true"
+              >Casework</a
+            >
+      </nav>
+  </div>
+</header>
+
+
+      <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content">
+
+
+<div class="app-case-banner">
+  <div class="govuk-width-container">
+    <div class="app-case-banner__top govuk-!-margin-bottom-4">
+      <div class="app-case-banner__title">
+        <a href="/cases" class="govuk-back-link">Back to applications</a>
+        <h1 class="govuk-heading-m govuk-!-margin-bottom-0">
+          Golden Grange
+        </h1>
+      </div>
+        <div class="app-case-banner__actions">
+            <form
+              method="POST"
+              action="/cases/6a043f846093dc37091c079f/page-action"
+              style="display: inline-block; margin: 0;"
+            >
+              <input
+                type="hidden"
+                name="actionCode"
+                value="RECALCULATE_RULES"
+              />
+              <input
+                type="hidden"
+                name="actionName"
+                value="Run calculations again"
+              />
+              <button
+                type="submit"
+                class="govuk-button govuk-button--primary govuk-!-margin-bottom-0"
+                data-module="govuk-button"
+                data-prevent-double-click="true"
+              >
+                Run calculations again
+              </button>
+            </form>
+        </div>
+    </div>
+    <div>
+      <div class="app-case-row">
+            <div class="app-case-cell">
+              <p>
+                <strong class="govuk-!-margin-right-1"
+                  >Scheme:</strong
+                >
+                SFI
+              </p>
+            </div>
+            <div class="app-case-cell">
+              <p>
+                <strong class="govuk-!-margin-right-1"
+                  >Application ID:</strong
+                >
+                100287
+              </p>
+            </div>
+            <div class="app-case-cell">
+              <p>
+                <strong class="govuk-!-margin-right-1"
+                  >SBI:</strong
+                >
+                300000100
+              </p>
+            </div>
+            <div class="app-case-cell">
+              <p>
+                <strong class="govuk-!-margin-right-1"
+                  >Status:</strong
+                >
+                Application Received
+              </p>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+  <div class="govuk-service-navigation govuk-!-margin-top-5 govuk-!-margin-bottom-8"
+data-module="govuk-service-navigation"
+>
+      <div class="govuk-width-container">
+
+    <div class="govuk-service-navigation__container">
+
+
+
+        <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+          <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden aria-hidden="true">
+            Menu
+          </button>
+
+          <ul class="govuk-service-navigation__list" id="navigation" >
+
+
+
+              <li class="govuk-service-navigation__item">
+                  <a class="govuk-service-navigation__link" href="/cases/6a043f846093dc37091c079f">
+
+Tasks
+                  </a>
+              </li>
+
+
+              <li class="govuk-service-navigation__item govuk-service-navigation__item--active">
+                  <a class="govuk-service-navigation__link" href="/cases/6a043f846093dc37091c079f/case-details" aria-current="true">
+
+                  <strong class="govuk-service-navigation__active-fallback">Application</strong>
+
+                  </a>
+              </li>
+
+
+              <li class="govuk-service-navigation__item">
+                  <a class="govuk-service-navigation__link" href="/cases/6a043f846093dc37091c079f/calculations">
+
+Calculations
+                  </a>
+              </li>
+
+
+              <li class="govuk-service-navigation__item">
+                  <a class="govuk-service-navigation__link" href="/cases/6a043f846093dc37091c079f/timeline">
+
+Timeline
+                  </a>
+              </li>
+
+
+              <li class="govuk-service-navigation__item">
+                  <a class="govuk-service-navigation__link" href="/cases/6a043f846093dc37091c079f/notes">
+
+Notes
+                  </a>
+              </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+  <h2 class="govuk-heading-l  govuk-!-margin-top-6 govuk-!-margin-bottom-1">
+    Application
+  </h2>
+
+
+
+
+  <div id="submittedDate" class="defra-container govuk-body">
+
+
+  <span class="govuk-!-font-weight-regular">Application submitted:</span>
+
+
+
+
+  <span class="govuk-!-font-weight-bold">13 May 2026</span>
+
+
+  </div>
+
+
+
+
+  <div class="govuk-accordion" data-module="govuk-accordion" id="case-events">
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-1">
+
+
+  <span>Statutory Consent Requirements</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-1" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-1">
+
+
+  <h2 class="govuk-heading-l  govuk-heading-m">
+    SSSI consent
+  </h2>
+
+
+
+
+  <p class="govuk-body">A consent is required from Natural England</p>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: SD5848 9205
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      169.7558 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      99.94 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: SD5848 9205
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      169.7558 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      99.94 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: SD5649 9215
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      764.1672 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      99.99 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: SD5649 9215
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      764.1672 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      99.99 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2105 1006
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      3.207 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      100 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2105 1006
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      3.207 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      100 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NU0021 1026
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.1162 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      100 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NU0021 1026
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.1162 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      100 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2119 1042
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0374 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      3.64 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2119 1042
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0374 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      3.64 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h2 class="govuk-heading-l  govuk-heading-m">
+    Historic England consent
+  </h2>
+
+
+
+
+  <p class="govuk-body">A hefer is needed from Historic England</p>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NT9009 1023
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      CMOR1
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0071 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.34 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NT9009 1023
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0071 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.34 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NT9009 1023
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0071 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.34 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY1118 1031
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      CMOR1
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.6845 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.28 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY1118 1031
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.6845 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.28 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY1118 1031
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.6845 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.28 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2119 1042
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      CMOR1
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0809 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      7.87 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2119 1042
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL2
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0809 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      7.87 %
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-1">
+    Land parcel: NY2119 1042
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action code
+    </dt>
+    <dd class="govuk-summary-list__value">
+      UPL10
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap area
+    </dt>
+    <dd class="govuk-summary-list__value">
+      0.0809 Ha
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Overlap
+    </dt>
+    <dd class="govuk-summary-list__value">
+      7.87 %
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-2">
+
+
+  <span>Customer details</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-2" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Name
+    </dt>
+    <dd class="govuk-summary-list__value">
+      Mr Yasmine Rose Reed
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Business name
+    </dt>
+    <dd class="govuk-summary-list__value">
+      Golden Grange
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Address
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>101 High Street</span>
+
+
+          <br />
+
+
+        <span>Barns</span>
+
+
+          <br />
+
+
+        <span>Manchester</span>
+
+
+          <br />
+
+
+        <span>Lancashire</span>
+
+
+          <br />
+
+
+        <span></span>
+
+
+
+        <span></span>
+
+
+          <br />
+
+
+        <span>Manchester</span>
+
+
+
+        <span>SN51 5CB</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      SBI number
+    </dt>
+    <dd class="govuk-summary-list__value">
+      300000100
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Contact details
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>contact+300000100@example.test</span>
+
+
+
+          <br />
+
+        </div>
+
+
+
+        <span>07300000100</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-3">
+
+
+  <span>Land parcel selected : SD5848 9205</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-3" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>SD5848</span>
+
+
+
+
+        <span>9205</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£1800.50</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£15117.42</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>169.8586</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£17325.58</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-4">
+
+
+  <span>Land parcel selected : SD5649 9215</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-4" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-4">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>SD5649</span>
+
+
+
+
+        <span>9215</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£8086.81</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£67898.71</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>762.9068</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£77816.49</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-5">
+
+
+  <span>Land parcel selected : SD6165 9218</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-5" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-5">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>SD6165</span>
+
+
+
+
+        <span>9218</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£49.00</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£411.38</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>4.6223</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£471.47</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-6">
+
+
+  <span>Land parcel selected : SD5763 9223</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-6" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>SD5763</span>
+
+
+
+
+        <span>9223</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£958.11</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£8044.50</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>90.3876</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£9219.54</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-7">
+
+
+  <span>Land parcel selected : NY2105 1006</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-7" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-7">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NY2105</span>
+
+
+
+
+        <span>1006</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£34.00</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£285.43</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.2071</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£327.12</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-8">
+
+
+  <span>Land parcel selected : NU0704 1008</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-8" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NU0704</span>
+
+
+
+
+        <span>1008</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£5354.75</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£44959.66</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>505.1647</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£51526.80</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-9">
+
+
+  <span>Land parcel selected : NT8726 1015</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-9" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-9">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NT8726</span>
+
+
+
+
+        <span>1015</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£1.85</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£15.49</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1741</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£17.76</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-10">
+
+
+  <span>Land parcel selected : NT9009 1023</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-10" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-10">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NT9009</span>
+
+
+
+
+        <span>1023</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£22.10</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£185.58</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>2.0852</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£212.69</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-11">
+
+
+  <span>Land parcel selected : NU0403 1024</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-11" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-11">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NU0403</span>
+
+
+
+
+        <span>1024</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£58.92</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£494.69</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>5.5583</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£566.95</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-12">
+
+
+  <span>Land parcel selected : NU0021 1026</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-12" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-12">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NU0021</span>
+
+
+
+
+        <span>1026</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£1.23</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£10.34</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>0.1162</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£11.85</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-13">
+
+
+  <span>Land parcel selected : NY1118 1031</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-13" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-13">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NY1118</span>
+
+
+
+
+        <span>1031</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£2615.41</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£21959.57</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>246.7367</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£25167.14</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-14">
+
+
+  <span>Land parcel selected : NY1914 1032</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-14" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-14">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NY1914</span>
+
+
+
+
+        <span>1032</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£228.19</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£1915.89</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>21.5269</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£2195.74</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-15">
+
+
+  <span>Land parcel selected : NY2119 1042</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-15" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-15">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NY2119</span>
+
+
+
+
+        <span>1042</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£10.90</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£91.50</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>1.0281</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£104.87</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-16">
+
+
+  <span>Land parcel selected : NT9326 1045</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-16" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-16">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>NT9326</span>
+
+
+
+
+        <span>1045</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£40.88</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£343.23</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>3.8565</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£393.36</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-17">
+
+
+  <span>Land parcel selected : SD7560 9193</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-17" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-17">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Land parcel
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>SD7560</span>
+
+
+
+
+        <span>9193</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Assess moorland and produce a written record</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>CMOR1</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£10.60</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£269.11</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Low livestock grazing on moorland</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL2</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£89.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£2259.47</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>Shepherding livestock on moorland (remove stock for at least 8 months)</span>
+
+
+
+
+        <span>-</span>
+
+
+
+
+        <span>UPL10</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total available area for action
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Quantity (ha)
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>25.3873</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Payment rate per year
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£102.00</span>
+
+
+
+
+        <span>ha</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£2589.50</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-18">
+
+
+  <span>Agreement level actions</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-18" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-18">
+
+
+  <div class="defra-container">
+
+
+  <h3 class="govuk-heading-m  govuk-heading-m govuk-!-margin-bottom-1">
+    CMOR1
+  </h3>
+
+
+
+
+  <p class="govuk-body govuk-!-margin-bottom-4">Assess moorland and produce a written record</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span>£272.00</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Duration
+    </dt>
+    <dd class="govuk-summary-list__value">
+      1 years
+    </dd>
+  </div>
+</dl>
+
+
+  </div>
+
+
+        </div>
+      </div>
+
+      <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+          <h2 class="govuk-accordion__section-heading">
+            <span class="govuk-accordion__section-button" id="case-events-heading-19">
+
+
+  <span>Payment</span>
+
+
+            </span>
+          </h2>
+        </div>
+        <div id="case-events-content-19" class="govuk-accordion__section-content" role="region" aria-labelledby="case-events-heading-19">
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Agreement total payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <div class="defra-container">
+
+
+        <span>£371,743.48</span>
+
+
+
+
+        <span> over 1 years</span>
+
+
+        </div>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Total yearly payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      £371,743.48
+    </dd>
+  </div>
+</dl>
+
+
+
+
+  <h3 class="govuk-heading-m  govuk-heading-m govuk-!-margin-top-6 govuk-!-margin-bottom-3">
+    Funded action payment detail
+  </h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      UPL2 annual payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span class="govuk-!-display-block">£163,992.86</span>
+
+
+
+        <span class="govuk-body-m">( 169.8586 ha x £89.00 per ha, 762.9068 ha x £89.00 per ha, 4.6223 ha x £89.00 per ha, 90.3876 ha x £89.00 per ha, 3.2071 ha x £89.00 per ha, 505.1647 ha x £89.00 per ha, 0.1741 ha x £89.00 per ha, 2.0852 ha x £89.00 per ha, 5.5583 ha x £89.00 per ha, 0.1162 ha x £89.00 per ha, 246.7367 ha x £89.00 per ha, 21.5269 ha x £89.00 per ha, 1.0281 ha x £89.00 per ha, 3.8565 ha x £89.00 per ha, 25.3873 ha x £89.00 per ha )</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      UPL10 annual payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span class="govuk-!-display-block">£187,946.87</span>
+
+
+
+        <span class="govuk-body-m">( 169.8586 ha x £102.00 per ha, 762.9068 ha x £102.00 per ha, 4.6223 ha x £102.00 per ha, 90.3876 ha x £102.00 per ha, 3.2071 ha x £102.00 per ha, 505.1647 ha x £102.00 per ha, 0.1741 ha x £102.00 per ha, 2.0852 ha x £102.00 per ha, 5.5583 ha x £102.00 per ha, 0.1162 ha x £102.00 per ha, 246.7367 ha x £102.00 per ha, 21.5269 ha x £102.00 per ha, 1.0281 ha x £102.00 per ha, 3.8565 ha x £102.00 per ha, 25.3873 ha x £102.00 per ha )</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      CMOR1 annual payment
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span class="govuk-!-display-block">£19,803.73</span>
+
+
+
+        <span class="govuk-body-m">( 169.8586 ha x £10.60 per ha, 762.9068 ha x £10.60 per ha, 4.6223 ha x £10.60 per ha, 90.3876 ha x £10.60 per ha, 3.2071 ha x £10.60 per ha, 505.1647 ha x £10.60 per ha, 0.1741 ha x £10.60 per ha, 2.0852 ha x £10.60 per ha, 5.5583 ha x £10.60 per ha, 0.1162 ha x £10.60 per ha, 246.7367 ha x £10.60 per ha, 21.5269 ha x £10.60 per ha, 1.0281 ha x £10.60 per ha, 3.8565 ha x £10.60 per ha, 25.3873 ha x £10.60 per ha, £272.00 per SFI agreement per year )</span>
+    </dd>
+  </div>
+</dl>
+
+
+        </div>
+      </div>
+  </div>
+
+
+        </main>
+      </div>
+
+  <footer class="govuk-footer">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        <h2 class="govuk-visually-hidden">Support links</h2>
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link" href="https://www.gov.uk/help/privacy-notice">
+              Privacy
+            </a>
+          </li>
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link" href="https://www.gov.uk/help/cookies">
+              Cookies
+            </a>
+          </li>
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link" href="https://www.gov.uk/help/accessibility-statement">
+              Accessibility statement
+            </a>
+          </li>
+        </ul>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="govuk-footer__licence-logo"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 483.2 195.7"
+            height="17"
+            width="41"
+          >
+            <path
+              fill="currentColor"
+              d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
+            />
+          </svg>
+          <span class="govuk-footer__licence-description">
+            All content is available under the
+            <a
+              class="govuk-footer__link"
+              href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+              rel="license"
+            >Open Government Licence v3.0</a>, except where otherwise stated
+          </span>
+      </div>
+      <div class="govuk-footer__meta-item">
+        <a
+          class="govuk-footer__link govuk-footer__copyright-logo"
+          href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/"
+        >
+          © Crown copyright
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  <script>
+    document.body.className +=
+      " js-enabled" +
+      ("noModule" in HTMLScriptElement.prototype
+        ? " govuk-frontend-supported"
+        : "");
+  </script>
+  <script type="module" src="/public/javascripts/application.a1cad40.min.js"></script>
+  <script type="module" src="/public/javascripts/govuk.3528b2b.min.js"></script>
+  <script type="module" src="/public/javascripts/moj.71d1b20.min.js"></script>
+  <script type="module">
+    import { initSelectAllCheckboxes } from "/public/javascripts/checkboxes.65dc0c1.min.js";
+    import { initAll } from "/public/javascripts/govuk.3528b2b.min.js";
+    import { initAll as initMOJ } from "/public/javascripts/moj.71d1b20.min.js";
+    initSelectAllCheckboxes();
+    initAll();
+    initMOJ();
+  </script>
+  </body>
+</html>

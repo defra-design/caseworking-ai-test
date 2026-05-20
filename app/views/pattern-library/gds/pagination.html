@@ -1,0 +1,126 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "pagination" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Pagination" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Pagination</h1>
+      <p class="govuk-body-l">Let users navigate a list of results split across multiple pages.</p>
+      <p class="govuk-body">This is the GOV.UK Design System pagination — distinct from the MOJ <a class="govuk-link" href="/pattern-library/moj/pagination">pagination</a> pattern, which has a slightly different visual style and is used on MOJ list pages. The case list in this prototype uses the GDS variant.</p>
+
+      <h2 class="govuk-heading-l">Default pagination</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-pg">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-pg-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <nav class="govuk-pagination" aria-label="Pagination">
+              <div class="govuk-pagination__prev">
+                <a class="govuk-link govuk-pagination__link" href="#" rel="prev">
+                  <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                  </svg>
+                  <span class="govuk-pagination__link-title">
+                    Previous<span class="govuk-visually-hidden"> page</span>
+                  </span>
+                </a>
+              </div>
+              <ul class="govuk-pagination__list">
+                <li class="govuk-pagination__item">
+                  <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 1">1</a>
+                </li>
+                <li class="govuk-pagination__item govuk-pagination__item--current">
+                  <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 2" aria-current="page">2</a>
+                </li>
+                <li class="govuk-pagination__item">
+                  <a class="govuk-link govuk-pagination__link" href="#" aria-label="Page 3">3</a>
+                </li>
+              </ul>
+              <div class="govuk-pagination__next">
+                <a class="govuk-link govuk-pagination__link" href="#" rel="next">
+                  <span class="govuk-pagination__link-title">
+                    Next<span class="govuk-visually-hidden"> page</span>
+                  </span>
+                  <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                    <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+                  </svg>
+                </a>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-pg" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-pg-code">&lt;nav class="govuk-pagination" aria-label="Pagination"&gt;
+  &lt;div class="govuk-pagination__prev"&gt;
+    &lt;a class="govuk-link govuk-pagination__link" href="?page=1" rel="prev"&gt;
+      &lt;!-- prev icon svg --&gt;
+      &lt;span class="govuk-pagination__link-title"&gt;
+        Previous&lt;span class="govuk-visually-hidden"&gt; page&lt;/span&gt;
+      &lt;/span&gt;
+    &lt;/a&gt;
+  &lt;/div&gt;
+  &lt;ul class="govuk-pagination__list"&gt;
+    &lt;li class="govuk-pagination__item"&gt;
+      &lt;a class="govuk-link govuk-pagination__link" href="?page=1" aria-label="Page 1"&gt;1&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class="govuk-pagination__item govuk-pagination__item--current"&gt;
+      &lt;a class="govuk-link govuk-pagination__link" href="?page=2"
+         aria-label="Page 2" aria-current="page"&gt;2&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class="govuk-pagination__item"&gt;
+      &lt;a class="govuk-link govuk-pagination__link" href="?page=3" aria-label="Page 3"&gt;3&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="govuk-pagination__next"&gt;…&lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">GDS vs MOJ pagination</h2>
+      <p class="govuk-body">Use the GDS pagination for public-facing or service-style list pages. Use the <a class="govuk-link" href="/pattern-library/moj/pagination">MOJ pagination</a> for internal casework list pages that also use the MOJ filter and sortable-table components — the visual style sits more naturally alongside the rest of the MOJ component set.</p>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To split a long list of results across multiple pages.</li>
+        <li>When the user needs to jump to a specific page rather than scroll continuously.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For lists short enough to fit on a single page — pagination adds friction.</li>
+        <li>When the entire list belongs on a single page for cross-comparison (e.g. the parcels in a calculations run).</li>
+        <li>When MOJ filter / sortable-table is already on the page — use the MOJ variant for visual consistency.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caselist">Case list</a> (the markup is currently commented out — it appears as soon as the result count exceeds one page).</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

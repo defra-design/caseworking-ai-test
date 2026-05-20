@@ -1,0 +1,24 @@
+<div class="lg-div">
+  <div class="govuk-width-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        {{ govukBackLink({
+          text: "Back to applications",
+          href: "../caselist"
+        }) }}
+        <h2 class="govuk-heading-m">Golden Grange</h2>
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">
+          Run calculations again
+        </button>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> SFI</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>100287</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>300000100</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{% if data.caseStatusReal %}{{ data.caseStatusReal }}{% else %}Application received{% endif %}</p></div>
+    </div>
+  </div>
+</div>

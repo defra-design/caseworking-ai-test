@@ -1,0 +1,231 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "check-result-tags" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Check-result tags" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Check-result tags</h1>
+      <p class="govuk-body-l">Pass / Fail / Yes / No status tags with tick and cross icons. Used in the summary row of every rule check on the calculations pages.</p>
+      <p class="govuk-body">There are two visual variants — a green tag with a tick (for any positive outcome) and a red tag with a cross (for any negative outcome) — and two label vocabularies on top of those:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Pass / Fail</strong> — used when the check has a regulatory pass-or-fail outcome (Available area check, Moorland threshold check).</li>
+        <li><strong>Yes / No</strong> — used when the check answers a binary question rather than passing/failing (HEFER required?, SSSI present?). Same visuals, different wording.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Pass</h2>
+      <p class="govuk-body">Green <code class="govuk-body">govuk-tag--green</code> with an inline <code class="govuk-body">.tick-icon</code> svg. The svg is included inline so the icon scales and inherits colour cleanly with the tag.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-pass">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-pass-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--green">
+              <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+              </svg>
+              Passed
+            </strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-pass" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-pass-code">&lt;strong class="govuk-tag govuk-tag--green"&gt;
+  &lt;svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24"
+       fill="green" xmlns="http://www.w3.org/2000/svg"&gt;
+    &lt;path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/&gt;
+  &lt;/svg&gt;
+  Passed
+&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Fail</h2>
+      <p class="govuk-body">Custom <code class="govuk-body">govuk-tag--red-new</code> — a softer red background with dark red text, plus a cross icon rendered via a <code class="govuk-body">::before</code> pseudo-element pointing at <code class="govuk-body">/public/images/icon-tag-remove-cross.svg</code>. No inline svg is required.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-fail">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-fail-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--red-new">Failed</strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-fail" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-fail-code">/* application.scss */
+.govuk-tag--red-new {
+  color: rgb(42.4, 10.6, 5.6);
+  background-color: rgb(244.25, 204.5, 198.25);
+}
+.govuk-tag--red-new:before {
+  background-image: url(/public/images/icon-tag-remove-cross.svg);
+  content: "";
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  margin-left: 5px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+&lt;!-- Usage --&gt;
+&lt;strong class="govuk-tag govuk-tag--red-new"&gt;Failed&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Yes</h2>
+      <p class="govuk-body">Same green-tick visual as Pass, used where the check answers a binary question rather than passing or failing. Used on the <em>HEFER required?</em> and <em>SSSI present?</em> checks.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-yes">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-yes-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--green">
+              <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+              </svg>
+              Yes
+            </strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-yes" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-yes-code">&lt;strong class="govuk-tag govuk-tag--green"&gt;
+  &lt;svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24"
+       fill="green" xmlns="http://www.w3.org/2000/svg"&gt;
+    &lt;path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/&gt;
+  &lt;/svg&gt;
+  Yes
+&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">No</h2>
+      <p class="govuk-body">Same red-cross visual as Fail, with the label swapped to <strong>No</strong> for binary-question checks. Currently not in active use (every <em>HEFER required?</em> and <em>SSSI present?</em> check in the prototype answers Yes) but documented here so the negative variant is on hand if it's needed.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tag-no">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-no-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <strong class="govuk-tag govuk-tag--red-new">No</strong>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tag-no" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tag-no-code">&lt;strong class="govuk-tag govuk-tag--red-new"&gt;No&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">All four side by side</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Outcome</th>
+                  <th class="govuk-table__header" style="min-width: 8.5rem; white-space: nowrap;">Tag</th>
+                  <th class="govuk-table__header">When used</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Pass</td>
+                  <td class="govuk-table__cell">
+                    <strong class="govuk-tag govuk-tag--green">
+                      <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+                      </svg>
+                      Passed
+                    </strong>
+                  </td>
+                  <td class="govuk-table__cell">Regulatory pass/fail checks — Available area, Moorland</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Fail</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red-new">Failed</strong></td>
+                  <td class="govuk-table__cell">Same checks, when the threshold is not met</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Yes</td>
+                  <td class="govuk-table__cell">
+                    <strong class="govuk-tag govuk-tag--green">
+                      <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
+                      </svg>
+                      Yes
+                    </strong>
+                  </td>
+                  <td class="govuk-table__cell">Binary-question checks — HEFER required?, SSSI present?</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">No</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red-new">No</strong></td>
+                  <td class="govuk-table__cell">Same binary-question checks, when the answer is No</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Layout inside the check summary</h2>
+      <p class="govuk-body">When used inside a <code class="govuk-body">&lt;summary&gt;</code> row, the application-level rule on <code class="govuk-body">.govuk-details__summary-text</code> floats the tag to the right edge of the row with a 10px gap — see the <a class="govuk-link" href="/pattern-library/gds/details">Details</a> pattern for the layout rule. No per-instance margin classes are needed.</p>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To show the outcome of a single, atomic rule check at the end of its summary row.</li>
+        <li>To pair with the Yes/No vocabulary when the check is informational rather than pass/fail.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For overall case status (use the colour tags documented on the <a class="govuk-link" href="/pattern-library/custom/status-tags">Status tags</a> page).</li>
+        <li>For task-list status indicators (use the standard <a class="govuk-link" href="/pattern-library/gds/task-list">Task list</a> tags).</li>
+        <li>To convey severity beyond a binary outcome — Pass/Fail/Yes/No carry exactly two states; if a check has a third "in progress" or "warning" state, pick a different colour tag.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a> — uses all four variants (Pass + Fail on the Available area / Moorland checks, Yes on every HEFER and SSSI check).</li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations2">Small calculations</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

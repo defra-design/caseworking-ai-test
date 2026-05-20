@@ -1,0 +1,126 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "checkboxes" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Checkboxes" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Checkboxes</h1>
+      <p class="govuk-body-l">Let users select one or more items from a list.</p>
+      <p class="govuk-body">Use checkboxes when a question can have any combination of answers (zero, one, or several). If only one answer is possible, use <a class="govuk-link" href="/pattern-library/gds/radios">radios</a> instead.</p>
+
+      <h2 class="govuk-heading-l">Default checkboxes</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-cb">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-cb-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                  <h2 class="govuk-fieldset__heading">Status</h2>
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="pl-cb-1" name="pl-cb" type="checkbox" value="received" checked>
+                    <label class="govuk-label govuk-checkboxes__label" for="pl-cb-1">Application received</label>
+                  </div>
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="pl-cb-2" name="pl-cb" type="checkbox" value="in-review">
+                    <label class="govuk-label govuk-checkboxes__label" for="pl-cb-2">In review</label>
+                  </div>
+                  <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="pl-cb-3" name="pl-cb" type="checkbox" value="on-hold">
+                    <label class="govuk-label govuk-checkboxes__label" for="pl-cb-3">On hold</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-cb" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-cb-code">&lt;div class="govuk-form-group"&gt;
+  &lt;fieldset class="govuk-fieldset"&gt;
+    &lt;legend class="govuk-fieldset__legend govuk-fieldset__legend--s"&gt;
+      &lt;h2 class="govuk-fieldset__heading"&gt;Status&lt;/h2&gt;
+    &lt;/legend&gt;
+    &lt;div class="govuk-checkboxes" data-module="govuk-checkboxes"&gt;
+      &lt;div class="govuk-checkboxes__item"&gt;
+        &lt;input class="govuk-checkboxes__input" id="status-1" name="status"
+               type="checkbox" value="received" checked&gt;
+        &lt;label class="govuk-label govuk-checkboxes__label" for="status-1"&gt;Application received&lt;/label&gt;
+      &lt;/div&gt;
+      &lt;!-- more items --&gt;
+    &lt;/div&gt;
+  &lt;/fieldset&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Small checkboxes</h2>
+      <p class="govuk-body">Use the <code class="govuk-body">govuk-checkboxes--small</code> modifier inside a dense filter panel where the standard control would dominate the layout. Used in the My case list filters.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__content">
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="pl-cb-s-1" name="pl-cb-s" type="checkbox" value="1" checked>
+                <label class="govuk-label govuk-checkboxes__label" for="pl-cb-s-1">Adding Value (AV)</label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="pl-cb-s-2" name="pl-cb-s" type="checkbox" value="2" checked>
+                <label class="govuk-label govuk-checkboxes__label" for="pl-cb-s-2">Calf Housing for Health and Welfare (CHHW)</label>
+              </div>
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="pl-cb-s-3" name="pl-cb-s" type="checkbox" value="3">
+                <label class="govuk-label govuk-checkboxes__label" for="pl-cb-s-3">Sustainable Farming Incentive (SFI)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The question accepts zero, one, or more answers from a known list.</li>
+        <li>Inside a filter panel, where the user might combine criteria (status A and status B and assignee X).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The question is mutually exclusive — use <a class="govuk-link" href="/pattern-library/gds/radios">radios</a>.</li>
+        <li>The list is long and unbounded — use the <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">accessible autocomplete</a> for a single value, or paginated search.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/case2/caselist-my">My case list filters</a> — small checkboxes for scheme type, status and assignee filters.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

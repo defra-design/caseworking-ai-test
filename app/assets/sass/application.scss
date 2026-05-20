@@ -225,6 +225,29 @@
   width: 120px;
 }
 
+// Right-align Pass / Fail status tags in the details summary row.
+//
+// govuk-frontend sets `width: fit-content` on <summary> so its focus outline
+// shrink-wraps the title text — that means the summary stops just past the
+// title, well before the row edge. Override to full width, then use flexbox on
+// the inner span so the bare title text and the <strong class="govuk-tag">
+// become flex items pushed to opposite ends. 10px gap before the row edge.
+// Hard-coded margin-left-NNN classes from earlier iterations are neutralised.
+.govuk-details__summary {
+  width: 100%;
+  box-sizing: border-box;
+}
+.govuk-details__summary-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.govuk-details__summary-text > .govuk-tag {
+  margin-left: 0;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
 .margin-left-180 {
   margin-left: 180px;
 }
@@ -515,6 +538,15 @@
 
 .parcel-search__row .autocomplete__wrapper {
   width: 100%;
+}
+
+// Highlight a check-detail row that has changed since the previous calculation
+// run. Uses the GDS focus yellow.
+// Highlight only the data cell that has changed (not its row header).
+// 50% paler than GDS focus yellow #ffdd00 — each channel mixed 50% toward white.
+.govuk-table__row--changed > td,
+.value-changed {
+  background-color: #ffee80;
 }
 
 // Make accessible-autocomplete use the GDS Transport font (input + dropdown menu).

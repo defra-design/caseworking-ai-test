@@ -1,0 +1,150 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_caseReal-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_caseReal-nav.html" %}
+<form action="/task1T2AmReal" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+       Amend application (100297)
+      </h1>
+    </legend>
+
+
+<p><a href="#" class="govuk-link">Amend this application in Grants-UI (opens in new tab)</a>.</p>
+
+
+
+
+
+
+
+    <h2 class="govuk-heading-m">
+         Outcome
+      </h2>
+
+    
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <div class="govuk-radios" data-module="govuk-radios">
+        
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTaskAm1Real" type="radio" value="Confirm" data-aria-controls="conditional-decision1" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Amendments completed
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task1AmNoteReal) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1AmNote2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1AmNoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+         </div>
+          
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionTaskAm1Real" type="radio" value="There’s a problem" data-aria-controls="conditional-decision2" >
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+             There was a problem
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+            {% if (data.task1AmNoteReal) %}
+            <textarea class="govuk-textarea" id="more-detail1" name="task1AmNote2Real" rows="5" aria-describedby="more-detail-hint"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" id="more-detail1" name="task1AmNoteReal" rows="5" aria-describedby="more-detail-hint"></textarea>
+            {% endif %} 
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+
+
+{% if (data.task1AmNoteReal) %}
+</fieldset>
+</div>
+</div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-width">
+
+
+<h2 class="govuk-heading-m govuk-!-margin-top-4">Outcome history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-180" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header custom-width-230 " aria-sort="none">Outcome</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionTaskAm1Real']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteAm1Real']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+{% else %} 
+
+{% endif %}
+
+
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

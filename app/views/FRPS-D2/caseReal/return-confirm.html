@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_case-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_caseReal-nav.html" %}
+<form action="/returnConf1Real" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+       Are you sure you want to return this application to the customer? 
+      </h1>
+    </legend>
+
+
+<p>Returning this application will:
+  <ul class="govuk-list govuk-list--bullet">
+    <li>close this current application making it view only</li>
+    <li>create a new identical application for the customer to review, amend and re-submit</li>
+    <li>require casework to be started from scratch on the newly submitted case</li>
+  </ul>
+  <div class="govuk-form-group">
+    <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios" data-module="govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="contact" name="rConfReal" type="radio" value="yes" data-aria-controls="conditional-conf1">
+        <label class="govuk-label govuk-radios__label" for="contact">
+          Yes
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="conf-2" name="rConfReal" type="radio" value="no" aria-describedby="conf-2-item-hint">
+        <label class="govuk-label govuk-radios__label" for="conf-2">
+           No 
+        </label>
+        <div id="conf-2-item-hint" class="govuk-hint govuk-radios__hint">
+         
+        </div>
+      </div>
+    </div>
+  </div>
+</p>
+
+
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="/amendReturn1" class="govuk-link">Cancel and return</a>
+
+
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

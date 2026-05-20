@@ -1,0 +1,101 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "tabs" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Tabs" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Tabs</h1>
+      <p class="govuk-body-l">Let users switch between related sections of content on the same page without losing the current context.</p>
+      <p class="govuk-body">Use tabs when several views of the same underlying data are useful (for example, the case list filtered by team vs. filtered by me) and the user is likely to switch between them frequently. Each tab loads its own panel; the URL stays the same.</p>
+
+      <h2 class="govuk-heading-l">Default tabs</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tabs">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tabs-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-tabs" data-module="govuk-tabs">
+              <h2 class="govuk-tabs__title">Contents</h2>
+              <ul class="govuk-tabs__list">
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                  <a class="govuk-tabs__tab" href="#tab-team">Team cases (20)</a>
+                </li>
+                <li class="govuk-tabs__list-item">
+                  <a class="govuk-tabs__tab" href="#tab-mine">My cases (3)</a>
+                </li>
+              </ul>
+              <div class="govuk-tabs__panel" id="tab-team">
+                <h2 class="govuk-heading-l">Team cases</h2>
+                <p class="govuk-body">Cases visible to everyone in the team.</p>
+              </div>
+              <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="tab-mine">
+                <h2 class="govuk-heading-l">My cases</h2>
+                <p class="govuk-body">Cases assigned to you.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tabs" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tabs-code">&lt;div class="govuk-tabs" data-module="govuk-tabs"&gt;
+  &lt;h2 class="govuk-tabs__title"&gt;Contents&lt;/h2&gt;
+  &lt;ul class="govuk-tabs__list"&gt;
+    &lt;li class="govuk-tabs__list-item govuk-tabs__list-item--selected"&gt;
+      &lt;a class="govuk-tabs__tab" href="#tab-team"&gt;Team cases (20)&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;li class="govuk-tabs__list-item"&gt;
+      &lt;a class="govuk-tabs__tab" href="#tab-mine"&gt;My cases (3)&lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;div class="govuk-tabs__panel" id="tab-team"&gt;…panel content…&lt;/div&gt;
+  &lt;div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="tab-mine"&gt;…&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To switch between multiple views of the same underlying content on a single page (e.g. team vs. personal case list).</li>
+        <li>To group related content into two to five sections where the user is likely to want all of them at hand.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To split a long-form task into steps — use a separate page per step instead.</li>
+        <li>When users need to compare content across panels — keep it on the same page without tabs.</li>
+        <li>When there are more than five panels — consider a navigation menu or a search/filter instead.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caselist">Case list</a> — single-tab variant used as a section header (SFI applications (20)).</li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/caselist-my">My case list</a> — second tab panel preview.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/notes">Notes</a> and <a class="govuk-link" href="/FRPS-D2/case2/add-a-note">Add a note</a> — content split between Notes and Messages panels.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

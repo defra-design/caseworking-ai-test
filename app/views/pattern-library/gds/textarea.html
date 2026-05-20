@@ -1,0 +1,100 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "textarea" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Textarea" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Textarea</h1>
+      <p class="govuk-body-l">A multi-line text input for free-text answers — review notes, messages to customers, justification text.</p>
+      <p class="govuk-body">In this prototype the textarea appears wherever a caseworker needs to leave a written record of a decision. Most uses pair the field with a label and a hint, and live behind a conditional that only renders the form for one branch of a radio set (e.g. only show "Why are you requesting more information?" when the <em>Information requested</em> radio is selected).</p>
+
+      <h2 class="govuk-heading-l">Default textarea</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-ta">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-ta-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--s" for="pl-textarea">
+                  Add a review note
+                </label>
+              </h1>
+              <div id="pl-textarea-hint" class="govuk-hint">
+                Visible only to other caseworkers.
+              </div>
+              <textarea class="govuk-textarea" id="pl-textarea" name="pl-textarea" rows="5" aria-describedby="pl-textarea-hint"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-ta" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-ta-code">&lt;div class="govuk-form-group"&gt;
+  &lt;h1 class="govuk-label-wrapper"&gt;
+    &lt;label class="govuk-label govuk-label--s" for="more-detail"&gt;
+      Add a review note
+    &lt;/label&gt;
+  &lt;/h1&gt;
+  &lt;div id="more-detail-hint" class="govuk-hint"&gt;
+    Visible only to other caseworkers.
+  &lt;/div&gt;
+  &lt;textarea class="govuk-textarea" id="more-detail" name="more-detail"
+            rows="5" aria-describedby="more-detail-hint"&gt;&lt;/textarea&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For free-text answers longer than a single line — review notes, justifications, messages to customers.</li>
+        <li>When the expected length is variable and the answer cannot be reduced to a select / radio / checkbox.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For short, single-line answers (one phrase, a name, a reference) — use a <a class="govuk-link" href="/pattern-library/gds/text-input">text input</a>.</li>
+        <li>When the user is picking from a known list — use radios, checkboxes, a select, or the <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">accessible autocomplete</a>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Conventions in this prototype</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><code class="govuk-body">rows="5"</code> by default — about five lines of visible space.</li>
+        <li>Always paired with a labelled <code class="govuk-body">.govuk-form-group</code> wrapper plus a <code class="govuk-body">.govuk-hint</code> when the purpose isn't obvious from the label.</li>
+        <li>Conditionally rendered branch of a radio group — when revealed, the textarea name varies by branch so each captured note is stored under its own session key (for example <code class="govuk-body">task1Note2&lt;Case&gt;</code> vs <code class="govuk-body">task1Note&lt;Case&gt;</code>).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">In every review-decision form in the case journeys:</p>
+      <ul class="govuk-list">
+        <li>Task pages: <code class="govuk-body">case2/task-1.html</code> through <code class="govuk-body">task-6.html</code> and their <code class="govuk-body">-Ag</code>, <code class="govuk-body">-Am</code>, <code class="govuk-body">-Tr</code> variants.</li>
+        <li>5-month-check tasks: <code class="govuk-body">case2/task-5m1.html</code> through <code class="govuk-body">task-5m6.html</code>.</li>
+        <li>Assignment, add-a-note, return/amend/terminate confirmation dialogs.</li>
+        <li>Same files mirrored under <code class="govuk-body">caseReal/</code>.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

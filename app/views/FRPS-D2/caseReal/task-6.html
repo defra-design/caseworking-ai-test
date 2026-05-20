@@ -1,0 +1,115 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "FRPS-D2/includes/_caseReal-context-strip.html" %}
+{% endblock %} 
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "FRPS-D2/includes/_caseReal-nav.html" %}
+<form action="/task6T2Real" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Review scheme budget as a finance officer
+      </h1>
+    </legend>
+
+    <p>You cannot complete this task. </p>
+    <details class="govuk-details govuk-!-margin-top-0 govuk-!-margin-bottom-7">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          Who can complete this task 
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p>Someone who is a:
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>FINANCE_OFFICER</li>
+          <li>SENIOR_ADMIN</li>
+        </ul>
+        </p>
+      </div>
+    </details>
+
+
+
+        <p>You must check there is enough budget left for the total yearly payment the customer has applied for.
+
+
+        <table class="govuk-table">
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header">Total yearly payment applied for</th>
+              <td class="govuk-table__cell">£323.17</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><a href="#" class="govuk-link">View SFI budget spreadsheet</a></p>
+
+
+
+
+
+
+    
+{% if (data.task6NoteReal) %}
+<h2 class="govuk-heading-m">Note history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Action</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionTask6Real']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['task6NoteReal']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endif %}
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

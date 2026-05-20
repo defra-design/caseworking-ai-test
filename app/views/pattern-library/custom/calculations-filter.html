@@ -1,0 +1,186 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "calculations-filter" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Calculations filter" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Calculations filter</h1>
+      <p class="govuk-body-l">A custom variant of the MOJ filter component used on every calculations page in this prototype to swap between rule-check views and switch between rules-check runs.</p>
+      <p class="govuk-body">It departs from the canonical <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a> in two ways: there is no <em>Selected filters</em> tag list (the user can only have one filter active at a time), and the criteria are <strong>radio buttons</strong> rather than checkboxes. Selecting a radio and clicking <strong>Apply filters</strong> swaps the rendered list of checks in place; switching the <strong>Run date</strong> dropdown reloads the page at the corresponding historical run with the selected filter carried through.</p>
+
+      <h2 class="govuk-heading-l">Filter panel</h2>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-calc-filter">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-filter-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div style="max-width: 18rem;">
+              <div class="moj-filter" data-module="moj-filter">
+                <form method="get" action="#">
+                  <div class="moj-filter__header_grey">
+                    <div class="moj-filter__header-title">
+                      <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Filter</h2>
+                    </div>
+                    <div class="moj-filter__header-action">
+                    </div>
+                  </div>
+                  <div class="moj-filter__content">
+                    <div class="moj-filter__options">
+                      <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Apply filters
+                      </button>
+                      <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--s" for="pl-sort">
+                          Run date
+                        </label>
+                        <select class="govuk-select" id="pl-sort" name="pl-sort">
+                          <option value="r1" selected>10:30am 19 May 2026 - Fail</option>
+                          <option value="r2">3:14pm 18 May 2026 - Fail</option>
+                          <option value="r3">9:08am 13 May 2026 - Pass</option>
+                        </select>
+                      </div>
+                      <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                          <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                            <h3 class="govuk-fieldset__heading">Listing ...</h3>
+                          </legend>
+                          <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="pl-filter-all" name="pl-filter" type="radio" value="all" checked>
+                              <label class="govuk-label govuk-radios__label" for="pl-filter-all">All checks</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="pl-filter-changes" name="pl-filter" type="radio" value="changes">
+                              <label class="govuk-label govuk-radios__label" for="pl-filter-changes">Calculations with changes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="pl-filter-fails" name="pl-filter" type="radio" value="fails">
+                              <label class="govuk-label govuk-radios__label" for="pl-filter-fails">Only fails</label>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-calc-filter" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-calc-filter-code">&lt;div class="moj-filter" data-module="moj-filter"&gt;
+  &lt;form method="get" action="/largeCalcFilter"&gt;
+    &lt;input type="hidden" name="from" value="case2-new2"&gt;
+    &lt;div class="moj-filter__header_grey"&gt;
+      &lt;div class="moj-filter__header-title"&gt;
+        &lt;h2 class="govuk-heading-m govuk-!-margin-bottom-0"&gt;Filter&lt;/h2&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="moj-filter__content"&gt;
+      &lt;div class="moj-filter__options"&gt;
+        &lt;button type="submit" class="govuk-button"&gt;Apply filters&lt;/button&gt;
+
+        &lt;div class="govuk-form-group"&gt;
+          &lt;label class="govuk-label govuk-label--s" for="sort"&gt;Run date&lt;/label&gt;
+          &lt;select class="govuk-select" id="sort" name="sort"&gt;
+            &lt;option value="case2-new2" selected&gt;14:25pm 11 Sept 2025 - Fail&lt;/option&gt;
+            &lt;option value="case2-mid2"&gt;09:45am 11 Sept 2025 - Fail&lt;/option&gt;
+            &lt;option value="case2-old2"&gt;03:20pm 10 Sept 2025 - Pass&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/div&gt;
+
+        &lt;div class="govuk-form-group"&gt;
+          &lt;fieldset class="govuk-fieldset"&gt;
+            &lt;legend class="govuk-fieldset__legend govuk-fieldset__legend--s"&gt;
+              &lt;h3 class="govuk-fieldset__heading"&gt;Listing ...&lt;/h3&gt;
+            &lt;/legend&gt;
+            &lt;div class="govuk-radios" data-module="govuk-radios"&gt;
+              &lt;div class="govuk-radios__item"&gt;
+                &lt;input class="govuk-radios__input" id="filter-all" name="filter"
+                       type="radio" value="all" checked&gt;
+                &lt;label class="govuk-label govuk-radios__label" for="filter-all"&gt;All checks&lt;/label&gt;
+              &lt;/div&gt;
+              &lt;div class="govuk-radios__item"&gt;
+                &lt;input class="govuk-radios__input" id="filter-changes" name="filter"
+                       type="radio" value="changes"&gt;
+                &lt;label class="govuk-label govuk-radios__label" for="filter-changes"&gt;Calculations with changes&lt;/label&gt;
+              &lt;/div&gt;
+              &lt;div class="govuk-radios__item"&gt;
+                &lt;input class="govuk-radios__input" id="filter-fails" name="filter"
+                       type="radio" value="fails"&gt;
+                &lt;label class="govuk-label govuk-radios__label" for="filter-fails"&gt;Only fails&lt;/label&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/fieldset&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Differences from the standard MOJ filter</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Radios instead of checkboxes.</strong> The Listing section is mutually exclusive — a check is either visible to the caseworker or not — so radios match the semantics better than checkboxes and remove the "no selection" ambiguity.</li>
+        <li><strong>No selected-filters tag list.</strong> With only one active filter at a time and three obvious options, the tag list adds noise without helping. The currently-selected radio is the indicator of state.</li>
+        <li><strong>No "Clear filters" link.</strong> Clearing is equivalent to selecting <em>All checks</em>, which is one click away.</li>
+        <li><strong>Run-date dropdown doubles as a version switcher.</strong> Each option's value is a page-key (e.g. <code class="govuk-body">case2-new2</code>). Submitting the form with a different run selected redirects to that historical run, with the chosen Listing radio applied to the destination.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A long, scannable list of items where the caseworker needs to focus on a subset (here: fails or just changes).</li>
+        <li>The filtering is mutually exclusive and the subset is small (two or three options).</li>
+        <li>The page also represents one of several versions or runs of the same data set, and the user should be able to swap version while staying inside their current filter view.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The user genuinely needs to combine filters (multiple statuses, multiple assignees, …) — use the standard <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a> with checkboxes and the selected-filters tag list.</li>
+        <li>The list of options is short enough to render without filtering — no filter panel is needed at all.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Per-page filter state</h2>
+      <p class="govuk-body">Filter state is scoped to each calc page independently (kept in <code class="govuk-body">req.session.data.calcFilters[&lt;page-key&gt;]</code> by the <code class="govuk-body">/largeCalcFilter</code> route handler). Visiting a sibling calc page renders that page's own filter state — there is no leakage between pages. The handler writes through to both <code class="govuk-body">req.session.data</code> and <code class="govuk-body">res.locals.data</code> so the upcoming Nunjucks render sees the swapped state.</p>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Every large or versioned calculations page in this prototype:</p>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-mid2">Large calculations — middle run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-old2">Large calculations — baseline</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-old">Medium calculations — previous run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-mid">Real-case calculations — middle run</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-old">Real-case calculations — baseline</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
