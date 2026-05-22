@@ -248,6 +248,16 @@
   flex-shrink: 0;
 }
 
+// When the summary contains a tag (any check row on the calculations pages),
+// drop the underline on the whole summary-text. The govuk-frontend default
+// paints an underline at the parent baseline that propagates across flex
+// children and shows through the tag despite the tag's own text-decoration: none.
+// Scoped via :has() so regular link-style details summaries (e.g. Show version
+// history) keep their underline.
+.govuk-details__summary-text:has(.govuk-tag) {
+  text-decoration: none;
+}
+
 .margin-left-180 {
   margin-left: 180px;
 }
@@ -437,6 +447,31 @@
 .govuk-tag--red-new {
     color: rgb(42.4, 10.6, 5.6);
     background-color: rgb(244.25, 204.5, 198.25);
+}
+
+// "Action" tag — solid orange pill matching the caselist's govuk-tag--orange
+// status (pale-orange background, dark brown-orange text), prefixed by a bold
+// black "!" via ::before. No border.
+// Used on the SSSI and HEFER checks in the caseReal calculations to flag that
+// the caseworker has follow-up work to do (review a consent notice, request a
+// HEFER) — neither check has a pass/fail outcome.
+.govuk-tag--action {
+    color: #0f385c;
+    background-color: #d2e2f1;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+.govuk-tag--action::before {
+    content: "!";
+    color: black;
+    font-weight: normal;
+    text-decoration: none;
+    padding: 0 3px;
+    margin-right: 8px;
+    // Make the "!" its own atomic inline so any inherited / propagated
+    // text-decoration from .govuk-details__summary-text can't paint over it.
+    display: inline-block;
 }
 
 .govuk-tag--red-status {

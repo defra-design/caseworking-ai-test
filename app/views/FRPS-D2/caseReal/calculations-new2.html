@@ -15,7 +15,7 @@
 <!-- title-row-full -->
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations (3:14pm 18 May 2026)</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations (10:30am 19 May 2026)</h1>
   </div>
 </div>
 <div class="govuk-grid-row">
@@ -40,7 +40,7 @@
     </div>
 
     {% else %}
-    <p >Rules check last run: 3:14pm 18 May 2026</p>
+    <p >Rules check last run: 10:30am 19 May 2026</p>
 
     {% endif %}
 
@@ -64,12 +64,12 @@
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">10:30am 19 May 2026</th>
           <td class="govuk-table__cell">Fail</td>
-          <td class="govuk-table__cell"><a href="calculations-new" class="govuk-link">View this version</a></td>
+          <td class="govuk-table__cell">Currently showing</td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">3:14pm 18 May 2026</th>
           <td class="govuk-table__cell">Fail</td>
-          <td class="govuk-table__cell">Currently showing</td>
+          <td class="govuk-table__cell"><a href="calculations-mid" class="govuk-link">View this version</a></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">9:08am 13 May 2026</th>
@@ -88,7 +88,7 @@
 
     <div class="moj-filter" data-module="moj-filter">
       <form method="get" action="/largeCalcFilter">
-        <input type="hidden" name="from" value="caseRealMid">
+        <input type="hidden" name="from" value="caseRealNew2">
         <div class="moj-filter__header_grey">
           <div class="moj-filter__header-title">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">Filter</h2>
@@ -106,8 +106,8 @@
                 Run date
               </label>
               <select class="govuk-select" id="sort" name="sort">
-                <option value="caseReal">10:30am 19 May 2026 - Fail</option>
-                <option value="caseRealMid" selected>3:14pm 18 May 2026 - Fail</option>
+                <option value="caseReal" selected>10:30am 19 May 2026 - Fail</option>
+                <option value="caseRealMid">3:14pm 18 May 2026 - Fail</option>
                 <option value="caseRealOld">9:08am 13 May 2026 - Pass</option>
               </select>
             </div>
@@ -186,6 +186,20 @@
   <fieldset class="govuk-fieldset" aria-describedby="regKeeper-hint">
 {% if not data.showHeferOnly %}
 <h2 class="govuk-heading-m">Parcel ID: SD5848 9205 checks</h2>
+
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
+  </div>
+</details>
+{% endif %}
+
 
 <h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
 
@@ -350,18 +364,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -441,6 +443,14 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+
+{% endif %}
+{% if not data.showHeferOnly %}
+{% if not data.showFailsOnly %}
+<h2 class="govuk-heading-m">Parcel ID: SD5649 9215 checks</h2>
+{% endif %}
+
+
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
@@ -452,12 +462,6 @@ Latest land parcel update: 18 May 2026 </p>
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
   </div>
 </details>
-{% endif %}
-
-{% endif %}
-{% if not data.showHeferOnly %}
-{% if not data.showFailsOnly %}
-<h2 class="govuk-heading-m">Parcel ID: SD5649 9215 checks</h2>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -616,18 +620,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -707,18 +699,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -882,18 +862,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -973,18 +941,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -1148,18 +1104,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -1239,6 +1183,14 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+
+{% endif %}
+{% if not data.showHeferOnly %}
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: NY2105 1006 checks</h2>
+{% endif %}
+
+
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
@@ -1250,12 +1202,6 @@ Latest land parcel update: 18 May 2026 </p>
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
   </div>
 </details>
-{% endif %}
-
-{% endif %}
-{% if not data.showHeferOnly %}
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<h2 class="govuk-heading-m">Parcel ID: NY2105 1006 checks</h2>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -1414,18 +1360,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -1505,18 +1439,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -1680,18 +1602,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -1771,18 +1681,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -1946,18 +1844,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -2037,6 +1923,14 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+
+{% endif %}
+{% if not data.showHeferOnly %}
+{% if not data.showFailsOnly and not data.showChangesOnly %}
+<h2 class="govuk-heading-m">Parcel ID: NT9009 1023 checks</h2>
+{% endif %}
+
+
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
@@ -2048,12 +1942,6 @@ Latest land parcel update: 18 May 2026 </p>
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
   </div>
 </details>
-{% endif %}
-
-{% endif %}
-{% if not data.showHeferOnly %}
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<h2 class="govuk-heading-m">Parcel ID: NT9009 1023 checks</h2>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -2212,18 +2100,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -2303,28 +2179,12 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
-{% if not data.showFailsOnly and not data.showChangesOnly %}
 <h2 class="govuk-heading-m">Parcel ID: NU0403 1024 checks</h2>
-{% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Assess moorland and produce a written record (CMOR1)</h3>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
@@ -2375,30 +2235,33 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--green margin-left-130">
-        <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
-        </svg>
-        Passed
-        </strong>
+      Is this parcel on the moorland? <strong class="govuk-tag govuk-tag--red-new margin-left-130">Failed
+      </strong>
     </span>
   </summary>
   <div class="govuk-details__text">
         <h2 class="govuk-heading-m">Result</h2>
 
-    <p>Passed</p>
+    <p>Failed</p>
 
-    <h2 class="govuk-heading-m">Pass reason</h2>
+    <h2 class="govuk-heading-m">Fail reason</h2>
 
-<p>This parcel has a 100% intersection with the moorland layer. The target is 51%.</p>
+<p>This parcel has a <span class="value-changed">47%</span> intersection with the moorland layer. The target is 51% — this parcel no longer meets the minimum moorland threshold for this action.</p>
+<h2 class="govuk-heading-m">What to do</h2>
+
+<ol class="govuk-list govuk-list--number">
+  <li>Check the moorland data layer for this parcel for errors</li>
+  <li>If the data is correct; either reject the application or return it for the customer to remove this action from this parcel</li>
+</ol>
+
+<p>Date application submitted: 13 May 2026</br>
+Latest land parcel update: 18 May 2026 </p>
 
   </div>
 </details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
@@ -2478,18 +2341,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -2569,6 +2420,14 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
+
+{% endif %}
+{% if not data.showHeferOnly %}
+{% if not data.showFailsOnly %}
+<h2 class="govuk-heading-m">Parcel ID: NU0021 1026 checks</h2>
+{% endif %}
+
+
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
@@ -2580,12 +2439,6 @@ Latest land parcel update: 18 May 2026 </p>
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
   </div>
 </details>
-{% endif %}
-
-{% endif %}
-{% if not data.showHeferOnly %}
-{% if not data.showFailsOnly %}
-<h2 class="govuk-heading-m">Parcel ID: NU0021 1026 checks</h2>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -2744,18 +2597,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -2835,7 +2676,15 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
+
+{% endif %}
+{% if not data.showHeferOnly %}
+{% if not data.showFailsOnly %}
+<h2 class="govuk-heading-m">Parcel ID: NY1118 1031 checks</h2>
+{% endif %}
+
+
+{% if not data.showFailsOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
@@ -2846,12 +2695,6 @@ Latest land parcel update: 18 May 2026 </p>
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
   </div>
 </details>
-{% endif %}
-
-{% endif %}
-{% if not data.showHeferOnly %}
-{% if not data.showFailsOnly %}
-<h2 class="govuk-heading-m">Parcel ID: NY1118 1031 checks</h2>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -3010,18 +2853,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -3101,18 +2932,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -3276,18 +3095,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -3367,7 +3174,14 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
+
+{% endif %}
+{% if not data.showFailsOnly %}
+<h2 class="govuk-heading-m">Parcel ID: NY2119 1042 checks</h2>
+{% endif %}
+
+
+{% if not data.showFailsOnly %}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
@@ -3380,9 +3194,17 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% endif %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
-<h2 class="govuk-heading-m">Parcel ID: NY2119 1042 checks</h2>
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
+  </div>
+</details>
 {% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -3463,20 +3285,8 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
-  </div>
-</details>
-{% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
+{% if not data.showFailsOnly %}
 <h3 class="govuk-heading-s">Funded action: Low livestock grazing on moorland - UPL2</h3>
 {% endif %}
 
@@ -3554,31 +3364,7 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -3658,31 +3444,7 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Does the site require a HEFER? <strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This parcel has a 50% intersection with the historic_features layer. The tolerance is 0%.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showSssiOnly and not data.showHeferOnly %}
 {% if not data.showFailsOnly and not data.showChangesOnly %}
@@ -3845,18 +3607,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -3936,18 +3686,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 {% if not data.showSssiOnly and not data.showHeferOnly %}
@@ -4111,18 +3849,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% if not data.showFailsOnly and not data.showChangesOnly %}
 <h3 class="govuk-heading-s">Funded action: Shepherding livestock on moorland (remove stock for at least 8 months) - UPL10</h3>
@@ -4202,18 +3928,6 @@ Latest land parcel update: 18 May 2026 </p>
 </details>
 {% endif %}
 
-{% if not data.showFailsOnly and not data.showChangesOnly %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {% if data.decisionTask3Real === "Accepted" %}<strong class="govuk-tag govuk-tag--green margin-left-130"><svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/></svg>Checked</strong>{% else %}<strong class="govuk-tag govuk-tag--action margin-left-130">Action</strong>{% endif %}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endif %}
 
 {% endif %}
 

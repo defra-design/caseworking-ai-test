@@ -1522,9 +1522,10 @@ const calcPageKeys = {
   '/FRPS-D2/case2/calculations-mid2': 'case2-mid2',
   '/FRPS-D2/case2/calculations-old':  'case2-old',
   '/FRPS-D2/case2/calculations-old2': 'case2-old2',
-  '/FRPS-D2/caseReal/calculations-new': 'caseReal',
-  '/FRPS-D2/caseReal/calculations-mid': 'caseRealMid',
-  '/FRPS-D2/caseReal/calculations-old': 'caseRealOld',
+  '/FRPS-D2/caseReal/calculations-new':  'caseReal',
+  '/FRPS-D2/caseReal/calculations-new2': 'caseRealNew2',
+  '/FRPS-D2/caseReal/calculations-mid':  'caseRealMid',
+  '/FRPS-D2/caseReal/calculations-old':  'caseRealOld',
 };
 
 // Before rendering any calc page, swap in that page's own filter state so settings on one page
@@ -1568,9 +1569,10 @@ router.get('/largeCalcFilter', function (req, res) {
     'case2-mid2': '/FRPS-D2/case2/calculations-mid2',
     'case2-old': '/FRPS-D2/case2/calculations-old',
     'case2-old2': '/FRPS-D2/case2/calculations-old2',
-    'caseReal':    '/FRPS-D2/caseReal/calculations-new',
-    'caseRealMid': '/FRPS-D2/caseReal/calculations-mid',
-    'caseRealOld': '/FRPS-D2/caseReal/calculations-old',
+    'caseReal':     '/FRPS-D2/caseReal/calculations-new',
+    'caseRealNew2': '/FRPS-D2/caseReal/calculations-new2',
+    'caseRealMid':  '/FRPS-D2/caseReal/calculations-mid',
+    'caseRealOld':  '/FRPS-D2/caseReal/calculations-old',
   };
   const filter = req.query.filter;
   const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
