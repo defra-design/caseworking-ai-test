@@ -20,7 +20,10 @@
           </li>
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'calculations' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="calculations-new">
+            {# Calculations link points at the parcel-level SSSI/HEFER variant (new2)
+               when the caseworker entered the case via the dedicated index link;
+               otherwise the original per-action variant (new). #}
+            <a class="govuk-service-navigation__link" href="{% if data.realCalcVariant === 'new2' %}calculations-new2{% else %}calculations-new{% endif %}">
               {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
             </a>
           </li>

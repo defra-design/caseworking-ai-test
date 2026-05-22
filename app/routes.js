@@ -1509,6 +1509,16 @@ router.get('/realApplication', function (req, res) {
   // own nav include and context strip, so we forward to /tasklistStageReal
   // rather than the shared case2 tasklist.
   req.session.data.largeCase = 'real';
+  // Default Calculations variant — per-action SSSI / HEFER (calculations-new).
+  req.session.data.realCalcVariant = 'new';
+  res.redirect('/tasklistStageReal');
+});
+
+router.get('/realApplication2', function (req, res) {
+  // Same Golden Grange case, but the caseReal nav's Calculations tab now
+  // resolves to calculations-new2 (parcel-level SSSI / HEFER variant).
+  req.session.data.largeCase = 'real';
+  req.session.data.realCalcVariant = 'new2';
   res.redirect('/tasklistStageReal');
 });
 
