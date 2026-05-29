@@ -1522,6 +1522,18 @@ router.get('/realApplication2', function (req, res) {
   res.redirect('/tasklistStageReal');
 });
 
+router.get('/realAgreement', function (req, res) {
+  // Jump straight into Golden Grange with a live agreement (caseStageReal = 'pay').
+  // From here the user can hit "Terminate" to walk through the revised termination
+  // content (FGP-1010): tasklist-stage 'pay' / 'pending-termination' / 'terminate'
+  // branches, terminate-cancel, terminate-confirm, end-terminate, task-1Tr, task-2Tr.
+  req.session.data.largeCase = 'real';
+  req.session.data.realCalcVariant = 'new';
+  req.session.data.caseStageReal = 'pay';
+  req.session.data.caseStatusReal = 'Live';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
 
 // Map calc page URLs to their per-page filter key (matches the `from` value in each page's filter form)
 const calcPageKeys = {
