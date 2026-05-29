@@ -700,13 +700,14 @@
 
 <h2 class="govuk-heading-m">Application returned to customer for amending</h2>
 
-      <p>Application 100297 has been closed and returned to the customer. However, you can still review the notes and timeline for this application.</p>
+      <p>Application 100297 has been closed and returned to the customer.</p>
+      <p>You can still review the notes and timeline.</p>
 
   {% if (data.linkedCase) %}
-    <p>The latest version of this case is <a href="../tasklist-stage">100300</a>.
+    <p>The latest version of this case is <a href="/amendReturn1">100300</a>.
   {% else %}
-      <p> A new, linked application will be submitted after amendments have been made by the customer.</p>
-    <p>All review tasks will need to be started again once the amended application is submitted. </p>
+      <p>A new linked application will be created.</p>
+    <p>All review tasks will need to be started again.</p>
   {% endif %}
 
 

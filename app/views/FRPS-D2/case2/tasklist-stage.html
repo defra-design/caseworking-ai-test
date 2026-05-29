@@ -700,13 +700,14 @@
 
 <h2 class="govuk-heading-m">Application returned to customer for amending</h2>
 
-      <p>Application 100297 has been closed and returned to the customer. However, you can still review the notes and timeline for this application.</p>
+      <p>Application 100297 has been closed and returned to the customer.</p>
+      <p>You can still review the notes and timeline.</p>
 
   {% if (data.linkedCase) %}
-    <p>The latest version of this case is <a href="../tasklist-stage">100300</a>.
+    <p>The latest version of this case is <a href="/amendReturn1">100300</a>.
   {% else %}
-      <p> A new, linked application will be submitted after amendments have been made by the customer.</p>
-    <p>All review tasks will need to be started again once the amended application is submitted. </p>
+      <p>A new linked application will be created.</p>
+    <p>All review tasks will need to be started again.</p>
   {% endif %}
 
 
@@ -1067,10 +1068,10 @@
 
    
       <h2 class="govuk-heading-s">Terminating this agreement</h2>
-      <p>You may want to terminate this agreement if:
+      <p>You could terminate this agreement if the:
       <ul class="govuk-list govuk-list--bullet">
-        <li>the customer needs to change their agreement</li>
-        <li>the customer is in breach of the agreement</li>
+        <li>customer changes their agreement</li>
+        <li>customer is in breach of the agreement</li>
       </ul></p>
 
       <h3 class="govuk-heading-s">Reason for termination</h3>
@@ -1163,7 +1164,7 @@
      <li class="govuk-task-list__item govuk-task-list__item--with-link">
       <div class="govuk-task-list__name-and-hint">
         <a class="govuk-link govuk-task-list__link" href="task-2Tr" aria-describedby="company-details-1-status">
-          Notify customer that draft agreement is ready
+          Tell customer a draft agreement is ready
         </a>
       </div>
       <div class="govuk-task-list__status" id="company-details-1-status"> 
@@ -1225,7 +1226,7 @@
       Confirm
     </button>
         {% else %}
-        <p>Your cannot terminate the case until you have completed all tasks</p>
+        <p>All tasks must be completed to terminate case.</p>
             <a href="end-terminate" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
       Cancel termination
     </a>
@@ -1239,14 +1240,14 @@
     <div class="govuk-form-group">
 
       <h2 class="govuk-heading-m">The agreement has been terminated</h2>
-       <p>The agreement has now been closed.</p>
+       <p>The agreement is now closed.</p>
 
 
       <p>What this means:
         <ul class="govuk-list govuk-list--bullet">
-          <li>All future payments have stopped for the agreement holder.</li>
-          <li>All actions and standards in the agreement have ended.</li>
-          <li>The agreement is locked and can’t be updated or reopened.</li>
+          <li>All future payments have stopped.</li>
+          <li>All actions and standards have ended.</li>
+          <li>The agreement can’t be updated or reopened.</li>
         </ul>
       </p>
 
