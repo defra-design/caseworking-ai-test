@@ -38,7 +38,7 @@
     <div class="govuk-task-list__status" id="company-details-1-status"> 
     {% if (data.decisionTask1Real) %}      
       {% if (data.decisionTask1Real === 'Accepted') %} {{ data['detailsStatusReal'] }} 
-      {% else %}<strong class="{{ data['detailsTag'] }}">{{ data['detailsStatusReal'] }}</strong>
+      {% else %}<strong class="{{ data['detailsTagReal'] }}">{{ data['detailsStatusReal'] }}</strong>
       {% endif %}
     {% else %}
       <strong class="govuk-tag govuk-tag--grey">
@@ -57,7 +57,7 @@
     <div class="govuk-task-list__status" id="company-details-1-status">
     {% if (data.decisionTask2Real) %}    
         {% if (data.decisionTask2Real === 'Accepted') %} {{ data['calcsStatusReal'] }} 
-        {% else %}<strong class="{{ data['calcsTag'] }}">{{ data['calcsStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['calcsTagReal'] }}">{{ data['calcsStatusReal'] }}</strong>
         {% endif %} 
     {% else %}
       <strong class="govuk-tag govuk-tag--grey">
@@ -77,7 +77,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask3Real) %}  
         {% if (data.decisionTask3Real === 'Accepted') %} {{ data['sssiStatusReal'] }} 
-        {% else %}<strong class="{{ data['sssiTag'] }}">{{ data['sssiStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['sssiTagReal'] }}">{{ data['sssiStatusReal'] }}</strong>
         {% endif %}
       {% else %}
       <strong class="govuk-tag govuk-tag--grey">
@@ -95,7 +95,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask5Real) %}  
         {% if (data.decisionTask5Real === 'Accepted') %} {{ data['paymentStatusReal'] }} 
-        {% else %}<strong class="{{ data['paymentTag'] }}">{{ data['paymentStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['paymentTagReal'] }}">{{ data['paymentStatusReal'] }}</strong>
         {% endif %}
       {% else %}
       <strong class="govuk-tag govuk-tag--grey">
@@ -114,7 +114,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask6Real) %}  
         {% if (data.decisionTask6Real === 'Accepted') %} {{ data['budgetStatusReal'] }} 
-        {% else %}<strong class="{{ data['budgetTag'] }}">{{ data['budgetStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['budgetTagReal'] }}">{{ data['budgetStatusReal'] }}</strong>
         {% endif %}
       {% else %}
       <strong class="govuk-tag govuk-tag--grey">
@@ -334,7 +334,7 @@
     <div class="govuk-task-list__status" id="company-details-1-status"> 
     {% if (data.decisionTask1Real) %}      
       {% if (data.decisionTask1Real === 'Accepted') %} {{ data['detailsStatusReal'] }} 
-      {% else %}<strong class="{{ data['detailsTag'] }}">{{ data['detailsStatusReal'] }}</strong>
+      {% else %}<strong class="{{ data['detailsTagReal'] }}">{{ data['detailsStatusReal'] }}</strong>
       {% endif %}
     {% else %}
       <strong class="govuk-tag govuk-tag--blue">
@@ -353,7 +353,7 @@
     <div class="govuk-task-list__status" id="company-details-1-status">
     {% if (data.decisionTask2Real) %}    
         {% if (data.decisionTask2Real === 'Accepted') %} {{ data['calcsStatusReal'] }} 
-        {% else %}<strong class="{{ data['calcsTag'] }}">{{ data['calcsStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['calcsTagReal'] }}">{{ data['calcsStatusReal'] }}</strong>
         {% endif %} 
     {% else %}
       <strong class="govuk-tag govuk-tag--blue">
@@ -373,7 +373,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask3Real) %}  
         {% if (data.decisionTask3Real === 'Accepted') %} {{ data['sssiStatusReal'] }} 
-        {% else %}<strong class="{{ data['sssiTag'] }}">{{ data['sssiStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['sssiTagReal'] }}">{{ data['sssiStatusReal'] }}</strong>
         {% endif %}
       {% else %}
         <strong class="govuk-tag govuk-tag--blue">
@@ -392,7 +392,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask5Real) %}  
         {% if (data.decisionTask5Real === 'Accepted') %} {{ data['paymentStatusReal'] }} 
-        {% else %}<strong class="{{ data['paymentTag'] }}">{{ data['paymentStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['paymentTagReal'] }}">{{ data['paymentStatusReal'] }}</strong>
         {% endif %}
       {% else %}
         <strong class="govuk-tag govuk-tag--blue">
@@ -411,7 +411,7 @@
       <div class="govuk-task-list__status" id="company-details-1-status">
       {% if (data.decisionTask6Real) %}  
         {% if (data.decisionTask6Real === 'Accepted') %} {{ data['budgetStatusReal'] }} 
-        {% else %}<strong class="{{ data['budgetTag'] }}">{{ data['budgetStatusReal'] }}</strong>
+        {% else %}<strong class="{{ data['budgetTagReal'] }}">{{ data['budgetStatusReal'] }}</strong>
         {% endif %}
       {% else %}
         <strong class="govuk-tag govuk-tag--blue">
@@ -886,22 +886,22 @@
   </tbody>
 </table> -->
 
-{% elseif (data.caseStageReal === '5month') %}
+{% elseif (data.caseStageReal === '6month') %}
 <form action="/month5_1" method="post">
 <p>Agreement is live. However, you need to check the land parcel calculations have not changed.
 </p>
-  <h2 class="govuk-heading-m">Payment control tasks (5 months)</h2>
+  <h2 class="govuk-heading-m">Payment control tasks (6 months)</h2>
   <ul class="govuk-task-list">
     <li class="govuk-task-list__item govuk-task-list__item--with-link">
       <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m1" aria-describedby="company-details-1-status">
-          Check failed land parcel calculations  
+        <a class="govuk-link govuk-task-list__link" href="task-6m1" aria-describedby="company-details-1-status">
+          Six month checks
         </a>
       </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask1mReal) %}      
-        {% if (data.decisionTask1mReal === 'No action needed') %} {{ data['month5_1StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_1Tag'] }}">{{ data['month5_1StatusReal'] }}</strong>
+      <div class="govuk-task-list__status" id="company-details-1-status">
+      {% if (data.decisionTask1mReal) %}
+        {% if (data.decisionTask1mReal === 'No action needed') %} {{ data['month5_1StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_1TagReal'] }}">{{ data['month5_1StatusReal'] }}</strong>
         {% endif %}
       {% else %}
         <strong class="govuk-tag govuk-tag--blue">
@@ -910,97 +910,6 @@
       {% endif %}
       </div>
     </li>
-
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-      <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m2" aria-describedby="company-details-1-status">
-          Confirm land parcels are linked to customer  
-        </a>
-      </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask2mReal) %}      
-        {% if (data.decisionTask2mReal === 'No action needed') %} {{ data['month5_2StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_2Tag'] }}">{{ data['month5_2StatusReal'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-      <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m3" aria-describedby="company-details-1-status">
-          Confirm no overlapping agreements  
-        </a>
-      </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask3mReal) %}      
-        {% if (data.decisionTask3mReal === 'No action needed') %} {{ data['month5_3StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_3Tag'] }}">{{ data['month5_3StatusReal'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-      <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m4" aria-describedby="company-details-1-status">
-          Check if ITE assessment is required  
-        </a>
-      </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask4mReal) %}      
-        {% if (data.decisionTask4mReal === 'No action needed') %} {{ data['month5_4StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_4Tag'] }}">{{ data['month5_4StatusReal'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-      <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m5" aria-describedby="company-details-1-status">
-          Confirm action is within hedge tolerance  
-        </a>
-      </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask5mReal) %}      
-        {% if (data.decisionTask5mReal === 'No action needed') %} {{ data['month5_5StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_5Tag'] }}">{{ data['month5_5StatusReal'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
-    </li>
-    <li class="govuk-task-list__item govuk-task-list__item--with-link">
-      <div class="govuk-task-list__name-and-hint">
-        <a class="govuk-link govuk-task-list__link" href="task-5m6" aria-describedby="company-details-1-status">
-          Confirm no CS conflict with hedgerows 
-        </a>
-      </div>
-      <div class="govuk-task-list__status" id="company-details-1-status"> 
-      {% if (data.decisionTask6mReal) %}      
-        {% if (data.decisionTask6mReal === 'No action needed') %} {{ data['month5_6StatusReal'] }} 
-        {% else %}<strong class="{{ data['month5_6Tag'] }}">{{ data['month5_6StatusReal'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
-    </li>            
   </ul>
 
 <div class="govuk-form-group">
@@ -1057,6 +966,138 @@
     <button type="submit" class="govuk-button" data-module="govuk-button">
       Confirm
     </button>
+
+{% elseif (data.caseStageReal === '6month-full') %}
+<form action="/month5_1" method="post">
+<p>The agreement is now due a sixth month check to confirm the land parcel calculations have not changed.</p>
+  <h2 class="govuk-heading-m">Payment control tasks 6-month check</h2>
+  <ul class="govuk-task-list">
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-6mfull-1" aria-describedby="t6mfull-1-status">
+          Run available area calculations again
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="t6mfull-1-status">
+      {% if (data.decisionTask1mReal) %}
+        {% if (data.decisionTask1mReal === 'No action needed') %} {{ data['month5_1StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_1TagReal'] }}">{{ data['month5_1StatusReal'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+      {% endif %}
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-6mfull-2" aria-describedby="t6mfull-2-status">
+          Review available area calculation results
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="t6mfull-2-status">
+      {% if (data.decisionTask2mReal) %}
+        {% if (data.decisionTask2mReal === 'No action needed') %} {{ data['month5_2StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_2TagReal'] }}">{{ data['month5_2StatusReal'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+      {% endif %}
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-6mfull-3" aria-describedby="t6mfull-3-status">
+          Management control check
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="t6mfull-3-status">
+      {% if (data.decisionTask3mReal) %}
+        {% if (data.decisionTask3mReal === 'No action needed') %} {{ data['month5_3StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_3TagReal'] }}">{{ data['month5_3StatusReal'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+      {% endif %}
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-6mfull-4" aria-describedby="t6mfull-4-status">
+          Confirm land parcel is in Siti Tenure
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="t6mfull-4-status">
+      {% if (data.decisionTask4mReal) %}
+        {% if (data.decisionTask4mReal === 'No action needed') %} {{ data['month5_4StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_4TagReal'] }}">{{ data['month5_4StatusReal'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+      {% endif %}
+      </div>
+    </li>
+
+    <li class="govuk-task-list__item govuk-task-list__item--with-link">
+      <div class="govuk-task-list__name-and-hint">
+        <a class="govuk-link govuk-task-list__link" href="task-6mfull-5" aria-describedby="t6mfull-5-status">
+          Confirm land parcel ID is in LPIS
+        </a>
+      </div>
+      <div class="govuk-task-list__status" id="t6mfull-5-status">
+      {% if (data.decisionTask5mReal) %}
+        {% if (data.decisionTask5mReal === 'No action needed') %} {{ data['month5_5StatusReal'] }}
+        {% else %}<strong class="{{ data['month5_5TagReal'] }}">{{ data['month5_5StatusReal'] }}</strong>
+        {% endif %}
+      {% else %}
+        <strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+      {% endif %}
+      </div>
+    </li>
+
+  </ul>
+
+<div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Decision</legend>
+        <p>You can pause and reschedule payments when putting a case on hold.</p>
+
+        <div class="govuk-radios" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="d6mf-1" name="decision5mReal" type="radio" value="No action" data-aria-controls="d6mf-1c" {{ checked("decision5mReal", "No action") }}>
+            <label class="govuk-label govuk-radios__label" for="d6mf-1">No action needed</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="d6mf-1c">
+            <p>Explain this decision</p>
+            <div class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            <textarea class="govuk-textarea" name="moreDetail3" rows="5"></textarea>
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="d6mf-2" name="decision5mReal" type="radio" value="On hold" data-aria-controls="d6mf-2c" {{ checked("decision5mReal", "On hold") }}>
+            <label class="govuk-label govuk-radios__label" for="d6mf-2">Put on hold</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="d6mf-2c">
+            <p>Explain this decision</p>
+            <div class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            <textarea class="govuk-textarea" name="moreDetail3" rows="5"></textarea>
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="d6mf-3" name="decision5mReal" type="radio" value="Withdraw" data-aria-controls="d6mf-3c" {{ checked("decision5mReal", "Withdraw") }}>
+            <label class="govuk-label govuk-radios__label" for="d6mf-3">Withdraw agreement</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="d6mf-3c">
+            <p>Explain this decision</p>
+            <div class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            <textarea class="govuk-textarea" name="moreDetail3" rows="5"></textarea>
+          </div>
+      </fieldset>
+    </div>
+    <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
 
     {% elseif (data.caseStageReal === 'pay') %}
 

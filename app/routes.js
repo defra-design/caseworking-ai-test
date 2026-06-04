@@ -2460,14 +2460,23 @@ makeStageRoute('/tasklistStageReal', {
 
 // --- 5-month checks ---
 
-router.get('/5month1Real', function (req, res) {
-  // Transitions Real case (Golden Grange) into the 5-month check phase
-  req.session.data.caseStatusReal = '5 month checks';
-  req.session.data.caseStageReal  = '5month';
+router.get('/6month1Real', function (req, res) {
+  // Transitions Real case (Golden Grange) into the simple single-task 6-month phase
+  req.session.data.caseStatusReal = '6 month checks';
+  req.session.data.caseStageReal  = '6month';
   res.redirect('/FRPS-D2/caseReal/tasklist-stage');
 });
 
-makeTaskRoute('/task5m1Real', {
+router.get('/6month1FullReal', function (req, res) {
+  // Transitions Real case (Golden Grange) into the FULL 6-month phase
+  // (5 tasks: AAC re-run, AAC review, management control, Siti Tenure, LPIS)
+  // Per draft content for FGP-1109.
+  req.session.data.caseStatusReal = '6 month checks (full)';
+  req.session.data.caseStageReal  = '6month-full';
+  res.redirect('/FRPS-D2/caseReal/tasklist-stage');
+});
+
+makeTaskRoute('/task6m1Real', {
   decisionKey:       'decisionTask1mReal',
   noteActionKey:     'noteActionTask1mReal',
   tagKey:            'month5_1TagReal',
