@@ -1,0 +1,84 @@
+/*
+  ============================================================
+  LAYOUT & SPACING
+  ============================================================
+  Replaces the magic-number utility classes that accumulated in application.scss:
+    .margin-left-80/120/123/130/150/177/180/283/310, .margin-top-200,
+    .custom-width-110/120/130/160/180/220/230, .custom-width-table*, .reduced-width,
+    .notes-width/.notes-width2, .custom-width
+  with a small set of named, meaningful classes built on the spacing/width tokens.
+
+  HOW TO MIGRATE (see MIGRATION.md for the full table):
+    - One-off horizontal nudges (.margin-left-NNN) were almost always doing
+      column alignment. Replace with the govuk grid, or with .cw-inset-* if a true
+      indent is needed. Do NOT reintroduce pixel-specific margin classes.
+    - Fixed table-column widths (.custom-width-*) → .cw-col-* below.
+
+  The LEGACY SHIMS block at the bottom keeps the old class names working so the
+  build is not broken on day one. Delete each shim once its class is removed from
+  the views.
+  ------------------------------------------------------------ */
+
+@import "tokens";
+
+// --- Semantic column widths (for table cells / inputs) -----
+.cw-col-narrow  { width: $cw-col-narrow; }
+.cw-col-tag     { width: $cw-col-tag; }
+.cw-col-sm      { width: $cw-col-sm; }
+.cw-col-md      { width: $cw-col-md; }
+.cw-col-status  { width: $cw-col-status; }
+.cw-col-lg      { width: $cw-col-lg; }
+.cw-col-xl      { width: $cw-col-xl; }
+.cw-col-notes   { width: $cw-col-notes; }
+
+// --- Indents (true content indents, rare) ------------------
+.cw-inset-4 { margin-left: $cw-space-4; }
+.cw-inset-6 { margin-left: $cw-space-6; }
+
+// --- Common flex rows (replaces ad-hoc inline layouts) -----
+.cw-row {
+  display: flex;
+  align-items: center;
+  gap: $cw-space-4;
+}
+.cw-row--top    { align-items: flex-start; }
+.cw-row--end    { justify-content: flex-end; }
+.cw-row--tight  { gap: $cw-space-2; }
+
+// --- Surfaces ----------------------------------------------
+.cw-panel-success { background-color: $cw-surface-success; }   // was .lg-div
+.cw-panel-bordered {                                           // was .dark-grey-box
+  border: 5px solid $cw-border;
+  padding: $cw-space-3 0 0 $cw-space-3;
+}
+
+/* ============================================================
+   LEGACY SHIMS — remove as views are migrated (see MIGRATION.md)
+   ============================================================ */
+.custom-width            { width: 250px; }
+.custom-width-table      { width: $cw-col-tag; }
+.custom-width-table-small{ width: $cw-col-narrow; }
+.custom-width-110        { width: $cw-col-sm; }
+.custom-width-130        { width: $cw-col-md; }
+.custom-width-120        { width: $cw-col-status; }
+.custom-width-160        { width: 160px; }
+.custom-width-180        { width: $cw-col-lg; }
+.custom-width-230        { width: $cw-col-xl; }
+.custom-width-220        { max-width: 220px; }
+.custom-width-table-approved { width: $cw-col-status; }
+.reduced-width           { width: 350px; }
+.notes-width             { width: $cw-col-notes; }
+.notes-width2            { width: 450px; }
+
+// Horizontal "nudge" classes — kept ONLY so the build is green. Every one of
+// these is a layout smell; replace its usage with the grid and delete the shim.
+.margin-left-80  { margin-left: $cw-space-8; }   // ≈ closest token
+.margin-left-120 { margin-left: $cw-space-9 * 2; }
+.margin-left-123 { margin-left: 123px; }
+.margin-left-130 { margin-left: 130px; }
+.margin-left-150 { margin-left: 150px; }
+.margin-left-177 { margin-left: 177px; }
+.margin-left-180 { margin-left: 180px; }
+.margin-left-283 { margin-left: 283px; }
+.margin-left-310 { margin-left: 310px; }
+.margin-top-200  { margin-top: 200px; }

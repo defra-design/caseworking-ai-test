@@ -1,0 +1,156 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% set activePage = "notes" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Notes" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-patterns.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Notes
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">A single, running record of the notes a caseworker captures as they work a case. It <strong>builds up</strong> as decisions are made, is <strong>organised by stage</strong>, and each entry is <strong>reachable from the case history timeline</strong> so anyone can jump straight to the note behind an event.</p>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Anywhere a caseworker records the reasoning behind a decision or action that others may need to read later.</li>
+        <li>When notes accumulate across a multi-stage process (review → agreement → ongoing checks) and need to stay in one place.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For a one-off free-text field that is captured and shown on a single screen — a plain <a class="govuk-link" href="/pattern-library/gds/textarea">textarea</a> is enough.</li>
+        <li>For a chronological record of <em>events</em> rather than the notes themselves — use the <a class="govuk-link" href="/pattern-library/patterns/timeline">case history timeline</a>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">How it works</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>It builds up.</strong> Each note row is only shown once the decision or action it relates to has been answered, so the page grows as the case progresses. Until then the stage shows an empty state ("There are no notes to display yet").</li>
+        <li><strong>It is organised by stage.</strong> Notes are grouped under a heading for each stage of the case — Review, Agreement, 5&nbsp;month check — each with its own table. New stages add new sections; they do not interleave.</li>
+        <li><strong>It is linked from the timeline.</strong> Each timeline event that produced a note links to the relevant stage section via an anchor (for example <code>notes#review</code>), so users land in the right place rather than the top of the page.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Anatomy of a stage</h2>
+      <ol class="govuk-list govuk-list--number">
+        <li><strong>Stage heading</strong> — an <code>&lt;h2&gt;</code> naming the stage (and the anchor target for timeline links).</li>
+        <li><strong>Notes table</strong> — a <a class="govuk-link" href="/pattern-library/moj/sortable-table">sortable table</a> with four columns:
+          <ul class="govuk-list govuk-list--bullet">
+            <li><strong>Date</strong> — when the note was added (default sort, newest first).</li>
+            <li><strong>Progress</strong> — the decision or action that prompted the note (e.g. "Review decision: Accepted").</li>
+            <li><strong>Note</strong> — the free-text note itself.</li>
+            <li><strong>Added by</strong> — the caseworker.</li>
+          </ul>
+        </li>
+        <li><strong>Empty state</strong> — shown in place of the table until the stage has its first note.</li>
+      </ol>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-notes">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-notes-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+
+            <h2 class="govuk-heading-m" id="review">Review notes</h2>
+            <table class="govuk-table" data-module="moj-sortable-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header cw-col-status" aria-sort="descending">Date</th>
+                  <th scope="col" class="govuk-table__header" aria-sort="none">Progress</th>
+                  <th scope="col" class="govuk-table__header cw-col-notes">Note</th>
+                  <th scope="col" class="govuk-table__header cw-col-sm" aria-sort="none">Added by</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">15 Feb 2026 at 11:12am</td>
+                  <td class="govuk-table__cell">Review decision: Accepted</td>
+                  <td class="govuk-table__cell">All eligibility checks passed. Land parcels match the application.</td>
+                  <td class="govuk-table__cell">A Jones</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">15 Feb 2026 at 11:04am</td>
+                  <td class="govuk-table__cell">Budget: Confirmed</td>
+                  <td class="govuk-table__cell">Budget available for this scheme year; no reallocation needed.</td>
+                  <td class="govuk-table__cell">J Smith</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h2 class="govuk-heading-m">Agreement notes</h2>
+            <h3 class="govuk-heading-s">There are no agreement notes to display yet</h3>
+
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-notes" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-notes-code">&lt;!-- One section per stage. The anchor id (here "review") is the
+     target for timeline links such as href="notes#review". --&gt;
+&lt;h2 class="govuk-heading-m" id="review"&gt;Review notes&lt;/h2&gt;
+&lt;table class="govuk-table" data-module="moj-sortable-table"&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="descending"&gt;Date&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="none"&gt;Progress&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header"&gt;Note&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header" aria-sort="none"&gt;Added by&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    {% raw %}{% if data.decision1 %}{% endraw %}
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;td class="govuk-table__cell"&gt;15 Feb 2026 at 11:12am&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;Review decision: {% raw %}{{ data.decision1 }}{% endraw %}&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;{% raw %}{{ data.filteredReviewNote }}{% endraw %}&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;A Jones&lt;/td&gt;
+    &lt;/tr&gt;
+    {% raw %}{% endif %}{% endraw %}
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- Each stage shows an empty state until it has its first note --&gt;
+&lt;h2 class="govuk-heading-m"&gt;Agreement notes&lt;/h2&gt;
+&lt;h3 class="govuk-heading-s"&gt;There are no agreement notes to display yet&lt;/h3&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Linking from the timeline</h2>
+      <p class="govuk-body">Every timeline event that produced a note links back to its stage section in the notes page, using a stage anchor. This keeps the two patterns in step: the timeline says <em>what</em> happened and when; the note says <em>why</em>.</p>
+      <pre class="govuk-!-margin-bottom-6"><code>&lt;a class="govuk-link" href="notes#review"&gt;View note&lt;/a&gt;</code></pre>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Each stage has a real heading, so the page can be navigated by heading and the anchors are meaningful landing points.</li>
+        <li>Sortable headers are buttons with <code>aria-sort</code> — keyboard operable and announced. See <a class="govuk-link" href="/pattern-library/moj/sortable-table">sortable table</a>.</li>
+        <li>The empty state is real text in the DOM, so screen-reader users are told a stage has no notes yet rather than meeting an empty table.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/notes">Notes</a> — the running notes record, reached from the case tabs and from <a class="govuk-link" href="/FRPS-D2/timeline">timeline</a> events.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

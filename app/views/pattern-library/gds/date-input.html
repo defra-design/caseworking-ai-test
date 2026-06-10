@@ -1,0 +1,115 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "date-input" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Date input" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Date input
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">Use the date input to ask for a memorable date or one the user can look up — three separate fields for day, month and year.</p>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Asking for a date a user knows (e.g. date received, date of an inspection).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Choosing from a small set of known dates — use <a class="govuk-link" href="/pattern-library/gds/radios">radios</a> or a <a class="govuk-link" href="/pattern-library/gds/select">select</a>.</li>
+        <li>Don't use a native date picker — the three-field pattern is more accessible for known dates.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-date-input">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-date-input-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset" role="group" aria-describedby="received-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Date received</legend>
+                <div id="received-hint" class="govuk-hint">For example, 27 3 2026</div>
+                <div class="govuk-date-input" id="received">
+                  <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label govuk-date-input__label" for="received-day">Day</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="received-day" name="received-day" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                  <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label govuk-date-input__label" for="received-month">Month</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="received-month" name="received-month" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                  <div class="govuk-date-input__item">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label govuk-date-input__label" for="received-year">Year</label>
+                      <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="received-year" name="received-year" type="text" inputmode="numeric">
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-date-input" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-date-input-code">&lt;fieldset class="govuk-fieldset" role="group" aria-describedby="received-hint"&gt;
+  &lt;legend class="govuk-fieldset__legend govuk-fieldset__legend--m"&gt;Date received&lt;/legend&gt;
+  &lt;div id="received-hint" class="govuk-hint"&gt;For example, 27 3 2026&lt;/div&gt;
+  &lt;div class="govuk-date-input" id="received"&gt;
+    &lt;div class="govuk-date-input__item"&gt;
+      &lt;div class="govuk-form-group"&gt;
+        &lt;label class="govuk-label govuk-date-input__label" for="received-day"&gt;Day&lt;/label&gt;
+        &lt;input class="govuk-input govuk-date-input__input govuk-input--width-2" id="received-day" name="received-day" type="text" inputmode="numeric"&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!-- month (width-2), year (width-4) --&gt;
+  &lt;/div&gt;
+&lt;/fieldset&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Wrap the three fields in a <code>&lt;fieldset role="group"&gt;</code> with a <code>&lt;legend&gt;</code>.</li>
+        <li>Use <code>inputmode="numeric"</code> so mobile users get a numeric keypad, but keep <code>type="text"</code> so values aren't silently changed.</li>
+        <li>On error, highlight the specific field(s) and link from the <a class="govuk-link" href="/pattern-library/gds/error-summary">error summary</a> to the first one.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">The User Management screens in FRPS-D2:</p>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/UM/create-user">Create user</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/UM/create-role">Create role</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/UM/pmf_read">Role detail (read only)</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

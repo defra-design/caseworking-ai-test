@@ -1,0 +1,98 @@
+{#
+  ============================================================
+  DOC-PAGE TEMPLATE — copy this to create a new pattern-library page
+  ============================================================
+  1. Save as app/views/pattern-library/<section>/<name>.html
+  2. Set plSection to one of: foundations | gds | moj | custom | patterns
+  3. Set activePage to the subnav key for this page
+  4. Swap the subnav include to match the section
+  5. Fill the breadcrumb's middle item with the section landing link
+  6. Keep the section order: intro → When to use → When not to use → How it works
+     → Options/variants (each a live example) → Accessibility → Where does this occur
+  7. Every live example needs a unique id used by BOTH data-toggle (on the
+     "Show HTML" button, pointing at the .app-example__code-container id) and
+     data-copy-target (on the "Copy code" button, pointing at the <code> id).
+  8. Escape HTML inside <code> blocks (&lt; &gt; &amp;).
+  9. Optional: add a status label tag in the page header (Ready/Experimental/Deprecated).
+  ============================================================
+#}
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "TEMPLATE" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Component name" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      {# --- Page header (+ optional status label) --- #}
+      <h1 class="govuk-heading-xl">
+        Component name
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">One-sentence description of what this is and the user need it meets.</p>
+
+      {# --- When to use / when not to use --- #}
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Situation where this is the right choice.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Situation where a different component is better — link to it.</li>
+      </ul>
+
+      {# --- How it works --- #}
+      <h2 class="govuk-heading-l">How it works</h2>
+      <p class="govuk-body">Explain behaviour, states and content rules.</p>
+
+      {# --- A live example (duplicate this block per variant) --- #}
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-TEMPLATE">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-TEMPLATE-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            {# rendered example markup goes here #}
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-TEMPLATE" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-TEMPLATE-code">&lt;!-- escaped example markup --&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      {# --- Accessibility --- #}
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Keyboard, focus, screen-reader and contrast notes specific to this component.</li>
+      </ul>
+
+      {# --- Where used --- #}
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/path/to/screen">Screen name</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

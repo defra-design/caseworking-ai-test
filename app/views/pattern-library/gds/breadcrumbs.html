@@ -1,0 +1,92 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "breadcrumbs" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Breadcrumbs" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Breadcrumbs
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">Breadcrumbs help users understand where they are in a hierarchy and move back up a level. This library uses them on every doc page.</p>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The service has a clear hierarchy and the user may be more than one level deep.</li>
+        <li>Users arrive part-way through (e.g. from search or a deep link) and need orientation.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Linear flows (task list → task → check answers) — use the <a class="govuk-link" href="/pattern-library/gds/back-link">back link</a> instead.</li>
+        <li>Flat services with no hierarchy.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-breadcrumbs">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-breadcrumbs-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+              <ol class="govuk-breadcrumbs__list">
+                <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="#">Cases</a></li>
+                <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="#">100300 — Berkshire Estate Limited</a></li>
+                <li class="govuk-breadcrumbs__list-item" aria-current="page">Documents</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-breadcrumbs" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-breadcrumbs-code">&lt;nav class="govuk-breadcrumbs" aria-label="Breadcrumb"&gt;
+  &lt;ol class="govuk-breadcrumbs__list"&gt;
+    &lt;li class="govuk-breadcrumbs__list-item"&gt;&lt;a class="govuk-breadcrumbs__link" href="#"&gt;Cases&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="govuk-breadcrumbs__list-item"&gt;&lt;a class="govuk-breadcrumbs__link" href="#"&gt;100300 — Berkshire Estate Limited&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="govuk-breadcrumbs__list-item" aria-current="page"&gt;Documents&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;
+
+&lt;!-- Or the Nunjucks macro --&gt;
+{{ "{{" }} govukBreadcrumbs({ items: [
+  { text: "Cases", href: "#" },
+  { text: "100300 — Berkshire Estate Limited", href: "#" },
+  { text: "Documents" }
+]}) {{ "}}" }}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Wrap in a <code>&lt;nav aria-label="Breadcrumb"&gt;</code>.</li>
+        <li>The current page is the last item, with no link, and <code>aria-current="page"</code>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Every pattern-library page, and the case sub-pages where a hierarchy exists.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

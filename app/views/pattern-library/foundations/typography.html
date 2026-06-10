@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "foundations" %}
+{% set activePage = "typography" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
+    { text: "Typography" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Typography</h1>
+      <p class="govuk-body-l">The service uses the GOV.UK type system: the <strong>GDS Transport</strong> typeface and the GOV.UK type scale. Use the GOV.UK heading and body classes — don't set font sizes by hand.</p>
+
+      <div class="govuk-inset-text">
+        Font family token: <code class="govuk-body">$cw-font</code> = <code class="govuk-body">"GDS Transport", arial, sans-serif</code>. Several places in the old CSS re-declared this stack inline (for example <code class="govuk-body">.small-text</code>, <code class="govuk-body">.govuk-heading-s-w</code>). Prefer the GOV.UK classes below.
+      </div>
+
+      <h2 class="govuk-heading-l">Headings</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-type-headings">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-type-headings-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-heading-xl govuk-!-margin-bottom-2">Heading XL — page title</p>
+            <p class="govuk-heading-l govuk-!-margin-bottom-2">Heading L — section</p>
+            <p class="govuk-heading-m govuk-!-margin-bottom-2">Heading M — subsection</p>
+            <p class="govuk-heading-s govuk-!-margin-bottom-0">Heading S — small heading</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-type-headings" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-type-headings-code">&lt;h1 class="govuk-heading-xl"&gt;Page title&lt;/h1&gt;
+&lt;h2 class="govuk-heading-l"&gt;Section&lt;/h2&gt;
+&lt;h3 class="govuk-heading-m"&gt;Subsection&lt;/h3&gt;
+&lt;h4 class="govuk-heading-s"&gt;Small heading&lt;/h4&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Body and supporting text</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-type-body">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-type-body-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body-l">Body large — lead paragraph that introduces a page.</p>
+            <p class="govuk-body">Body — the default paragraph size for most content on a page.</p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0">Body small — use sparingly, for metadata and captions.</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-type-body" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-type-body-code">&lt;p class="govuk-body-l"&gt;Lead paragraph&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Default paragraph&lt;/p&gt;
+&lt;p class="govuk-body-s"&gt;Metadata / caption&lt;/p&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">The type scale</h2>
+      <p class="govuk-body">GOV.UK font sizes are responsive (larger on tablet and above). Use the class, not the pixel value.</p>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header">Class</th>
+            <th class="govuk-table__header">Desktop size</th>
+            <th class="govuk-table__header">Use</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row"><td class="govuk-table__cell"><code>govuk-heading-xl</code></td><td class="govuk-table__cell">48px</td><td class="govuk-table__cell">Page title (one per page)</td></tr>
+          <tr class="govuk-table__row"><td class="govuk-table__cell"><code>govuk-heading-l</code></td><td class="govuk-table__cell">36px</td><td class="govuk-table__cell">Section heading</td></tr>
+          <tr class="govuk-table__row"><td class="govuk-table__cell"><code>govuk-heading-m</code></td><td class="govuk-table__cell">24px</td><td class="govuk-table__cell">Subsection</td></tr>
+          <tr class="govuk-table__row"><td class="govuk-table__cell"><code>govuk-heading-s</code> / <code>govuk-body</code></td><td class="govuk-table__cell">19px</td><td class="govuk-table__cell">Small heading / body</td></tr>
+          <tr class="govuk-table__row"><td class="govuk-table__cell"><code>govuk-body-s</code></td><td class="govuk-table__cell">16px</td><td class="govuk-table__cell">Metadata, captions</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Keep one <code>&lt;h1&gt;</code> per page and don't skip heading levels — use the visual class to size, the tag for structure.</li>
+        <li>Avoid <code>.small-text</code> (16px override) for primary content; reserve small text for genuine metadata.</li>
+        <li>Don't hard-code font sizes — the responsive scale keeps text legible across breakpoints.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Every page. The heading hierarchy is most load-bearing on the case task list (the <code>tasklist-stage</code> screen) and the <a class="govuk-link" href="/pattern-library/patterns/calculations">calculations</a> pattern.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

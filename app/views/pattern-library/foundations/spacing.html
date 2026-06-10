@@ -1,0 +1,116 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "foundations" %}
+{% set activePage = "spacing" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
+    { text: "Spacing" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Spacing</h1>
+      <p class="govuk-body-l">Spacing follows the GOV.UK spacing scale. Use the GOV.UK spacing override classes in markup and <code class="govuk-body">govuk-spacing()</code> in Sass. The <code class="govuk-body">$cw-space-*</code> tokens mirror the scale for the rare case where a token is needed.</p>
+
+      <div class="govuk-inset-text">
+        This replaces the magic-number classes that built up in the old CSS:
+        <code class="govuk-body">.margin-left-177</code>, <code class="govuk-body">.margin-top-200</code>,
+        <code class="govuk-body">.custom-width-130</code> and so on. See
+        <a class="govuk-link" href="/pattern-library/foundations/layout">Layout &amp; grid</a> for how to replace them.
+      </div>
+
+      <h2 class="govuk-heading-l">The scale</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-space-scale">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-space-scale-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div style="background:#d2e2f1;height:5px;margin-bottom:8px;width:5px"></div>
+            <div style="background:#d2e2f1;height:10px;margin-bottom:8px;width:10px"></div>
+            <div style="background:#d2e2f1;height:15px;margin-bottom:8px;width:15px"></div>
+            <div style="background:#d2e2f1;height:20px;margin-bottom:8px;width:20px"></div>
+            <div style="background:#d2e2f1;height:30px;margin-bottom:8px;width:30px"></div>
+            <div style="background:#d2e2f1;height:40px;margin-bottom:8px;width:40px"></div>
+            <div style="background:#d2e2f1;height:60px;width:60px"></div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-space-scale" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-space-scale-code">// _tokens.scss — mirrors govuk-spacing(0..9)
+$cw-space-1: 5px;   $cw-space-2: 10px;  $cw-space-3: 15px;
+$cw-space-4: 20px;  $cw-space-5: 25px;  $cw-space-6: 30px;
+$cw-space-7: 40px;  $cw-space-8: 50px;  $cw-space-9: 60px;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">How to apply spacing</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header">Need</th>
+            <th class="govuk-table__header">Do this</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Space below an element in markup</td>
+            <td class="govuk-table__cell"><code>class="govuk-!-margin-bottom-4"</code> (the 1–9 suffix is the scale point)</td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Padding in markup</td>
+            <td class="govuk-table__cell"><code>class="govuk-!-padding-3"</code></td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Spacing in a Sass rule</td>
+            <td class="govuk-table__cell"><code>margin-bottom: govuk-spacing(4);</code></td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">Gap between flex/grid children</td>
+            <td class="govuk-table__cell"><code>gap: $cw-space-4;</code> (see <code>.cw-row</code>)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="govuk-heading-l">Do and don't</h2>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Do</h3>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>Use scale points so vertical rhythm stays consistent.</li>
+            <li>Use the grid for column alignment.</li>
+            <li>Use <code>gap</code> on a flex/grid row, not per-child margins.</li>
+          </ul>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Don't</h3>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>Add one-off classes like <code>.margin-left-177</code>.</li>
+            <li>Nudge layout with pixel margins to fake alignment.</li>
+            <li>Use <code>.margin-top-200</code> to push content down the page.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Everywhere. The migration away from magic-number spacing is tracked in <code class="govuk-body">MIGRATION.md</code>.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

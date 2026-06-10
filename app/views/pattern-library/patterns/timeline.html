@@ -1,0 +1,94 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% set activePage = "timeline" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Case history timeline" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-patterns.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Case history timeline
+        <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2">Experimental</strong>
+      </h1>
+      <p class="govuk-body-l">A reverse-chronological record of everything that has happened on a case — status changes, decisions, messages and notes — so any caseworker can pick it up and understand its history.</p>
+
+      <div class="govuk-inset-text">
+        Scaffold — complete from the FRPS-D2 <a class="govuk-link" href="/FRPS-D2/timeline">timeline</a>
+        using the <a class="govuk-link" href="/pattern-library/moj/timeline">MOJ timeline</a> component.
+      </div>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-timeline">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-timeline-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <ol class="moj-timeline">
+              <li class="moj-timeline__item">
+                <div class="moj-timeline__header">
+                  <h2 class="moj-timeline__title">Decision recorded — accepted</h2>
+                  <p class="moj-timeline__byline">by Priya Shah</p>
+                </div>
+                <p class="moj-timeline__date">6 June 2026 at 14:22</p>
+                <div class="moj-timeline__description"><p class="govuk-body">All eligibility checks passed. Applicant notified.</p></div>
+              </li>
+              <li class="moj-timeline__item">
+                <div class="moj-timeline__header">
+                  <h2 class="moj-timeline__title">Information requested</h2>
+                  <p class="moj-timeline__byline">by Priya Shah</p>
+                </div>
+                <p class="moj-timeline__date">2 June 2026 at 09:10</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-timeline" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-timeline-code">&lt;ol class="moj-timeline"&gt;
+  &lt;li class="moj-timeline__item"&gt;
+    &lt;div class="moj-timeline__header"&gt;
+      &lt;h2 class="moj-timeline__title"&gt;Decision recorded — accepted&lt;/h2&gt;
+      &lt;p class="moj-timeline__byline"&gt;by Priya Shah&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;p class="moj-timeline__date"&gt;6 June 2026 at 14:22&lt;/p&gt;
+    &lt;div class="moj-timeline__description"&gt;&lt;p class="govuk-body"&gt;…&lt;/p&gt;&lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">To complete</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Document the event types and how each is represented.</li>
+        <li>Note the MOJ timeline port lives inline in <code class="govuk-body">application.scss</code>.</li>
+        <li>Add accessibility notes for the ordered list and time elements.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/timeline">Timeline</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

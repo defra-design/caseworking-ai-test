@@ -1,0 +1,91 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "foundations" %}
+{% set activePage = "focus-states" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
+    { text: "Focus & interaction states" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Focus &amp; interaction states</h1>
+      <p class="govuk-body-l">Interactive elements must show a clear focus state for keyboard users. The service uses the GOV.UK focus style: a yellow background with a 3px black underline.</p>
+
+      <h2 class="govuk-heading-l">The focus state</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-focus-tokens">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-focus-tokens-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body">Tab to the link to see the focus state, or preview it here:</p>
+            <p class="govuk-body"><a class="govuk-link" href="#" style="outline:3px solid transparent;color:#0b0c0c;background-color:#ffdd00;box-shadow:0 -2px #ffdd00,0 4px #0b0c0c;text-decoration:none">Focused link</a></p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-focus-tokens" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-focus-tokens-code">// _tokens.scss
+$cw-focus-bg:    #ffdd00; // govuk-colour('yellow')
+$cw-focus-text:  #0b0c0c;
+$cw-focus-width: 3px;
+
+// GOV.UK focus mixin (preferred): @include govuk-focused-text;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Buttons and links</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-focus-buttons">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-focus-buttons-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="cw-row cw-row--tight">
+              <button class="govuk-button" data-module="govuk-button">Primary</button>
+              <button class="govuk-button govuk-button--secondary" data-module="govuk-button">Secondary</button>
+              <button class="govuk-button govuk-button--warning" data-module="govuk-button">Warning</button>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-focus-buttons" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-focus-buttons-code">&lt;button class="govuk-button" data-module="govuk-button"&gt;Primary&lt;/button&gt;
+&lt;button class="govuk-button govuk-button--secondary"&gt;Secondary&lt;/button&gt;
+&lt;button class="govuk-button govuk-button--warning"&gt;Warning&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Rules</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Never remove focus outlines with <code>outline: none</code> without providing an equally visible replacement.</li>
+        <li>Custom controls (the quiet secondary button, filter tags, sortable headers) must show the same yellow focus state — see the <a class="govuk-link" href="/pattern-library/accessibility">Accessibility</a> page.</li>
+        <li>Hover is a supplementary cue only; never rely on hover to convey state.</li>
+        <li>Hit targets are at least 44&nbsp;&times;&nbsp;44px.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">All interactive components. Watch the custom <code class="govuk-body">.gem-c-button--secondary-quiet</code> and the filter tags, which were styled by hand and must keep the standard focus state.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

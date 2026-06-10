@@ -1,0 +1,80 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "contributing" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Contributing" }
+  ]}) }}
+
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Contributing</h1>
+        <p class="govuk-body-l">How to use, extend and maintain this library so the prototype stays consistent as it grows.</p>
+
+        <h2 class="govuk-heading-l">The order of preference</h2>
+        <p class="govuk-body">Always reach for the most established option first:</p>
+        <ol class="govuk-list govuk-list--number">
+          <li><strong>GOV.UK Design System</strong> — use a GDS component if one fits.</li>
+          <li><strong>MOJ Design System</strong> — for internal casework needs GDS doesn't cover (timelines, filters, sortable tables).</li>
+          <li><strong>Custom</strong> — only when neither system has what you need, and only after checking with the team.</li>
+        </ol>
+        <p class="govuk-body">A new custom pattern is a cost: it must be documented here, kept accessible, and maintained. Don't create one to save a few minutes.</p>
+
+        <h2 class="govuk-heading-l">Proposing a pattern</h2>
+        <ol class="govuk-list govuk-list--number">
+          <li>Check it doesn't already exist in GDS, MOJ or here.</li>
+          <li>Build it from tokens (<a class="govuk-link" href="/pattern-library/foundations/colour">colour</a>, <a class="govuk-link" href="/pattern-library/foundations/spacing">spacing</a>) — no magic numbers, no raw hex.</li>
+          <li>Document it: copy <code class="govuk-body">_TEMPLATE.html</code> and fill every section, including accessibility and "where does this occur".</li>
+          <li>Add it to the relevant subnav include and the landing page count.</li>
+          <li>Give it a status label (below).</li>
+        </ol>
+
+        <h2 class="govuk-heading-l">Component status</h2>
+        <p class="govuk-body">Each page shows a status tag in its heading so users know how much to trust it:</p>
+        <ul class="govuk-list">
+          <li><strong class="govuk-tag govuk-tag--turquoise">Ready</strong> &nbsp; Documented, accessible, used in the prototype.</li>
+          <li><strong class="govuk-tag govuk-tag--yellow">Experimental</strong> &nbsp; In progress or used once — may change.</li>
+          <li><strong class="govuk-tag govuk-tag--grey">Deprecated</strong> &nbsp; Don't use in new work; being removed.</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Naming &amp; code conventions</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Tokens are prefixed <code>$cw-</code> and live in <code class="govuk-body">_tokens.scss</code>.</li>
+          <li>App layout classes are prefixed <code>.cw-</code>; pattern-library chrome is prefixed <code>.app-</code>.</li>
+          <li>Keep using the GOV.UK and MOJ class names for ported components so they can be swapped for the real packages.</li>
+          <li>Escape HTML inside example code blocks (<code>&amp;lt;</code> <code>&amp;gt;</code>).</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Changing or retiring a pattern</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Changing a token or component affects every screen — search usages first and test them.</li>
+          <li>To retire one, mark it <strong class="govuk-tag govuk-tag--grey">Deprecated</strong>, migrate usages, then remove it and its subnav entry.</li>
+          <li>Record notable changes in the "What's new" list on the landing page.</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Housekeeping backlog</h2>
+        <p class="govuk-body">Tracked in <code class="govuk-body">MIGRATION.md</code> and the upgrade package's <code class="govuk-body">CLAUDE.md</code>:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Replace magic-number classes with tokens, then delete the legacy shims.</li>
+          <li>Consolidate the overlapping tag variants.</li>
+          <li>Split <code>application.scss</code> into partials.</li>
+          <li>Decide whether to install MOJ Frontend or formally adopt the ports.</li>
+          <li>Finish the missing component and pattern pages.</li>
+        </ul>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

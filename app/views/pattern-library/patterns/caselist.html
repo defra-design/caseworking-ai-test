@@ -1,0 +1,183 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% set activePage = "caselist" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Caselist" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-patterns.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Caselist
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">A page-level pattern for showing a caseworker the cases they need to act on, and letting them find a specific case. It combines a filter, a sortable table, status tags and pagination.</p>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The landing page for a caseworker — "my cases", "my team", "all cases", "new".</li>
+        <li>Any list of records the user scans, sorts and filters to pick one to work on.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For a single record's details — use the case's task list (the <code>tasklist-stage</code> screen).</li>
+        <li>For a short, fixed list that never needs filtering or sorting — a plain <a class="govuk-link" href="/pattern-library/gds/table">table</a> is enough.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Anatomy</h2>
+      <ol class="govuk-list govuk-list--number">
+        <li><strong>Caselist tabs</strong> — switch between My cases / My team / All / New (GOV.UK secondary navigation or links).</li>
+        <li><strong>Filter</strong> — the <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a>, with selected filters shown as removable tags.</li>
+        <li><strong>Results count</strong> — "Showing 1 to 20 of 134 cases".</li>
+        <li><strong>Sortable table</strong> — the <a class="govuk-link" href="/pattern-library/moj/sortable-table">MOJ sortable table</a> with a <a class="govuk-link" href="/pattern-library/gds/tag">status tag</a> column.</li>
+        <li><strong>Pagination</strong> — the <a class="govuk-link" href="/pattern-library/moj/pagination">MOJ pagination</a>.</li>
+      </ol>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-caselist">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-caselist-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+
+            <p class="moj-pagination__results govuk-!-margin-bottom-2">Showing <b>1</b> to <b>5</b> of <b>134</b> cases</p>
+
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Reference</th>
+                  <th class="govuk-table__header">Applicant</th>
+                  <th class="govuk-table__header">Scheme</th>
+                  <th class="govuk-table__header">Received</th>
+                  <th class="govuk-table__header cw-col-status">Status</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><a class="govuk-link" href="#">100300</a></td>
+                  <td class="govuk-table__cell">Berkshire Estate Limited</td>
+                  <td class="govuk-table__cell">FETF</td>
+                  <td class="govuk-table__cell">2 May 2026</td>
+                  <td class="govuk-table__cell cw-col-status"><strong class="govuk-tag govuk-tag--blue">In review</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><a class="govuk-link" href="#">100297</a></td>
+                  <td class="govuk-table__cell">Watson Farms Ltd</td>
+                  <td class="govuk-table__cell">FRPS</td>
+                  <td class="govuk-table__cell">2 May 2026</td>
+                  <td class="govuk-table__cell cw-col-status"><strong class="govuk-tag govuk-tag--action">Action required</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><a class="govuk-link" href="#">100284</a></td>
+                  <td class="govuk-table__cell">Greenfield Agricultural</td>
+                  <td class="govuk-table__cell">FRPS</td>
+                  <td class="govuk-table__cell">1 May 2026</td>
+                  <td class="govuk-table__cell cw-col-status"><strong class="govuk-tag govuk-tag--yellow">Information requested</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><a class="govuk-link" href="#">100261</a></td>
+                  <td class="govuk-table__cell">Hilltop Partners</td>
+                  <td class="govuk-table__cell">FETF</td>
+                  <td class="govuk-table__cell">29 Apr 2026</td>
+                  <td class="govuk-table__cell cw-col-status"><strong class="govuk-tag govuk-tag--green">Accepted</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><a class="govuk-link" href="#">100248</a></td>
+                  <td class="govuk-table__cell">R &amp; J Dawson</td>
+                  <td class="govuk-table__cell">FRPS</td>
+                  <td class="govuk-table__cell">28 Apr 2026</td>
+                  <td class="govuk-table__cell cw-col-status"><strong class="govuk-tag govuk-tag--red-status">Not accepted</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <nav class="moj-pagination" aria-label="Pagination">
+              <ul class="moj-pagination__list">
+                <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="#">Previous</a></li>
+                <li class="moj-pagination__item moj-pagination__item--active"><a class="moj-pagination__link" href="#">1</a></li>
+                <li class="moj-pagination__item"><a class="moj-pagination__link" href="#">2</a></li>
+                <li class="moj-pagination__item"><a class="moj-pagination__link" href="#">3</a></li>
+                <li class="moj-pagination__item moj-pagination__item--dots">…</li>
+                <li class="moj-pagination__item"><a class="moj-pagination__link" href="#">27</a></li>
+                <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="#">Next</a></li>
+              </ul>
+            </nav>
+
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-caselist" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-caselist-code">&lt;p class="moj-pagination__results"&gt;Showing &lt;b&gt;1&lt;/b&gt; to &lt;b&gt;5&lt;/b&gt; of &lt;b&gt;134&lt;/b&gt; cases&lt;/p&gt;
+
+&lt;table class="govuk-table"&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th class="govuk-table__header"&gt;Reference&lt;/th&gt;
+      &lt;th class="govuk-table__header"&gt;Applicant&lt;/th&gt;
+      &lt;th class="govuk-table__header"&gt;Scheme&lt;/th&gt;
+      &lt;th class="govuk-table__header"&gt;Received&lt;/th&gt;
+      &lt;th class="govuk-table__header cw-col-status"&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;td class="govuk-table__cell"&gt;&lt;a class="govuk-link" href="#"&gt;100300&lt;/a&gt;&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;Berkshire Estate Limited&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;FETF&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;2 May 2026&lt;/td&gt;
+      &lt;td class="govuk-table__cell cw-col-status"&gt;
+        &lt;strong class="govuk-tag govuk-tag--blue"&gt;In review&lt;/strong&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- …more rows… --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- MOJ pagination — see /pattern-library/moj/pagination --&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Content rules</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The reference number is the link to the case — keep it the first column.</li>
+        <li>One status per row, using the documented <a class="govuk-link" href="/pattern-library/custom/status-tags">status colours</a>. Don't invent new colours per caselist.</li>
+        <li>Dates use the GOV.UK format (2 May 2026), and the column sorts by true date, not text.</li>
+        <li>Default sort is most-recently-received first.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Sortable headers are buttons with <code>aria-sort</code> — keyboard operable and announced. See <a class="govuk-link" href="/pattern-library/moj/sortable-table">sortable table</a>.</li>
+        <li>The results count is in the DOM so screen readers can read how many results a filter returned.</li>
+        <li>Status is conveyed by the tag's text, not colour alone.</li>
+        <li>Pagination links have descriptive context; the current page is marked.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caselist">Caselist</a> — the caseworker landing page (My cases / My team / All / New tabs).</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

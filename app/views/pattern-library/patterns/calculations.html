@@ -1,0 +1,104 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% set activePage = "calculations" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Calculations" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-patterns.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Calculations
+        <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2">Experimental</strong>
+      </h1>
+      <p class="govuk-body-l">How a caseworker reviews a grant or payment calculation, finds a land parcel, and sees what has changed since the previous calculation run.</p>
+
+      <div class="govuk-inset-text">
+        Scaffold — consolidate from the existing custom patterns
+        (<a class="govuk-link" href="/pattern-library/custom/calculations-filter">calculations filter</a>,
+        <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a>,
+        <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tags</a>)
+        into one page-level pattern.
+      </div>
+
+      <h2 class="govuk-heading-l">Anatomy</h2>
+      <ol class="govuk-list govuk-list--number">
+        <li><strong>Parcel search</strong> — accessible-autocomplete + Find button on one row (<code class="govuk-body">.parcel-search__row</code>).</li>
+        <li><strong>Calculations filter</strong> — the custom filter variant.</li>
+        <li><strong>Calculation table</strong> — with <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a> on cells that differ from the last run.</li>
+        <li><strong>Check results</strong> — Pass / Fail / Action tags per check.</li>
+      </ol>
+
+      <h2 class="govuk-heading-l">Changed-value highlight</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-calc">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Item</th>
+                  <th class="govuk-table__header">Previous</th>
+                  <th class="govuk-table__header">Current</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Eligible area (ha)</td>
+                  <td class="govuk-table__cell">12.4</td>
+                  <td class="govuk-table__cell value-changed">13.1</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">Rate (£/ha)</td>
+                  <td class="govuk-table__cell">151</td>
+                  <td class="govuk-table__cell">151</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-calc" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-calc-code">&lt;!-- Highlight only the cell that changed --&gt;
+&lt;td class="govuk-table__cell value-changed"&gt;13.1&lt;/td&gt;
+
+/* _tags.scss */
+.value-changed { background-color: $cw-tag-changed-bg; } // #ffee80</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">To complete</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Add the parcel-search and filter examples.</li>
+        <li>Document when a value counts as "changed" and how the highlight is applied.</li>
+        <li>Accessibility: don't rely on the highlight colour alone — add a visible "changed" indicator for screen readers.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter pattern</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% set activePage = "task" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Task" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-patterns.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Task
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">A single unit of work a caseworker completes within a stage. Every task shares a formalised structure so the experience is consistent across the whole case: a <strong>title</strong>, a <strong>rich-text summary</strong>, a configured set of <strong>outcomes</strong>, and a <strong>compulsory note</strong>. Choosing an outcome updates the task's status in the <a class="govuk-link" href="/FRPS-D2/tasklist-stage">task list</a> and writes a <a class="govuk-link" href="/pattern-library/patterns/notes">note</a>.</p>
+
+      <h2 class="govuk-heading-l">Anatomy</h2>
+      <ol class="govuk-list govuk-list--number">
+        <li><strong>Title</strong> — an <code>&lt;h1&gt;</code> naming the task (for example "Customer details review").</li>
+        <li><strong>Summary</strong> — a rich-text area that tells the caseworker what to check and do. It accepts a fixed subset of GDS text styles and components (see below).</li>
+        <li><strong>Outcomes</strong> — a set of radio options, <strong>set by configuration and identical for every task in the stage</strong>.</li>
+        <li><strong>Compulsory note</strong> — selecting an outcome reveals an "Explain this outcome" field that must be completed before the task can be confirmed.</li>
+        <li><strong>Confirm</strong> — records the outcome, which changes the task's status in the task list and creates the note.</li>
+      </ol>
+
+      <h2 class="govuk-heading-l">What the summary can contain</h2>
+      <p class="govuk-body">The summary is rich text, but deliberately not the full GDS toolkit — it is for <em>reading</em>, not data capture or layout. Authors may use:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Headings — <code>govuk-heading-m</code> and <code>govuk-heading-s</code></li>
+        <li>Body text — <code>govuk-body</code> and lead <code>govuk-body-l</code>, with bold for emphasis</li>
+        <li>Bulleted lists — <code>govuk-list govuk-list--bullet</code></li>
+        <li>Numbered lists — <code>govuk-list govuk-list--number</code> (for ordered steps)</li>
+        <li>Links — <code>govuk-link</code></li>
+        <li><a class="govuk-link" href="/pattern-library/gds/inset-text">Inset text</a> — for a related note or constraint</li>
+        <li><a class="govuk-link" href="/pattern-library/gds/details">Details</a> — to tuck away supporting guidance</li>
+      </ul>
+      <p class="govuk-body">It must <strong>not</strong> contain form inputs, buttons, tables, tabs, accordions or images — anything interactive or structural. Those belong to the outcome controls or to a dedicated screen, not the summary. <a class="govuk-link" href="/pattern-library/gds/warning-text">Warning text</a> is also out of scope here; the compulsory-note requirement already enforces the important action.</p>
+
+      <h2 class="govuk-heading-l">Outcomes are set by stage</h2>
+      <p class="govuk-body">The outcome options are configuration, not per-task content. Every task in a stage offers the <strong>same</strong> outcomes, so a caseworker always recognises the choices. Different stages define different sets, for example:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Review stage:</strong> Accept · Request information from customer · Pause for internal investigation · Cannot accept</li>
+        <li><strong>5&nbsp;month check stage:</strong> No action needed · Request information · Escalate · Cannot accept</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-task">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-task-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+
+            <h1 class="govuk-heading-l">Customer details review</h1>
+
+            <ol class="govuk-list govuk-list--number">
+              <li>Go to <a href="#" class="govuk-link">Application</a> to view the submitted customer details.</li>
+              <li>Check they match the details and permissions on the Rural Payments service (RPS).</li>
+              <li>Come back to this page and record the outcome.</li>
+            </ol>
+
+            <div class="govuk-inset-text">Only the parcels listed on the application are in scope for this check.</div>
+
+            <h2 class="govuk-heading-m">Outcome</h2>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="task-outcome" name="task-outcome" type="radio" value="Accepted" data-aria-controls="conditional-task-1">
+                    <label class="govuk-label govuk-radios__label" for="task-outcome">Accept</label>
+                  </div>
+                  <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-task-1">
+                    <h3 class="govuk-heading-s">Explain this outcome</h3>
+                    <div id="task-note-hint" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+                    <textarea class="govuk-textarea" id="task-note" name="task-note" rows="4" aria-describedby="task-note-hint"></textarea>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="task-outcome-2" name="task-outcome" type="radio" value="Information requested" data-aria-controls="conditional-task-2">
+                    <label class="govuk-label govuk-radios__label" for="task-outcome-2">Request information from customer</label>
+                  </div>
+                  <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-task-2">
+                    <h3 class="govuk-heading-s">Explain this outcome</h3>
+                    <div id="task-note-2-hint" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+                    <textarea class="govuk-textarea" id="task-note-2" name="task-note-2" rows="4" aria-describedby="task-note-2-hint"></textarea>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="task-outcome-3" name="task-outcome" type="radio" value="Cannot accept" data-aria-controls="conditional-task-3">
+                    <label class="govuk-label govuk-radios__label" for="task-outcome-3">Cannot accept</label>
+                  </div>
+                  <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-task-3">
+                    <h3 class="govuk-heading-s">Explain this outcome</h3>
+                    <div id="task-note-3-hint" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+                    <textarea class="govuk-textarea" id="task-note-3" name="task-note-3" rows="4" aria-describedby="task-note-3-hint"></textarea>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <button type="button" class="govuk-button" data-module="govuk-button">Confirm</button>
+
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-task" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-task-code">&lt;!-- 1. Title --&gt;
+&lt;h1 class="govuk-heading-l"&gt;Customer details review&lt;/h1&gt;
+
+&lt;!-- 2. Rich-text summary (subset of GDS: headings, body, lists, links,
+        inset text, details) --&gt;
+&lt;ol class="govuk-list govuk-list--number"&gt; … &lt;/ol&gt;
+&lt;div class="govuk-inset-text"&gt;Only the parcels listed on the application are in scope.&lt;/div&gt;
+
+&lt;!-- 3. Outcomes — configured per stage, same for every task in the stage --&gt;
+&lt;h2 class="govuk-heading-m"&gt;Outcome&lt;/h2&gt;
+&lt;div class="govuk-radios" data-module="govuk-radios"&gt;
+  &lt;div class="govuk-radios__item"&gt;
+    &lt;input class="govuk-radios__input" id="task-outcome" name="task-outcome"
+           type="radio" value="Accepted" data-aria-controls="conditional-task-1"&gt;
+    &lt;label class="govuk-label govuk-radios__label" for="task-outcome"&gt;Accept&lt;/label&gt;
+  &lt;/div&gt;
+
+  &lt;!-- 4. Compulsory note revealed by the chosen outcome --&gt;
+  &lt;div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-task-1"&gt;
+    &lt;h3 class="govuk-heading-s"&gt;Explain this outcome&lt;/h3&gt;
+    &lt;div id="task-note-hint" class="govuk-hint"&gt;You must include an explanation for auditing purposes.&lt;/div&gt;
+    &lt;textarea class="govuk-textarea" id="task-note" name="task-note" rows="4" aria-describedby="task-note-hint"&gt;&lt;/textarea&gt;
+  &lt;/div&gt;
+  &lt;!-- …one outcome + note block per configured outcome… --&gt;
+&lt;/div&gt;
+
+&lt;!-- 5. Confirm → updates task status in the task list and creates the note --&gt;
+&lt;button class="govuk-button" data-module="govuk-button"&gt;Confirm&lt;/button&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">What happens on confirm</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>The task status changes</strong> in the <a class="govuk-link" href="/FRPS-D2/tasklist-stage">task list</a> for the stage (for example from "To do" to "Completed", or to a state that reflects the chosen outcome such as "Information requested").</li>
+        <li><strong>A note is created</strong> from the compulsory explanation. It appears in the task's own Outcome history and in the case <a class="govuk-link" href="/pattern-library/patterns/notes">Notes</a> record, under the relevant stage, and is reachable from the <a class="govuk-link" href="/pattern-library/patterns/timeline">timeline</a>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The outcomes are <a class="govuk-link" href="/pattern-library/gds/radios">radios</a> with conditional reveal — see the progressive-reveal guidance. The revealed note is associated with its outcome via <code>data-aria-controls</code>.</li>
+        <li>The note is mandatory: validate it on submit and, on error, show an <a class="govuk-link" href="/pattern-library/gds/error-summary">error summary</a> linked to the field.</li>
+        <li>Keep the summary as real headings, lists and links so it can be navigated and read by assistive technology.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/task-1">Task — Customer details review</a> (review stage)</li>
+        <li><a class="govuk-link" href="/FRPS-D2/task-5m1">Task — 5 month check</a> (5&nbsp;month stage, different outcome set)</li>
+        <li><a class="govuk-link" href="/FRPS-D2/tasklist-stage">Task list</a> — where each task's status is shown</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "accessibility" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Accessibility" }
+  ]}) }}
+
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl">Accessibility</h1>
+        <p class="govuk-body-l">Services built with this library must meet WCAG 2.2 AA. GOV.UK and MOJ components are accessible out of the box — most risk in this prototype comes from the hand-built custom styles. This page covers what to check.</p>
+
+        <h2 class="govuk-heading-l">Focus &amp; keyboard</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Every interactive element shows the GOV.UK focus state — see <a class="govuk-link" href="/pattern-library/foundations/focus-states">Focus &amp; interaction states</a>.</li>
+          <li>The custom quiet secondary button (<code>.gem-c-button--secondary-quiet</code>) and the filter tags were styled by hand — confirm they keep a visible focus state and are reachable by keyboard.</li>
+          <li>Sortable table headers and the filter must be fully keyboard operable, with state announced (<code>aria-sort</code>, <code>aria-expanded</code>).</li>
+          <li>Hit targets are at least 44&nbsp;&times;&nbsp;44px.</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Colour &amp; contrast</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Never use colour as the only signal — status is always carried by tag text too.</li>
+          <li>Check the custom tints against their background for 4.5:1 (normal text):
+            <ul class="govuk-list govuk-list--bullet">
+              <li><strong class="govuk-tag govuk-tag--red-status">Not accepted</strong> — <code>$cw-tag-red-text</code> on <code>$cw-tag-red-bg</code>.</li>
+              <li><strong class="govuk-tag govuk-tag--action">Action required</strong> — <code>$cw-tag-action-text</code> on <code>$cw-tag-action-bg</code>.</li>
+              <li>The changed-value highlight (<code>$cw-tag-changed-bg</code>) — ensure text over it still passes, and add a non-colour indicator.</li>
+            </ul>
+          </li>
+          <li>Record the measured ratios here once checked, so the result is auditable.</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Forms &amp; errors</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Group related inputs (decision radios, date inputs) in a <code>&lt;fieldset&gt;</code> with a <code>&lt;legend&gt;</code>.</li>
+          <li>On failure, show an <a class="govuk-link" href="/pattern-library/gds/error-summary">error summary</a>, move focus to it, link each item to its field, and prefix the page title with "Error:".</li>
+          <li>Inline error messages use <code>aria-describedby</code> and a visually-hidden "Error:".</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Known patterns &amp; workarounds</h2>
+        <ul class="govuk-list govuk-list--bullet">
+          <li><strong>Right-aligned tag in a details summary</strong> — the <code>:has()</code> override in <code>application.scss</code> removes a propagated underline so it doesn't paint through the tag. Keep this documented so it isn't "tidied" away.</li>
+          <li><strong>MOJ ports</strong> — because MOJ Frontend isn't installed, ported components must keep their ARIA. When porting JS-driven ones (button menu, multi-file upload), bring the behaviour, not just the look.</li>
+        </ul>
+
+        <h2 class="govuk-heading-l">Before you ship a screen</h2>
+        <ol class="govuk-list govuk-list--number">
+          <li>Tab through the whole page — can you reach and operate everything?</li>
+          <li>Zoom to 200% — does anything break or overlap?</li>
+          <li>Run a screen reader over the key flow.</li>
+          <li>Check contrast on any custom colour you introduced.</li>
+          <li>Confirm errors are announced and linked.</li>
+        </ol>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

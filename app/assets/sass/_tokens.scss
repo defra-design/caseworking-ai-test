@@ -1,0 +1,90 @@
+/*
+  ============================================================
+  DESIGN TOKENS
+  ============================================================
+  The single source of truth for colour, spacing and type in this prototype.
+
+  WHY THIS FILE EXISTS
+  Before this, the only token was $defra-brand-colour. Everything else was a
+  magic number or a committed compiled value, e.g. the custom red tag was
+  written as `rgb(42.4, 10.6, 5.6)` / `rgb(244.25, 204.5, 198.25)` — these are
+  govuk-tint()/shade() outputs pasted as static rgb. They are impossible to read
+  or maintain. This file replaces them with named tokens.
+
+  Values below are the canonical GOV.UK Design System palette values, so they are
+  identical to `govuk-colour('red')` etc. They are written as literals so the
+  build is green whether or not the govuk-frontend Sass functions are on the load
+  path. Where a token is derived from a GDS colour, the govuk-frontend equivalent
+  is noted in a comment so you can switch to the function form later.
+  ------------------------------------------------------------ */
+
+// --- Brand -------------------------------------------------
+$cw-brand-green:        #00a33b; // Defra internal brand (was $defra-brand-colour)
+$cw-brand-green-pl:     #008938; // darker green used on the pattern-library header
+$cw-brand-green-dark:   #005a25; // hover/active on green links
+
+// --- GOV.UK core palette (mirrors govuk-colour) ------------
+$cw-red:                #d4351c; // govuk-colour('red')
+$cw-yellow:             #ffdd00; // govuk-colour('yellow') — focus
+$cw-green:              #00703c; // govuk-colour('green')
+$cw-blue:               #1d70b8; // govuk-colour('blue')
+$cw-dark-blue:          #003078; // govuk-colour('dark-blue')
+$cw-light-blue:         #5694ca; // govuk-colour('light-blue')
+$cw-purple:             #4c2c92; // govuk-colour('purple')
+$cw-black:              #0b0c0c; // govuk-colour('black') — body text
+$cw-dark-grey:          #505a5f; // govuk-colour('dark-grey') — secondary text
+$cw-mid-grey:           #b1b4b6; // govuk-colour('mid-grey') — borders
+$cw-light-grey:         #f3f2f1; // govuk-colour('light-grey') — surfaces
+$cw-white:              #ffffff;
+
+// --- Semantic surface / line tokens ------------------------
+$cw-text:               $cw-black;
+$cw-text-secondary:     $cw-dark-grey;
+$cw-border:             $cw-mid-grey;
+$cw-surface-muted:      $cw-light-grey;
+$cw-surface-info:       #e8f1f8; // pale blue panel (was .moj-filter__selected)
+$cw-surface-selected:   #bbd4ea; // (was .moj-filter__header)
+$cw-surface-success:    #e7f4eb; // pale green band (was .lg-div)
+
+// --- Status tag tints (replace the rgb(...) literals) ------
+// Custom tints used by the status/check tags. These match the GOV.UK tag tint
+// pairs. Equivalent: $..-text = govuk-shade(govuk-colour('red'), 80%) etc.
+$cw-tag-red-text:       #2a0b06; // was rgb(42.4, 10.6, 5.6)
+$cw-tag-red-bg:         #f4ccc6; // was rgb(244.25, 204.5, 198.25)
+$cw-tag-action-text:    #0f385c;
+$cw-tag-action-bg:      #d2e2f1;
+$cw-tag-changed-bg:     #ffee80; // 50% paler than focus yellow — changed value
+
+// --- Focus (GDS focus state) -------------------------------
+$cw-focus-bg:           $cw-yellow;
+$cw-focus-text:         $cw-black;
+$cw-focus-width:        3px;
+
+// --- Spacing scale (mirrors the GOV.UK 0–9 spacing scale) --
+// Prefer the govuk spacing utility classes in markup
+// (e.g. govuk-!-margin-bottom-4) and govuk-spacing(n) in Sass. These tokens
+// exist so the semantic classes in _layout.scss don't hard-code pixels.
+$cw-space-0:  0;
+$cw-space-1:  5px;
+$cw-space-2:  10px;
+$cw-space-3:  15px;
+$cw-space-4:  20px;
+$cw-space-5:  25px;
+$cw-space-6:  30px;
+$cw-space-7:  40px;
+$cw-space-8:  50px;
+$cw-space-9:  60px;
+
+// --- Column widths -----------------------------------------
+// Replaces the .custom-width-NNN ladder. Use these names so a width has meaning.
+$cw-col-narrow:   50px;   // was .custom-width-table-small
+$cw-col-tag:      90px;   // was .custom-width-table
+$cw-col-sm:       110px;
+$cw-col-md:       130px;
+$cw-col-status:   120px;  // was .custom-width-table-approved
+$cw-col-lg:       180px;
+$cw-col-xl:       230px;
+$cw-col-notes:    550px;
+
+// --- Type --------------------------------------------------
+$cw-font: "GDS Transport", arial, sans-serif;

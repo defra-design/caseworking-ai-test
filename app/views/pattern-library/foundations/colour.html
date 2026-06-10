@@ -1,0 +1,200 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "foundations" %}
+{% set activePage = "colour" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
+    { text: "Colour" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Colour</h1>
+      <p class="govuk-body-l">Every colour in this service is a named design token defined in <code class="govuk-body">app/assets/sass/_tokens.scss</code>. Use the token, never a raw hex or a compiled value.</p>
+
+      <div class="govuk-inset-text">
+        Colours used to be written as raw hex or, worse, as compiled values such as
+        <code class="govuk-body">rgb(42.4, 10.6, 5.6)</code>. Those are now the tokens
+        <code class="govuk-body">$cw-tag-red-text</code> and <code class="govuk-body">$cw-tag-red-bg</code>.
+        If you need a colour that isn't here, add a token — don't inline a value.
+      </div>
+
+      <h2 class="govuk-heading-l">Brand</h2>
+      <p class="govuk-body">Defra green is the brand colour. The darker green is used on the pattern-library header and on green link hover states.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-colour-brand">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-colour-brand-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Swatch</th>
+                  <th class="govuk-table__header">Token</th>
+                  <th class="govuk-table__header">Value</th>
+                  <th class="govuk-table__header">Use</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#00a33b;border:1px solid #b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-brand-green</code></td>
+                  <td class="govuk-table__cell">#00a33b</td>
+                  <td class="govuk-table__cell">Defra brand</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#008938;border:1px solid #b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-brand-green-pl</code></td>
+                  <td class="govuk-table__cell">#008938</td>
+                  <td class="govuk-table__cell">Pattern-library header</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#005a25;border:1px solid #b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-brand-green-dark</code></td>
+                  <td class="govuk-table__cell">#005a25</td>
+                  <td class="govuk-table__cell">Green link hover</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-colour-brand" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-colour-brand-code">// _tokens.scss
+$cw-brand-green:      #00a33b;
+$cw-brand-green-pl:   #008938;
+$cw-brand-green-dark: #005a25;
+
+// Usage in Sass
+.thing { border-bottom: 8px solid $cw-brand-green; }</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Text, border and surface</h2>
+      <p class="govuk-body">These map to the GOV.UK greys. Body text is near-black; secondary text is dark grey; borders are mid grey; muted surfaces are light grey.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-colour-neutral">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-colour-neutral-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Swatch</th>
+                  <th class="govuk-table__header">Token</th>
+                  <th class="govuk-table__header">Value</th>
+                  <th class="govuk-table__header">Use</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#0b0c0c"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-text</code></td>
+                  <td class="govuk-table__cell">#0b0c0c</td>
+                  <td class="govuk-table__cell">Body text</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#505a5f"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-text-secondary</code></td>
+                  <td class="govuk-table__cell">#505a5f</td>
+                  <td class="govuk-table__cell">Secondary / hint text</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-border</code></td>
+                  <td class="govuk-table__cell">#b1b4b6</td>
+                  <td class="govuk-table__cell">Borders, rules</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#f3f2f1;border:1px solid #b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-surface-muted</code></td>
+                  <td class="govuk-table__cell">#f3f2f1</td>
+                  <td class="govuk-table__cell">Muted surfaces, code blocks</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell"><span style="display:inline-block;width:48px;height:24px;background:#e7f4eb;border:1px solid #b1b4b6"></span></td>
+                  <td class="govuk-table__cell"><code>$cw-surface-success</code></td>
+                  <td class="govuk-table__cell">#e7f4eb</td>
+                  <td class="govuk-table__cell">Pale green band (<code>.cw-panel-success</code>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-colour-neutral" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-colour-neutral-code">$cw-text:            #0b0c0c;
+$cw-text-secondary:  #505a5f;
+$cw-border:          #b1b4b6;
+$cw-surface-muted:   #f3f2f1;
+$cw-surface-success: #e7f4eb;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Status colour</h2>
+      <p class="govuk-body">Status colours carry meaning. Map decisions to colours consistently — the full mapping lives on the <a class="govuk-link" href="/pattern-library/custom/status-tags">Status tags</a> page. The two custom tints below — the soft red <code>govuk-tag--red-status</code> ("Not accepted") and the pale blue <code>govuk-tag--action</code> ("Action required") — extend the GOV.UK tag palette.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-colour-status">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-colour-status-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-!-margin-bottom-2"><strong class="govuk-tag govuk-tag--green">Accepted</strong> &nbsp; <strong class="govuk-tag govuk-tag--blue">In review</strong> &nbsp; <strong class="govuk-tag govuk-tag--yellow">Information requested</strong></p>
+            <p class="govuk-!-margin-bottom-2"><strong class="govuk-tag govuk-tag--red">Rejected</strong> &nbsp; <strong class="govuk-tag govuk-tag--orange">Withdrawn</strong></p>
+            <p class="govuk-!-margin-bottom-0"><strong class="govuk-tag govuk-tag--red-status">Not accepted</strong> &nbsp; <strong class="govuk-tag govuk-tag--neutral">Incomplete</strong> &nbsp; <strong class="govuk-tag govuk-tag--action">Action required</strong></p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-colour-status" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-colour-status-code">// Custom tints (_tokens.scss → _tags.scss)
+$cw-tag-red-text:    #2a0b06;  // was rgb(42.4, 10.6, 5.6)
+$cw-tag-red-bg:      #f4ccc6;  // was rgb(244.25, 204.5, 198.25)
+$cw-tag-action-text: #0f385c;
+$cw-tag-action-bg:   #d2e2f1;
+
+&lt;strong class="govuk-tag govuk-tag--red-status"&gt;Not accepted&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--neutral"&gt;Incomplete&lt;/strong&gt;
+&lt;strong class="govuk-tag govuk-tag--action"&gt;Action required&lt;/strong&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Never use colour as the only way to convey meaning — always pair a status colour with text (the tag label does this).</li>
+        <li>Body text on white meets WCAG AA. Check any custom tint you introduce reaches 4.5:1 against its background; note results on the <a class="govuk-link" href="/pattern-library/accessibility">Accessibility</a> page.</li>
+        <li>The focus state uses <code>$cw-yellow</code> (#ffdd00) with a black underline — see <a class="govuk-link" href="/pattern-library/foundations/focus-states">Focus &amp; interaction states</a>.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Colour tokens underpin every screen. The status tints appear most visibly in the <a class="govuk-link" href="/pattern-library/patterns/caselist">caselist</a>, the <a class="govuk-link" href="/FRPS-D2/tasklist-stage">task list</a> and the <a class="govuk-link" href="/pattern-library/patterns/calculations">calculations</a> pages.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

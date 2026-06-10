@@ -12,13 +12,22 @@
       <nav aria-label="Main menu">
         <ul class="app-pl-header__nav-list">
           <li>
-            <a href="/pattern-library/gds/button" class="app-pl-header__nav-link{% if plSection == 'gds' %} app-pl-header__nav-link--active{% endif %}">GDS components</a>
+            <a href="/pattern-library/foundations/colour" class="app-pl-header__nav-link{% if plSection == 'foundations' %} app-pl-header__nav-link--active{% endif %}">Foundations</a>
+          </li>
+          <li class="app-pl-header__nav-group">
+            <span class="app-pl-header__nav-label">Components:</span>
+            <a href="/pattern-library/gds/button" class="app-pl-header__nav-link app-pl-header__nav-link--grouped{% if plSection == 'gds' %} app-pl-header__nav-link--active{% endif %}">GDS</a>
+            <a href="/pattern-library/moj/timeline" class="app-pl-header__nav-link app-pl-header__nav-link--grouped{% if plSection == 'moj' %} app-pl-header__nav-link--active{% endif %}">MoJ</a>
+            <a href="/pattern-library/custom/status-tags" class="app-pl-header__nav-link app-pl-header__nav-link--grouped{% if plSection == 'custom' %} app-pl-header__nav-link--active{% endif %}">Custom</a>
           </li>
           <li>
-            <a href="/pattern-library/moj/timeline" class="app-pl-header__nav-link{% if plSection == 'moj' %} app-pl-header__nav-link--active{% endif %}">MOJ components</a>
+            <a href="/pattern-library/patterns/caselist" class="app-pl-header__nav-link{% if plSection == 'patterns' %} app-pl-header__nav-link--active{% endif %}">Patterns</a>
           </li>
           <li>
-            <a href="/pattern-library/custom/status-tags" class="app-pl-header__nav-link{% if plSection == 'custom' %} app-pl-header__nav-link--active{% endif %}">Custom patterns</a>
+            <a href="/pattern-library/accessibility" class="app-pl-header__nav-link{% if plSection == 'accessibility' %} app-pl-header__nav-link--active{% endif %}">Accessibility</a>
+          </li>
+          <li>
+            <a href="/pattern-library/contributing" class="app-pl-header__nav-link{% if plSection == 'contributing' %} app-pl-header__nav-link--active{% endif %}">Contributing</a>
           </li>
         </ul>
       </nav>

@@ -1,0 +1,63 @@
+/*
+  ============================================================
+  STATUS TAGS (custom)
+  ============================================================
+  Consolidates the overlapping custom tag variants that grew in application.scss:
+    .govuk-tag--neutral, .govuk-tag--red-new, .govuk-tag--red-status,
+    .govuk-tag--action
+  into one documented set built on tokens (see _tokens.scss). The old compiled
+  literals like `rgb(42.4, 10.6, 5.6)` are gone.
+
+  RULES
+  - Prefer the standard GOV.UK tag colours (govuk-tag--blue/green/red/yellow/…)
+    for the documented status meanings. See /pattern-library/custom/status-tags.
+  - Use these custom variants only for the meanings noted below.
+  - --red-new and --red-status were duplicates; they are unified as --red-status.
+    Keep --red-new as a deprecated alias for now.
+  ------------------------------------------------------------ */
+
+@import "tokens";
+
+// Neutral — no colour signal (e.g. "Incomplete, not yet overdue")
+.govuk-tag--neutral {
+  color: $cw-black;
+  background-color: $cw-white;
+}
+
+// Soft red — softer than govuk-tag--red ("Not accepted", "There's a problem")
+.govuk-tag--red-status {
+  color: $cw-tag-red-text;
+  background-color: $cw-tag-red-bg;
+}
+
+// Deprecated alias of --red-status. TODO: replace usages, then remove.
+.govuk-tag--red-new {
+  color: $cw-tag-red-text;
+  background-color: $cw-tag-red-bg;
+}
+
+// Action required — pale blue pill with a leading "!" (follow-up work, no pass/fail)
+.govuk-tag--action {
+  color: $cw-tag-action-text;
+  background-color: $cw-tag-action-bg;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+
+  &::before {
+    content: "!";
+    color: $cw-black;
+    font-weight: normal;
+    text-decoration: none;
+    padding: 0 3px;
+    margin-right: 8px;
+    display: inline-block; // atomic inline so inherited underline can't paint over it
+  }
+}
+
+// Changed-value highlight — used on a table cell or value that changed since the
+// previous calculation run. (Was .value-changed / .govuk-table__row--changed > td.)
+.govuk-table__row--changed > td,
+.value-changed {
+  background-color: $cw-tag-changed-bg;
+}

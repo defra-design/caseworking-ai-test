@@ -5,7 +5,9 @@
 
 // Add extra styles here
 // Add extra styles here
-@import "defra-settings";
+@import "defra-settings";   // now also pulls in _tokens
+@import "layout";           // semantic layout classes (.cw-*) + legacy shims
+@import "tags";             // consolidated custom status tags (token-based)
 
 //defra header
 .defra-internal-header {
@@ -922,16 +924,32 @@
 .app-pl-header__nav-list {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   margin: 0;
   padding: 0;
   list-style: none;
-  gap: 0 8px;
+  gap: 0;
+}
+
+.app-pl-header__nav-list > li {
+  display: flex;
+  align-items: center;
+}
+
+// Pipe separators between the top-level items only. GDS / MoJ / Custom sit
+// inside a single grouped <li>, so "li + li" never inserts a pipe between them.
+.app-pl-header__nav-list > li + li::before {
+  content: "|";
+  align-self: center;
+  margin: 0 16px;
+  font-size: 1.1875rem;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .app-pl-header__nav-link {
   display: inline-block;
   padding: 10px 0;
-  margin-right: 24px;
+  margin-right: 0;
   font-family: "GDS Transport", arial, sans-serif;
   font-size: 1.1875rem;
   line-height: 1.25;
@@ -954,6 +972,33 @@
 .app-pl-header__nav-link--active {
   font-weight: 700;
   border-bottom-color: #fff;
+}
+
+// Inline "Components:" group — a non-link bold black label followed by the
+// GDS / MoJ / Custom links, kept together so the nav fits on one line.
+.app-pl-header__nav-group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-pl-header__nav-label {
+  padding: 10px 0;
+  margin-right: 15px;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #0b0c0c;
+}
+
+// Grouped links sit 15px apart instead of the default 24px; the last one keeps
+// the wider gap before the next top-level item ("Patterns").
+.app-pl-header__nav-link--grouped {
+  margin-right: 15px;
+}
+
+.app-pl-header__nav-link--grouped:last-child {
+  margin-right: 0;
 }
 
 // --- Split pane layout ---

@@ -1,0 +1,107 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "gds" %}
+{% set activePage = "error-summary" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "GDS components", href: "/pattern-library/gds/button" },
+    { text: "Error summary" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-gds.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Error summary
+        <strong class="govuk-tag govuk-tag--turquoise govuk-!-margin-left-2">Ready</strong>
+      </h1>
+      <p class="govuk-body-l">When a user submits a form with errors, show an error summary at the top of the page that lists every error and links to the field that needs fixing.</p>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Always, when a form submission fails validation — even if there is only one error.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">How it works</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The summary sits directly below the page <code>&lt;h1&gt;</code>.</li>
+        <li>Each item links to the input it relates to (matching the input's <code>id</code>).</li>
+        <li>Each field also shows an inline <a class="govuk-link" href="/pattern-library/gds/text-input">error message</a>, and focus moves to the summary on submit.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-error-summary">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-error-summary-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+              <div role="alert">
+                <h2 class="govuk-error-summary__title">There is a problem</h2>
+                <div class="govuk-error-summary__body">
+                  <ul class="govuk-list govuk-error-summary__list">
+                    <li><a href="#decision">Select a decision</a></li>
+                    <li><a href="#reason">Enter a reason for the decision</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="govuk-form-group govuk-form-group--error">
+              <label class="govuk-label" for="reason">Reason for the decision</label>
+              <p id="reason-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Enter a reason for the decision</p>
+              <input class="govuk-input govuk-input--error" id="reason" name="reason" type="text" aria-describedby="reason-error">
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-error-summary" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-error-summary-code">&lt;div class="govuk-error-summary" data-module="govuk-error-summary"&gt;
+  &lt;div role="alert"&gt;
+    &lt;h2 class="govuk-error-summary__title"&gt;There is a problem&lt;/h2&gt;
+    &lt;div class="govuk-error-summary__body"&gt;
+      &lt;ul class="govuk-list govuk-error-summary__list"&gt;
+        &lt;li&gt;&lt;a href="#decision"&gt;Select a decision&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#reason"&gt;Enter a reason for the decision&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="govuk-form-group govuk-form-group--error"&gt;
+  &lt;label class="govuk-label" for="reason"&gt;Reason for the decision&lt;/label&gt;
+  &lt;p id="reason-error" class="govuk-error-message"&gt;&lt;span class="govuk-visually-hidden"&gt;Error:&lt;/span&gt; Enter a reason&lt;/p&gt;
+  &lt;input class="govuk-input govuk-input--error" id="reason" aria-describedby="reason-error"&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The summary uses <code>role="alert"</code> and receives focus on submit so it's announced.</li>
+        <li>Each summary link moves focus to the related field.</li>
+        <li>Error messages are linked to inputs with <code>aria-describedby</code> and prefixed with a visually-hidden "Error:".</li>
+        <li>Set the page <code>&lt;title&gt;</code> to start with "Error:" when the page has errors.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Any form in the service: the assignment, amend and return-confirmation screens, and any check that captures a reason.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

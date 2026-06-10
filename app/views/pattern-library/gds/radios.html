@@ -125,6 +125,71 @@
         </div>
       </div>
 
+      <h2 class="govuk-heading-l">Conditionally revealing content (progressive reveal)</h2>
+      <p class="govuk-body">Reveal an extra field only when the radio it relates to is selected, so users are not shown content they do not need. Add <code>data-aria-controls</code> to the input and a <code>govuk-radios__conditional</code> container with the matching <code>id</code>; the radios JS (<code>data-module="govuk-radios"</code>) handles showing and hiding. Keep the revealed content short — usually a single related field.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-radios-conditional">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-radios-conditional-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                  <h2 class="govuk-fieldset__heading">What is your decision?</h2>
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="dec" name="dec" type="radio" value="Accepted">
+                    <label class="govuk-label govuk-radios__label" for="dec">Accepted</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="dec-2" name="dec" type="radio" value="Information requested" data-aria-controls="conditional-dec-2">
+                    <label class="govuk-label govuk-radios__label" for="dec-2">Information requested</label>
+                  </div>
+                  <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dec-2">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="info-needed">What information do you need from the applicant?</label>
+                      <textarea class="govuk-textarea" id="info-needed" name="info-needed" rows="3"></textarea>
+                    </div>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="dec-3" name="dec" type="radio" value="Cannot accept" data-aria-controls="conditional-dec-3">
+                    <label class="govuk-label govuk-radios__label" for="dec-3">Cannot accept</label>
+                  </div>
+                  <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dec-3">
+                    <div class="govuk-form-group">
+                      <label class="govuk-label" for="reject-reason">Reason for not accepting</label>
+                      <textarea class="govuk-textarea" id="reject-reason" name="reject-reason" rows="3"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-radios-conditional" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-radios-conditional-code">&lt;div class="govuk-radios" data-module="govuk-radios"&gt;
+  &lt;div class="govuk-radios__item"&gt;
+    &lt;input class="govuk-radios__input" id="dec-2" name="dec" type="radio"
+           value="Information requested" data-aria-controls="conditional-dec-2"&gt;
+    &lt;label class="govuk-label govuk-radios__label" for="dec-2"&gt;Information requested&lt;/label&gt;
+  &lt;/div&gt;
+  &lt;div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-dec-2"&gt;
+    &lt;div class="govuk-form-group"&gt;
+      &lt;label class="govuk-label" for="info-needed"&gt;What information do you need from the applicant?&lt;/label&gt;
+      &lt;textarea class="govuk-textarea" id="info-needed" name="info-needed" rows="3"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
           <li><a class="govuk-link" href="/FRPS-D2/amend-confirm">Amend confirmation</a></li>

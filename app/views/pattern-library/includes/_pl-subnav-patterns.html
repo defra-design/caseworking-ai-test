@@ -1,0 +1,26 @@
+<nav class="app-subnav" aria-label="Patterns">
+  <h2 class="app-subnav__theme">Patterns</h2>
+  <ul class="app-subnav__section">
+
+    <li class="app-subnav__section-item{% if activePage == 'caselist' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/patterns/caselist">Caselist</a>
+    </li>
+
+    <li class="app-subnav__section-item{% if activePage == 'task' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/patterns/task">Task</a>
+    </li>
+
+    <li class="app-subnav__section-item{% if activePage == 'timeline' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/patterns/timeline">Case history timeline</a>
+    </li>
+
+    <li class="app-subnav__section-item{% if activePage == 'calculations' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/patterns/calculations">Calculations</a>
+    </li>
+
+    <li class="app-subnav__section-item{% if activePage == 'notes' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/patterns/notes">Notes</a>
+    </li>
+
+  </ul>
+</nav>

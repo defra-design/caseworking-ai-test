@@ -1,0 +1,107 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "foundations" %}
+{% set activePage = "layout" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
+    { text: "Layout & grid" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Layout &amp; grid</h1>
+      <p class="govuk-body-l">Pages are laid out with the GOV.UK grid inside a <code class="govuk-body">govuk-width-container</code>. Use the grid for columns and the semantic <code class="govuk-body">.cw-*</code> classes for repeating layouts — never magic-number margins.</p>
+
+      <h2 class="govuk-heading-l">Page width and grid</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-layout-grid">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-layout-grid-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-two-thirds"><p class="govuk-body govuk-!-margin-bottom-0" style="background:#d2e2f1;padding:10px">Two thirds</p></div>
+              <div class="govuk-grid-column-one-third"><p class="govuk-body govuk-!-margin-bottom-0" style="background:#d2e2f1;padding:10px">One third</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-layout-grid" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-layout-grid-code">&lt;div class="govuk-width-container"&gt;
+  &lt;div class="govuk-grid-row"&gt;
+    &lt;div class="govuk-grid-column-two-thirds"&gt;…&lt;/div&gt;
+    &lt;div class="govuk-grid-column-one-third"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Split pane (library &amp; case screens)</h2>
+      <p class="govuk-body">A persistent left navigation beside a content column. The pattern library itself uses <code class="govuk-body">.app-split-pane</code>; case screens use the same idea with the case navigation.</p>
+
+      <h2 class="govuk-heading-l">Semantic layout classes</h2>
+      <p class="govuk-body">Defined in <code class="govuk-body">_layout.scss</code>. They replace the old <code class="govuk-body">.custom-width-*</code> and <code class="govuk-body">.margin-left-*</code> classes.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-layout-classes">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-layout-classes-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th class="govuk-table__header">Class</th>
+                  <th class="govuk-table__header">Does</th>
+                  <th class="govuk-table__header">Replaces</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row"><td class="govuk-table__cell"><code>.cw-row</code></td><td class="govuk-table__cell">Flex row, centred, 20px gap</td><td class="govuk-table__cell">ad-hoc inline flex</td></tr>
+                <tr class="govuk-table__row"><td class="govuk-table__cell"><code>.cw-row--end</code></td><td class="govuk-table__cell">Right-aligns row content</td><td class="govuk-table__cell"><code>.name-right</code> hacks</td></tr>
+                <tr class="govuk-table__row"><td class="govuk-table__cell"><code>.cw-col-status</code></td><td class="govuk-table__cell">120px column</td><td class="govuk-table__cell"><code>.custom-width-120</code></td></tr>
+                <tr class="govuk-table__row"><td class="govuk-table__cell"><code>.cw-col-notes</code></td><td class="govuk-table__cell">550px column</td><td class="govuk-table__cell"><code>.notes-width</code></td></tr>
+                <tr class="govuk-table__row"><td class="govuk-table__cell"><code>.cw-panel-success</code></td><td class="govuk-table__cell">Pale green band</td><td class="govuk-table__cell"><code>.lg-div</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-layout-classes" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-layout-classes-code">&lt;div class="cw-row cw-row--end"&gt;
+  &lt;span&gt;Caseworker name&lt;/span&gt;
+  &lt;a class="govuk-link" href="#"&gt;Reassign&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;td class="govuk-table__cell cw-col-status"&gt;…&lt;/td&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Migrating magic numbers</h2>
+      <p class="govuk-body">Replace one-off alignment margins with the grid; replace fixed widths with a <code class="govuk-body">.cw-col-*</code> class. The full table is in <code class="govuk-body">MIGRATION.md</code>. Legacy class names keep working as shims until each screen is migrated.</p>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <p class="govuk-body">Caselists, case overview and calculations rely most on column widths and the split-pane layout.</p>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
