@@ -21,81 +21,149 @@
     </div>
     <div class="app-split-pane__content">
 
-      <h1 class="govuk-heading-xl">
-        Calculations
-        <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2">Experimental</strong>
-      </h1>
-      <p class="govuk-body-l">How a caseworker reviews a grant or payment calculation, finds a land parcel, and sees what has changed since the previous calculation run.</p>
+      <h1 class="govuk-heading-xl">Calculations</h1>
+      <p class="govuk-body-l">The page-level pattern a caseworker uses to review the automated rules checks run against a customer's land parcels, find the checks that need attention, and understand what has changed since the last run before approving or rejecting the calculation.</p>
 
-      <div class="govuk-inset-text">
-        Scaffold — consolidate from the existing custom patterns
-        (<a class="govuk-link" href="/pattern-library/custom/calculations-filter">calculations filter</a>,
-        <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a>,
-        <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tags</a>)
-        into one page-level pattern.
-      </div>
+      <h2 class="govuk-heading-l">Why we have this page</h2>
+      <p class="govuk-body">When an FRPS application is submitted, the service runs a set of automated <strong>rules checks</strong> against every eligible land-parcel and action combination — for example the required-area check and the moorland-threshold check. A single application can produce hundreds of individual check results across dozens of parcels, and those results can change each time the rules are re-run (because land-cover data is updated, or the customer amends their application).</p>
+      <p class="govuk-body">The caseworker can't act on a flat dump of several hundred results. This page exists to make that volume <strong>reviewable</strong>: it groups results by parcel and action, collapses each check behind a disclosure so the page stays scannable, surfaces each check's outcome as a tag without the caseworker having to open it, and lets them filter down to just the checks that failed or changed. It is the evidence screen that sits behind the human decision to accept or reject the calculation.</p>
 
-      <h2 class="govuk-heading-l">Anatomy</h2>
+      <h2 class="govuk-heading-l">What it's for</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Reviewing the outcome of the automated rules checks for one application.</li>
+        <li>Focusing quickly on the checks that <em>failed</em>, or that <em>changed</em> since the previous run.</li>
+        <li>Comparing runs — seeing which values moved between two rules-check runs and why a check's result flipped.</li>
+        <li>Providing the auditable detail (the per-check "Check details" tables) that justifies the eventual case decision.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Structure</h2>
+      <p class="govuk-body">The page is a three-level hierarchy:</p>
       <ol class="govuk-list govuk-list--number">
-        <li><strong>Parcel search</strong> — accessible-autocomplete + Find button on one row (<code class="govuk-body">.parcel-search__row</code>).</li>
-        <li><strong>Calculations filter</strong> — the custom filter variant.</li>
-        <li><strong>Calculation table</strong> — with <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a> on cells that differ from the last run.</li>
-        <li><strong>Check results</strong> — Pass / Fail / Action tags per check.</li>
+        <li><strong>Parcel</strong> — a <code class="govuk-body">govuk-heading-m</code>, e.g. "Parcel ID: SO3757 3159 checks".</li>
+        <li><strong>Action</strong> — a <code class="govuk-body">govuk-heading-s</code> under the parcel, e.g. "Action: CMOR1 checks".</li>
+        <li><strong>Check</strong> — one GOV.UK <a class="govuk-link" href="/pattern-library/gds/details">Details</a> disclosure per check, with a <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tag</a> in its summary. Expanding it reveals the result, the pass/fail reason and a "Check details" table.</li>
       </ol>
 
-      <h2 class="govuk-heading-l">Changed-value highlight</h2>
+      <h2 class="govuk-heading-l">Features</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Per-check disclosures</strong> — each check is a <a class="govuk-link" href="/pattern-library/gds/details">Details</a> component so the page is scannable when collapsed and detailed when opened.</li>
+        <li><strong>Check-result tags</strong> — a Passed/Failed (or Checked/Action) <a class="govuk-link" href="/pattern-library/custom/check-result-tags">tag</a> in every summary row, so the outcome is visible without opening the check.</li>
+        <li><strong>Filter</strong> — the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">calculations filter</a>: check-status views (All checks / Calculations with changes / Only fails) and, on the larger pages, parcel-attribute views (LPs on SSSIs / LPs requiring HEFERs).</li>
+        <li><strong>Run switcher</strong> — the filter's <em>Run date</em> dropdown reloads the page at a historical rules-check run, carrying the current filter through.</li>
+        <li><strong>Changed-value highlight</strong> — a <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">paler-yellow highlight</a> on the specific value(s) that moved since the previous run.</li>
+        <li><strong>Rerun confirmation</strong> — a <code class="govuk-body">moj-alert--success</code> banner shown when the calculations have just been re-run.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">A single check</h2>
+      <p class="govuk-body">The repeating unit of the page. Note the tag sits inside the summary's <code class="govuk-body">.govuk-details__summary-text</code> and is aligned to the right automatically by the application-level flex rule (see <a class="govuk-link" href="/pattern-library/gds/details">Details</a>).</p>
+
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
             <span class="app-example__toolbar-title">Example</span>
-            <button class="app-show-code-button" data-toggle="ex-calc">Show HTML</button>
-            <button class="app-copy-button" data-copy-target="ex-calc-code">Copy code</button>
+            <button class="app-show-code-button" data-toggle="ex-calc-check">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-check-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <table class="govuk-table">
-              <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                  <th class="govuk-table__header">Item</th>
-                  <th class="govuk-table__header">Previous</th>
-                  <th class="govuk-table__header">Current</th>
-                </tr>
-              </thead>
-              <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Eligible area (ha)</td>
-                  <td class="govuk-table__cell">12.4</td>
-                  <td class="govuk-table__cell value-changed">13.1</td>
-                </tr>
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Rate (£/ha)</td>
-                  <td class="govuk-table__cell">151</td>
-                  <td class="govuk-table__cell">151</td>
-                </tr>
-              </tbody>
-            </table>
+            <h3 class="govuk-heading-s">Action: CMOR1 checks</h3>
+            <details class="govuk-details govuk-!-margin-bottom-3">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Required area check
+                  <strong class="govuk-tag govuk-tag--red-new">Failed</strong>
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <h2 class="govuk-heading-m">Result</h2>
+                <p class="govuk-body">Failed</p>
+                <h2 class="govuk-heading-m">Fail reason</h2>
+                <p class="govuk-body">The area applied for (<span class="value-changed">4 ha</span>) is less than the total available area (4.53 ha).</p>
+              </div>
+            </details>
+
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Area on moorland check
+                  <strong class="govuk-tag govuk-tag--green">
+                    <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"></path>
+                    </svg>
+                    Passed
+                  </strong>
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <h2 class="govuk-heading-m">Result</h2>
+                <p class="govuk-body">Passed</p>
+                <h2 class="govuk-heading-m">Pass reason</h2>
+                <p class="govuk-body">Parcel SO3757 3159 is at least 50% on moorland.</p>
+              </div>
+            </details>
           </div>
         </div>
-        <div class="app-example__code-container" id="ex-calc" hidden>
+        <div class="app-example__code-container" id="ex-calc-check" hidden>
           <div class="app-example__code">
-            <pre><code id="ex-calc-code">&lt;!-- Highlight only the cell that changed --&gt;
-&lt;td class="govuk-table__cell value-changed"&gt;13.1&lt;/td&gt;
+            <pre><code id="ex-calc-check-code">&lt;h3 class="govuk-heading-s"&gt;Action: CMOR1 checks&lt;/h3&gt;
 
-/* _tags.scss */
-.value-changed { background-color: $cw-tag-changed-bg; } // #ffee80</code></pre>
+&lt;details class="govuk-details govuk-!-margin-bottom-3"&gt;
+  &lt;summary class="govuk-details__summary"&gt;
+    &lt;span class="govuk-details__summary-text"&gt;
+      Required area check
+      &lt;strong class="govuk-tag govuk-tag--red-new"&gt;Failed&lt;/strong&gt;
+    &lt;/span&gt;
+  &lt;/summary&gt;
+  &lt;div class="govuk-details__text"&gt;
+    &lt;h2 class="govuk-heading-m"&gt;Result&lt;/h2&gt;
+    &lt;p class="govuk-body"&gt;Failed&lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;Fail reason&lt;/h2&gt;
+    &lt;p class="govuk-body"&gt;The area applied for
+      (&lt;span class="value-changed"&gt;4 ha&lt;/span&gt;) is less than
+      the total available area (4.53 ha).&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/details&gt;
+
+&lt;!-- Pass uses govuk-tag--green with the inline .tick-icon svg.
+     Fail uses govuk-tag--red-new (soft red + cross icon).
+     The tag is positioned by the app rule on .govuk-details__summary-text;
+     do NOT add margin-left-* classes. --&gt;</code></pre>
           </div>
         </div>
       </div>
 
-      <h2 class="govuk-heading-l">To complete</h2>
+      <h2 class="govuk-heading-l">Which tag goes where</h2>
+      <p class="govuk-body">Two different tag families appear on and around this page — don't mix them up:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>Add the parcel-search and filter examples.</li>
-        <li>Document when a value counts as "changed" and how the highlight is applied.</li>
-        <li>Accessibility: don't rely on the highlight colour alone — add a visible "changed" indicator for screen readers.</li>
+        <li><strong>Inside the page</strong>, on each individual check, use the <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tags</a> — green tick for Passed/Checked, soft red with a cross for Failed, and the pale-blue Action pill where a check still needs follow-up.</li>
+        <li><strong>For the overall case</strong> (in the context strip, caselist and review screens), use the <a class="govuk-link" href="/pattern-library/custom/status-tags">status tags</a> — In review, Information requested, Not accepted, and so on.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A caseworker must review a large, repeating set of automated results before making a decision.</li>
+        <li>The results are versioned (re-run over time) and the user needs to see what changed.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For a short, fixed set of values that doesn't need filtering or disclosures — a plain <a class="govuk-link" href="/pattern-library/gds/table">table</a> or <a class="govuk-link" href="/pattern-library/gds/summary-list">summary list</a> is clearer.</li>
+        <li>To capture the decision itself — that belongs on the review/decision screens.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The check outcome is carried by the tag's text (Passed / Failed / Checked / Action), not colour alone.</li>
+        <li>Each check is a native <code class="govuk-body">&lt;details&gt;</code>, so it is keyboard operable and its expanded state is announced.</li>
+        <li>Parcel and action headings give the page a real heading outline a screen-reader user can navigate by.</li>
+        <li>The changed-value highlight is deliberately paler than the focus yellow so it isn't mistaken for focus — but don't rely on it alone to signal a change (the "Calculations with changes" filter is the non-visual route to the same information).</li>
       </ul>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-        <li><a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter pattern</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/calculations">Land parcel calculations</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
       </ul>
 
     </div>

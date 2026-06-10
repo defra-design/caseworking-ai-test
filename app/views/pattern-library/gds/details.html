@@ -24,6 +24,7 @@
       <h1 class="govuk-heading-xl">Details</h1>
       <p class="govuk-body-l">Make a page easier to scan by letting users reveal more detailed information only if they need it.</p>
       <p class="govuk-body">Use the details component to hide secondary content (for example help text, supporting policy notes or rarely-needed information) behind a disclosure link. It keeps the primary content on the page short while still making detail available without a separate page.</p>
+      <p class="govuk-body">In this prototype the details component does most of its work on the <a class="govuk-link" href="/pattern-library/patterns/calculations">calculations</a> page, where every individual rules check is a details disclosure with its outcome shown as a tag in the summary — see <a class="govuk-link" href="#check-summary">Details as a check summary</a> below.</p>
 
       <h2 class="govuk-heading-l">Default details</h2>
 
@@ -65,10 +66,68 @@
         </div>
       </div>
 
+      <h2 class="govuk-heading-l" id="check-summary">Details as a check summary</h2>
+      <p class="govuk-body">On the calculations pages, the disclosure isn't hiding help text — it's hiding the evidence behind a single rules check. The <strong>summary line carries two things</strong>: the check name on the left, and a <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tag</a> (Passed / Failed / Checked / Action) on the right. The caseworker can read every outcome down the page without opening anything, and open only the checks they need to investigate.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-details-check">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-details-check-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <details class="govuk-details govuk-!-margin-bottom-3">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Required area check
+                  <strong class="govuk-tag govuk-tag--red-new">Failed</strong>
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">Expanded content: the result, the fail reason, and the "Check details" table.</p>
+              </div>
+            </details>
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  Area on moorland check
+                  <strong class="govuk-tag govuk-tag--green">
+                    <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"></path>
+                    </svg>
+                    Passed
+                  </strong>
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">Expanded content: the result, the pass reason, and the "Check details" table.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-details-check" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-details-check-code">&lt;details class="govuk-details govuk-!-margin-bottom-3"&gt;
+  &lt;summary class="govuk-details__summary"&gt;
+    &lt;span class="govuk-details__summary-text"&gt;
+      Required area check
+      &lt;strong class="govuk-tag govuk-tag--red-new"&gt;Failed&lt;/strong&gt;
+    &lt;/span&gt;
+  &lt;/summary&gt;
+  &lt;div class="govuk-details__text"&gt;
+    &lt;!-- Result, reason, and Check details table --&gt;
+  &lt;/div&gt;
+&lt;/details&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
       <h2 class="govuk-heading-l">When to use</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>To reveal help text or a fuller explanation only when the user asks for it.</li>
         <li>To collapse a long list of supporting metadata into a single, scannable line.</li>
+        <li>To present a long, repeating list of results — like rules checks — where each item's outcome can be shown in the summary and its evidence hidden until needed.</li>
         <li>To group rarely-used controls (for example a debug panel) out of the main flow.</li>
       </ul>
 
@@ -76,12 +135,15 @@
       <ul class="govuk-list govuk-list--bullet">
         <li>To hide content that the user must read to complete the task — keep that on the page.</li>
         <li>To hide form fields the user is expected to fill in.</li>
+        <li>To carry the overall case status in the summary — that's a <a class="govuk-link" href="/pattern-library/custom/status-tags">status tag</a> on the case, not a check-result tag.</li>
       </ul>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-          <li><a class="govuk-link" href="/FRPS-D2/calculations-new">Calculations (new)</a></li>
-        </ul>
+        <li><a class="govuk-link" href="/pattern-library/patterns/calculations">Calculations pattern</a> — the per-check disclosure</li>
+        <li><a class="govuk-link" href="/FRPS-D2/calculations">Land parcel calculations</a></li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a></li>
+      </ul>
 
     </div>
   </div>

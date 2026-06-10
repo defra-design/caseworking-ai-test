@@ -55,6 +55,7 @@
 
       <h2 class="govuk-heading-l">Red status tag</h2>
       <p class="govuk-body"><code class="govuk-body">.govuk-tag--red-status</code> — light red background with dark red text. Used for statuses such as "Not accepted", "Cannot accept" or "There's a problem" where a softer red is more appropriate than the standard <code class="govuk-body">govuk-tag--red</code>.</p>
+      <p class="govuk-body">This is the same soft red as the <strong>Fail</strong> <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tag</a> — they share their colour values via the tokens in <code class="govuk-body">_tags.scss</code>. What differs is vocabulary, context and one piece of styling: status tags describe the <strong>whole case</strong> ("Not accepted") and have no icon; check-result tags describe a <strong>single rules check</strong> ("Failed") and add a cross icon. Use this class for case status; use the check-result tag inside the <a class="govuk-link" href="/pattern-library/patterns/calculations">calculations</a> page.</p>
 
       <div class="app-example-wrapper">
         <div class="app-example">
@@ -165,7 +166,13 @@
       </div>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
-      <p class="govuk-body">This component is documented in the pattern library but is not yet used in the prototype.</p>
+      <p class="govuk-body">Status tags carry case and task status across the prototype:</p>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/FRPS-D2/caselist">Caselist</a> — case status against each application.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/tasklist-stage">Task list</a> — status against each task.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/agreement">Agreement</a> — agreement status.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/calculations">Calculations</a> — the same soft red appears (as <code class="govuk-body">govuk-tag--red-new</code>) on the Fail <a class="govuk-link" href="/pattern-library/custom/check-result-tags">check-result tag</a>.</li>
+      </ul>
 
     </div>
   </div>

@@ -22,11 +22,12 @@
     <div class="app-split-pane__content">
 
       <h1 class="govuk-heading-xl">Check-result tags</h1>
-      <p class="govuk-body-l">Pass / Fail / Yes / No status tags with tick and cross icons. Used in the summary row of every rule check on the calculations pages.</p>
-      <p class="govuk-body">There are two visual variants — a green tag with a tick (for any positive outcome) and a red tag with a cross (for any negative outcome) — and two label vocabularies on top of those:</p>
+      <p class="govuk-body-l">The tags shown in the summary row of every rule check on the calculations pages, so a caseworker can read each outcome without opening the check.</p>
+      <p class="govuk-body">Three tags cover the outcomes these checks produce:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li><strong>Pass / Fail</strong> — used when the check has a regulatory pass-or-fail outcome (Available area check, Moorland threshold check).</li>
-        <li><strong>Yes / No</strong> — used when the check answers a binary question rather than passing/failing (HEFER required?, SSSI present?). Same visuals, different wording.</li>
+        <li><strong>Passed / Failed</strong> — for checks with a regulatory pass-or-fail outcome (Available area check, Moorland threshold check). A green tag with a tick for a pass, a soft-red tag with a cross for a fail.</li>
+        <li><strong>Checked</strong> — for checks that confirm something has been looked at rather than passing or failing (the SSSI / HEFER checks once they're done). Same green tick as a pass, with the label "Checked".</li>
+        <li><strong>Action</strong> — for the same SSSI / HEFER checks while they still need follow-up work: a pale-blue pill with a leading "!". These checks have no pass/fail outcome, so they flag a task rather than a result.</li>
       </ul>
 
       <h2 class="govuk-heading-l">Pass</h2>
@@ -62,6 +63,7 @@
 
       <h2 class="govuk-heading-l">Fail</h2>
       <p class="govuk-body">Custom <code class="govuk-body">govuk-tag--red-new</code> — a softer red background with dark red text, plus a cross icon rendered via a <code class="govuk-body">::before</code> pseudo-element pointing at <code class="govuk-body">/public/images/icon-tag-remove-cross.svg</code>. No inline svg is required.</p>
+      <p class="govuk-body">This is the <strong>same soft-red palette</strong> as the "Not accepted" case <a class="govuk-link" href="/pattern-library/custom/status-tags">status tag</a> (<code class="govuk-body">govuk-tag--red-status</code>) — the two share their colour values via the tokens in <code class="govuk-body">_tags.scss</code>. The difference is the <strong>cross icon</strong>: the Fail check-result tag carries it, the case-status tag does not. So they read as one colour with two roles — Pass/Fail for individual checks, status words ("Not accepted") for the whole case — but they are kept as separate classes precisely because of that icon. Use <code class="govuk-body">govuk-tag--red-new</code> for a failed check; use <code class="govuk-body">govuk-tag--red-status</code> for case status.</p>
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
@@ -97,53 +99,69 @@
         </div>
       </div>
 
-      <h2 class="govuk-heading-l">Yes</h2>
-      <p class="govuk-body">Same green-tick visual as Pass, used where the check answers a binary question rather than passing or failing. Used on the <em>HEFER required?</em> and <em>SSSI present?</em> checks.</p>
+      <div class="govuk-inset-text">
+        <strong>Migration note.</strong> <code class="govuk-body">govuk-tag--red-new</code> and <code class="govuk-body">govuk-tag--red-status</code> resolve to the same colour tokens, and <code class="govuk-body">_tags.scss</code> already marks <code class="govuk-body">--red-new</code> as a deprecated alias. They can't simply be merged, though: only <code class="govuk-body">--red-new</code> carries the cross-icon <code class="govuk-body">::before</code>, and the case-status tag must <em>not</em> show a cross. A real consolidation would move the cross onto a check-specific class (not the colour) first. Until then, keep using <code class="govuk-body">--red-new</code> for failed checks — every live calculations screen already does.</div>
+
+      <h2 class="govuk-heading-l">Checked</h2>
+      <p class="govuk-body">Same green-tick visual as Pass, with the label swapped to <strong>Checked</strong>. Used on the SSSI / HEFER checks (e.g. <em>Is the site of special scientific interest?</em>) once the caseworker has dealt with them — these checks confirm something has been looked at rather than passing or failing.</p>
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
             <span class="app-example__toolbar-title">Example</span>
-            <button class="app-show-code-button" data-toggle="ex-tag-yes">Show HTML</button>
-            <button class="app-copy-button" data-copy-target="ex-tag-yes-code">Copy code</button>
+            <button class="app-show-code-button" data-toggle="ex-tag-checked">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-checked-code">Copy code</button>
           </div>
           <div class="app-example__content">
             <strong class="govuk-tag govuk-tag--green">
               <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
               </svg>
-              Yes
+              Checked
             </strong>
           </div>
         </div>
-        <div class="app-example__code-container" id="ex-tag-yes" hidden>
+        <div class="app-example__code-container" id="ex-tag-checked" hidden>
           <div class="app-example__code">
-            <pre><code id="ex-tag-yes-code">&lt;strong class="govuk-tag govuk-tag--green"&gt;
+            <pre><code id="ex-tag-checked-code">&lt;strong class="govuk-tag govuk-tag--green"&gt;
   &lt;svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24"
        fill="green" xmlns="http://www.w3.org/2000/svg"&gt;
     &lt;path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/&gt;
   &lt;/svg&gt;
-  Yes
+  Checked
 &lt;/strong&gt;</code></pre>
           </div>
         </div>
       </div>
 
-      <h2 class="govuk-heading-l">No</h2>
-      <p class="govuk-body">Same red-cross visual as Fail, with the label swapped to <strong>No</strong> for binary-question checks. Currently not in active use (every <em>HEFER required?</em> and <em>SSSI present?</em> check in the prototype answers Yes) but documented here so the negative variant is on hand if it's needed.</p>
+      <h2 class="govuk-heading-l">Action</h2>
+      <p class="govuk-body">Custom <code class="govuk-body">govuk-tag--action</code> — a pale-blue pill with a leading bold "!" (added via a <code class="govuk-body">::before</code>). Used on the same SSSI / HEFER checks while they still need follow-up work (request a consent notice, raise a HEFER). These checks have no pass/fail outcome, so the tag flags a task to do rather than a result. The "!" is the <em>only</em> non-text affordance — the word "Action" still carries the meaning.</p>
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
             <span class="app-example__toolbar-title">Example</span>
-            <button class="app-show-code-button" data-toggle="ex-tag-no">Show HTML</button>
-            <button class="app-copy-button" data-copy-target="ex-tag-no-code">Copy code</button>
+            <button class="app-show-code-button" data-toggle="ex-tag-action">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tag-action-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <strong class="govuk-tag govuk-tag--red-new">No</strong>
+            <strong class="govuk-tag govuk-tag--action">Action</strong>
           </div>
         </div>
-        <div class="app-example__code-container" id="ex-tag-no" hidden>
+        <div class="app-example__code-container" id="ex-tag-action" hidden>
           <div class="app-example__code">
-            <pre><code id="ex-tag-no-code">&lt;strong class="govuk-tag govuk-tag--red-new"&gt;No&lt;/strong&gt;</code></pre>
+            <pre><code id="ex-tag-action-code">/* application.scss — the "!" is drawn by the ::before */
+.govuk-tag--action {
+  color: #0f385c;
+  background-color: #d2e2f1;
+  display: inline-flex;
+  align-items: center;
+}
+.govuk-tag--action::before {
+  content: "!";
+  margin-right: 8px;
+}
+
+&lt;!-- Usage --&gt;
+&lt;strong class="govuk-tag govuk-tag--action"&gt;Action&lt;/strong&gt;</code></pre>
           </div>
         </div>
       </div>
@@ -179,21 +197,21 @@
                   <td class="govuk-table__cell">Same checks, when the threshold is not met</td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Yes</td>
+                  <td class="govuk-table__cell">Checked</td>
                   <td class="govuk-table__cell">
                     <strong class="govuk-tag govuk-tag--green">
                       <svg class="tick-icon" width="20" height="20" viewBox="0 0 24 24" fill="green" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 16.2L4.8 12L3.4 13.4L9 19L21 7L19.6 5.6L9 16.2Z"/>
                       </svg>
-                      Yes
+                      Checked
                     </strong>
                   </td>
-                  <td class="govuk-table__cell">Binary-question checks — HEFER required?, SSSI present?</td>
+                  <td class="govuk-table__cell">SSSI / HEFER checks once dealt with — no pass/fail outcome</td>
                 </tr>
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">No</td>
-                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red-new">No</strong></td>
-                  <td class="govuk-table__cell">Same binary-question checks, when the answer is No</td>
+                  <td class="govuk-table__cell">Action</td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--action">Action</strong></td>
+                  <td class="govuk-table__cell">Same SSSI / HEFER checks while follow-up work is outstanding</td>
                 </tr>
               </tbody>
             </table>
@@ -202,24 +220,23 @@
       </div>
 
       <h2 class="govuk-heading-l">Layout inside the check summary</h2>
-      <p class="govuk-body">When used inside a <code class="govuk-body">&lt;summary&gt;</code> row, the application-level rule on <code class="govuk-body">.govuk-details__summary-text</code> floats the tag to the right edge of the row with a 10px gap — see the <a class="govuk-link" href="/pattern-library/gds/details">Details</a> pattern for the layout rule. No per-instance margin classes are needed.</p>
-
+      <p class="govuk-body">When used inside a <code class="govuk-body">&lt;summary&gt;</code> row, the application-level rule on <code class="govuk-body">.govuk-details__summary-text</code> floats the tag to the right edge of the row with a 10px gap, so it aligns regardless of the check name's length — see the <a class="govuk-link" href="/pattern-library/gds/details">Details</a> pattern.</p>
       <h2 class="govuk-heading-l">When to use</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>To show the outcome of a single, atomic rule check at the end of its summary row.</li>
-        <li>To pair with the Yes/No vocabulary when the check is informational rather than pass/fail.</li>
+        <li>To mark a check that confirms something has been looked at (Checked) or still needs follow-up (Action) rather than passing or failing.</li>
       </ul>
 
       <h2 class="govuk-heading-l">When not to use</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>For overall case status (use the colour tags documented on the <a class="govuk-link" href="/pattern-library/custom/status-tags">Status tags</a> page).</li>
         <li>For task-list status indicators (use the standard <a class="govuk-link" href="/pattern-library/gds/task-list">Task list</a> tags).</li>
-        <li>To convey severity beyond a binary outcome — Pass/Fail/Yes/No carry exactly two states; if a check has a third "in progress" or "warning" state, pick a different colour tag.</li>
+        <li>To convey severity beyond these states — Passed/Failed/Checked/Action cover a pass, a fail, a completed informational check and an outstanding one; if a check needs a different state (for example "in progress"), pick a different tag rather than overloading these.</li>
       </ul>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a> — uses all four variants (Pass + Fail on the Available area / Moorland checks, Yes on every HEFER and SSSI check).</li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a> — Passed / Failed on the Available area and Moorland checks; Checked or Action on each SSSI / HEFER check depending on whether it's been dealt with.</li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new">Medium calculations</a></li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations2">Small calculations</a></li>
