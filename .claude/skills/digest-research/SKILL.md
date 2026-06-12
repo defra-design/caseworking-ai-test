@@ -20,14 +20,17 @@ For one report it produces:
    `app/assets/images/research/<report-id>/` (servable at
    `/public/images/research/<report-id>/...`).
 2. **A long-form digest** — `app/research-archive/<report-id>/report.md`.
-3. **Manifest entries** — the report appended to `reports[]` and one `capture`
-   per screen appended to `captures[]` in `app/research-archive/manifest.json`,
-   plus a matching section in `app/research-archive/screens.md`.
+3. **Manifest entries (v2)** — the report appended to `reports[]` and one
+   `capture` per screen appended to `captures[]` in
+   `app/research-archive/manifest.json`.
 
-It does **not** build the pattern-library pages themselves — that is Claude
-Design's job. This skill produces the single-source data Claude Design reads.
-Read [`app/research-archive/README.md`](../../../app/research-archive/README.md)
-and [`schema-notes.md`](../../../app/research-archive/schema-notes.md) before
+The change-history **surface is already built** — `/pattern-library/research`
+and the per-screen pages render from `manifest.json` via the loader in
+`app/routes.js`, deriving order, version, diffs, rollups and the backlog. So a
+correct append is all that's needed; the pages update themselves. This skill
+produces that single-source data. Read
+[`app/research-archive/README.md`](../../../app/research-archive/README.md) and
+[`schema-notes.md`](../../../app/research-archive/schema-notes.md) before
 starting; the first report (`2026-01-amendments-pre-agreement`) is the
 reference implementation.
 
@@ -120,39 +123,62 @@ and next steps. Capture participant **quotes verbatim** where the report gives
 them. Preserve the report's own confidence/limitation language — small-sample
 studies are indicative, not definitive.
 
-### 5. Append to the manifest and screens index
+### 5. Append to the manifest (v2 contract — append-only)
 
-In [`app/research-archive/manifest.json`](../../../app/research-archive/manifest.json):
+Write [`app/research-archive/manifest.json`](../../../app/research-archive/manifest.json)
+in the **v2 shape** (see [`schema-notes.md`](../../../app/research-archive/schema-notes.md)).
+The whole point of v2 is that a report — **older or newer** than existing ones —
+is a **pure append**: never renumber, edit, or delete an existing record.
 
 - Add any **new** `screenId`s to `screens` (title, area, summary,
-  `relatedPatterns` — link to the real pattern-library pages the screen uses;
-  check `views/pattern-library/` for the right URLs).
-- Append the report to `reports[]` (date-sortable id, full metadata, `digest`
-  path, one-line `headline`).
+  `currentScreen` = the live prototype URL for that screen today or `null`,
+  `relatedPatterns` = real pattern-library page URLs — check
+  `views/pattern-library/` for the right ones). Reuse an existing `screenId`
+  when the same screen reappears — that is what threads the history.
+- Append the report to `reports[]` with:
+  - `id` (`YYYY-MM-<slug>`), full metadata, `digest` path, one-line `headline`.
+  - **`fieldworkDate`** — full ISO date of when the research happened. **This is
+    the authoritative sort key** (`date` is `YYYY-MM`, display only). If the day
+    is unknown, approximate and add `"datePrecision": "month"`.
 - Append one `capture` per screen to `captures[]`:
-  - `reportId`, `screenId`, `version` (per-screen: 1 for a screen's first
-    appearance, N+1 when extending an existing screen's history).
+  - `reportId`, `screenId`.
+  - **No `version`** — it is derived at render from `fieldworkDate`. Do not
+    author it.
   - `images[]` of `{ src, state }` (src relative to `imageBase`).
   - `verdict` (`worked` / `mostly-worked` / `mixed` / `problem`).
-  - `findings[]` and `recommendedChanges[]` bullets.
-  - `changedFromPrevious`: `null` for a screen's baseline; for a later version,
-    a short string (or `{summary, drivenBy}`) saying what changed since the last
-    capture and which finding/report drove it. **This is the connector that
-    makes the change-history meaningful** — always set it when extending a
-    screen.
+  - `findings[]` — `string[]`, quotes verbatim.
+  - **`noteKind`** — `first-capture` for a screen's baseline (omit `note`);
+    `what-changed` when extending a screen, with a self-contained **`note`**
+    saying what changed vs the chronologically-prior capture (optionally
+    `noteDrivenBy`). Never write a back-pointer to a specific capture — order is
+    derived.
+  - **`recommendedChanges[]` as tracked objects**, not strings:
+    `{ text, status, evidence, resolvedNote, resolvedDate }`. Default `status`
+    to `"outstanding"`, then triage against the live `currentScreen`:
+    `addressed` (green — **requires `evidence` URL + `resolvedDate`**) ·
+    `partial` (yellow) · `outstanding` (red) · `rejected` (grey). Put what you
+    found in the live design in `resolvedNote`.
 
-Mirror the same content as a human-readable section in
-[`app/research-archive/screens.md`](../../../app/research-archive/screens.md),
-appending a `### vN — <date> · <report> · verdict` block under the screen's
-heading (newest last). Update the index counts at the bottom of `README.md`.
+After writing, **validate it parses** (`node -e "require('./app/research-archive/manifest.json')"`)
+and reconcile counts in `README.md`. The human-readable
+[`screens.md`](../../../app/research-archive/screens.md) is an optional mirror —
+the rendered pages and rollups now derive entirely from `manifest.json`, so
+keeping `manifest.json` correct is what matters.
 
-### 6. Hand off to Claude Design
+> The pattern-library surface (`/pattern-library/research` + per-screen pages)
+> reads `manifest.json` fresh per request via the loader in `app/routes.js` and
+> **derives order, version, the diff, rollups and the backlog** — so a correct
+> append makes the new report appear, re-order and re-version automatically with
+> no template edits.
 
-Tell the user the archive is updated and summarise: report id, screens captured
-(noting which extended an existing history vs new baselines), and where the
-images and digest live. Claude Design reads `manifest.json` as the source of
-truth to build/refresh the per-screen change-history timelines in the pattern
-library and cross-link them to `relatedPatterns`.
+### 6. Verify and hand off
+
+Reach the running prototype via the Claude Preview MCP (`preview_start` on the
+`kit` server). Check `/pattern-library/research` (the new report/screen appears,
+rollups updated) and the affected `/pattern-library/research/screens/<id>`
+pages. Then tell the user: report id, screens captured (which extended an
+existing history vs new baselines), the resolution status you triaged, and where
+images + digest live.
 
 ## Things to remember
 

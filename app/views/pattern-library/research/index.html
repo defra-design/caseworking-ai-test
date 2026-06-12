@@ -1,0 +1,130 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Patterns", href: "/pattern-library/patterns/caselist" },
+    { text: "Research archive" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Research archive
+        <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Experimental</strong>
+      </h1>
+      <p class="govuk-body-l">A visual change-history of key caseworking screens across user-research reports over time. Each screen shows how it evolved, what research drove each change, and which proposals are now in the live design.</p>
+      <p class="govuk-body">Everything here is derived from <code>app/research-archive/manifest.json</code> — the single source of truth. Add a report by appending to it; the timelines re-order and re-version themselves.</p>
+
+      {# --- Index counts --- #}
+      <dl class="app-pl-meta govuk-!-margin-bottom-6">
+        <div><dt class="govuk-body-s">Reports tracked</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.reports.length }}</dd></div>
+        <div><dt class="govuk-body-s">Screens tracked</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.screens.length }}</dd></div>
+        <div><dt class="govuk-body-s">Latest report</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.reports[0].date }}</dd></div>
+      </dl>
+
+      {# --- Archive-wide coverage rollup --- #}
+      <h2 class="govuk-heading-l">Coverage across all research</h2>
+      <p class="govuk-body">How many design proposals from every report are now reflected in the live prototype. A tracker, not a scorecard — an <em>outstanding</em> proposal from a small study may simply be waiting for stronger evidence.</p>
+      {{ research.coverageBar(archive.archiveRollup) }}
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      {# --- Filter (GET form, modelled on the calculations-filter pattern) --- #}
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          <form method="get" action="/pattern-library/research" class="app-research-filter">
+            <h2 class="govuk-heading-m">Filter screens</h2>
+
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Show</legend>
+                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="f-all" name="filter" type="radio" value="all" {% if filter == "all" %}checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="f-all">All screens</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="f-unresolved" name="filter" type="radio" value="unresolved" {% if filter == "unresolved" %}checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="f-unresolved">Unresolved problems</label>
+                  </div>
+                  <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="f-changed" name="filter" type="radio" value="changed" {% if filter == "changed" %}checked{% endif %}>
+                    <label class="govuk-label govuk-radios__label" for="f-changed">Changed across reports</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="f-area">Area</label>
+              <select class="govuk-select" id="f-area" name="area">
+                <option value="">All areas</option>
+                {% for a in archive.areas %}
+                <option value="{{ a }}" {% if area == a %}selected{% endif %}>{{ a }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="govuk-button" data-module="govuk-button">Apply filters</button>
+          </form>
+        </div>
+
+        {# --- Screen grid --- #}
+        <div class="govuk-grid-column-two-thirds">
+          <h2 class="govuk-heading-m">Tracked screens <span class="govuk-body-s">({{ screensFiltered.length }})</span></h2>
+          {% if screensFiltered.length == 0 %}
+          <p class="govuk-body">No screens match this filter.</p>
+          {% endif %}
+          {% for s in screensFiltered %}
+          <div class="app-research-card">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+              {{ research.verdictTag(s.latestVerdict) }}
+            </h3>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
+            {{ research.coverageBar(s.rollup) }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      {# --- Outstanding-only backlog (3.4) --- #}
+      <h2 class="govuk-heading-l">Outstanding research</h2>
+      <p class="govuk-body">Every recommendation not yet fully in the live design, across all reports, most severe first. This is the live backlog of research still to act on.</p>
+      {% if archive.backlog.length == 0 %}
+      <p class="govuk-body">Nothing outstanding — every recommendation is addressed.</p>
+      {% else %}
+      <ul class="govuk-task-list">
+        {% for item in archive.backlog %}
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
+          <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" href="/pattern-library/research/screens/{{ item.screenId }}">{{ item.rec.text }}</a>
+            <p class="govuk-task-list__hint">{{ item.screenTitle }} · {{ item.report.date }}{% if item.rec.resolvedNote %} — {{ item.rec.resolvedNote }}{% endif %}</p>
+          </div>
+          <div class="govuk-task-list__status">
+            {{ research.statusTag(item.rec.status) }}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

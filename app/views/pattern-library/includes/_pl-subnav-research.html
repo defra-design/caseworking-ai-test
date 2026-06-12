@@ -1,0 +1,16 @@
+<nav class="app-subnav" aria-label="Research archive">
+  <h2 class="app-subnav__theme">Research archive</h2>
+  <ul class="app-subnav__section">
+
+    <li class="app-subnav__section-item{% if not screen %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research">Overview</a>
+    </li>
+
+    {% for s in archive.screens %}
+    <li class="app-subnav__section-item{% if screen and screen.id == s.id %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+    </li>
+    {% endfor %}
+
+  </ul>
+</nav>

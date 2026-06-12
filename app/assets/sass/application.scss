@@ -1455,6 +1455,127 @@
   margin-bottom: 0;
 }
 
+// ============================================================
+// Research archive — change-history surface
+// (Reuses moj-timeline, govuk-tag palette, value-changed, govuk-task-list.
+//  Only layout helpers unique to the archive live here.)
+// ============================================================
+
+// Index counts row
+.app-pl-meta {
+  display: flex;
+  gap: 40px;
+  margin: 0;
+}
+.app-pl-meta dt {
+  color: #505a5f;
+  margin: 0;
+}
+
+// Segmented coverage bar — flex row of GOV.UK palette colours
+.app-coverage-bar {
+  display: flex;
+  width: 100%;
+  max-width: 480px;
+  height: 16px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #f3f2f1;
+}
+.app-coverage-bar span {
+  display: block;
+  height: 100%;
+}
+
+// Tracked-screen cards on the index
+.app-research-card {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #b1b4b6;
+  border-left: 5px solid #1d70b8;
+}
+
+// Filter panel
+.app-research-filter {
+  padding-right: 20px;
+}
+
+// Live-now summary panel (the page opens on this)
+.app-research-livenow {
+  padding: 20px;
+  background: #f3f9f1;
+  border-left: 5px solid #00703c;
+}
+
+// Related-patterns sidebar block
+.app-research-related {
+  margin-top: 30px;
+}
+
+// "What changed" connector item — drop the timeline dot, it's a gap note
+.app-research-note .moj-timeline__description {
+  margin-top: 0;
+}
+.app-research-note::before {
+  background-color: transparent;
+}
+
+// Screenshots
+.app-research-shot {
+  margin: 0;
+}
+.app-research-shot__img {
+  display: block;
+  max-width: 100%;
+  width: 360px;
+  border: 1px solid #b1b4b6;
+}
+.app-research-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.app-research-thumb {
+  margin: 0;
+  width: 170px;
+}
+.app-research-thumb img {
+  display: block;
+  width: 100%;
+  border: 1px solid #b1b4b6;
+}
+
+// Before/after diff
+.app-research-diff {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.app-research-diff__col {
+  margin: 0;
+  flex: 1 1 240px;
+}
+.app-research-diff__col img {
+  display: block;
+  width: 100%;
+  border: 1px solid #b1b4b6;
+}
+
+// Participant-quote findings
+.app-research-quote {
+  color: #505a5f;
+  font-style: italic;
+}
+
+// Terminal "current design" node — green dot to read as the live end-state
+.app-research-terminal::before {
+  background-color: #00703c;
+  width: 15px;
+  height: 15px;
+  top: 7px;
+}
+
 
 
 

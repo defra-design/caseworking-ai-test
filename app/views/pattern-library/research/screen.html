@@ -1,0 +1,184 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "patterns" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Research archive", href: "/pattern-library/research" },
+    { text: screen.title }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+
+      {% if screen.relatedPatterns.length %}
+      <div class="app-subnav app-research-related">
+        <h2 class="app-subnav__theme">Related patterns</h2>
+        <ul class="app-subnav__section">
+          {% for p in screen.relatedPatterns %}
+          <li class="app-subnav__section-item"><a class="app-subnav__link" href="{{ p }}">{{ p | replace("/pattern-library/", "") | replace("/", " / ") }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">{{ screen.title }}</h1>
+      <p class="govuk-body-l">{{ screen.summary }}</p>
+      <p class="govuk-body-s">{{ screen.area }} · {{ screen.captureCount }} capture{{ "s" if screen.captureCount != 1 }} across {{ screen.captureCount }} report{{ "s" if screen.captureCount != 1 }}</p>
+
+      {# --- Live now summary — the page opens on this (3.1) --- #}
+      <div class="app-research-livenow">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Current design — Live now</h2>
+        <p class="govuk-body-s govuk-!-margin-bottom-2">Where this screen stands today, and how this research's proposals have landed against it.</p>
+        {{ research.coverageBar(screen.rollup) }}
+        {% if screen.currentScreen %}
+        <p class="govuk-body govuk-!-margin-top-2"><a class="govuk-link" href="{{ screen.currentScreen }}">Open the live screen</a> · <a class="govuk-link" href="#live-now">See against each proposal</a></p>
+        {% else %}
+        <p class="govuk-body govuk-!-margin-top-2">This screen has been retired — there is no live equivalent.</p>
+        {% endif %}
+      </div>
+
+      <h2 class="govuk-heading-l govuk-!-margin-top-6">History</h2>
+      <p class="govuk-body">Oldest first, flowing down to the current design. The note in the gap before an item explains what changed since the previous capture.</p>
+
+      <ol class="moj-timeline moj-timeline--full">
+
+        {% for cap in screen.captures %}
+
+        {# "Why it changed" connector — sits in the gap before this item #}
+        {% if cap.noteKind == "what-changed" and cap.note %}
+        <li class="moj-timeline__item app-research-note">
+          <div class="moj-timeline__description">
+            <div class="govuk-inset-text govuk-!-margin-top-0">
+              <span class="govuk-!-font-weight-bold">What changed:</span> {{ cap.note }}
+            </div>
+          </div>
+        </li>
+        {% endif %}
+
+        <li class="moj-timeline__item">
+          <div class="moj-timeline__header">
+            <h3 class="moj-timeline__title">{{ cap.report.title }}</h3>
+            <p class="moj-timeline__byline">{{ cap.report.author }}, {{ cap.report.role }}</p>
+          </div>
+          <p class="moj-timeline__date">{{ cap.report.date }} · {{ cap.report.stage }}</p>
+          <div class="moj-timeline__description">
+
+            <p class="govuk-!-margin-bottom-2">
+              <strong class="govuk-tag govuk-tag--grey">v{{ cap.version }}{% if cap.isBaseline %} · baseline{% endif %}</strong>
+              {{ research.verdictTag(cap.verdict) }}
+              {{ research.indicativeTag(cap.report) }}
+            </p>
+
+            {# Confidence caveat — carried on every item #}
+            <div class="govuk-inset-text govuk-!-margin-top-2">{{ cap.report.confidence }}</div>
+
+            {# Screenshot(s) #}
+            <figure class="app-research-shot govuk-!-margin-bottom-3">
+              <img class="app-research-shot__img" src="{{ archive.imageBase }}/{{ cap.images[0].src }}" alt="{{ screen.title }} — {{ cap.images[0].state }}">
+              <figcaption class="govuk-body-s">{{ cap.images[0].state }}</figcaption>
+            </figure>
+            {% if cap.images.length > 1 %}
+            <div class="app-research-thumbs">
+              {% for img in cap.images %}
+              {% if not loop.first %}
+              <figure class="app-research-thumb">
+                <img src="{{ archive.imageBase }}/{{ img.src }}" alt="{{ screen.title }} — {{ img.state }}">
+                <figcaption class="govuk-body-s">{{ img.state }}</figcaption>
+              </figure>
+              {% endif %}
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Before/after diff vs the previous capture (changed-value-highlight) #}
+            {% if cap.previous %}
+            <details class="govuk-details" data-module="govuk-details">
+              <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Compare with v{{ cap.previous.version }} ({{ cap.previous.report.date }})</span></summary>
+              <div class="govuk-details__text">
+                <div class="app-research-diff">
+                  <figure class="app-research-diff__col">
+                    <figcaption class="govuk-body-s govuk-!-font-weight-bold">Before — v{{ cap.previous.version }}</figcaption>
+                    <img src="{{ archive.imageBase }}/{{ cap.previous.images[0].src }}" alt="Previous version">
+                  </figure>
+                  <figure class="app-research-diff__col">
+                    <figcaption class="govuk-body-s govuk-!-font-weight-bold">After — v{{ cap.version }}</figcaption>
+                    <img src="{{ archive.imageBase }}/{{ cap.images[0].src }}" alt="This version">
+                  </figure>
+                </div>
+                {% if cap.note %}<p class="govuk-body"><span class="value-changed">{{ cap.note }}</span></p>{% endif %}
+              </div>
+            </details>
+            {% endif %}
+
+            {# Findings #}
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">What the research found</h4>
+            <ul class="govuk-list govuk-list--bullet">
+              {% for f in cap.findings %}
+              <li{% if "P1" in f or "P2" in f or "P3" in f or "Quotes:" in f %} class="app-research-quote"{% endif %}>{{ f }}</li>
+              {% endfor %}
+            </ul>
+
+            {# Recommendations as a GDS task list with status (3.2) #}
+            {% if cap.recommendedChanges.length %}
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">Recommendations &amp; where they landed</h4>
+            <ul class="govuk-task-list">
+              {% for r in cap.recommendedChanges %}
+              <li class="govuk-task-list__item{% if r.evidence %} govuk-task-list__item--with-link{% endif %}">
+                <div class="govuk-task-list__name-and-hint">
+                  {% if r.evidence %}
+                  <a class="govuk-link govuk-task-list__link" href="{{ r.evidence }}">{{ r.text }}</a>
+                  {% else %}
+                  <span class="govuk-task-list__name-and-hint">{{ r.text }}</span>
+                  {% endif %}
+                  {% if r.resolvedNote %}<p class="govuk-task-list__hint">{{ r.resolvedNote }}{% if r.resolvedDate %} ({{ r.resolvedDate }}){% endif %}</p>{% endif %}
+                </div>
+                <div class="govuk-task-list__status">{{ research.statusTag(r.status) }}</div>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+          </div>
+        </li>
+        {% endfor %}
+
+        {# --- Terminal node: the live design --- #}
+        <li class="moj-timeline__item app-research-terminal" id="live-now">
+          <div class="moj-timeline__header">
+            <h3 class="moj-timeline__title">Current design</h3>
+          </div>
+          <p class="moj-timeline__date">Live now</p>
+          <div class="moj-timeline__description">
+            <p class="govuk-body-s">Every proposal above, rolled up against the screen as it stands today.</p>
+            <p class="govuk-!-margin-bottom-2">
+              <strong class="govuk-tag govuk-tag--green">{{ screen.rollup.addressed }} addressed</strong>
+              <strong class="govuk-tag govuk-tag--yellow">{{ screen.rollup.partial }} partial</strong>
+              <strong class="govuk-tag govuk-tag--red">{{ screen.rollup.outstanding }} outstanding</strong>
+              {% if screen.rollup.rejected %}<strong class="govuk-tag govuk-tag--grey">{{ screen.rollup.rejected }} won't do</strong>{% endif %}
+            </p>
+            {% if screen.currentScreen %}
+            <p class="govuk-body"><a class="govuk-link" href="{{ screen.currentScreen }}">Open the live screen</a></p>
+            {% else %}
+            <p class="govuk-body">This screen has been retired.</p>
+            {% endif %}
+          </div>
+        </li>
+
+      </ol>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

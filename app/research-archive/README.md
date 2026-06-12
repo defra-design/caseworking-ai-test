@@ -40,37 +40,43 @@ chronological order a change-history needs.
   confidence caveat, and the one-line headline. Points at its `report.md`
   digest.
 - **captures** — the join between a report and a screen: the image(s) taken in
-  that report, a `version` number for that screen, the findings, the
-  recommended changes, and `changedFromPrevious` (what actually changed since
-  the last capture of the same screen, and why). For the first capture of a
-  screen, `changedFromPrevious` is `null` — it is the baseline (version 1).
+  that report, the findings, the tracked recommendations (each with a `status`
+  against the live design), and a `note`/`noteKind` (what changed vs whatever is
+  chronologically prior). Order and per-screen `version` are **derived at
+  render** from `reports[].fieldworkDate` — never stored. The first capture of a
+  screen is `noteKind: "first-capture"` (the baseline).
 
-A **change-history for a screen** = all `captures` with that `screenId`,
-ordered by their report's date. Each step shows the image, the date/report it
-came from, the findings that round, and — from the *next* capture's
-`changedFromPrevious` — why it then changed.
+A **change-history for a screen** = all `captures` with that `screenId`, sorted
+by their report's `fieldworkDate`. Each step shows the image, the date/report,
+the findings, the recommendation statuses, and — in the gap before it — the
+`note` explaining what changed. The chain ends on the live `currentScreen`.
 
-## How Claude Design should use this
+This is the **contract v2** shape; see [`schema-notes.md`](schema-notes.md) for
+the field reference and the render rule. v2 makes ingestion order-independent:
+a report older or newer than existing ones is a pure append, with zero edits to
+existing records.
 
-When building or updating the change-history in the pattern library:
+## The rendered surface (already built)
 
-1. Read `manifest.json` as the source of truth. Do not hard-code findings into
-   pattern pages — read them from here so the archive stays single-source.
-2. For each screen, build a vertical timeline: one block per `capture`, oldest
-   to newest, each showing the image (`{imageBase}/{src}`), the report title +
-   date, the verdict, and the bullet findings. Between consecutive blocks,
-   surface the newer capture's `changedFromPrevious` as the "why it changed"
-   connector.
-3. Cross-link both ways: from each screen's history to its `relatedPatterns`
-   pages, and from those pattern pages back to the screen history. This is the
-   "current patterns and their development history over time" the archive
-   exists to support.
-4. Match existing pattern-library conventions — the GDS/MOJ layout, the
-   `app-split-pane` + subnav shell, breadcrumbs, and the `Ready/Checked/Action`
-   tag vocabulary already in `views/pattern-library/`.
-5. Honour the confidence caveats. Every report carries a `confidence` note;
-   small-sample studies (like the first one, n=3) should be presented as
-   indicative, not definitive.
+The change-history is live in the pattern library — no page-building needed per
+report:
+
+- `/pattern-library/research` — archive index: coverage rollup, filterable
+  screen grid, and the archive-wide "Outstanding research" backlog.
+- `/pattern-library/research/screens/<screenId>` — one screen's history on the
+  `moj-timeline` (oldest→newest), verdict + confidence tags, before/after diff,
+  recommendations as a `govuk-task-list` with status, and a green "Current
+  design — Live now" terminal node.
+
+Both routes live in [`app/routes.js`](../routes.js) (`buildResearchArchive()`),
+read `manifest.json` fresh per request, and **derive** order, version, diffs,
+rollups and the backlog. Pattern pages named in any `relatedPatterns` carry a
+reciprocal "Research history" block back into the archive.
+
+**So the rule for everyone (including Claude Design): edit `manifest.json`, not
+the templates.** Findings, verdicts and statuses are never hard-coded into
+pages. Honour the confidence caveats — every report carries a `confidence` note
+and small-sample studies render as `Indicative · n=N`, not settled fact.
 
 ## Adding the next report
 

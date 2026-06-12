@@ -30,6 +30,154 @@ router.use(function (req, res, next) {
 })
 
 // ============================================================
+// Research archive — change-history surface for the pattern library
+// Reads app/research-archive/manifest.json (v2 contract) fresh per request
+// so edits show live. Order + per-screen version are DERIVED here from
+// reports[].fieldworkDate — never stored on a capture. See
+// research-archive/schema-notes.md.
+// ============================================================
+
+const researchManifestPath = path.join(__dirname, 'research-archive', 'manifest.json')
+
+function loadManifest () {
+  return JSON.parse(fs.readFileSync(researchManifestPath, 'utf8'))
+}
+
+// fieldworkDate is the authoritative sort key; fall back to display `date`.
+function fieldworkTime (report) {
+  if (!report) return 0
+  const iso = report.fieldworkDate || (report.date ? report.date + '-01' : '1970-01-01')
+  const t = Date.parse(iso)
+  return Number.isNaN(t) ? 0 : t
+}
+
+// Lower number = more severe; used to sort the outstanding backlog.
+const VERDICT_SEVERITY = { problem: 0, mixed: 1, 'mostly-worked': 2, worked: 3 }
+
+function rollupRecs (recs) {
+  const c = { addressed: 0, partial: 0, outstanding: 0, rejected: 0, total: recs.length }
+  recs.forEach(function (r) { if (c[r.status] !== undefined) c[r.status]++ })
+  const pct = function (n) { return c.total ? Math.round((n / c.total) * 100) : 0 }
+  c.pctDone = pct(c.addressed)
+  c.pctPart = pct(c.partial)
+  c.pctOut = pct(c.outstanding)
+  c.pctNo = pct(c.rejected)
+  c.openCount = c.outstanding + c.partial
+  return c
+}
+
+// Build the fully-derived archive model the templates render from.
+function buildResearchArchive () {
+  const m = loadManifest()
+  const reportById = {}
+  m.reports.forEach(function (r) {
+    r.indicative = !!(r.sampleSize && r.sampleSize <= 5)
+    reportById[r.id] = r
+  })
+
+  const screens = Object.keys(m.screens).map(function (id) {
+    const meta = m.screens[id]
+    const caps = m.captures
+      .filter(function (c) { return c.screenId === id })
+      .map(function (c) { return Object.assign({}, c, { report: reportById[c.reportId] }) })
+      .sort(function (a, b) { return fieldworkTime(a.report) - fieldworkTime(b.report) })
+
+    caps.forEach(function (c, i) {
+      c.version = i + 1
+      c.isBaseline = i === 0
+      c.previous = i > 0 ? caps[i - 1] : null
+      c.recommendedChanges = c.recommendedChanges || []
+      c.rollup = rollupRecs(c.recommendedChanges)
+    })
+
+    const recs = caps.reduce(function (acc, c) { return acc.concat(c.recommendedChanges) }, [])
+    const latest = caps[caps.length - 1] || null
+    return Object.assign({}, meta, {
+      id: id,
+      captures: caps,
+      captureCount: caps.length,
+      latestVerdict: latest ? latest.verdict : null,
+      rollup: rollupRecs(recs)
+    })
+  })
+
+  const allRecs = screens.reduce(function (acc, s) {
+    return acc.concat(s.captures.reduce(function (a, c) { return a.concat(c.recommendedChanges) }, []))
+  }, [])
+
+  // Flat backlog of every open (outstanding/partial) recommendation, with
+  // screen + report context, sorted by verdict severity then recency.
+  const backlog = []
+  screens.forEach(function (s) {
+    s.captures.forEach(function (c) {
+      c.recommendedChanges.forEach(function (r) {
+        if (r.status === 'outstanding' || r.status === 'partial') {
+          backlog.push({
+            rec: r,
+            screenId: s.id,
+            screenTitle: s.title,
+            area: s.area,
+            currentScreen: s.currentScreen,
+            verdict: c.verdict,
+            report: c.report
+          })
+        }
+      })
+    })
+  })
+  backlog.sort(function (a, b) {
+    const sv = (VERDICT_SEVERITY[a.verdict] || 9) - (VERDICT_SEVERITY[b.verdict] || 9)
+    if (sv !== 0) return sv
+    return fieldworkTime(b.report) - fieldworkTime(a.report)
+  })
+
+  const areas = screens.reduce(function (acc, s) {
+    if (s.area && acc.indexOf(s.area) === -1) acc.push(s.area)
+    return acc
+  }, [])
+
+  return {
+    imageBase: m.imageBase,
+    screens: screens,
+    reports: m.reports.slice().sort(function (a, b) { return fieldworkTime(b.report) - fieldworkTime(a.report) }),
+    archiveRollup: rollupRecs(allRecs),
+    backlog: backlog,
+    areas: areas
+  }
+}
+
+// Archive index — grid of tracked screens + coverage rollup + filters/backlog.
+router.get('/pattern-library/research', function (req, res) {
+  const archive = buildResearchArchive()
+  const filter = req.query.filter || 'all' // all | unresolved | changed
+  const area = req.query.area || ''
+  let screens = archive.screens
+  if (area) screens = screens.filter(function (s) { return s.area === area })
+  if (filter === 'unresolved') {
+    screens = screens.filter(function (s) { return s.rollup.openCount > 0 })
+  } else if (filter === 'changed') {
+    screens = screens.filter(function (s) { return s.captureCount > 1 })
+  }
+  res.render('pattern-library/research/index', {
+    archive: archive,
+    screensFiltered: screens,
+    filter: filter,
+    area: area
+  })
+})
+
+// Per-screen history.
+router.get('/pattern-library/research/screens/:screenId', function (req, res, next) {
+  const archive = buildResearchArchive()
+  const screen = archive.screens.find(function (s) { return s.id === req.params.screenId })
+  if (!screen) return next()
+  res.render('pattern-library/research/screen', {
+    archive: archive,
+    screen: screen
+  })
+})
+
+// ============================================================
 // Builder — edit and persist the case 3 tasklist data file
 // ============================================================
 

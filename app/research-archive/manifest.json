@@ -1,6 +1,7 @@
 {
   "$schema": "./schema-notes.md",
-  "description": "Master index of user-research reports, the caseworking screens they captured, and the findings tied to each capture. Built to accumulate ~10 reports over an 18-month window so the pattern library can render a visual change-history per screen. See README.md for how Claude Design consumes this.",
+  "contractVersion": 2,
+  "description": "Master index of user-research reports, the caseworking screens they captured, and the findings tied to each capture. Order-independent: reports can be ingested backwards in time as pure appends. Per-screen version and ordering are DERIVED at render from reports[].fieldworkDate — never authored. See README.md for how Claude Design consumes it and schema-notes.md for the v2 field reference.",
   "imageBase": "/public/images/research",
   "repoImageBase": "app/assets/images/research",
 
@@ -9,30 +10,35 @@
       "title": "Task list — decision panel",
       "area": "Amend application pre-agreement",
       "summary": "The case Tasks page with the caseworker Decision radio group (Put on hold / Amend / Return to customer / Reject / Withdraw) and a compulsory explanation box.",
+      "currentScreen": "/FRPS-D2/caseReal/tasklist-stage",
       "relatedPatterns": ["/pattern-library/patterns/task", "/pattern-library/patterns/caselist", "/pattern-library/gds/radios"]
     },
     "confirm-amend": {
       "title": "Confirm — amend application",
       "area": "Amend application pre-agreement",
       "summary": "\"Are you sure you want to amend this application?\" interstitial. Warns the current application will be withdrawn and a duplicate created in Grants-UI, with all review tasks restarted.",
+      "currentScreen": "/FRPS-D2/caseReal/amend-confirm",
       "relatedPatterns": ["/pattern-library/gds/warning-text", "/pattern-library/gds/radios"]
     },
     "confirm-return": {
       "title": "Confirm — return to customer",
       "area": "Amend application pre-agreement",
       "summary": "\"Are you sure you want to return this application to the customer?\" interstitial. Same withdraw-and-duplicate model as confirm-amend, but the customer resubmits.",
+      "currentScreen": "/FRPS-D2/caseReal/return-confirm",
       "relatedPatterns": ["/pattern-library/gds/warning-text", "/pattern-library/gds/radios"]
     },
     "confirmation-amend": {
       "title": "Confirmation — amending application",
       "area": "Amend application pre-agreement",
       "summary": "Outcome page after confirming an amend. States the application has been withdrawn and links out to Grants-UI to make the amendment.",
+      "currentScreen": "/FRPS-D2/caseReal/task-1Am",
       "relatedPatterns": ["/pattern-library/patterns/task"]
     },
     "confirmation-return": {
       "title": "Confirmation — returned to customer",
       "area": "Amend application pre-agreement",
       "summary": "Outcome page after confirming a return to customer. States the application has been withdrawn and a new one will be submitted by the customer once amended.",
+      "currentScreen": "/FRPS-D2/caseReal/tasklist-stage",
       "relatedPatterns": ["/pattern-library/patterns/task"]
     }
   },
@@ -43,16 +49,18 @@
       "title": "Amendments to grant applications pre agreement",
       "author": "Janice Hannaway",
       "role": "User Researcher",
+      "fieldworkDate": "2026-01-01",
+      "datePrecision": "month",
       "date": "2026-01",
       "system": "SFI Reform — Manage rural grant applications (caseworker prototype)",
       "stage": "Private Beta",
       "method": "Qualitative in-depth interviews + moderated prototype usability testing",
       "sampleSize": 3,
       "participants": "3 RPA caseworkers (all AO grade)",
-      "confidence": "Indicative, not definitive — small qualitative sample; treat as hypotheses and design directions.",
+      "confidence": "Indicative, not definitive — small qualitative sample. Treat as hypotheses and design directions, not a representative view.",
       "digest": "2026-01-amendments-pre-agreement/report.md",
       "sourceFile": "Amendments to grant appliations pre agreement.pptx",
-      "headline": "Caseworkers could navigate the prototype, but the \"withdraw + duplicate application\" model for amendments causes real anxiety and confusion and needs redesigning."
+      "headline": "Caseworkers could navigate the prototype, but the \"withdraw + duplicate application\" model causes real anxiety and confusion and needs redesigning."
     }
   ],
 
@@ -60,7 +68,7 @@
     {
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "tasklist-decision",
-      "version": 1,
+      "noteKind": "first-capture",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--default.png", "state": "Default — no decision selected" },
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--amend-selected.png", "state": "\"Amend\" selected (caseworker amends)" },
@@ -73,37 +81,65 @@
         "Mental-model mismatch: participants expected to amend via the Application view or land/mapping tasks (as in Siti Agri), not a generic decision radio. One navigated to the Application tab first; the other two found the right option after exploring the task list."
       ],
       "recommendedChanges": [
-        "Reconcile the decision-button model with the caseworker expectation of amending from the application/land view.",
-        "Make clearer which decisions a caseworker can take themselves vs escalate (embed the 10% threshold / escalation guidance)."
-      ],
-      "changedFromPrevious": null
+        {
+          "text": "Reconcile the decision-radio model with the caseworker expectation of amending from the Application / land view.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Make clearer which decisions a caseworker can take themselves vs escalate (embed the 10% threshold / escalation guidance).",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        }
+      ]
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "confirm-amend",
-      "version": 1,
+      "noteKind": "first-capture",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/confirm-amend.png", "state": "Are you sure you want to amend this application?" }
       ],
       "verdict": "problem",
       "findings": [
         "Confusion and anxiety about the current application being \"withdrawn\" and the amendment being a separate \"duplicate application\".",
-        "\"Withdraw\" read as the same as \"reject\"; participants feared irreversible/\"ghost\" applications blocking land parcels.",
+        "\"Withdraw\" read as the same as \"reject\"; participants feared irreversible / \"ghost\" applications blocking land parcels.",
         "Unclear whether the duplicate would be pre-populated with the original information, and whether the original stays visible/editable.",
         "\"Grants-UI\" terminology not understood.",
         "Quotes: \"I see withdraw and reject as same thing\" (P1); \"Is there a process for withdrawing that, or is the system doing it automatically...?\" (P1)."
       ],
       "recommendedChanges": [
-        "Replace \"withdraw\" with clearer language to avoid \"ghost application\" anxiety.",
-        "Explicitly state what happens to the withdrawn record and the caseworker's work, and whether forms are pre-populated.",
-        "Simplify \"Grants-UI\" to plain language (participants suggested \"duplicate application\")."
-      ],
-      "changedFromPrevious": null
+        {
+          "text": "Replace \"withdraw\" with clearer language to avoid \"ghost application\" anxiety.",
+          "status": "outstanding",
+          "evidence": "/FRPS-D2/caseReal/amend-confirm",
+          "resolvedNote": "Live amend-confirm still reads \"withdraw the current application\".",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Explicitly state what happens to the withdrawn record and the caseworker's work, and whether forms are pre-populated.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Simplify \"Grants-UI\" to plain language (participants suggested \"duplicate application\").",
+          "status": "outstanding",
+          "evidence": "/FRPS-D2/caseReal/amend-confirm",
+          "resolvedNote": "\"Grants-UI\" still used verbatim on the live screen.",
+          "resolvedDate": ""
+        }
+      ]
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "confirm-return",
-      "version": 1,
+      "noteKind": "first-capture",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/confirm-return.png", "state": "Are you sure you want to return this application to the customer?" }
       ],
@@ -113,15 +149,26 @@
         "Felt that making the applicant redo an entire application would be frustrating, as completing one can take several days."
       ],
       "recommendedChanges": [
-        "Clarify data retention for the customer-facing resubmission (pre-populated vs from scratch).",
-        "Reframe so a return for amendment does not read as a full restart."
-      ],
-      "changedFromPrevious": null
+        {
+          "text": "Clarify data retention for the customer-facing resubmission (pre-populated vs from scratch, what happens to the original).",
+          "status": "partial",
+          "evidence": "/FRPS-D2/caseReal/return-confirm",
+          "resolvedNote": "Live return-confirm now reads \"close this current application making it view only\" and \"create a new identical application for the customer to review, amend and re-submit\" — the original's fate and pre-population are now stated. \"Withdraw\" has been dropped on this screen.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Reframe so a return for amendment does not read as a full restart.",
+          "status": "outstanding",
+          "evidence": "/FRPS-D2/caseReal/return-confirm",
+          "resolvedNote": "Live screen still says \"require casework to be started from scratch on the newly submitted case\".",
+          "resolvedDate": ""
+        }
+      ]
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "confirmation-amend",
-      "version": 1,
+      "noteKind": "first-capture",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/confirmation-amend.png", "state": "Amending application — withdrawn, amend in Grants-UI" }
       ],
@@ -133,16 +180,33 @@
         "Quotes: \"this doesn't make a huge amount of sense, so it'll automatically be submitted when I've done my mapping change?\" (P2); \"Changing case numbers will make this real confusing... they are just going to stack up\" (P1)."
       ],
       "recommendedChanges": [
-        "Show what changed between original and amended application (diff view), essential for large multi-parcel cases.",
-        "Clarify the Grants-UI handoff and the submission/mapping sequence.",
-        "Rethink case-number proliferation across repeated amendments."
-      ],
-      "changedFromPrevious": null
+        {
+          "text": "Show what changed between original and amended application (diff view), essential for large multi-parcel cases.",
+          "status": "outstanding",
+          "evidence": "/FRPS-D2/caseReal/task-1Am",
+          "resolvedNote": "No diff/change view on the live confirmation page.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Clarify the Grants-UI handoff and the submission / mapping sequence.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Rethink case-number proliferation across repeated amendments.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        }
+      ]
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "confirmation-return",
-      "version": 1,
+      "noteKind": "first-capture",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/confirmation-return.png", "state": "Application returned to customer for amending" }
       ],
@@ -152,10 +216,21 @@
         "Restart-all-tasks messaging raised workload concerns, especially for complex applications (80+ checks)."
       ],
       "recommendedChanges": [
-        "Clear task-restart logic so caseworkers understand exactly what needs re-doing vs what is preserved.",
-        "Change-history / reuse of prior work to reduce re-work on complex multi-parcel applications."
-      ],
-      "changedFromPrevious": null
+        {
+          "text": "Clear task-restart logic so caseworkers understand exactly what needs re-doing vs what is preserved.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Change-history / reuse of prior work to reduce re-work on complex multi-parcel applications.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        }
+      ]
     }
   ]
 }

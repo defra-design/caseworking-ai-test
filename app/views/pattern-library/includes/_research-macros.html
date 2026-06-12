@@ -1,0 +1,52 @@
+{#
+  Shared macros for the research change-history surface.
+  Verdict + status tags map onto the existing GDS tag palette (no new colours).
+  The coverage bar is a flex row of palette colours — no new component.
+#}
+
+{% macro verdictTag(verdict) %}
+  {%- if verdict == "worked" -%}
+    <strong class="govuk-tag govuk-tag--green">Worked</strong>
+  {%- elif verdict == "mostly-worked" -%}
+    <strong class="govuk-tag govuk-tag--yellow">Mostly worked</strong>
+  {%- elif verdict == "mixed" -%}
+    <strong class="govuk-tag govuk-tag--orange">Mixed</strong>
+  {%- elif verdict == "problem" -%}
+    <strong class="govuk-tag govuk-tag--red">Problem</strong>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro statusTag(status) %}
+  {%- if status == "addressed" -%}
+    <strong class="govuk-tag govuk-tag--green">Addressed</strong>
+  {%- elif status == "partial" -%}
+    <strong class="govuk-tag govuk-tag--yellow">Partial</strong>
+  {%- elif status == "outstanding" -%}
+    <strong class="govuk-tag govuk-tag--red">Outstanding</strong>
+  {%- elif status == "rejected" -%}
+    <strong class="govuk-tag govuk-tag--grey">Won't do</strong>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro indicativeTag(report) %}
+  {%- if report.indicative -%}
+    <strong class="govuk-tag govuk-tag--grey">Indicative · n={{ report.sampleSize }}</strong>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro coverageBar(rollup) %}
+  {% if rollup.total > 0 %}
+  <div class="app-coverage-bar" aria-hidden="true">
+    {% if rollup.pctDone %}<span style="width:{{ rollup.pctDone }}%; background:#00703c"></span>{% endif %}
+    {% if rollup.pctPart %}<span style="width:{{ rollup.pctPart }}%; background:#ffdd00"></span>{% endif %}
+    {% if rollup.pctOut %}<span style="width:{{ rollup.pctOut }}%; background:#d4351c"></span>{% endif %}
+    {% if rollup.pctNo %}<span style="width:{{ rollup.pctNo }}%; background:#b1b4b6"></span>{% endif %}
+  </div>
+  <p class="govuk-body-s govuk-!-margin-top-1">
+    {{ rollup.addressed }} addressed · {{ rollup.partial }} partial · {{ rollup.outstanding }} outstanding{% if rollup.rejected %} · {{ rollup.rejected }} won't do{% endif %}
+    <span class="govuk-visually-hidden">out of {{ rollup.total }} recommendations</span>
+  </p>
+  {% else %}
+  <p class="govuk-body-s">No recommendations recorded.</p>
+  {% endif %}
+{% endmacro %}
