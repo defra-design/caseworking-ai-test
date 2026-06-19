@@ -1,0 +1,20 @@
+{% extends "layouts/main.html" %}
+{% import "Grasslands/includes/_caselist-macros.html" as caselist with context %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <h1 class="govuk-heading-xl">Grasslands cases</h1>
+
+    {{ caselist.filters() }}
+    {{ caselist.contextSelector(ctx) }}
+    {{ caselist.tabsAndTable("team", ctx, view) }}
+
+  </main>
+</div>
+{% endblock %}

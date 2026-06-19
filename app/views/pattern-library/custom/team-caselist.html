@@ -1,0 +1,142 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "team-caselist" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Team caselist" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Team caselist
+        <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Experimental</strong>
+      </h1>
+      <p class="govuk-body-l">A data-driven extension of the <a class="govuk-link" href="/pattern-library/patterns/caselist">Caselist</a> for teams: a caseworker sees their own work, can switch the view to any team or to everyone, and reads completed cases in a separate tab. Built so the whole list is driven by a data file and the team split is held in one place.</p>
+
+      <p class="govuk-body">It adds three things to the basic caselist:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>a <strong>context selector</strong> above the tabs that switches the view between each team and "All cases";</li>
+        <li>a <strong>My cases / context / Completed cases</strong> tab structure, where the middle tab follows the selected context and completed work is split out; and</li>
+        <li><strong>data-file backing</strong> — cases and teams live in data files, so the routes filter and paginate and the templates just render.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A caseworker queue that is organised into teams and you need to move between "my work", "my team's work" and "the whole queue".</li>
+        <li>Lists large enough to need pagination and a clear separation of in-progress vs completed cases.</li>
+        <li>When the case data should be generated/maintained in one place rather than hand-written into the page.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A single, short, unsegmented list — use the simpler <a class="govuk-link" href="/pattern-library/patterns/caselist">Caselist</a> pattern.</li>
+        <li>There are no teams and no completed/active distinction to make.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Context selector</h2>
+      <p class="govuk-body">A <code class="govuk-body">govuk-select</code> ("Switch team") listing each team plus an <strong>All cases</strong> option, with a Switch button, sitting <strong>above the tabs</strong>. Choosing a context and pressing Switch reloads the page; the choice is held in the session so it carries across tab clicks. The selected context drives both the middle (context) tab and the Completed tab.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-tc-ctx">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-tc-ctx-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <form>
+              <div class="govuk-form-group govuk-!-margin-bottom-0" style="display: flex; align-items: flex-end; gap: 15px;">
+                <div class="govuk-!-margin-bottom-0">
+                  <label class="govuk-label" for="tc-ctx">Switch team</label>
+                  <select class="govuk-select" id="tc-ctx" name="ctx">
+                    <option value="A">Team A</option>
+                    <option value="B">Team B</option>
+                    <option value="C">Team C</option>
+                    <option value="all">All cases</option>
+                  </select>
+                </div>
+                <button type="button" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Switch</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-tc-ctx" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-tc-ctx-code">&lt;form method="get" action=""&gt;
+  &lt;div class="govuk-form-group" style="display:flex; align-items:flex-end; gap:15px;"&gt;
+    &lt;div&gt;
+      &lt;label class="govuk-label" for="ctx-select"&gt;Switch team&lt;/label&gt;
+      &lt;select class="govuk-select" id="ctx-select" name="ctx"&gt;
+        &lt;option value="A"&gt;Team A&lt;/option&gt;
+        &lt;option value="B"&gt;Team B&lt;/option&gt;
+        &lt;option value="C"&gt;Team C&lt;/option&gt;
+        &lt;option value="all"&gt;All cases&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="govuk-button"&gt;Switch&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Tabs</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>My cases</strong> — the current user's own cases, independent of the selected context.</li>
+        <li><strong>Context tab</strong> — the selected team's cases, or all cases when the context is "All cases". Its label is the current context (for example "Team A" or "All cases").</li>
+        <li><strong>Completed cases</strong> — cases in a final outcome (Agreement accepted, Rejected or Withdrawn), filtered by the same context.</li>
+      </ul>
+      <p class="govuk-body">Tabs are sibling pages with tab-style navigation (each non-active tab is a link), following the <a class="govuk-link" href="/pattern-library/moj/timeline">MOJ</a>-style multi-page tab approach already used elsewhere in this prototype.</p>
+
+      <h2 class="govuk-heading-l">Active vs completed</h2>
+      <p class="govuk-body">Completed cases (Agreement accepted / Rejected / Withdrawn — see <a class="govuk-link" href="/pattern-library/custom/status-tags">status tags</a>) appear <strong>only</strong> on the Completed tab. My cases and the context tab show <strong>active cases only</strong>, so a caseworker's working lists are not cluttered by finished work.</p>
+
+      <h2 class="govuk-heading-l">Filters, pagination and multi-assign</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Search + filters</strong> in a <a class="govuk-link" href="/pattern-library/gds/details">details</a> ("Find an application"), modelled on the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">calculations filter</a> / <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a>.</li>
+        <li><strong>Pagination</strong> using the <a class="govuk-link" href="/pattern-library/moj/pagination">MOJ pagination</a> component on the context and Completed tabs.</li>
+        <li><strong>Multi-assign</strong> — a Select <a class="govuk-link" href="/pattern-library/gds/checkboxes">checkbox</a> per row plus a "Reassign selected cases" button, as in the FG-casework caselist.</li>
+        <li>A <a class="govuk-link" href="/pattern-library/moj/sortable-table">sortable table</a> with the columns Select · ID · Business · SBI · Submitted · <a class="govuk-link" href="/pattern-library/gds/tag">Status</a> · Assignee.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">How it is built</h2>
+      <p class="govuk-body">The pattern is route-driven and data-file backed:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><code class="govuk-body">data/&lt;area&gt;-teams.js</code> — the teams and their caseworkers (single source of the split).</li>
+        <li><code class="govuk-body">data/&lt;area&gt;-cases.js</code> — the case records (one per row), each tagged with a <code class="govuk-body">team</code> and an <code class="govuk-body">assignee</code>.</li>
+        <li>Routes filter (by tab + context) and paginate, then pass a ready-made <code class="govuk-body">view</code> to thin templates; the selected context is held in the session.</li>
+      </ul>
+      <p class="govuk-body">The repeatable build is captured in the <strong>data-driven-caselist</strong> skill; the Grasslands caselist is the reference implementation.</p>
+
+      <h2 class="govuk-heading-l">Accessibility</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The context selector is a labelled <code class="govuk-body">govuk-select</code> with an explicit Switch button — no on-change auto-submit, so keyboard and screen-reader users stay in control.</li>
+        <li>Status is conveyed by the tag's text, not colour alone.</li>
+        <li>Pagination exposes the result count ("Showing X to Y of Z") and marks the current page; the table is a real sortable table.</li>
+        <li>Row select checkboxes have visually-hidden labels naming the case.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/Grasslands/caselist">Grasslands — My cases</a></li>
+        <li><a class="govuk-link" href="/Grasslands/caselist-team">Grasslands — context tab (Team / All cases)</a></li>
+        <li><a class="govuk-link" href="/Grasslands/caselist-completed">Grasslands — Completed cases</a></li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

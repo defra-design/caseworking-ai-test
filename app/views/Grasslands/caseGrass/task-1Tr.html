@@ -1,41 +1,41 @@
 {% extends "layouts/main.html" %}
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
-  {% include "FRPS-D2/includes/_case2-context-strip.html" %}
-{% endblock %} 
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
 
 
 {% block content %}
 {% set activeNavItem = "tasks" %}
-{% include "FRPS-D2/includes/_case2-nav.html" %}
-<form action="/task2TrT2C2" method="post">
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<form action="/task1TrT2Grass" method="post">
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">  
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
 <div class="govuk-form-group">
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
-       Notify Agreement Holder of agreement termination
+       Check for payment recovery 
       </h1>
-    </legend>
+    </legend> 
 
-            <p class="govuk-body">Tell the agreement holder that their agreement is to be terminated in accordance with the terms and conditions of their agreement. Ensure the following is completed:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>Draft the termination notification letter using the &lt;Early Closure Template&gt;</li>
-        <li>Obtain approval for the termination notification letter</li>
-        <li>Send the termination notification to the agreement holder</li>
-      </ul>
 
-      <h2 class="govuk-heading-m">Outcome</h2>
+    <p>Are there payments to recover if this agreement is terminated?</p>
 
 
 
-   <div class="govuk-form-group">
+
+
+    
+    <div class="govuk-form-group">
       <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
         <div class="govuk-radios" data-module="govuk-radios">
         
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="contact" name="decisionTerminateTask2C2" type="radio" value="Check complete" data-aria-controls="conditional-decision1">
+            <input class="govuk-radios__input" id="contact" name="decisionTerminateTask1Grass" type="radio" value="Check complete" data-aria-controls="conditional-decision1">
             <label class="govuk-label govuk-radios__label" for="contact">
               Check complete
             </label>
@@ -43,17 +43,16 @@
           <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
             <h3 class="govuk-heading-s">Explain this outcome</h3>
             <div id="more-detail-hint" class="govuk-hint">
-              You must include notes for auditing purposes. 
+              You must include an explanation for auditing purposes. 
             </div>
-          {% if (data.task2TrNoteC2) %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task2TrNote2C2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% if (data.task1TrNoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNote2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% else %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task2TrNoteC2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% endif %} 
           </div>
-          
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="eligible-2" name="decisionTerminateTask2C2" type="radio" value="Need further information"  data-aria-controls="conditional-decision2">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionTerminateTask1Grass" type="radio" value="Need further information"  data-aria-controls="conditional-decision2">
             <label class="govuk-label govuk-radios__label" for="eligible-2">
               Need further information
             </label>
@@ -61,14 +60,14 @@
           <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
             <h3 class="govuk-heading-s">Explain this outcome</h3>
             <div id="more-detail-hint" class="govuk-hint">
-              You must include notes for auditing purposes. 
+              You must include an explanation for auditing purposes. 
             </div>
-          {% if (data.task2TrNoteC2) %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task2ANote2C2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% if (data.task1TrNoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNote2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% else %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task2TrNoteC2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% endif %} 
-          </div>      
+          </div>     
         </div>
       </fieldset>
     </div>
@@ -78,9 +77,7 @@
 </button><br>
 <a href="tasklist-stage" class="govuk-link">Cancel and return</a>
 
-  </fieldset>
-</div>
-{% if (data.task2TrNoteC2) %}
+{% if (data.task1TrNoteGrass) %}
 <h2 class="govuk-heading-m">Note history</h2>
 
 <table class="govuk-table" data-module="moj-sortable-table">
@@ -105,10 +102,10 @@
       <td class="govuk-table__cell">25th Sept 2025</td>
 
       <td class="govuk-table__cell">
-        {{ data['noteActiondecisionTerminateTask2C2Task2C2']}}
+        {{ data['noteActionTerminateTask1Grass']}}
       </td>
       <td class="govuk-table__cell">
-        {{ data['filteredNote2TrC2']}}
+        {{ data['filteredNote1TrGrass']}}
       </td>
 
       <td class="govuk-table__cell"> A Jones</td>

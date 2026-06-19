@@ -1,0 +1,101 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<form action="/task5m4Grass" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Confirm if land parcel is in Siti Tenure
+      </h1>
+    </legend>
+
+    <p>Check the land parcels within the SFIEO agreement are still linked to the Agreement Holder.</p>
+    <p>Confirm land parcels in this agreement are linked to the customer&rsquo;s single business identifier (SBI) until the T1 date.</p>
+    <p>Go to agreement to check the T1 date.</p>
+
+    <h2 class="govuk-heading-m">Outcome</h2>
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <div class="govuk-radios" data-module="govuk-radios">
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="t4f-1" name="decisionTask4mGrass" type="radio" value="No action needed" data-aria-controls="t4f-1c">
+            <label class="govuk-label govuk-radios__label" for="t4f-1">No action needed</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="t4f-1c">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="t4f-hint-1" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            {% if (data.task4mNoteGrass) %}
+            <textarea class="govuk-textarea" name="task4mNote2Grass" rows="5" aria-describedby="t4f-hint-1"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" name="task4mNoteGrass" rows="5" aria-describedby="t4f-hint-1"></textarea>
+            {% endif %}
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="t4f-2" name="decisionTask4mGrass" type="radio" value="Escalate" data-aria-controls="t4f-2c">
+            <label class="govuk-label govuk-radios__label" for="t4f-2">Escalate</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="t4f-2c">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="t4f-hint-2" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            {% if (data.task4mNoteGrass) %}
+            <textarea class="govuk-textarea" name="task4mNote2Grass" rows="5" aria-describedby="t4f-hint-2"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" name="task4mNoteGrass" rows="5" aria-describedby="t4f-hint-2"></textarea>
+            {% endif %}
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="t4f-3" name="decisionTask4mGrass" type="radio" value="Information requested" data-aria-controls="t4f-3c">
+            <label class="govuk-label govuk-radios__label" for="t4f-3">Request information from customer</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="t4f-3c">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="t4f-hint-3" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            {% if (data.task4mNoteGrass) %}
+            <textarea class="govuk-textarea" name="task4mNote2Grass" rows="5" aria-describedby="t4f-hint-3"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" name="task4mNoteGrass" rows="5" aria-describedby="t4f-hint-3"></textarea>
+            {% endif %}
+          </div>
+
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="t4f-4" name="decisionTask4mGrass" type="radio" value="Cannot accept" data-aria-controls="t4f-4c">
+            <label class="govuk-label govuk-radios__label" for="t4f-4">Cannot accept</label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="t4f-4c">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="t4f-hint-4" class="govuk-hint">You must include an explanation for auditing purposes.</div>
+            {% if (data.task4mNoteGrass) %}
+            <textarea class="govuk-textarea" name="task4mNote2Grass" rows="5" aria-describedby="t4f-hint-4"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" name="task4mNoteGrass" rows="5" aria-describedby="t4f-hint-4"></textarea>
+            {% endif %}
+          </div>
+
+        </div>
+      </fieldset>
+    </div>
+
+    <button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-!-margin-bottom-3" data-module="govuk-button">Confirm</button><br>
+    <a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+
+  </fieldset>
+</div>
+  </div>
+</div>
+</form>
+{% endblock %}

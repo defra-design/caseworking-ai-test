@@ -1,0 +1,182 @@
+{#
+  Shared markup for the Grasslands caselist (My cases / context tab / Completed).
+  Case data lives in app/data/grasslands-cases.js; the routes in routes.js filter
+  (by tab + context) and paginate, then pass a `view` object to the template:
+    view = { rows, page, totalPages, total, startIdx, endIdx }
+
+  Context (`ctx`): 'A' | 'B' | 'C' | 'all'. Set by the "Switch team" selector,
+  persisted in the session, and applied to the context tab and the Completed
+  tab (My cases is always the current user, M Walker).
+
+  Import "with context" so macros can read res.locals (grasslandsTeams,
+  grasslandsTeamNames) and session `data` (Golden Grange live status).
+
+  Status filter values mirror the FRPS-D2 set; see grasslands-cases.js DATA RULES.
+#}
+
+{# --- Search + filters, in a details (decorative; GET-to-self) --- #}
+{% macro filters() %}
+<details class="govuk-details">
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">Find an application</span>
+  </summary>
+  <div class="govuk-details__text">
+
+    <div class="moj-search">
+      <form method="get" action="">
+        <div class="govuk-form-group">
+          <h2 class="govuk-heading-m">Search for cases</h2>
+          <div id="search-hint" class="govuk-hint moj-search__hint">You can search by application ID, business, SBI, status or assignee.</div>
+          <input class="govuk-input moj-search__input" id="searchGrass" name="searchGrass" type="search" aria-describedby="search-hint">
+        </div>
+        <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">Search</button>
+      </form>
+    </div>
+
+    <br>
+    <form method="get" action="">
+      <h2 class="govuk-heading-m">Apply filters</h2>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+
+      <div class="govuk-form-group radio-container">
+
+        <div class="govuk-form-group column govuk-!-margin-bottom-0">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assignee</legend>
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-1" name="filterAssigneeGrass" type="checkbox" value="walker" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-1">M Walker (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-2" name="filterAssigneeGrass" type="checkbox" value="rsingh" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-2">R Singh (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-3" name="filterAssigneeGrass" type="checkbox" value="tokafor" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-3">T Okafor (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-4" name="filterAssigneeGrass" type="checkbox" value="carter" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-4">E Carter (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-5" name="filterAssigneeGrass" type="checkbox" value="jjones"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-5">J Jones (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-6" name="filterAssigneeGrass" type="checkbox" value="pshah"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-6">P Shah (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-7" name="filterAssigneeGrass" type="checkbox" value="ajones"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-7">A Jones (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-8" name="filterAssigneeGrass" type="checkbox" value="lowusu"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-8">L Owusu (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-9" name="filterAssigneeGrass" type="checkbox" value="kreed"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-9">K Reed (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-10" name="filterAssigneeGrass" type="checkbox" value="unassigned"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-10">Not assigned (13)</label></div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="govuk-form-group column govuk-!-margin-bottom-0">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+            {# Decorative counts mirror the rendered list. "Application received (20)" = 19 data cases + Golden Grange (status "live"), which renders as "Application received" by default until a stage is set. #}
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-1" name="filterStatusGrass" type="checkbox" value="application-received" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-1">Application received (20)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-2" name="filterStatusGrass" type="checkbox" value="in-review" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-2">In review (13)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-3" name="filterStatusGrass" type="checkbox" value="on-hold" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-3">On hold (9)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-4" name="filterStatusGrass" type="checkbox" value="agreement-drafted" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-4">Agreement drafted (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-5" name="filterStatusGrass" type="checkbox" value="agreement-offered" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-5">Agreement offered (8)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-6" name="filterStatusGrass" type="checkbox" value="agreement-accepted" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-6">Agreement accepted (21)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-7" name="filterStatusGrass" type="checkbox" value="rejected" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-7">Rejected (3)</label></div>
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-8" name="filterStatusGrass" type="checkbox" value="withdrawn" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-8">Withdrawn (3)</label></div>
+            </div>
+          </fieldset>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</details>
+{% endmacro %}
+
+{# --- Context selector (above the tabs): Team A/B/C + All cases, then Switch --- #}
+{% macro contextSelector(ctx) %}
+<form method="get" action="" class="govuk-!-margin-bottom-6">
+  <div class="govuk-form-group govuk-!-margin-bottom-0" style="display: flex; align-items: flex-end; gap: 15px;">
+    <div class="govuk-!-margin-bottom-0">
+      <label class="govuk-label" for="ctx-select">Switch team</label>
+      <select class="govuk-select" id="ctx-select" name="ctx">
+        {% for t in grasslandsTeams %}
+        <option value="{{ t.id }}"{% if t.id == ctx %} selected{% endif %}>{{ t.name }}</option>
+        {% endfor %}
+        <option value="all"{% if ctx == 'all' %} selected{% endif %}>All cases</option>
+      </select>
+    </div>
+    <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Switch</button>
+  </div>
+</form>
+{% endmacro %}
+
+{# --- Tabs + the table for the active tab. active = my | team | completed --- #}
+{% macro tabsAndTable(active, ctx, view) %}
+{% set ctxLabel = "All cases" if ctx == "all" else grasslandsTeamNames[ctx] %}
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item{% if active == 'my' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'my' %}My cases{% else %}<a href="caselist">My cases</a>{% endif %}
+    </li>
+    <li class="govuk-tabs__list-item{% if active == 'team' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'team' %}{{ ctxLabel }}{% else %}<a href="caselist-team">{{ ctxLabel }}</a>{% endif %}
+    </li>
+    <li class="govuk-tabs__list-item{% if active == 'completed' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'completed' %}Completed cases{% else %}<a href="caselist-completed">Completed cases</a>{% endif %}
+    </li>
+  </ul>
+
+  <div class="govuk-tabs__panel" id="cases">
+    <form method="get" action="">
+      <button type="submit" disabled aria-disabled="true" class="govuk-button govuk-button--secondary" data-module="govuk-button">Reassign selected cases</button>
+
+      <table class="govuk-table" data-module="moj-sortable-table" data-id-prefix="gr-cases-">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Select</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">ID</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Business</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">SBI</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date" aria-sort="none">Submitted</th>
+            <th scope="col" class="govuk-table__header custom-width-130" aria-sort="none">Status</th>
+            <th scope="col" class="govuk-table__header" aria-sort="none">Assignee</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% if view.rows.length == 0 %}
+          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
+          {% endif %}
+          {% for c in view.rows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="gr-cases-{{ c.id }}" name="selectCaseGrass" value="{{ c.id }}">
+                <label class="govuk-label govuk-checkboxes__label" for="gr-cases-{{ c.id }}"><span class="govuk-visually-hidden">Select {{ c.id }}</span></label>
+              </div>
+            </td>
+            <td class="govuk-table__cell"><a class="govuk-link" href="caseGrass/tasklist-stage">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{{ c.business }}</td>
+            <td class="govuk-table__cell">{{ c.sbi }}</td>
+            <td class="govuk-table__cell">{{ c.submitted }}</td>
+            <td class="govuk-table__cell">
+              {% if c.status == "live" %}
+                {% if data.caseStageGrass %}<strong class="{{ data.caseStatusTagGrass }}">{{ data.caseStatusGrass }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}
+              {% else %}
+                <strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>
+              {% endif %}
+            </td>
+            <td class="govuk-table__cell">{{ c.assignee }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    {% if view.totalPages > 1 %}
+    <nav class="moj-pagination" aria-label="results">
+      <p class="moj-pagination__results">Showing <b>{{ view.startIdx + 1 }}</b> to <b>{{ view.endIdx }}</b> of <b>{{ view.total }}</b> results</p>
+      <ul class="moj-pagination__list">
+        {% if view.page > 1 %}
+        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+        {% for n in range(1, view.totalPages + 1) %}
+        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}">{{ n }}</a></li>
+        {% endfor %}
+        {% if view.page < view.totalPages %}
+        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}

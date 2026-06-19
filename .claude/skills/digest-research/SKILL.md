@@ -52,9 +52,16 @@ Ask (one `AskUserQuestion` batch) only for what you cannot read off the file:
 ### 1. Read the deliverable
 
 Office files (`.pptx`, `.docx`, `.xlsx`) and `.pdf` are ZIP/structured
-containers. **Python is not installed on this machine and ImageMagick
-(`identify`) is not available** — do not rely on the pptx/pdf skill's Python
-scripts here. Instead:
+containers. **Python 3.12 is installed** (since 2026-06) — `python` and `py` are
+on PATH in any freshly opened shell (a long-running shell session may still need
+the full path `C:\Users\chasl\AppData\Local\Programs\Python\Python312\python.exe`).
+So the `anthropic-skills:pptx` / `docx` / `pdf` / `xlsx` Python scripts (e.g.
+`unpack.py`, `extract-text`) now work and are the preferred path. **ImageMagick
+(`identify`/`convert`) and poppler (`pdftoppm`) are still NOT installed**, so keep
+viewing images with the **Read tool**, not an image CLI.
+
+The pure-PowerShell fallback below still works if you prefer it (no dependency
+on the skill scripts) and is what built the reference report:
 
 - **PPTX:** copy to a temp `.zip`, `Expand-Archive`, then:
   - Text per slide: regex `<a:t>(.*?)</a:t>` over `ppt/slides/slideN.xml`
@@ -182,9 +189,11 @@ images + digest live.
 
 ## Things to remember
 
-- **No Python, no ImageMagick** on this machine. ZIP-extract Office files with
-  `Expand-Archive`; **view images with the Read tool**; never shell out to
-  `identify`/`convert`/`pdftoppm` expecting them to exist.
+- **Python 3.12 is available; ImageMagick/poppler are not.** The
+  pptx/docx/pdf/xlsx skill scripts work (`python`/`py` on PATH in a fresh
+  shell). You can still ZIP-extract Office files with `Expand-Archive` if
+  preferred. Either way **view images with the Read tool** — there is no
+  `identify`/`convert`/`pdftoppm` on this machine.
 - **Servable path:** images must live under `app/assets/images/` to be reachable
   at `/public/images/`. A digest in `research-archive/` that points at images
   anywhere else won't render in the pattern library.

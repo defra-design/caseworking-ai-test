@@ -1,14 +1,14 @@
 {% extends "layouts/main.html" %}
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
-  {% include "FRPS-D2/includes/_case2-context-strip.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
 {% endblock %}
 
 
 {% block content %}
 {% set activeNavItem = "tasks" %}
-{% include "FRPS-D2/includes/_case2-nav.html" %}
-<form action="/task1TrT2C2" method="post">
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<form action="/task3T2AmGrass" method="post">
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
@@ -18,16 +18,32 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
-       Check for payment recovery 
+       Tell applicant about amendments
       </h1>
-    </legend> 
+    </legend>
 
 
-    <p>Are there payments to recover if this agreement is terminated?</p>
+    <p>
+      <ol class="govuk-list govuk-list--number">
+        <li>Draft a message:
+          <ul class="govuk-list govuk-list--bullet">
+            <li>summarising the amendments you made</li>
+            <li>why you made them</li>
+            <li>what the customer needs to do next</li>
+          </ul>
+        </li>
+        <li>Send the message to the customer</li>
+      </ol>
+    </p>
 
 
 
 
+
+
+    <h2 class="govuk-heading-m">
+         Outcome
+      </h2>
 
     
     <div class="govuk-form-group">
@@ -35,9 +51,9 @@
         <div class="govuk-radios" data-module="govuk-radios">
         
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="contact" name="decisionTerminateTask1C2" type="radio" value="Check complete" data-aria-controls="conditional-decision1">
+            <input class="govuk-radios__input" id="contact" name="decisionTaskAm3Grass" type="radio" value="Confirm" data-aria-controls="conditional-decision1" >
             <label class="govuk-label govuk-radios__label" for="contact">
-              Check complete
+              Message sent
             </label>
           </div>
           <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
@@ -45,40 +61,51 @@
             <div id="more-detail-hint" class="govuk-hint">
               You must include an explanation for auditing purposes. 
             </div>
-          {% if (data.task1TrNoteC2) %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNote2C2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% if (data.task3AmNoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task3AmNote2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% else %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNoteC2" rows="5" aria-describedby="more-detail-hint"></textarea>
+          <textarea class="govuk-textarea" id="more-detail1" name="task3AmNoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
           {% endif %} 
-          </div>
+         </div>
+          
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="eligible-2" name="decisionTerminateTask1C2" type="radio" value="Need further information"  data-aria-controls="conditional-decision2">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionTaskAm3Grass" type="radio" value="There’s a problem" data-aria-controls="conditional-decision2" >
             <label class="govuk-label govuk-radios__label" for="eligible-2">
-              Need further information
+             There’s a problem
             </label>
-          </div>  
+          </div>
           <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
             <h3 class="govuk-heading-s">Explain this outcome</h3>
             <div id="more-detail-hint" class="govuk-hint">
               You must include an explanation for auditing purposes. 
             </div>
-          {% if (data.task1TrNoteC2) %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNote2C2" rows="5" aria-describedby="more-detail-hint"></textarea>
-          {% else %}
-          <textarea class="govuk-textarea" id="more-detail1" name="task1TrNoteC2" rows="5" aria-describedby="more-detail-hint"></textarea>
-          {% endif %} 
-          </div>     
+            {% if (data.task3AmNoteGrass) %}
+            <textarea class="govuk-textarea" id="more-detail1" name="task3AmNote2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
+            {% else %}
+            <textarea class="govuk-textarea" id="more-detail1" name="task3AmNoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
+            {% endif %} 
+          </div>
         </div>
       </fieldset>
     </div>
 
-<button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
  Confirm
 </button><br>
 <a href="tasklist-stage" class="govuk-link">Cancel and return</a>
 
-{% if (data.task1TrNoteC2) %}
-<h2 class="govuk-heading-m">Note history</h2>
+
+{% if (data.task3AmNoteGrass) %}
+</fieldset>
+</div>
+</div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full-width">
+
+
+<h2 class="govuk-heading-m govuk-!-margin-top-4">Outcome history</h2>
 
 <table class="govuk-table" data-module="moj-sortable-table">
 
@@ -86,8 +113,8 @@
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
 
-      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
-      <th scope="col" class="govuk-table__header " aria-sort="none">Action</th>
+      <th scope="col" class="govuk-table__header custom-width-180" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header custom-width-230 " aria-sort="none">Outcome</th>
 
       <th scope="col" class="govuk-table__header notes-width">Note</th>
 
@@ -102,10 +129,10 @@
       <td class="govuk-table__cell">25th Sept 2025</td>
 
       <td class="govuk-table__cell">
-        {{ data['noteActionTerminateTask1C2']}}
+        {{ data['noteActionTaskAm3Grass']}}
       </td>
       <td class="govuk-table__cell">
-        {{ data['filteredNote1TrC2']}}
+        {{ data['filteredNoteAm3Grass']}}
       </td>
 
       <td class="govuk-table__cell"> A Jones</td>
@@ -114,6 +141,7 @@
     </tr>
   </tbody>
 </table>
+{% else %} 
 
 {% endif %}
 

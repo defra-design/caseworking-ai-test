@@ -1,0 +1,190 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<form action="/task5T2Grass" method="post">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+
+     
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+        Check payment amount
+      </h1>
+    </legend>
+
+
+
+    <p>To check payment amount:
+      <ol class="govuk-list govuk-list--number">
+        <li>Check the payment section of the <a href="application" class="govuk-link">application</a> and make a note of the:
+          <ul class="govuk-list govuk-list--bullet">
+            <li>hectares per funded action</li>
+            <li>annual payments per funded action</li>
+            <li>per hectare payment rate per funded action</li>
+          </ul>
+        </li>
+        <li>Search how much the funded action pays per hectare on <a href="https://www.gov.uk/find-funding-for-land-or-farms" class="govuk-link">Find funding for land or farms</a> - check it matches the rate in the application</li>
+        <li>Multiply the total hectares for each funded action by the payment rate per hectare</li>
+        <li>Check your figure matches the total yearly payment in the application </li>
+      </ol>
+    </p>
+
+    <div class="govuk-inset-text">Payment amounts are rounded to two decimal places per line. This can lead to small differences with manual checks.</div>
+
+
+    {% if (data.caseStageGrass === 'review') %} 
+
+
+
+    <h2 class="govuk-heading-m">
+         Outcome
+      </h2>
+
+
+
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+        <div class="govuk-radios" data-module="govuk-radios">
+        
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask5Grass" type="radio" value="Accepted" data-aria-controls="conditional-decision1" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Accept
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision1">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task5NoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5Note2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5NoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+         </div>
+          
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="eligible-2" name="decisionTask5Grass" type="radio" value="Information requested" data-aria-controls="conditional-decision2" >
+            <label class="govuk-label govuk-radios__label" for="eligible-2">
+              Request information from customer
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision2">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task5NoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5Note2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5NoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask5Grass" type="radio" value="Internal investigation" data-aria-controls="conditional-decision3" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Pause for internal investigation
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision3">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task5NoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5Note2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5NoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="contact" name="decisionTask5Grass" type="radio" value="Cannot accept" data-aria-controls="conditional-decision4" >
+            <label class="govuk-label govuk-radios__label" for="contact">
+              Cannot accept
+            </label>
+          </div>
+          <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-decision4">
+            <h3 class="govuk-heading-s">Explain this outcome</h3>
+            <div id="more-detail-hint" class="govuk-hint">
+              You must include an explanation for auditing purposes. 
+            </div>
+          {% if (data.task5NoteGrass) %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5Note2Grass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% else %}
+          <textarea class="govuk-textarea" id="more-detail1" name="task5NoteGrass" rows="5" aria-describedby="more-detail-hint"></textarea>
+          {% endif %} 
+          </div>
+
+        </div>
+      </fieldset>
+    </div>
+
+<button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
+ Confirm
+</button><br>
+<a href="tasklist-stage" class="govuk-link">Cancel and return</a>{% endif %}
+{% if (data.task5NoteGrass) %}
+<h2 class="govuk-heading-m">Outcome history</h2>
+
+<table class="govuk-table" data-module="moj-sortable-table">
+
+
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+
+      <th scope="col" class="govuk-table__header custom-width-120" aria-sort="ascending">Date</th>
+      <th scope="col" class="govuk-table__header " aria-sort="none">Outcome</th>
+
+      <th scope="col" class="govuk-table__header notes-width">Note</th>
+
+      <th scope="col" class="govuk-table__header custom-width-110" aria-sort="none">Added by</th>
+
+    </tr>
+  </thead> 
+
+  <tbody class="govuk-table__body">
+  <tr class="govuk-table__row">
+
+      <td class="govuk-table__cell">25th Sept 2025</td>
+
+      <td class="govuk-table__cell">
+        {{ data['noteActionTask5Grass']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNote5Grass']}}
+      </td>
+
+      <td class="govuk-table__cell"> A Jones</td>
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% else %} 
+
+
+{% endif %}
+ 
+    </form>
+
+  </div>
+
+</div>
+
+
+
+
+
+{% endblock %}

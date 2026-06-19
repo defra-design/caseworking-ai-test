@@ -29,6 +29,18 @@ router.use(function (req, res, next) {
   next()
 })
 
+// Expose the Grasslands team reference data to every template (tab label,
+// "Switch team" dropdown, team filtering). Reloaded per request so edits to
+// data/grasslands-teams.js are picked up live.
+const grasslandsTeamsPath = path.join(__dirname, 'data', 'grasslands-teams.js')
+router.use(function (req, res, next) {
+  delete require.cache[require.resolve(grasslandsTeamsPath)]
+  const gt = require(grasslandsTeamsPath)
+  res.locals.grasslandsTeams = gt.teams
+  res.locals.grasslandsTeamNames = gt.nameById
+  next()
+})
+
 // ============================================================
 // Research archive — change-history surface for the pattern library
 // Reads app/research-archive/manifest.json (v2 contract) fresh per request
@@ -852,6 +864,11 @@ const REVIEW_OUTCOMES = {
 const AGREEMENT_OUTCOMES = {
   'Confirm':           { tag: '',                                 status: 'Confirmed' },
   "There's a problem": { tag: 'govuk-tag govuk-tag--red-status',  status: "There's a problem" },
+};
+
+const TERMINATE_OUTCOMES = {
+  'Check complete':           { tag: '',                            status: 'Completed' },
+  'Need further information': { tag: 'govuk-tag govuk-tag--yellow', status: 'On hold' },
 };
 
 const MONTH5_OUTCOMES = {
@@ -1696,6 +1713,10 @@ const calcPageKeys = {
   '/FRPS-D2/caseReal/calculations-new2': 'caseRealNew2',
   '/FRPS-D2/caseReal/calculations-mid':  'caseRealMid',
   '/FRPS-D2/caseReal/calculations-old':  'caseRealOld',
+  '/Grasslands/caseGrass/calculations-new':  'caseGrass',
+  '/Grasslands/caseGrass/calculations-new2': 'caseGrassNew2',
+  '/Grasslands/caseGrass/calculations-mid':  'caseGrassMid',
+  '/Grasslands/caseGrass/calculations-old':  'caseGrassOld',
 };
 
 // Before rendering any calc page, swap in that page's own filter state so settings on one page
@@ -1743,6 +1764,10 @@ router.get('/largeCalcFilter', function (req, res) {
     'caseRealNew2': '/FRPS-D2/caseReal/calculations-new2',
     'caseRealMid':  '/FRPS-D2/caseReal/calculations-mid',
     'caseRealOld':  '/FRPS-D2/caseReal/calculations-old',
+    'caseGrass':     '/Grasslands/caseGrass/calculations-new',
+    'caseGrassNew2': '/Grasslands/caseGrass/calculations-new2',
+    'caseGrassMid':  '/Grasslands/caseGrass/calculations-mid',
+    'caseGrassOld':  '/Grasslands/caseGrass/calculations-old',
   };
   const filter = req.query.filter;
   const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
@@ -1924,7 +1949,7 @@ makeTaskRoute('/task1TrT2C2', {
   filteredNoteKey:   'filteredNote1TrC2',
   rawNoteKey2:       'task1TrNote2C2',
   filteredNoteKey2:  'filteredNote1Tr_2C2',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2C2T,
 });
 
@@ -1937,7 +1962,7 @@ makeTaskRoute('/task2TrT2C2', {
   filteredNoteKey:   'filteredNote2TrC2',
   rawNoteKey2:       'task2TrNote2C2',
   filteredNoteKey2:  'filteredNote2Tr_2C2',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2C2T,
 });
 
@@ -2394,7 +2419,7 @@ makeTaskRoute('/task1TrT2Real', {
   filteredNoteKey:   'filteredNote1TrReal',
   rawNoteKey2:       'task1TrNote2Real',
   filteredNoteKey2:  'filteredNote1Tr_2Real',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2RealT,
 });
 
@@ -2407,7 +2432,7 @@ makeTaskRoute('/task2TrT2Real', {
   filteredNoteKey:   'filteredNote2TrReal',
   rawNoteKey2:       'task2TrNote2Real',
   filteredNoteKey2:  'filteredNote2Tr_2Real',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2RealT,
 });
 
@@ -2716,6 +2741,573 @@ router.get('/endTerminateReal', function (req, res) {
 });
 
 // ============================================================
+// Grasslands grant type — blank-canvas clone of the Golden Grange journey
+// (own /Grasslands/caseGrass/ folder, nav + context strip). New grant-type
+// prototyping starts here; routes mirror caseReal with a Grass scope token.
+// ============================================================
+
+router.get('/grasslandsApplication', function (req, res) {
+  req.session.data.largeCase = 'grass';
+  req.session.data.grassCalcVariant = 'new';
+  res.redirect('/tasklistStageGrass');
+});
+
+// ----- Grasslands caselist data + routes -----
+// Cases live in data/grasslands-cases.js (reloaded per request so edits show
+// live). Routes filter (My / team context / Completed) + paginate, then pass a
+// `view` object to the template.
+const grasslandsCasesPath = path.join(__dirname, 'data', 'grasslands-cases.js')
+function loadGrassCases () {
+  delete require.cache[require.resolve(grasslandsCasesPath)]
+  return require(grasslandsCasesPath).cases
+}
+const GRASS_COMPLETED = ['Agreement accepted', 'Rejected', 'Withdrawn']
+
+// Resolve + persist the selected context. The "Switch team" selector posts
+// ?ctx=A|B|C|all; otherwise the session's last choice is used (default Team A).
+function grassCtx (req) {
+  const valid = ['A', 'B', 'C', 'all']
+  if (valid.indexOf(req.query.ctx) !== -1) req.session.data.grassCtx = req.query.ctx
+  const stored = req.session.data.grassCtx
+  return valid.indexOf(stored) !== -1 ? stored : 'A'
+}
+function grassPaginate (rows, page) {
+  const pageSize = 20
+  const total = rows.length
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  let p = (page && page > 0) ? page : 1
+  if (p > totalPages) p = totalPages
+  const startIdx = (p - 1) * pageSize
+  const endIdx = Math.min(startIdx + pageSize, total)
+  return { rows: rows.slice(startIdx, endIdx), page: p, totalPages: totalPages, total: total, startIdx: startIdx, endIdx: endIdx }
+}
+function grassCtxFilter (cases, ctx) {
+  return ctx === 'all' ? cases : cases.filter(function (c) { return c.team === ctx })
+}
+
+// Completed cases (Agreement accepted / Rejected / Withdrawn) are shown only on
+// the Completed tab — they are excluded from My and the context tab.
+function grassActive (cases) {
+  return cases.filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) === -1 })
+}
+
+// My cases — the current user's (M Walker) active cases, independent of context.
+router.get('/Grasslands/caselist', function (req, res) {
+  const ctx = grassCtx(req)
+  const mine = grassActive(loadGrassCases().filter(function (c) { return c.assignee === 'M Walker' }))
+  res.render('Grasslands/caselist', { ctx: ctx, view: grassPaginate(mine, parseInt(req.query.page, 10)) })
+})
+
+// Context tab — the selected team's (or all) ACTIVE cases (completed excluded).
+router.get('/Grasslands/caselist-team', function (req, res) {
+  const ctx = grassCtx(req)
+  const rows = grassActive(grassCtxFilter(loadGrassCases(), ctx))
+  res.render('Grasslands/caselist-team', { ctx: ctx, view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+})
+
+// Completed cases — Agreement accepted / Rejected / Withdrawn, within the context.
+router.get('/Grasslands/caselist-completed', function (req, res) {
+  const ctx = grassCtx(req)
+  const rows = grassCtxFilter(loadGrassCases(), ctx).filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) !== -1 })
+  res.render('Grasslands/caselist-completed', { ctx: ctx, view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+})
+
+// Back-compat: the old All-cases tab is now the context tab with ctx = all.
+router.get('/Grasslands/caselist-all', function (req, res) {
+  res.redirect('/Grasslands/caselist-team?ctx=all')
+})
+
+makeStageRoute('/tasklistStageGrass', {
+  stageCountKey:    'stageCountGrass',
+  stageKey:         'caseStageGrass',
+  statusKey:        'caseStatusGrass',
+  tagKey:           'caseStatusTagGrass',
+  firstRedirect:    '/Grasslands/caselist',
+  tasklistRedirect: '/Grasslands/caseGrass/tasklist-stage',
+});
+
+// ============================================================
+// Grasslands/caseGrass routes (Golden Grange journey — cloned from caseReal)
+// ============================================================
+
+// --- Approval/rejection ---
+
+makeApproveRoute('/app-approve2Grass', {
+  decisionKey:           'decision1Grass',
+  approvedKey:           'caseApprovedGrass',
+  agreementStageKey:     'agreementStageGrass',
+  reviewNoteKey:         'reviewNoteGrass',
+  filteredReviewNoteKey: 'filteredReviewNoteGrass',
+  stageKey:              'caseStageGrass',
+  statusKey:             'caseStatusGrass',
+  tagKey:                'caseStatusTagGrass',
+  onApproveRedirect:     '/tasklistStageGrass',
+  amendRedirect:         '/Grasslands/caseGrass/amend-confirm',
+  returnRedirect:        '/Grasslands/caseGrass/return-confirm',
+  defaultRedirect:       '/Grasslands/caseGrass/tasklist-stage',
+});
+
+// --- State resets ---
+
+router.get('/resume2Grass', function (req, res) {
+  // Returns Grass case (Golden Grange) to 'In review' after a pause or rejection reopen
+  req.session.data.caseStageGrass     = 'review';
+  req.session.data.caseStatusGrass    = 'In review';
+  req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--blue';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+router.get('/amendReturn1Grass', function (req, res) {
+  // Cancels amend/return flow and restores Grass case (Golden Grange) to 'In review'
+  req.session.data.caseStageGrass     = 'review';
+  req.session.data.caseStatusGrass    = 'In review';
+  req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--blue';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+// --- Confirmation gates ---
+
+router.get('/returnConf1Grass', function (req, res) {
+  // Proceeds with return if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.rConfGrass === 'yes') {
+    res.redirect('/Grasslands/caseGrass/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1Grass');
+  }
+});
+
+router.get('/terminateConf1Grass', function (req, res) {
+  // Finalises termination if confirmed, otherwise leaves Grass case (Golden Grange) stage unchanged
+  if (req.session.data.tConfGrass === 'yes') {
+    req.session.data.caseStageGrass     = 'terminate';
+    req.session.data.caseStatusGrass    = 'Terminated';
+    req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--red';
+  }
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+router.get('/amendConf1Grass', function (req, res) {
+  // Proceeds with amendment if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.aConfGrass === 'yes') {
+    res.redirect('/Grasslands/caseGrass/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1Grass');
+  }
+});
+
+// --- Amendment flow ---
+
+makeAmendRoute('/amend1Grass', {
+  decisionKey: 'decisionAmGrass',
+  stageKey:    'caseStageGrass',
+  statusKey:   'caseStatusGrass',
+  tagKey:      'caseStatusTagGrass',
+  redirectTo:  '/Grasslands/caseGrass/tasklist-stage',
+});
+
+router.get('/amend2Grass', function (req, res) {
+  // Closes Grass case (Golden Grange) via amendment submission
+  req.session.data.caseStageGrass     = 'amendment_submitted';
+  req.session.data.caseStatusGrass    = 'Case close by amendment';
+  req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--orange';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+// --- Agreement sent ---
+
+makeAgreementSentRoute('/aggSent2Grass', {
+  decisionKey:     'decisionAgGrass',
+  rawNoteKey:      'agreeNoteGrass',
+  filteredNoteKey: 'filteredAggNoteGrass',
+  stageKey:        'caseStageGrass',
+  statusKey:       'caseStatusGrass',
+  tagKey:          'caseStatusTagGrass',
+  onSentRedirect:  '/tasklistStageGrass',
+  defaultRedirect: '/Grasslands/caseGrass/tasklist-stage',
+});
+
+// --- Termination flow ---
+
+router.get('/terminate1Grass', function (req, res) {
+  // Begins termination process for Grass case (Golden Grange)
+  req.session.data.caseStageGrass     = 'pending-termination';
+  req.session.data.caseStatusGrass    = 'Preparing to terminate';
+  req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--orange';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+router.get('/terminatePrepGrass', function (req, res) {
+  // Routes termination preparation outcome: confirm page, end process, or default
+  const d = req.session.data;
+  switch (d.decisionTrGrass) {
+  case 'Terminate agreement':
+    d.filteredTrNoteGrass = stripEmptyAndNulls(d.terminateNoteGrass);
+    return res.redirect('/Grasslands/caseGrass/terminate-confirm');
+  case 'End termination process':
+    d.caseStageGrass     = 'pay';
+    d.caseStatusGrass    = 'Agreement accepted';
+    d.caseStatusTagGrass = 'govuk-tag govuk-tag--green';
+    return res.redirect('/Grasslands/caseGrass/tasklist-stage');
+  }
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+// --- Termination task routes ---
+
+const D2GrassT = '/Grasslands/caseGrass/tasklist-stage';
+
+// Note: original task1TrT2Grass default branch used wrong keys (terminateTagGrass/terminateStatusGrass). Fixed to terminate1TagGrass/terminate1StatusGrass.
+makeTaskRoute('/task1TrT2Grass', {
+  checkedKey:        'terminateCheckedGrass',
+  decisionKey:       'decisionTerminateTask1Grass',
+  noteActionKey:     'noteActionTerminateTask1Grass',
+  tagKey:            'terminate1TagGrass',
+  statusKey:         'terminate1StatusGrass',
+  rawNoteKey:        'task1TrNoteGrass',
+  filteredNoteKey:   'filteredNote1TrGrass',
+  rawNoteKey2:       'task1TrNote2Grass',
+  filteredNoteKey2:  'filteredNote1Tr_2Grass',
+  outcomes:          TERMINATE_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task2TrT2Grass', {
+  decisionKey:       'decisionTerminateTask2Grass',
+  noteActionKey:     'noteActionTerminateTask2Grass',
+  tagKey:            'terminate2TagGrass',
+  statusKey:         'terminate2StatusGrass',
+  rawNoteKey:        'task2TrNoteGrass',
+  filteredNoteKey:   'filteredNote2TrGrass',
+  rawNoteKey2:       'task2TrNote2Grass',
+  filteredNoteKey2:  'filteredNote2Tr_2Grass',
+  outcomes:          TERMINATE_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+// --- Task review routes ---
+
+// Note: task5T2Grass and task6T2Grass use 'detailsChecked' (not detailsCheckedGrass) — preserved from original.
+makeTaskRoute('/task1T2Grass', {
+  checkedKey:        'detailsCheckedGrass',
+  decisionKey:       'decisionTask1Grass',
+  noteActionKey:     'noteActionTask1Grass',
+  tagKey:            'detailsTagGrass',
+  statusKey:         'detailsStatusGrass',
+  rawNoteKey:        'task1NoteGrass',
+  filteredNoteKey:   'filteredNote1Grass',
+  rawNoteKey2:       'task1Note2Grass',
+  filteredNoteKey2:  'filteredNote1_2Grass',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task2T2Grass', {
+  checkedKey:        'detailsCheckedGrass',
+  decisionKey:       'decisionTask2Grass',
+  noteActionKey:     'noteActionTask2Grass',
+  tagKey:            'calcsTagGrass',
+  statusKey:         'calcsStatusGrass',
+  rawNoteKey:        'task2NoteGrass',
+  filteredNoteKey:   'filteredNote2Grass',
+  rawNoteKey2:       'task2Note2Grass',
+  filteredNoteKey2:  'filteredNote2_2Grass',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task3T2Grass', {
+  checkedKey:        'detailsCheckedGrass',
+  decisionKey:       'decisionTask3Grass',
+  noteActionKey:     'noteActionTask3Grass',
+  tagKey:            'sssiTagGrass',
+  statusKey:         'sssiStatusGrass',
+  rawNoteKey:        'task3NoteGrass',
+  filteredNoteKey:   'filteredNote3Grass',
+  rawNoteKey2:       'task3Note2Grass',
+  filteredNoteKey2:  'filteredNote3_2Grass',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5T2Grass', {
+  checkedKey:        'detailsCheckedGrass',
+  decisionKey:       'decisionTask5Grass',
+  noteActionKey:     'noteActionTask5Grass',
+  tagKey:            'paymentTagGrass',
+  statusKey:         'paymentStatusGrass',
+  rawNoteKey:        'task5NoteGrass',
+  filteredNoteKey:   'filteredNote5Grass',
+  rawNoteKey2:       'task5Note2Grass',
+  filteredNoteKey2:  'filteredNote5_2Grass',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task6T2Grass', {
+  checkedKey:        'detailsCheckedGrass',
+  decisionKey:       'decisionTask6Grass',
+  noteActionKey:     'noteActionTask6Grass',
+  tagKey:            'budgetTagGrass',
+  statusKey:         'budgetStatusGrass',
+  rawNoteKey:        'task6NoteGrass',
+  filteredNoteKey:   'filteredNote6Grass',
+  rawNoteKey2:       'task6Note2Grass',
+  filteredNoteKey2:  'filteredNote6_2Grass',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+// --- Case assignment ---
+
+router.get('/caselistTeam2Grass', function (req, res) {
+  // Marks Grass case (Golden Grange) as assigned and returns to caselist
+  req.session.data.caseAssignedGrass = 'yes';
+  res.redirect('/Grasslands/caselist');
+});
+
+router.get('/setUserFo2Grass', function (req, res) {
+  // Assigns finance officer role for Grass case (Golden Grange)
+  req.session.data.financeOfficerGrass = 'yes';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+// --- Amendment task routes ---
+
+makeTaskRoute('/task1T2AmGrass', {
+  decisionKey:       'decisionTaskAm1Grass',
+  noteActionKey:     'noteActionTaskAm1Grass',
+  tagKey:            'amend1TagGrass',
+  statusKey:         'amend1StatusGrass',
+  rawNoteKey:        'task1AmNoteGrass',
+  filteredNoteKey:   'filteredNoteAm1Grass',
+  rawNoteKey2:       'task1_2AmNoteGrass',
+  filteredNoteKey2:  'filteredNoteAm1_2Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task2T2AmGrass', {
+  decisionKey:       'decisionTaskAm2Grass',
+  noteActionKey:     'noteActionTaskAm2Grass',
+  tagKey:            'amend2TagGrass',
+  statusKey:         'amend2StatusGrass',
+  rawNoteKey:        'task2AmNoteGrass',
+  filteredNoteKey:   'filteredNoteAm2Grass',
+  rawNoteKey2:       'task2_2AmNoteGrass',
+  filteredNoteKey2:  'filteredNoteAm2_2Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task3T2AmGrass', {
+  decisionKey:       'decisionTaskAm3Grass',
+  noteActionKey:     'noteActionTaskAm3Grass',
+  tagKey:            'amend3TagGrass',
+  statusKey:         'amend3StatusGrass',
+  rawNoteKey:        'task3AmNoteGrass',
+  filteredNoteKey:   'filteredNoteAm3Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task4T2AmGrass', {
+  decisionKey:       'decisionTaskAm4Grass',
+  noteActionKey:     'noteActionTaskAm4Grass',
+  tagKey:            'amend4TagGrass',
+  statusKey:         'amend4StatusGrass',
+  rawNoteKey:        'task4NoteGrass',
+  filteredNoteKey:   'filteredNoteAm4Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+// --- Agreement progression ---
+
+router.get('/agreementStage2Grass', function (req, res) {
+  // Unlocks the agreement tab in the Grass case (Golden Grange) navigation
+  req.session.data.agreementStageGrass = 'yes';
+  res.redirect('/Grasslands/caselist');
+});
+
+// --- Agreement task routes ---
+
+makeTaskRoute('/task1AgT2Grass', {
+  checkedKey:        'AgreeCheckedGrass',
+  decisionKey:       'decisionAgreeTask1Grass',
+  noteActionKey:     'noteActionAgreeTask1Grass',
+  tagKey:            'agreeTagGrass',
+  statusKey:         'agreeStatusGrass',
+  rawNoteKey:        'task1ANoteGrass',
+  filteredNoteKey:   'filteredNote1AGrass',
+  rawNoteKey2:       'task1ANote2Grass',
+  filteredNoteKey2:  'filteredNote1A_2Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task2AgT2Grass', {
+  decisionKey:       'decisionAgreeTask2Grass',
+  noteActionKey:     'noteActionAgreeTask2Grass',
+  tagKey:            'agreeSTagGrass',
+  statusKey:         'agreeSStatusGrass',
+  rawNoteKey:        'task2ANoteGrass',
+  filteredNoteKey:   'filteredNoteA2Grass',
+  rawNoteKey2:       'task2ANote2Grass',
+  filteredNoteKey2:  'filteredNote2A_2Grass',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+// --- Agreement signing ---
+
+router.get('/setAgreeSign2Grass', function (req, res) {
+  // Records customer signature and advances Grass case (Golden Grange) status
+  req.session.data.caseStatusGrass = 'Agreement accepted';
+  res.redirect('/tasklistStageGrass');
+});
+
+// --- Stage progression ---
+
+router.get('/startGrass', function (req, res) {
+  // Resets Grass case (Golden Grange) to the start stage (used when re-entering a completed case)
+  req.session.data.caseStageGrass     = 'start';
+  req.session.data.caseStatusGrass    = 'Application received';
+  req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--grey';
+  req.session.data.stageCountGrass    = 1;
+  res.redirect('/Grasslands/caselist');
+});
+
+
+// Grass case (Golden Grange) — same lifecycle pattern as Grass case (Golden Grange) so the first hit
+// after clearing data lands on the caselist (with the case row showing 'Application
+// received') and subsequent hits walk the case through its stages.
+makeStageRoute('/tasklistStageGrass', {
+  stageCountKey:    'stageCountGrass',
+  stageKey:         'caseStageGrass',
+  statusKey:        'caseStatusGrass',
+  tagKey:           'caseStatusTagGrass',
+  firstRedirect:    '/Grasslands/caselist',
+  tasklistRedirect: '/Grasslands/caseGrass/tasklist-stage',
+});
+
+// --- 5-month checks ---
+
+router.get('/6month1Grass', function (req, res) {
+  // Transitions Grass case (Golden Grange) into the simple single-task 6-month phase
+  req.session.data.caseStatusGrass = '6 month checks';
+  req.session.data.caseStageGrass  = '6month';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+router.get('/month5_1Grass', function (req, res) {
+  // 6-month-check completion step within the Grass case. The base /month5_1
+  // it was cloned from has no handler; this keeps the action inside Grasslands
+  // (form fields are now Grass-scoped) and returns to the case tasklist.
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+router.get('/6month1FullGrass', function (req, res) {
+  // Transitions Grass case (Golden Grange) into the FULL 6-month phase
+  // (5 tasks: AAC re-run, AAC review, management control, Siti Tenure, LPIS)
+  // Per draft content for FGP-1109.
+  req.session.data.caseStatusGrass = '6 month checks (full)';
+  req.session.data.caseStageGrass  = '6month-full';
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+makeTaskRoute('/task6m1Grass', {
+  decisionKey:       'decisionTask1mGrass',
+  noteActionKey:     'noteActionTask1mGrass',
+  tagKey:            'month5_1TagGrass',
+  statusKey:         'month5_1StatusGrass',
+  rawNoteKey:        'task1mNoteGrass',
+  filteredNoteKey:   'filteredNote1mGrass',
+  rawNoteKey2:       'task1mNote2Grass',
+  filteredNoteKey2:  'filteredNote1m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5m2Grass', {
+  decisionKey:       'decisionTask2mGrass',
+  noteActionKey:     'noteActionTask2mGrass',
+  tagKey:            'month5_2TagGrass',
+  statusKey:         'month5_2StatusGrass',
+  rawNoteKey:        'task2mNoteGrass',
+  filteredNoteKey:   'filteredNote2mGrass',
+  rawNoteKey2:       'task2mNote2Grass',
+  filteredNoteKey2:  'filteredNote2m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5m3Grass', {
+  decisionKey:       'decisionTask3mGrass',
+  noteActionKey:     'noteActionTask3mGrass',
+  tagKey:            'month5_3TagGrass',
+  statusKey:         'month5_3StatusGrass',
+  rawNoteKey:        'task3mNoteGrass',
+  filteredNoteKey:   'filteredNote3mGrass',
+  rawNoteKey2:       'task3mNote2Grass',
+  filteredNoteKey2:  'filteredNote3m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5m4Grass', {
+  decisionKey:       'decisionTask4mGrass',
+  noteActionKey:     'noteActionTask4mGrass',
+  tagKey:            'month5_4TagGrass',
+  statusKey:         'month5_4StatusGrass',
+  rawNoteKey:        'task4mNoteGrass',
+  filteredNoteKey:   'filteredNote4mGrass',
+  rawNoteKey2:       'task4mNote2Grass',
+  filteredNoteKey2:  'filteredNote4m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5m5Grass', {
+  decisionKey:       'decisionTask5mGrass',
+  noteActionKey:     'noteActionTask5mGrass',
+  tagKey:            'month5_5TagGrass',
+  statusKey:         'month5_5StatusGrass',
+  rawNoteKey:        'task5mNoteGrass',
+  filteredNoteKey:   'filteredNote5mGrass',
+  rawNoteKey2:       'task5mNote2Grass',
+  filteredNoteKey2:  'filteredNote5m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+makeTaskRoute('/task5m6Grass', {
+  decisionKey:       'decisionTask6mGrass',
+  noteActionKey:     'noteActionTask6mGrass',
+  tagKey:            'month5_6TagGrass',
+  statusKey:         'month5_6StatusGrass',
+  rawNoteKey:        'task6mNoteGrass',
+  filteredNoteKey:   'filteredNote6mGrass',
+  rawNoteKey2:       'task6mNote2Grass',
+  filteredNoteKey2:  'filteredNote6m_2Grass',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2GrassT,
+});
+
+// --- Utility routes ---
+
+
+router.get('/endTerminateGrass', function (req, res) {
+  // Ends termination process and restores Grass case (Golden Grange) to 'Agreement accepted' if confirmed
+  if (req.session.data.terminateDecisionGrass === 'yes') {
+    req.session.data.caseStageGrass     = 'pay';
+    req.session.data.caseStatusGrass    = 'Agreement accepted';
+    req.session.data.caseStatusTagGrass = 'govuk-tag govuk-tag--green';
+  }
+  res.redirect('/Grasslands/caseGrass/tasklist-stage');
+});
+
+
+// ============================================================
 // FRPS-D2/case3 routes
 // ============================================================
 
@@ -2870,7 +3462,7 @@ makeTaskRoute('/task1TrT2C3', {
   filteredNoteKey:   'filteredNote1TrC3',
   rawNoteKey2:       'task1TrNote2C3',
   filteredNoteKey2:  'filteredNote1Tr_2C3',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2C3T,
 });
 
@@ -2883,7 +3475,7 @@ makeTaskRoute('/task2TrT2C3', {
   filteredNoteKey:   'filteredNote2TrC3',
   rawNoteKey2:       'task2TrNote2C3',
   filteredNoteKey2:  'filteredNote2Tr_2C3',
-  outcomes:          AGREEMENT_OUTCOMES,
+  outcomes:          TERMINATE_OUTCOMES,
   redirectTo:        D2C3T,
 });
 
