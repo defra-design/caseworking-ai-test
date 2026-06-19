@@ -14,11 +14,28 @@
   Status filter values mirror the FRPS-D2 set; see grasslands-cases.js DATA RULES.
 #}
 
-{# --- Search + filters, in a details (decorative; GET-to-self) --- #}
-{% macro filters() %}
-<details class="govuk-details">
+{# --- Search + filters. Functional: GET-to-self; the route reads the selected
+   values from the session, filters the rows and feeds back `filters` (selected
+   sets + per-facet counts for the current tab/context). A facet with nothing
+   ticked imposes no constraint (all ticked === everything shown). --- #}
+{% macro filters(f) %}
+{% set f = f or { assignee: [], status: [], search: "", counts: { assignee: {}, status: {} } } %}
+{% set assigneeOpts = [
+  { v: "walker", n: "M Walker" }, { v: "rsingh", n: "R Singh" }, { v: "tokafor", n: "T Okafor" },
+  { v: "carter", n: "E Carter" }, { v: "jjones", n: "J Jones" }, { v: "pshah", n: "P Shah" },
+  { v: "ajones", n: "A Jones" }, { v: "lowusu", n: "L Owusu" }, { v: "kreed", n: "K Reed" },
+  { v: "unassigned", n: "Not assigned" }
+] %}
+{% set statusOpts = [
+  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
+  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
+  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
+  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
+] %}
+{% set filterCount = f.assignee.length + f.status.length %}
+<details class="govuk-details"{% if filterCount > 0 or f.search %} open{% endif %}>
   <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">Find an application</span>
+    <span class="govuk-details__summary-text">Find an application{% if filterCount > 0 or f.search %} — filters applied{% endif %}</span>
   </summary>
   <div class="govuk-details__text">
 
@@ -27,7 +44,7 @@
         <div class="govuk-form-group">
           <h2 class="govuk-heading-m">Search for cases</h2>
           <div id="search-hint" class="govuk-hint moj-search__hint">You can search by application ID, business, SBI, status or assignee.</div>
-          <input class="govuk-input moj-search__input" id="searchGrass" name="searchGrass" type="search" aria-describedby="search-hint">
+          <input class="govuk-input moj-search__input" id="searchGrass" name="searchGrass" type="search" aria-describedby="search-hint" value="{{ f.search }}">
         </div>
         <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">Search</button>
       </form>
@@ -37,6 +54,7 @@
     <form method="get" action="">
       <h2 class="govuk-heading-m">Apply filters</h2>
       <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+      <a href="?clearGrassFilters=1" class="govuk-link govuk-!-margin-left-3">Clear filters</a>
 
       <div class="govuk-form-group radio-container">
 
@@ -44,16 +62,9 @@
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assignee</legend>
             <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-1" name="filterAssigneeGrass" type="checkbox" value="walker" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-1">M Walker (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-2" name="filterAssigneeGrass" type="checkbox" value="rsingh" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-2">R Singh (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-3" name="filterAssigneeGrass" type="checkbox" value="tokafor" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-3">T Okafor (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-4" name="filterAssigneeGrass" type="checkbox" value="carter" checked><label class="govuk-label govuk-checkboxes__label" for="fAssignee-4">E Carter (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-5" name="filterAssigneeGrass" type="checkbox" value="jjones"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-5">J Jones (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-6" name="filterAssigneeGrass" type="checkbox" value="pshah"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-6">P Shah (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-7" name="filterAssigneeGrass" type="checkbox" value="ajones"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-7">A Jones (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-8" name="filterAssigneeGrass" type="checkbox" value="lowusu"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-8">L Owusu (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-9" name="filterAssigneeGrass" type="checkbox" value="kreed"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-9">K Reed (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-10" name="filterAssigneeGrass" type="checkbox" value="unassigned"><label class="govuk-label govuk-checkboxes__label" for="fAssignee-10">Not assigned (13)</label></div>
+              {% for o in assigneeOpts %}
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-{{ loop.index }}" name="filterAssigneeGrass" type="checkbox" value="{{ o.v }}"{% if not f.assignee.length or o.v in f.assignee %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fAssignee-{{ loop.index }}">{{ o.n }} ({{ f.counts.assignee[o.v] or 0 }})</label></div>
+              {% endfor %}
             </div>
           </fieldset>
         </div>
@@ -61,16 +72,10 @@
         <div class="govuk-form-group column govuk-!-margin-bottom-0">
           <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
-            {# Decorative counts mirror the rendered list. "Application received (20)" = 19 data cases + Golden Grange (status "live"), which renders as "Application received" by default until a stage is set. #}
             <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-1" name="filterStatusGrass" type="checkbox" value="application-received" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-1">Application received (20)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-2" name="filterStatusGrass" type="checkbox" value="in-review" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-2">In review (13)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-3" name="filterStatusGrass" type="checkbox" value="on-hold" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-3">On hold (9)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-4" name="filterStatusGrass" type="checkbox" value="agreement-drafted" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-4">Agreement drafted (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-5" name="filterStatusGrass" type="checkbox" value="agreement-offered" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-5">Agreement offered (8)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-6" name="filterStatusGrass" type="checkbox" value="agreement-accepted" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-6">Agreement accepted (21)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-7" name="filterStatusGrass" type="checkbox" value="rejected" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-7">Rejected (3)</label></div>
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-8" name="filterStatusGrass" type="checkbox" value="withdrawn" checked><label class="govuk-label govuk-checkboxes__label" for="fStatus-8">Withdrawn (3)</label></div>
+              {% for o in statusOpts %}
+              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusGrass" type="checkbox" value="{{ o.v }}"{% if not f.status.length or o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }} ({{ f.counts.status[o.v] or 0 }})</label></div>
+              {% endfor %}
             </div>
           </fieldset>
         </div>
@@ -116,8 +121,8 @@
   </ul>
 
   <div class="govuk-tabs__panel" id="cases">
-    <form method="get" action="">
-      <button type="submit" disabled aria-disabled="true" class="govuk-button govuk-button--secondary" data-module="govuk-button">Reassign selected cases</button>
+    <form method="get" action="caselist-assign" id="grass-cases-form">
+      <button type="submit" id="grass-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
 
       <table class="govuk-table" data-module="moj-sortable-table" data-id-prefix="gr-cases-">
         <thead class="govuk-table__head">
@@ -179,4 +184,21 @@
     {% endif %}
   </div>
 </div>
+<script>
+  // Enable the "Assign" button only once one or more Select boxes are ticked.
+  (function () {
+    var form = document.getElementById('grass-cases-form')
+    if (!form) return
+    var btn = document.getElementById('grass-assign-btn')
+    var boxes = form.querySelectorAll('input[name="selectCaseGrass"]')
+    function sync () {
+      var any = false
+      boxes.forEach(function (b) { if (b.checked) any = true })
+      btn.disabled = !any
+      btn.setAttribute('aria-disabled', String(!any))
+    }
+    boxes.forEach(function (b) { b.addEventListener('change', sync) })
+    sync()
+  })()
+</script>
 {% endmacro %}

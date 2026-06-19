@@ -2791,25 +2791,150 @@ function grassActive (cases) {
   return cases.filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) === -1 })
 }
 
+// Reassignment overrides — picking a caseworker on the assign screen stores
+// id -> assignee in the session; applied on load so a reassignment carries
+// through every tab without mutating the data file.
+function grassApplyAssign (cases, req) {
+  const map = (req.session.data && req.session.data.grassAssign) || {}
+  return cases.map(function (c) {
+    return map[c.id] ? Object.assign({}, c, { assignee: map[c.id] }) : c
+  })
+}
+// The caselist Select checkboxes submit selectCaseGrass; normalise to an array
+// (one ticked box arrives as a string, several as an array).
+function grassSelectedIds (req) {
+  const v = req.query.selectCaseGrass
+  if (v === undefined || v === null || v === '') return []
+  return Array.isArray(v) ? v : [v]
+}
+
+// ----- Filters (Assignee / Status / search) -----
+// The "Find an application" panel checkbox values map to the data's assignee
+// names and status strings. Selections persist in the session so they carry
+// across tabs (like the context selector).
+const GRASS_ASSIGNEE_BY_VAL = {
+  walker: 'M Walker', rsingh: 'R Singh', tokafor: 'T Okafor',
+  carter: 'E Carter', jjones: 'J Jones', pshah: 'P Shah',
+  ajones: 'A Jones', lowusu: 'L Owusu', kreed: 'K Reed',
+  unassigned: 'Not assigned'
+}
+const GRASS_STATUS_BY_VAL = {
+  'application-received': 'Application received', 'in-review': 'In review',
+  'on-hold': 'On hold', 'agreement-drafted': 'Agreement drafted',
+  'agreement-offered': 'Agreement offered', 'agreement-accepted': 'Agreement accepted',
+  rejected: 'Rejected', withdrawn: 'Withdrawn'
+}
+const GRASS_VAL_BY_ASSIGNEE = {}
+Object.keys(GRASS_ASSIGNEE_BY_VAL).forEach(function (v) { GRASS_VAL_BY_ASSIGNEE[GRASS_ASSIGNEE_BY_VAL[v]] = v })
+const GRASS_VAL_BY_STATUS = {}
+Object.keys(GRASS_STATUS_BY_VAL).forEach(function (v) { GRASS_VAL_BY_STATUS[GRASS_STATUS_BY_VAL[v]] = v })
+
+// Normalise a checkbox field to an array of real values (the kit appends a
+// "_unchecked" sentinel; a single tick arrives as a string).
+function grassArr (v) {
+  if (v === undefined || v === null || v === '') return []
+  return (Array.isArray(v) ? v : [v]).filter(function (x) { return x && x !== '_unchecked' })
+}
+// Effective status for a row — the live case (Golden Grange) renders its status
+// from the session, defaulting to "Application received".
+function grassEffStatus (c, req) {
+  if (c.status === 'live') return req.session.data.caseStageGrass ? req.session.data.caseStatusGrass : 'Application received'
+  return c.status
+}
+// Apply the active Assignee / Status / search filters. An empty facet imposes
+// no constraint (every box ticked === all shown).
+function grassFilter (rows, req) {
+  const d = req.session.data || {}
+  const aNames = grassArr(d.filterAssigneeGrass).map(function (v) { return GRASS_ASSIGNEE_BY_VAL[v] }).filter(Boolean)
+  const sNames = grassArr(d.filterStatusGrass).map(function (v) { return GRASS_STATUS_BY_VAL[v] }).filter(Boolean)
+  const search = (d.searchGrass || '').toString().trim().toLowerCase()
+  return rows.filter(function (c) {
+    if (aNames.length && aNames.indexOf(c.assignee) === -1) return false
+    if (sNames.length && sNames.indexOf(grassEffStatus(c, req)) === -1) return false
+    if (search) {
+      const hay = [c.id, c.business, c.sbi, grassEffStatus(c, req), c.assignee].join(' ').toLowerCase()
+      if (hay.indexOf(search) === -1) return false
+    }
+    return true
+  })
+}
+// Per-facet counts for the current tab/context base (pre-facet), plus the active
+// selections + search, handed to the template so the panel reflects reality.
+function grassFilterState (baseRows, req) {
+  const d = req.session.data || {}
+  const assignee = {}; const status = {}
+  Object.keys(GRASS_ASSIGNEE_BY_VAL).forEach(function (v) { assignee[v] = 0 })
+  Object.keys(GRASS_STATUS_BY_VAL).forEach(function (v) { status[v] = 0 })
+  baseRows.forEach(function (c) {
+    const av = GRASS_VAL_BY_ASSIGNEE[c.assignee]; if (av) assignee[av]++
+    const sv = GRASS_VAL_BY_STATUS[grassEffStatus(c, req)]; if (sv) status[sv]++
+  })
+  return {
+    assignee: grassArr(d.filterAssigneeGrass),
+    status: grassArr(d.filterStatusGrass),
+    search: (d.searchGrass || '').toString(),
+    counts: { assignee: assignee, status: status }
+  }
+}
+// "Clear filters" link — wipe the filter keys and reload the bare path.
+function grassClearedFilters (req, res) {
+  if (!req.query.clearGrassFilters) return false
+  delete req.session.data.filterAssigneeGrass
+  delete req.session.data.filterStatusGrass
+  delete req.session.data.searchGrass
+  res.redirect(req.path)
+  return true
+}
+
 // My cases — the current user's (M Walker) active cases, independent of context.
 router.get('/Grasslands/caselist', function (req, res) {
+  if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const mine = grassActive(loadGrassCases().filter(function (c) { return c.assignee === 'M Walker' }))
-  res.render('Grasslands/caselist', { ctx: ctx, view: grassPaginate(mine, parseInt(req.query.page, 10)) })
+  const base = grassActive(grassApplyAssign(loadGrassCases(), req).filter(function (c) { return c.assignee === 'M Walker' }))
+  const rows = grassFilter(base, req)
+  res.render('Grasslands/caselist', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
 })
 
 // Context tab — the selected team's (or all) ACTIVE cases (completed excluded).
 router.get('/Grasslands/caselist-team', function (req, res) {
+  if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const rows = grassActive(grassCtxFilter(loadGrassCases(), ctx))
-  res.render('Grasslands/caselist-team', { ctx: ctx, view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+  const base = grassActive(grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx))
+  const rows = grassFilter(base, req)
+  res.render('Grasslands/caselist-team', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
 })
 
 // Completed cases — Agreement accepted / Rejected / Withdrawn, within the context.
 router.get('/Grasslands/caselist-completed', function (req, res) {
+  if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const rows = grassCtxFilter(loadGrassCases(), ctx).filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) !== -1 })
-  res.render('Grasslands/caselist-completed', { ctx: ctx, view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+  const base = grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx).filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) !== -1 })
+  const rows = grassFilter(base, req)
+  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+})
+
+// Assign screen — shows the ticked case(s) and a caseworker picker. The picker
+// is every caseworker across all teams (autocomplete-enhanced in the template).
+router.get('/Grasslands/caselist-assign', function (req, res) {
+  const ctx = grassCtx(req)
+  const ids = grassSelectedIds(req)
+  const selected = grassApplyAssign(loadGrassCases(), req).filter(function (c) { return ids.indexOf(c.id) !== -1 })
+  let caseworkers = []
+  require(grasslandsTeamsPath).teams.forEach(function (t) { caseworkers = caseworkers.concat(t.caseworkers) })
+  res.render('Grasslands/caselist-assign', { ctx: ctx, selected: selected, caseworkers: caseworkers })
+})
+
+// Confirm — record the chosen caseworker against every selected case, then
+// return to the context tab where the Assignee column reflects the change.
+router.get('/Grasslands/assign-confirm', function (req, res) {
+  const ids = grassSelectedIds(req)
+  const assignee = req.query.grassAssignee
+  if (assignee && ids.length) {
+    const map = req.session.data.grassAssign || {}
+    ids.forEach(function (id) { map[id] = assignee })
+    req.session.data.grassAssign = map
+  }
+  res.redirect('/Grasslands/caselist-team')
 })
 
 // Back-compat: the old All-cases tab is now the context tab with ctx = all.

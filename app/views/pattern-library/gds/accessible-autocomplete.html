@@ -75,6 +75,57 @@
         </div>
       </div>
 
+      <h2 class="govuk-heading-l">Enhance an existing select</h2>
+      <p class="govuk-body">When the options are a known shortlist already rendered server-side — and the field must still submit a value if JavaScript doesn't run — enhance a standard <code class="govuk-body">&lt;select&gt;</code> with <code class="govuk-body">enhanceSelectElement</code> rather than building from a <code class="govuk-body">source</code> array. The original <code class="govuk-body">&lt;select&gt;</code> keeps its <code class="govuk-body">name</code>, so the form is fully functional as a plain select before (and without) enhancement — true progressive enhancement.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-aa2">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-aa2-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="pl-aa-select">Caseworker</label>
+              <select class="govuk-select" id="pl-aa-select" name="pl-aa-select">
+                <option value="">Select a caseworker</option>
+                <option value="M Walker">M Walker</option>
+                <option value="R Singh">R Singh</option>
+                <option value="T Okafor">T Okafor</option>
+                <option value="E Carter">E Carter</option>
+                <option value="J Jones">J Jones</option>
+                <option value="P Shah">P Shah</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-aa2" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-aa2-code">&lt;link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css"&gt;
+
+&lt;div class="govuk-form-group"&gt;
+  &lt;label class="govuk-label govuk-label--s" for="caseworker"&gt;Caseworker&lt;/label&gt;
+  &lt;select class="govuk-select" id="caseworker" name="caseworker"&gt;
+    &lt;option value=""&gt;Select a caseworker&lt;/option&gt;
+    &lt;option value="M Walker"&gt;M Walker&lt;/option&gt;
+    &lt;!-- …more options… --&gt;
+  &lt;/select&gt;
+&lt;/div&gt;
+
+&lt;script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  accessibleAutocomplete.enhanceSelectElement({
+    selectElement: document.getElementById('caseworker'),
+    showAllValues: true,
+    defaultValue: ''
+  });
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+      <p class="govuk-body">Constrain the width with a GDS override on the form group (e.g. <code class="govuk-body">govuk-!-width-two-thirds</code>) so the input and its dropdown menu stay aligned.</p>
+
       <h2 class="govuk-heading-l">When to use</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>The user needs to pick one item from a long, finite list (more than ~20 items) where they probably already know what they want.</li>
@@ -95,6 +146,7 @@
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <p class="govuk-body">Used in the parcel-search panel above the parcel list on every large calculations page (paired with a <strong>Find</strong> button that hides every other parcel block in place when a parcel is selected).</p>
       <ul class="govuk-list">
+        <li><a class="govuk-link" href="/Grasslands/caselist-assign?selectCaseGrass=100294">Grasslands — assign caseworker</a> (enhanced <code class="govuk-body">&lt;select&gt;</code> of all caseworkers)</li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-mid2">Large calculations — middle run</a></li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-old2">Large calculations — baseline</a></li>
@@ -128,6 +180,15 @@
         confirmOnBlur: false,
         displayMenu: 'overlay',
         placeholder: 'e.g. SD5848 9205'
+      });
+    })();
+    (function () {
+      var select = document.getElementById('pl-aa-select');
+      if (!select || typeof accessibleAutocomplete !== 'function') return;
+      accessibleAutocomplete.enhanceSelectElement({
+        selectElement: select,
+        showAllValues: true,
+        defaultValue: ''
       });
     })();
   </script>

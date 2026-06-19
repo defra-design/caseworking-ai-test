@@ -1,0 +1,114 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{#
+  Grasslands "Assign" screen. Reached from the caselist Assign button, which
+  submits the ticked Select boxes (selectCaseGrass). The route passes the
+  matching `selected` cases and the relevant `caseworkers`. Submitting records
+  the chosen caseworker in the session and returns to the context tab.
+#}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <a href="caselist-team" class="govuk-back-link">Back to cases</a>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">Assign</h1>
+
+        {% if selected.length == 0 %}
+          <p class="govuk-body">No cases were selected. <a class="govuk-link" href="caselist-team">Return to cases</a> and tick one or more, then choose Assign.</p>
+        {% else %}
+
+          <div class="govuk-inset-text">
+            Assigning <strong>{{ selected.length }}</strong> selected case{{ "s" if selected.length != 1 }}.
+          </div>
+
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">ID</th>
+                <th scope="col" class="govuk-table__header">Business</th>
+                <th scope="col" class="govuk-table__header">Current assignee</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for c in selected %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ c.id }}</td>
+                <td class="govuk-table__cell">{{ c.business }}</td>
+                <td class="govuk-table__cell">{{ c.assignee or "Not assigned" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <form action="assign-confirm" method="get">
+
+            {% for c in selected %}
+            <input type="hidden" name="selectCaseGrass" value="{{ c.id }}">
+            {% endfor %}
+
+            <div class="govuk-form-group govuk-!-width-two-thirds">
+              <label class="govuk-label govuk-label--s" for="grassAssignee">Caseworker</label>
+              <div class="govuk-hint">Start typing a name, or pick from the list. Any caseworker, across all teams.</div>
+              <select class="govuk-select" id="grassAssignee" name="grassAssignee">
+                <option value="">Select a caseworker</option>
+                {% for cw in caseworkers %}
+                <option value="{{ cw }}">{{ cw }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="grassAssignNote">Notes (optional)</label>
+              <div id="grassAssignNote-hint" class="govuk-hint">All notes will be saved for auditing purposes.</div>
+              <textarea class="govuk-textarea" id="grassAssignNote" name="grassAssignNote" rows="5" aria-describedby="grassAssignNote-hint"></textarea>
+            </div>
+
+            <button type="submit" class="govuk-button" data-module="govuk-button">Assign</button><br>
+            <a href="caselist-team" class="govuk-link">Cancel</a>
+
+          </form>
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    // Enhance the caseworker <select> into a type-ahead autocomplete. The select
+    // keeps name="grassAssignee" so the form still submits without JS.
+    (function () {
+      var select = document.getElementById('grassAssignee')
+      if (!select || typeof accessibleAutocomplete !== 'function') return
+      accessibleAutocomplete.enhanceSelectElement({
+        selectElement: select,
+        autoselect: false,
+        defaultValue: '',
+        minLength: 1,
+        showAllValues: true,
+        confirmOnBlur: true,
+        displayMenu: 'overlay',
+        placeholder: 'Start typing a caseworker name'
+      })
+    })()
+  </script>
+{% endblock %}

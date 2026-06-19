@@ -11,7 +11,7 @@
 
     <h1 class="govuk-heading-xl">Grasslands cases</h1>
 
-    {{ caselist.filters() }}
+    {{ caselist.filters(grassFilters) }}
     {{ caselist.contextSelector(ctx) }}
     {{ caselist.tabsAndTable("completed", ctx, view) }}
 
