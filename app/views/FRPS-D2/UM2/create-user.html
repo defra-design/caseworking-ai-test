@@ -1,0 +1,95 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users">Users</a></li>
+        <li class="govuk-breadcrumbs__list-item">Create user</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="users" method="post">
+
+          <h1 class="govuk-heading-l">Create user</h1>
+          <p class="govuk-body">Pre-create users so their teams, access role and specialisms are set before first login. Scheme roles are managed separately.</p>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="name">Name</label>
+            <input class="govuk-input govuk-input--width-20" id="name" name="name" type="text">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="email">Email</label>
+            <input class="govuk-input govuk-input--width-20" id="email" name="email" type="email">
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Teams</legend>
+              <div class="govuk-hint">A user can belong to more than one team.</div>
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-a" name="teams" type="checkbox" value="A"><label class="govuk-label govuk-checkboxes__label" for="team-a">Team A</label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-b" name="teams" type="checkbox" value="B"><label class="govuk-label govuk-checkboxes__label" for="team-b">Team B</label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-c" name="teams" type="checkbox" value="C"><label class="govuk-label govuk-checkboxes__label" for="team-c">Team C</label></div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Access role</legend>
+              <div class="govuk-hint">Controls what they can see and allocate. Most users are Caseworkers.</div>
+              <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="role-cw" name="accessRole" type="radio" value="Caseworker" checked><label class="govuk-label govuk-radios__label" for="role-cw">Caseworker</label>
+                  <div class="govuk-hint govuk-radios__hint">Sees My cases and the queues of teams they're in.</div></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="role-mgr" name="accessRole" type="radio" value="Manager" data-aria-controls="mgr-scope"><label class="govuk-label govuk-radios__label" for="role-mgr">Manager</label>
+                  <div class="govuk-hint govuk-radios__hint">Allocates and reassigns; can see across the teams they manage.</div></div>
+                <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="mgr-scope">
+                  <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Manager scope</legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                      <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-team" name="mgrScope" type="radio" value="team" checked><label class="govuk-label govuk-radios__label" for="scope-team">Their teams only</label></div>
+                      <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-senior" name="mgrScope" type="radio" value="senior"><label class="govuk-label govuk-radios__label" for="scope-senior">Senior — all cases, unallocated, move between teams</label></div>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Specialisms</legend>
+              <div class="govuk-hint">Lets the user complete specialist tasks of these types, in any team. Optional.</div>
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="spec-fin" name="specialisms" type="checkbox" value="Finance officer"><label class="govuk-label govuk-checkboxes__label" for="spec-fin">Finance officer</label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="spec-qc" name="specialisms" type="checkbox" value="Quality control"><label class="govuk-label govuk-checkboxes__label" for="spec-qc">Quality control</label></div>
+              </div>
+            </fieldset>
+          </div>
+
+          <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Scheme roles (unchanged)</span></summary>
+            <div class="govuk-details__text">Grant-scheme permission codes (PMF_READ, BN_TAG_CHECKER…) are managed on <a class="govuk-link" href="scheme-roles">Scheme roles</a> and the user's detail page — a separate concern from access role and specialisms.</div>
+          </details>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button><br>
+          <a href="users" class="govuk-link">Cancel</a>
+
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

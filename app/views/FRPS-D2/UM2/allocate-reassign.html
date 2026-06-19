@@ -1,0 +1,71 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="teams">Teams</a></li>
+        <li class="govuk-breadcrumbs__list-item">Allocate / reassign</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">Allocate or reassign cases</h1>
+        <p class="govuk-body">One pattern for the assignment screen, the caselist "Reassign" action and bulk reassign. Team → caseworker (filtered to the team and shown with current load) → reason → confirm.</p>
+
+        <div class="govuk-inset-text">Reassigning <strong>3 selected cases</strong> — 100291, 100318, 100324.</div>
+
+        <form action="teams" method="post">
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="team">Owning team</label>
+            <div class="govuk-hint">Cross-team moves are senior-manager only.</div>
+            <select class="govuk-select" id="team" name="team">
+              <option value="A" selected>Team A</option>
+              <option value="B">Team B</option>
+              <option value="C">Team C</option>
+            </select>
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assign to</legend>
+              <div class="govuk-hint">Members of Team A, with current open-case load. Specialist tasks show only specialism holders.</div>
+              <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="cw-none" name="assignee" type="radio" value="" checked><label class="govuk-label govuk-radios__label" for="cw-none">Leave with the team (unassigned)</label></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="cw-me" name="assignee" type="radio" value="me"><label class="govuk-label govuk-radios__label" for="cw-me">Assign to me</label></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="cw-singh" name="assignee" type="radio" value="rsingh"><label class="govuk-label govuk-radios__label" for="cw-singh">R Singh — 5 open <span class="govuk-body-s">· Finance officer</span></label></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="cw-okafor" name="assignee" type="radio" value="tokafor"><label class="govuk-label govuk-radios__label" for="cw-okafor">T Okafor — 5 open</label></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="cw-walker" name="assignee" type="radio" value="mwalker"><label class="govuk-label govuk-radios__label" for="cw-walker">M Walker — 5 open <span class="govuk-body-s">· Manager</span></label></div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="reason">Reason</label>
+            <div class="govuk-hint">Recorded in the case timeline and the assignment history.</div>
+            <textarea class="govuk-textarea" id="reason" name="reason" rows="3"></textarea>
+          </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm reassignment</button><br>
+          <a href="teams" class="govuk-link">Cancel</a>
+
+        </form>
+
+        <p class="govuk-body-s govuk-!-margin-top-6">Every change writes an entry to the case's assignment history and posts a Timeline event. Assigning a scheme case to someone without the matching scheme role is warned/blocked.</p>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

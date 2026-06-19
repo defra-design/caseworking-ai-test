@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="teams">Teams</a></li>
+        <li class="govuk-breadcrumbs__list-item">Team A</li>
+      </ol>
+    </nav>
+
+    <h1 class="govuk-heading-l">Team A</h1>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-8">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Team lead</dt>
+        <dd class="govuk-summary-list__value">M Walker</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> lead</span></a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Scheme scope</dt>
+        <dd class="govuk-summary-list__value">SFI</dd>
+        <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> scheme scope</span></a></dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Open cases</dt>
+        <dd class="govuk-summary-list__value">15</dd>
+        <dd class="govuk-summary-list__actions"></dd>
+      </div>
+    </dl>
+
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Members</h2>
+    <div style="display: flex; justify-content: flex-end;">
+      <a href="#" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Add member</a>
+    </div>
+    <p class="govuk-body">Removing a member who has open cases starts a reassign step so work is never orphaned.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Member</th>
+          <th scope="col" class="govuk-table__header">Access role</th>
+          <th scope="col" class="govuk-table__header">Specialisms</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Open cases</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Oldest</th>
+          <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">M Walker</a> <span class="govuk-body-s">(lead)</span></th>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">5</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">31 days</td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="#">Remove</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">R Singh</a></th>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">Finance officer</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">5</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">28 days</td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="#">Remove</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">T Okafor</a></th>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">5</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">22 days</td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="#">Remove</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="govuk-body govuk-!-margin-top-4">
+      <a class="govuk-link" href="#">Delete team</a> — not available while the team owns open cases.
+    </p>
+
+  </main>
+</div>
+{% endblock %}

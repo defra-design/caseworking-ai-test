@@ -1,0 +1,37 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <span class="govuk-caption-l">User management</span>
+    <h1 class="govuk-heading-xl">Users and roles</h1>
+    <p class="govuk-body-l">Manage who can work on cases, the teams that own them, and the scheme permissions a user holds.</p>
+    <p class="govuk-body">Iterated to support the team caselist: users now belong to one or more <strong>teams</strong>, hold an <strong>access role</strong> (Caseworker or Manager) and any <strong>specialisms</strong>. Scheme permissions stay separate.</p>
+
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m"><a class="govuk-link" href="users">Users</a></h2>
+        <p class="govuk-body">Add and update users — their teams, access role (Caseworker / Manager), specialisms and scheme roles. Handle leavers and absence.</p>
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m"><a class="govuk-link" href="teams">Teams</a> <strong class="govuk-tag govuk-tag--blue">New</strong></h2>
+        <p class="govuk-body">Create the work‑allocation teams that own cases. Set a team lead, manage members, and see each team's open and unallocated workload.</p>
+      </div>
+
+      <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m"><a class="govuk-link" href="scheme-roles">Scheme roles</a></h2>
+        <p class="govuk-body">The existing grant‑scheme permission codes (PMF_READ, BN_TAG_CHECKER…). Unchanged — just renamed from "Roles" to avoid confusion with access roles.</p>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item">Teams</li>
+      </ol>
+    </nav>
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Teams</h1>
+    <div style="display: flex; justify-content: flex-end;">
+      <a href="team" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create team</a>
+    </div>
+    <p class="govuk-body">Work-allocation teams that own cases. Open and unallocated counts come from the live caseload.</p>
+
+    <table class="govuk-table" data-module="moj-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Team</th>
+          <th scope="col" class="govuk-table__header">Lead</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Members</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Open cases</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Unallocated</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="team">Team A</a></th>
+          <td class="govuk-table__cell">M Walker</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">15</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="team">Team B</a></th>
+          <td class="govuk-table__cell">E Carter</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">4</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">14</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="team">Team C</a></th>
+          <td class="govuk-table__cell">A Jones</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">3</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">16</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Unallocated work</h2>
+    <p class="govuk-body">
+      <strong class="govuk-tag govuk-tag--yellow">13 unallocated</strong>
+      cases are not yet triaged to a team.
+      <a class="govuk-link" href="allocate-reassign">Allocate to a team</a> (senior managers only).
+    </p>
+
+  </main>
+</div>
+{% endblock %}

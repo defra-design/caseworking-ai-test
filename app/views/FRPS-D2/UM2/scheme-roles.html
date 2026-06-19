@@ -1,0 +1,58 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item">Scheme roles</li>
+      </ol>
+    </nav>
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Scheme roles</h1>
+    <div style="display: flex; justify-content: flex-end;">
+      <a href="#" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create role</a>
+    </div>
+    <p class="govuk-body">Grant-scheme permission codes from the IDP / Manage grants. Unchanged — only renamed from "Roles" so it isn't confused with the new <strong>access role</strong> (Caseworker / Manager) and <strong>specialisms</strong>, which live on the user.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Code</th>
+          <th scope="col" class="govuk-table__header">Description</th>
+          <th scope="col" class="govuk-table__header">Assignable</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="#">PMF_READ</a></th>
+          <td class="govuk-table__cell">Pigs Might Fly read only</td>
+          <td class="govuk-table__cell">Yes</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="#">PMF_WRITE</a></th>
+          <td class="govuk-table__cell">Pigs Might Fly read write</td>
+          <td class="govuk-table__cell">Yes</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="#">BN_TAG_CHECKER</a></th>
+          <td class="govuk-table__cell">Boundary notification tag checker</td>
+          <td class="govuk-table__cell">Yes</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="#">DCA_FRV</a></th>
+          <td class="govuk-table__cell">Data change authority — farm record view</td>
+          <td class="govuk-table__cell">Yes</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+{% endblock %}

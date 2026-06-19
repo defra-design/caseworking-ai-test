@@ -1,0 +1,112 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item">Users</li>
+      </ol>
+    </nav>
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Users</h1>
+    <div style="display: flex; justify-content: flex-end;">
+      <a href="create-user" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create user</a>
+    </div>
+    <p class="govuk-body">A user can be in more than one team. Access role and specialisms are attributes on the user, set on the user's page.</p>
+
+    <table class="govuk-table" data-module="moj-sortable-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Name</th>
+          <th scope="col" class="govuk-table__header">Teams</th>
+          <th scope="col" class="govuk-table__header">Access role</th>
+          <th scope="col" class="govuk-table__header">Specialisms</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">M Walker</a><br><span class="govuk-body-s">m.walker@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team A</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">R Singh</a><br><span class="govuk-body-s">r.singh@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team A</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">Finance officer</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">T Okafor</a><br><span class="govuk-body-s">t.okafor@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team A</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">E Carter</a><br><span class="govuk-body-s">e.carter@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team B</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">P Shah</a><br><span class="govuk-body-s">p.shah@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team B, Team C</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">Finance officer</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">J Jones</a><br><span class="govuk-body-s">j.jones@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team B</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">Quality control</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">A Jones</a><br><span class="govuk-body-s">a.jones@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team C</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">L Owusu</a><br><span class="govuk-body-s">l.owusu@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team C</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">Quality control</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">Martin Smith</a><br><span class="govuk-body-s">martin.smith@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">All teams</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong> <span class="govuk-body-s">(senior)</span></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">S Lyle</a><br><span class="govuk-body-s">s.lyle@defra.gov.uk</span></th>
+          <td class="govuk-table__cell">Team B</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Leaver</strong></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </main>
+</div>
+{% endblock %}

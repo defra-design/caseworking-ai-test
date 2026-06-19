@@ -1,0 +1,80 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users">Users</a></li>
+        <li class="govuk-breadcrumbs__list-item">R Singh</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">R Singh</h1>
+
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Email</dt>
+            <dd class="govuk-summary-list__value">r.singh@defra.gov.uk</dd>
+            <dd class="govuk-summary-list__actions"></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Status</dt>
+            <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--green">Active</strong></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> status</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Last login</dt>
+            <dd class="govuk-summary-list__value">18 June 2026, 09:12</dd>
+            <dd class="govuk-summary-list__actions"></dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Teams</dt>
+            <dd class="govuk-summary-list__value">Team A</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> teams</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Access role</dt>
+            <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> access role</span></a></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Specialisms</dt>
+            <dd class="govuk-summary-list__value">Finance officer</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> specialisms</span></a></dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Open cases</dt>
+            <dd class="govuk-summary-list__value">5 <span class="govuk-body-s">(oldest 28 days)</span></dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="allocate-reassign">Reassign cases</a></dd>
+          </div>
+
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Scheme roles</dt>
+            <dd class="govuk-summary-list__value">PMF_READ, PMF_WRITE, BN_TAG_CHECKER</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="scheme-roles">Change<span class="govuk-visually-hidden"> scheme roles</span></a></dd>
+          </div>
+        </dl>
+
+        <div class="govuk-button-group">
+          <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">Save changes</button>
+          <a class="govuk-link" href="users">Back to users</a>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
