@@ -117,14 +117,13 @@
 
 {# --- Tabs + the table for the active tab. active = my | team | completed --- #}
 {% macro tabsAndTable(active, ctx, view) %}
-{% set ctxLabel = "All cases" if ctx == "all" else grasslandsTeamNames[ctx] %}
 <div class="govuk-tabs" data-module="govuk-tabs">
   <ul class="govuk-tabs__list">
     <li class="govuk-tabs__list-item{% if active == 'my' %} govuk-tabs__list-item--selected{% endif %}">
       {% if active == 'my' %}My cases{% else %}<a href="caselist">My cases</a>{% endif %}
     </li>
     <li class="govuk-tabs__list-item{% if active == 'team' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'team' %}{{ ctxLabel }}{% else %}<a href="caselist-team">{{ ctxLabel }}</a>{% endif %}
+      {% if active == 'team' %}Open cases{% else %}<a href="caselist-team">Open cases</a>{% endif %}
     </li>
     <li class="govuk-tabs__list-item{% if active == 'completed' %} govuk-tabs__list-item--selected{% endif %}">
       {% if active == 'completed' %}Completed cases{% else %}<a href="caselist-completed">Completed cases</a>{% endif %}
