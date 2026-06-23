@@ -104,6 +104,17 @@
 </form>
 {% endmacro %}
 
+{# --- A sortable column header. Sorting is server-side: the link reloads the
+   tab with ?sort=<key>&dir=<asc|desc>, the route sorts the WHOLE filtered set
+   (every page, not just the visible 20) and re-paginates. aria-sort reflects the
+   active column/direction; clicking the active column toggles direction. --- #}
+{% macro sortHeader(key, label, view, cls) %}
+{%- set active = (view.sort == key) -%}
+{%- set ariaSort = (("ascending" if view.dir == "asc" else "descending") if active else "none") -%}
+{%- set nextDir = ("desc" if (active and view.dir == "asc") else "asc") -%}
+<th scope="col" class="govuk-table__header{% if cls %} {{ cls }}{% endif %}" aria-sort="{{ ariaSort }}"><a class="govuk-link app-sort-link" href="?sort={{ key }}&amp;dir={{ nextDir }}">{{ label }}</a></th>
+{% endmacro %}
+
 {# --- Tabs + the table for the active tab. active = my | team | completed --- #}
 {% macro tabsAndTable(active, ctx, view) %}
 {% set ctxLabel = "All cases" if ctx == "all" else grasslandsTeamNames[ctx] %}
@@ -124,16 +135,16 @@
     <form method="get" action="caselist-assign" id="grass-cases-form">
       <button type="submit" id="grass-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
 
-      <table class="govuk-table" data-module="moj-sortable-table" data-id-prefix="gr-cases-">
+      <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
             <th class="govuk-table__header" scope="col">Select</th>
-            <th scope="col" class="govuk-table__header" aria-sort="none">ID</th>
-            <th scope="col" class="govuk-table__header" aria-sort="none">Business</th>
-            <th scope="col" class="govuk-table__header" aria-sort="none">SBI</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--date" aria-sort="none">Submitted</th>
-            <th scope="col" class="govuk-table__header custom-width-130" aria-sort="none">Status</th>
-            <th scope="col" class="govuk-table__header" aria-sort="none">Assignee</th>
+            {{ sortHeader("id", "ID", view) }}
+            {{ sortHeader("business", "Business", view) }}
+            {{ sortHeader("sbi", "SBI", view) }}
+            {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
+            {{ sortHeader("status", "Status", view, "custom-width-130") }}
+            {{ sortHeader("assignee", "Assignee", view) }}
           </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -171,13 +182,13 @@
       <p class="moj-pagination__results">Showing <b>{{ view.startIdx + 1 }}</b> to <b>{{ view.endIdx }}</b> of <b>{{ view.total }}</b> results</p>
       <ul class="moj-pagination__list">
         {% if view.page > 1 %}
-        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
         {% endif %}
         {% for n in range(1, view.totalPages + 1) %}
-        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}">{{ n }}</a></li>
+        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">{{ n }}</a></li>
         {% endfor %}
         {% if view.page < view.totalPages %}
-        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
         {% endif %}
       </ul>
     </nav>

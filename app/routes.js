@@ -2785,6 +2785,53 @@ function grassCtxFilter (cases, ctx) {
   return ctx === 'all' ? cases : cases.filter(function (c) { return c.team === ctx })
 }
 
+// ----- Sorting (server-side, applied to the WHOLE filtered set before
+// pagination, so clicking a column header re-sorts every case in the tab, not
+// just the 20 on the current page). Default: submitted ascending — oldest to
+// newest ("by age"). -----
+const GRASS_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+function grassDateVal (s) {
+  const parts = String(s || '').trim().split(/\s+/)
+  if (parts.length !== 3) return 0
+  const d = parseInt(parts[0], 10)
+  const m = GRASS_MONTHS.indexOf(parts[1])
+  const y = parseInt(parts[2], 10)
+  if (isNaN(d) || m === -1 || isNaN(y)) return 0
+  return new Date(y, m, d).getTime()
+}
+const GRASS_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'status', 'assignee']
+function grassSortState (req) {
+  let sort = req.query.sort
+  if (GRASS_SORT_KEYS.indexOf(sort) === -1) sort = 'submitted' // default: by age
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'        // default: oldest first
+  return { sort: sort, dir: dir }
+}
+function grassSortRows (rows, state, req) {
+  const factor = state.dir === 'desc' ? -1 : 1
+  const key = state.sort
+  return rows.slice().sort(function (a, b) {
+    if (key === 'submitted') {
+      return (grassDateVal(a.submitted) - grassDateVal(b.submitted)) * factor
+    }
+    let av = key === 'status' ? grassEffStatus(a, req) : a[key]
+    let bv = key === 'status' ? grassEffStatus(b, req) : b[key]
+    av = String(av || '').toLowerCase()
+    bv = String(bv || '').toLowerCase()
+    if (av < bv) return -1 * factor
+    if (av > bv) return 1 * factor
+    return 0
+  })
+}
+// Sort the full filtered set, paginate, and attach the active sort state so the
+// template can render header links + aria-sort and keep sort across page links.
+function grassBuildView (rows, req) {
+  const sortState = grassSortState(req)
+  const view = grassPaginate(grassSortRows(rows, sortState, req), parseInt(req.query.page, 10))
+  view.sort = sortState.sort
+  view.dir = sortState.dir
+  return view
+}
+
 // Completed cases (Agreement accepted / Rejected / Withdrawn) are shown only on
 // the Completed tab — they are excluded from My and the context tab.
 function grassActive (cases) {
@@ -2892,7 +2939,7 @@ router.get('/Grasslands/caselist', function (req, res) {
   const ctx = grassCtx(req)
   const base = grassActive(grassApplyAssign(loadGrassCases(), req).filter(function (c) { return c.assignee === 'M Walker' }))
   const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+  res.render('Grasslands/caselist', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
 })
 
 // Context tab — the selected team's (or all) ACTIVE cases (completed excluded).
@@ -2901,7 +2948,7 @@ router.get('/Grasslands/caselist-team', function (req, res) {
   const ctx = grassCtx(req)
   const base = grassActive(grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx))
   const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist-team', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+  res.render('Grasslands/caselist-team', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
 })
 
 // Completed cases — Agreement accepted / Rejected / Withdrawn, within the context.
@@ -2910,7 +2957,7 @@ router.get('/Grasslands/caselist-completed', function (req, res) {
   const ctx = grassCtx(req)
   const base = grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx).filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) !== -1 })
   const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassPaginate(rows, parseInt(req.query.page, 10)) })
+  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
 })
 
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker

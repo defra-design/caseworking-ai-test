@@ -1,0 +1,111 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "full-list-sort" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Full-list column sorting" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Full-list column sorting</h1>
+      <p class="govuk-body-l">Sortable table columns that re-order the <strong>whole</strong> list across every page, not just the rows currently visible. A server-side variant of the <a class="govuk-link" href="/pattern-library/moj/sortable-table">MOJ sortable table</a>, used on the caselist where the results are paginated.</p>
+      <p class="govuk-body">The MOJ sortable table sorts in the browser, so on a paginated list it only re-orders the 20 rows on the current page — the "oldest" case could be on page 7 and never move. This pattern instead makes each column heading a link; the route sorts the entire filtered set and re-paginates, so page 1 always shows the true top of the chosen order.</p>
+
+      <h2 class="govuk-heading-l">How it works</h2>
+      <ol class="govuk-list govuk-list--number">
+        <li>Each sortable heading is a link to the same tab with <code>?sort=&lt;column&gt;&amp;dir=&lt;asc|desc&gt;</code>. Clicking the already-active column toggles the direction.</li>
+        <li>The route reads <code>sort</code> / <code>dir</code>, sorts the full filtered set (dates by real date value, everything else case-insensitive text), then paginates the sorted result.</li>
+        <li>The active column carries <code>aria-sort="ascending|descending"</code>; the rest are <code>aria-sort="none"</code>. The list loads pre-sorted (the caselist defaults to <em>Submitted</em>, oldest first — "by age").</li>
+        <li>Pagination links carry the current <code>sort</code> / <code>dir</code> so paging keeps the order; choosing a new column resets to page 1.</li>
+      </ol>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <p class="govuk-body">The Submitted column is the active sort (ascending); the others are inactive links.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-full-list-sort">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-full-list-sort-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header" aria-sort="none"><a class="govuk-link app-sort-link" href="#">ID</a></th>
+                  <th scope="col" class="govuk-table__header" aria-sort="none"><a class="govuk-link app-sort-link" href="#">Business</a></th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--date" aria-sort="ascending"><a class="govuk-link app-sort-link" href="#">Submitted</a></th>
+                  <th scope="col" class="govuk-table__header" aria-sort="none"><a class="govuk-link app-sort-link" href="#">Status</a></th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">100338</td><td class="govuk-table__cell">Primrose Holdings</td><td class="govuk-table__cell">1 Mar 2025</td><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Agreement offered</strong></td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">100339</td><td class="govuk-table__cell">Quarrybank Farm</td><td class="govuk-table__cell">5 Apr 2025</td><td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Agreement offered</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-full-list-sort" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-full-list-sort-code">&lt;!-- Template: one macro per heading. aria-sort marks the active column;
+     the link toggles direction. Sorting is done by the route, not the browser. --&gt;
+&lt;th scope="col" class="govuk-table__header" aria-sort="ascending"&gt;
+  &lt;a class="govuk-link app-sort-link" href="?sort=submitted&amp;dir=desc"&gt;Submitted&lt;/a&gt;
+&lt;/th&gt;
+&lt;th scope="col" class="govuk-table__header" aria-sort="none"&gt;
+  &lt;a class="govuk-link app-sort-link" href="?sort=business&amp;dir=asc"&gt;Business&lt;/a&gt;
+&lt;/th&gt;
+
+&lt;!-- Route: sort the WHOLE filtered set, then paginate. --&gt;
+const sorted = sortRows(filtered, sort, dir)   // dates by date value, else text
+const view   = paginate(sorted, page)          // page links keep &sort=&dir=</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Any list that is <strong>paginated server-side</strong> and that users sort — the caselist is the main case.</li>
+        <li>When the correct top-of-list item could be on any page, so client-side (visible-page) sorting would mislead.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>When every row the user will sort is already on one page — the in-browser <a class="govuk-link" href="/pattern-library/moj/sortable-table">MOJ sortable table</a> is simpler and needs no reload.</li>
+        <li>For re-ordering that should not change the URL or trigger a page load.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Customisation in this prototype</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Headings render from the <code>sortHeader</code> macro in <code>app/views/Grasslands/includes/_caselist-macros.html</code>.</li>
+        <li>The sort + paginate logic (<code>grassSortRows</code>, <code>grassSortState</code>, <code>grassBuildView</code>) lives in <code>routes.js</code>; dates sort on a parsed date value so "by age" is true chronological order.</li>
+        <li>No new CSS — links reuse <code>govuk-link</code>; <code>aria-sort</code> on the <code>&lt;th&gt;</code> drives the GDS/MOJ sort indicator.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/Grasslands/caselist">Grasslands caselist</a> — the My cases, team context and Completed tabs (each defaults to Submitted, oldest first).</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
