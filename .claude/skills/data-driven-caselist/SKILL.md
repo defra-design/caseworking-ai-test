@@ -10,12 +10,14 @@ description: Build a data-file-driven caseworker caselist for a prototype area �
 A caseworker caselist surface for one prototype **area**, driven entirely by data
 files so it can be regenerated/extended without touching templates:
 
-- **Three tabs** (sibling pages with tab-style nav). My and the context tab show
+- **Three tabs** (sibling pages with tab-style nav). My and the Open-cases tab show
   **active cases only** — completed cases are excluded from them and surface only
   on the Completed tab:
   - **My cases** — the current user's active cases (one named caseworker), context-independent.
-  - **context tab** — the selected team's active cases, or *all* active cases when
-    the context is "All cases". Its tab label is the selected context (Team A/B/C or "All cases").
+  - **Open cases** (the context tab) — the selected team's active cases, or *all*
+    active cases when the context is "All cases". Includes team-allocated cases that
+    are not yet owned (assignee "Not assigned"). The tab is always labelled
+    **"Open cases"** whatever the team context.
   - **Completed cases** — cases whose status is a completed outcome
     (Agreement accepted / Rejected / Withdrawn), filtered by the same context.
 - A **"Switch team" selector** (dropdown: Team A / Team B / Team C / **All cases**
@@ -41,6 +43,41 @@ thin; the macros render. Adding/regenerating cases = editing the data file only.
 - `app/routes.js` — the **"Grasslands caselist data + routes"** block and the
   `res.locals.grasslandsTeams` middleware near the top.
 - `app/views/Grasslands/_BUILD_NOTES.md` — the prose write-up.
+
+## Case & tab structure rules
+
+How every case maps to a team and to the three tabs. These are the rules of the
+model — enforce them in the data and the routes.
+
+1. **Every case has a team.** A case is always allocated to one team (A/B/C);
+   there is no team-less case. `team` is never empty.
+2. **Owner is optional.** `assignee` is either a caseworker **who belongs to the
+   case's team**, or `"Not assigned"` — a case allocated to a team but not yet
+   owned by a person.
+3. **Assigning to a person sets the team.** Assigning/reassigning a case to a
+   caseworker moves it into **that person's** team context: the case adopts the
+   assignee's team. (Implemented in `grassApplyAssign` via the caseworker→team
+   map built from the teams data file.)
+4. **Tabs:**
+   - **My cases** — cases whose `assignee` is the current user (e.g. M Walker),
+     active only. Independent of the selected team context.
+   - **Open cases** (context tab) — the selected team's **active** cases
+     (completed excluded), **including** the team's unowned ("Not assigned")
+     cases. Context **"All cases"** = every team's active cases. Always labelled
+     "Open cases".
+   - **Completed cases** — `Agreement accepted` / `Rejected` / `Withdrawn` within
+     the selected context.
+5. **Active vs completed.** Completed = `Agreement accepted` / `Rejected` /
+   `Withdrawn`; everything else is active. My and Open show active only.
+6. **Completed cases are always unassigned.** A completed case has no owner —
+   `assignee` is always `"Not assigned"` (it keeps its team, so it still appears
+   under the right team on the Completed tab, but never under a caseworker). Only
+   active cases can have a caseworker; reaching a completed status clears the
+   owner. As a corollary, a completed case never appears in **My cases**.
+7. **Default order = by age.** Every tab loads sorted by `submitted`, oldest
+   first. Column headers re-sort the **whole** filtered set server-side (across
+   all pages), then re-paginate — see the pattern library "Full-list column
+   sorting".
 
 ## Inputs to confirm with the user (one AskUserQuestion batch)
 
@@ -86,10 +123,14 @@ distribution shape, just new business names + a new area/prefix/token.
    repeated across rows shares one SBI; two different businesses never share one.
 3. **Submitted date is appropriate to the status** — advanced statuses
    (accepted/rejected/withdrawn) are older; Application received is newest.
-4. **Teams balanced** (~equal counts) and **age-balanced** (each team spans the
-   full date range — achieve by assigning team via round-robin over the
-   date-sorted list). Each `assignee` must be a caseworker of that case's `team`.
-5. **Completed** = `Agreement accepted` / `Rejected` / `Withdrawn`.
+4. **Every case has a team** (A/B/C) — never empty; **teams balanced** (~equal
+   counts) and **age-balanced** (each team spans the full date range — assign team
+   via round-robin over the date-sorted list). An `assignee` that is a caseworker
+   must belong to that case's `team`; an unowned case is `assignee: "Not assigned"`
+   with a real team (so it still appears in that team's Open cases).
+5. **Completed** = `Agreement accepted` / `Rejected` / `Withdrawn`. **Completed
+   cases are always `assignee: "Not assigned"`** (they keep their team, but have no
+   owner). Only active cases carry a caseworker.
 
 ## Pipeline
 
@@ -137,8 +178,13 @@ statusPlan.forEach(([status, n]) => { datesFor(status, n).forEach(dt =>
   cases.push({ business: businesses[bi++], status, tag: tagOf[status], submitted: dt })) })
 cases.sort((a,b)=>Date.parse(a.submitted+' UTC')-Date.parse(b.submitted+' UTC'))
 const teamOrder = ['A','B','C'], cwIdx = { A:0,B:0,C:0 }
+const COMPLETED = ['Agreement accepted','Rejected','Withdrawn']
 cases.forEach((c,i)=>{ c.id=String(100001+i); c.sbi=String(300000001+i)
-  c.team=teamOrder[i%3]; const cw=byId[c.team].caseworkers; c.assignee=cw[cwIdx[c.team]++%cw.length] })
+  c.team=teamOrder[i%3]  // EVERY case gets a team
+  // Completed cases are always unassigned; active cases get a caseworker of their team.
+  const cw=byId[c.team].caseworkers
+  c.assignee = COMPLETED.includes(c.status) ? 'Not assigned' : cw[cwIdx[c.team]++%cw.length] })
+// OPTIONAL: leave some active cases unowned too -> c.assignee = 'Not assigned' (keeps team)
 // OPTIONAL live working case: pick one row -> c.status='live'; c.tag=''
 const lines = cases.sort((a,b)=>(+a.id)-(+b.id)).map(c =>
   `  { id: "${c.id}", business: ${JSON.stringify(c.business)}, sbi: "${c.sbi}", submitted: "${c.submitted}", status: ${JSON.stringify(c.status)}, tag: "${c.tag}", team: "${c.team}", assignee: ${JSON.stringify(c.assignee)} }`)
@@ -161,9 +207,9 @@ Copy from `views/Grasslands/includes/_caselist-macros.html`. Three macros:
 - `contextSelector(ctx)` — `<form method="get" action="">` with a `<select
   name="ctx">` listing `grasslandsTeams` (rename the res.locals var per §5) +
   an `<option value="all">All cases</option>`, and a **Switch** button.
-- `tabsAndTable(active, ctx, view)` — the govuk-tabs nav (My cases | `ctxLabel` |
-  Completed cases, where `ctxLabel = "All cases" if ctx=="all" else
-  teamNames[ctx]`), the table over `view.rows`, an empty-state row, and the MOJ
+- `tabsAndTable(active, ctx, view)` — the govuk-tabs nav (My cases | **Open cases**
+  | Completed cases — the middle/context tab is always labelled "Open cases"
+  regardless of the team context), the table over `view.rows`, an empty-state row, and the MOJ
   pagination from `view` (`page/totalPages/total/startIdx/endIdx`, links
   `?page=N`). The live case row renders its status from session
   (`data.caseStatus<Token>` etc.); other rows render `c.status` + `c.tag`.
@@ -188,6 +234,10 @@ Mirror the **"Grasslands caselist data + routes"** block:
   `ctxFilter(cases, ctx)` (`ctx==='all' ? all : team===ctx`).
 - A `grassActive()`-style helper that drops completed cases, applied to **My**
   and the **context** tab (so completed cases show only on the Completed tab).
+- A reassignment helper (`grassApplyAssign`) that applies session `id → assignee`
+  overrides on load **and sets the case's team to the assignee's team** (a
+  caseworker→team map from the teams file), so assigning a case to a person moves
+  it into that person's Open cases. Keep completed cases unassigned.
 - Three routes: `/<Area>/caselist` (My = current user's **active** cases,
   ctx-independent), `/<Area>/caselist-team` (context filter, **active** only),
   `/<Area>/caselist-completed` (context filter + completed-status filter). Each
@@ -201,13 +251,19 @@ Mirror the **"Grasslands caselist data + routes"** block:
 
 Walk and confirm:
 - My = current user's cases, independent of context.
-- Context tab: default team → that team's cases; switch to a team → that team;
-  switch to **All cases** → all cases, tab label "All cases". Paginates.
+- Open cases tab (always labelled "Open cases"): default team → that team's active
+  cases (incl. its unowned "Not assigned" cases); switch team → that team; switch
+  to **All cases** → all teams' active cases. Paginates.
 - Completed tab: shows only Agreement accepted/Rejected/Withdrawn; **all
-  completed when ctx=all, else just the team's completed**.
+  completed when ctx=all, else just the team's completed**. Every completed row's
+  assignee is **"Not assigned"** (completed cases are never owned), but they keep
+  their team so they land under the right team.
+- Assigning a case to a person moves it into **that person's** Open cases (and out
+  of the previous team's). Unowned active cases still appear in their team's Open cases.
 - Context **persists across tab clicks** (session) and an invalid `?ctx` falls
   back to the default (not a blank tab).
-- Filter/status counts reconcile to the data; teams balanced; SBIs unique.
+- Filter/status counts reconcile to the data; teams balanced; SBIs unique; no
+  team-less cases (`team` never empty).
 
 ## Gotchas (learned building Grasslands)
 

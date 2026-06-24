@@ -2838,13 +2838,25 @@ function grassActive (cases) {
   return cases.filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) === -1 })
 }
 
+// caseworker name -> team id (e.g. "M Walker" -> "A"), from grasslands-teams.js.
+function grassTeamByCaseworker () {
+  const map = {}
+  require(grasslandsTeamsPath).teams.forEach(function (t) {
+    t.caseworkers.forEach(function (cw) { map[cw] = t.id })
+  })
+  return map
+}
 // Reassignment overrides — picking a caseworker on the assign screen stores
 // id -> assignee in the session; applied on load so a reassignment carries
-// through every tab without mutating the data file.
+// through every tab without mutating the data file. Assigning a case to a
+// person also moves it into that person's team context (every case has a team).
 function grassApplyAssign (cases, req) {
   const map = (req.session.data && req.session.data.grassAssign) || {}
+  const teamOf = grassTeamByCaseworker()
   return cases.map(function (c) {
-    return map[c.id] ? Object.assign({}, c, { assignee: map[c.id] }) : c
+    if (!map[c.id]) return c
+    const assignee = map[c.id]
+    return Object.assign({}, c, { assignee: assignee, team: teamOf[assignee] || c.team })
   })
 }
 // The caselist Select checkboxes submit selectCaseGrass; normalise to an array
@@ -2899,11 +2911,29 @@ function grassFilter (rows, req) {
     if (aNames.length && aNames.indexOf(c.assignee) === -1) return false
     if (sNames.length && sNames.indexOf(grassEffStatus(c, req)) === -1) return false
     if (search) {
-      const hay = [c.id, c.business, c.sbi, grassEffStatus(c, req), c.assignee].join(' ').toLowerCase()
-      if (hay.indexOf(search) === -1) return false
+      // Search is SBI-only for now.
+      if (String(c.sbi).toLowerCase().indexOf(search) === -1) return false
     }
     return true
   })
+}
+
+// Assignee options for the filter, scoped to the context. For a single team:
+// that team's caseworkers (+ "Not assigned"). For All teams: `team` is null and
+// the filter uses the autocomplete over `all` (every caseworker + "Not assigned").
+function grassAssigneeContext (ctx) {
+  const teams = require(grasslandsTeamsPath).teams
+  const optFor = function (name) { return { v: GRASS_VAL_BY_ASSIGNEE[name] || 'unassigned', n: name } }
+  const all = []
+  teams.forEach(function (t) { t.caseworkers.forEach(function (n) { all.push(optFor(n)) }) })
+  all.push({ v: 'unassigned', n: 'Not assigned' })
+  let team = null
+  if (ctx !== 'all') {
+    const t = teams.find(function (x) { return x.id === ctx })
+    team = (t ? t.caseworkers.map(optFor) : [])
+    team.push({ v: 'unassigned', n: 'Not assigned' })
+  }
+  return { team: team, all: all }
 }
 // Per-facet counts for the current tab/context base (pre-facet), plus the active
 // selections + search, handed to the template so the panel reflects reality.
@@ -2933,31 +2963,56 @@ function grassClearedFilters (req, res) {
   return true
 }
 
-// My cases — the current user's (M Walker) active cases, independent of context.
+// The "My cases" tab can be pointed at any caseworker who has cases. The chosen
+// person (default M Walker) drives both the tab label ("<name>'s cases") and the
+// filter. The autocomplete range is every user that currently owns at least one
+// case (grassUsersWithCases).
+function grassAllCaseworkers () {
+  let names = []
+  require(grasslandsTeamsPath).teams.forEach(function (t) { names = names.concat(t.caseworkers) })
+  return names
+}
+function grassMyAssignee (req) {
+  const valid = grassAllCaseworkers()
+  if (req.query.myAssignee && valid.indexOf(req.query.myAssignee) !== -1) req.session.data.grassMyAssignee = req.query.myAssignee
+  const stored = req.session.data && req.session.data.grassMyAssignee
+  return valid.indexOf(stored) !== -1 ? stored : 'M Walker'
+}
+function grassUsersWithCases (req) {
+  const owners = {}
+  grassApplyAssign(loadGrassCases(), req).forEach(function (c) {
+    if (c.assignee && c.assignee !== 'Not assigned') owners[c.assignee] = true
+  })
+  return Object.keys(owners).sort()
+}
+
+// My cases — a chosen caseworker's active cases. Tab-scoped controls only
+// (Change assignee); the status/search filter lives on the All cases tab.
 router.get('/Grasslands/caselist', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const base = grassActive(grassApplyAssign(loadGrassCases(), req).filter(function (c) { return c.assignee === 'M Walker' }))
-  const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
+  const myAssignee = grassMyAssignee(req)
+  const rows = grassActive(grassApplyAssign(loadGrassCases(), req).filter(function (c) { return c.assignee === myAssignee }))
+  res.render('Grasslands/caselist', { ctx: ctx, myAssignee: myAssignee, usersWithCases: grassUsersWithCases(req), view: grassBuildView(rows, req) })
 })
 
-// Context tab — the selected team's (or all) ACTIVE cases (completed excluded).
+// Open cases — the selected team's ACTIVE cases (completed excluded). Tab-scoped
+// control only (Change team); no status/search filter here.
 router.get('/Grasslands/caselist-team', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const base = grassActive(grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx))
-  const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist-team', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
+  const rows = grassActive(grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx))
+  res.render('Grasslands/caselist-team', { ctx: ctx, myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
 })
 
-// Completed cases — Agreement accepted / Rejected / Withdrawn, within the context.
+// All cases — EVERY case (all teams, all statuses, including closed/unassigned).
+// This tab carries the permanent SBI search + the Status filter.
 router.get('/Grasslands/caselist-completed', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const base = grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx).filter(function (c) { return GRASS_COMPLETED.indexOf(c.status) !== -1 })
+  const base = grassApplyAssign(loadGrassCases(), req)
   const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
+  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
 })
 
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker
@@ -2965,10 +3020,19 @@ router.get('/Grasslands/caselist-completed', function (req, res) {
 router.get('/Grasslands/caselist-assign', function (req, res) {
   const ctx = grassCtx(req)
   const ids = grassSelectedIds(req)
-  const selected = grassApplyAssign(loadGrassCases(), req).filter(function (c) { return ids.indexOf(c.id) !== -1 })
+  const picked = grassApplyAssign(loadGrassCases(), req).filter(function (c) { return ids.indexOf(c.id) !== -1 })
+  // Reassign if ANY picked case already has a caseworker; otherwise Assign.
+  const anyAssigned = picked.some(function (c) { return c.assignee && c.assignee !== 'Not assigned' })
+  // Give each row the id list MINUS itself, so the "Remove" link can reload the
+  // page with that case dropped from the selection.
+  const selected = picked.map(function (c) {
+    return Object.assign({}, c, {
+      removeIds: picked.filter(function (o) { return o.id !== c.id }).map(function (o) { return o.id })
+    })
+  })
   let caseworkers = []
   require(grasslandsTeamsPath).teams.forEach(function (t) { caseworkers = caseworkers.concat(t.caseworkers) })
-  res.render('Grasslands/caselist-assign', { ctx: ctx, selected: selected, caseworkers: caseworkers })
+  res.render('Grasslands/caselist-assign', { ctx: ctx, selected: selected, caseworkers: caseworkers, anyAssigned: anyAssigned })
 })
 
 // Confirm — record the chosen caseworker against every selected case, then

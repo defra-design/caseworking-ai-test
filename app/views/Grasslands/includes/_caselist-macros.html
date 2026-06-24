@@ -14,95 +14,9 @@
   Status filter values mirror the FRPS-D2 set; see grasslands-cases.js DATA RULES.
 #}
 
-{# --- Search + filters. Functional: GET-to-self; the route reads the selected
-   values from the session, filters the rows and feeds back `filters` (selected
-   sets + per-facet counts for the current tab/context). A facet with nothing
-   ticked imposes no constraint (all ticked === everything shown). --- #}
-{% macro filters(f) %}
-{% set f = f or { assignee: [], status: [], search: "", counts: { assignee: {}, status: {} } } %}
-{% set assigneeOpts = [
-  { v: "walker", n: "M Walker" }, { v: "rsingh", n: "R Singh" }, { v: "tokafor", n: "T Okafor" },
-  { v: "carter", n: "E Carter" }, { v: "jjones", n: "J Jones" }, { v: "pshah", n: "P Shah" },
-  { v: "ajones", n: "A Jones" }, { v: "lowusu", n: "L Owusu" }, { v: "kreed", n: "K Reed" },
-  { v: "unassigned", n: "Not assigned" }
-] %}
-{% set statusOpts = [
-  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
-  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
-  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
-  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
-] %}
-{% set filterCount = f.assignee.length + f.status.length %}
-<details class="govuk-details"{% if filterCount > 0 or f.search %} open{% endif %}>
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">Find an application{% if filterCount > 0 or f.search %} — filters applied{% endif %}</span>
-  </summary>
-  <div class="govuk-details__text">
-
-    <div class="moj-search">
-      <form method="get" action="">
-        <div class="govuk-form-group">
-          <h2 class="govuk-heading-m">Search for cases</h2>
-          <div id="search-hint" class="govuk-hint moj-search__hint">You can search by application ID, business, SBI, status or assignee.</div>
-          <input class="govuk-input moj-search__input" id="searchGrass" name="searchGrass" type="search" aria-describedby="search-hint" value="{{ f.search }}">
-        </div>
-        <button type="submit" class="govuk-button moj-search__button" data-module="govuk-button">Search</button>
-      </form>
-    </div>
-
-    <br>
-    <form method="get" action="">
-      <h2 class="govuk-heading-m">Apply filters</h2>
-      <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
-      <a href="?clearGrassFilters=1" class="govuk-link govuk-!-margin-left-3">Clear filters</a>
-
-      <div class="govuk-form-group radio-container">
-
-        <div class="govuk-form-group column govuk-!-margin-bottom-0">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assignee</legend>
-            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-              {% for o in assigneeOpts %}
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fAssignee-{{ loop.index }}" name="filterAssigneeGrass" type="checkbox" value="{{ o.v }}"{% if not f.assignee.length or o.v in f.assignee %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fAssignee-{{ loop.index }}">{{ o.n }} ({{ f.counts.assignee[o.v] or 0 }})</label></div>
-              {% endfor %}
-            </div>
-          </fieldset>
-        </div>
-
-        <div class="govuk-form-group column govuk-!-margin-bottom-0">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
-            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-              {% for o in statusOpts %}
-              <div class="govuk-checkboxes__item custom-width"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusGrass" type="checkbox" value="{{ o.v }}"{% if not f.status.length or o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }} ({{ f.counts.status[o.v] or 0 }})</label></div>
-              {% endfor %}
-            </div>
-          </fieldset>
-        </div>
-
-      </div>
-    </form>
-  </div>
-</details>
-{% endmacro %}
-
-{# --- Context selector (above the tabs): Team A/B/C + All cases, then Switch --- #}
-{% macro contextSelector(ctx) %}
-<form method="get" action="" class="govuk-!-margin-bottom-6">
-  <div class="govuk-form-group govuk-!-margin-bottom-0" style="display: flex; align-items: flex-end; gap: 15px;">
-    <div class="govuk-!-margin-bottom-0">
-      <label class="govuk-label" for="ctx-select">Switch team</label>
-      <select class="govuk-select" id="ctx-select" name="ctx">
-        {% for t in grasslandsTeams %}
-        <option value="{{ t.id }}"{% if t.id == ctx %} selected{% endif %}>{{ t.name }}</option>
-        {% endfor %}
-        <option value="all"{% if ctx == 'all' %} selected{% endif %}>All cases</option>
-      </select>
-    </div>
-    <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Switch</button>
-  </div>
-</form>
-{% endmacro %}
+{# (Removed) The global caseFilters bar above the tabs has been replaced by
+   tab-scoped controls: Change assignee (My), Change team (Open), and the
+   permanent search + Status "filter list" on the All cases tab. --- #}
 
 {# --- A sortable column header. Sorting is server-side: the link reloads the
    tab with ?sort=<key>&dir=<asc|desc>, the route sorts the WHOLE filtered set
@@ -115,22 +29,155 @@
 <th scope="col" class="govuk-table__header{% if cls %} {{ cls }}{% endif %}" aria-sort="{{ ariaSort }}"><a class="govuk-link app-sort-link" href="?sort={{ key }}&amp;dir={{ nextDir }}">{{ label }}</a></th>
 {% endmacro %}
 
-{# --- Tabs + the table for the active tab. active = my | team | completed --- #}
-{% macro tabsAndTable(active, ctx, view) %}
+{# --- Tabs + the table for the active tab. active = my | team | all.
+   - my:  "<assignee>'s cases" + a "Change assignee" autocomplete.
+   - team: "<team> cases" + a "Change team" autocomplete.
+   - all: "All cases" (every case, incl. closed/unassigned) + a permanent SBI
+     search and a "filter list" details (Status). `f` = the filter state. --- #}
+{% macro tabsAndTable(active, ctx, view, myAssignee, usersWithCases, f) %}
+{% set myAssignee = myAssignee or "M Walker" %}
+{% set teamName = "All teams" if ctx == "all" else grasslandsTeamNames[ctx] %}
+{% set f = f or { status: [], search: "" } %}
+{% set GRASS_STATUS_OPTS = [
+  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
+  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
+  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
+  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
+] %}
+{% set GRASS_STATUS_NAMES = {
+  "application-received": "Application received", "in-review": "In review",
+  "on-hold": "On hold", "agreement-drafted": "Agreement drafted",
+  "agreement-offered": "Agreement offered", "agreement-accepted": "Agreement accepted",
+  rejected: "Rejected", withdrawn: "Withdrawn"
+} %}
 <div class="govuk-tabs" data-module="govuk-tabs">
   <ul class="govuk-tabs__list">
     <li class="govuk-tabs__list-item{% if active == 'my' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'my' %}My cases{% else %}<a href="caselist">My cases</a>{% endif %}
+      {% if active == 'my' %}{{ myAssignee }}'s cases{% else %}<a href="caselist">{{ myAssignee }}'s cases</a>{% endif %}
     </li>
     <li class="govuk-tabs__list-item{% if active == 'team' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'team' %}Open cases{% else %}<a href="caselist-team">Open cases</a>{% endif %}
+      {% if active == 'team' %}{{ teamName }} cases{% else %}<a href="caselist-team">{{ teamName }} cases</a>{% endif %}
     </li>
-    <li class="govuk-tabs__list-item{% if active == 'completed' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'completed' %}Completed cases{% else %}<a href="caselist-completed">Completed cases</a>{% endif %}
+    <li class="govuk-tabs__list-item{% if active == 'all' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'all' %}All cases{% else %}<a href="caselist-completed">All cases</a>{% endif %}
     </li>
   </ul>
 
   <div class="govuk-tabs__panel" id="cases">
+
+    {% if active == 'all' %}
+    {# Permanent SBI search #}
+    <form method="get" action="caselist-completed" class="govuk-!-margin-bottom-4">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="searchGrass">Search by SBI</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <input class="govuk-input" id="searchGrass" name="searchGrass" type="search" value="{{ f.search }}">
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
+        </div>
+      </div>
+    </form>
+
+    {# Selected filters — moj-filter__tag removable tags (search + status) #}
+    {% if f.status.length or f.search %}
+    <div class="moj-filter__selected govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags">
+        {% if f.search %}
+        <li><a href="?searchGrass=&amp;filterStatusGrass=_unchecked{% for s in f.status %}&amp;filterStatusGrass={{ s }}{% endfor %}" class="moj-filter__tag govuk-link">SBI: {{ f.search }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endif %}
+        {% for v in f.status %}
+        <li><a href="?searchGrass={{ f.search | urlencode }}&amp;filterStatusGrass=_unchecked{% for s in f.status %}{% if s != v %}&amp;filterStatusGrass={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">{{ GRASS_STATUS_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# Filter list — for now just Status + Apply #}
+    <details class="govuk-details govuk-!-margin-bottom-5"{% if f.status.length %} open{% endif %}>
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">filter list</span></summary>
+      <div class="govuk-details__text">
+        <div class="moj-filter">
+          <div class="moj-filter__content">
+            <form method="get" action="caselist-completed">
+              <input type="hidden" name="searchGrass" value="{{ f.search }}">
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                <input type="hidden" name="filterStatusGrass" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in GRASS_STATUS_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusGrass" type="checkbox" value="{{ o.v }}"{% if o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </details>
+    {% endif %}
+
+    {% if active == 'my' and usersWithCases %}
+    <form method="get" action="caselist" class="govuk-!-margin-bottom-5" id="grass-myassignee-form">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="myAssignee-input">Change assignee</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <select class="govuk-select" id="myAssignee-input" name="myAssignee">
+              {% for n in usersWithCases %}<option value="{{ n }}"{% if n == myAssignee %} selected{% endif %}>{{ n }}</option>{% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Change</button>
+        </div>
+      </div>
+    </form>
+    <script>
+      // Enhance "Change assignee" into a single-select autocomplete over all users
+      // with cases. Deferred so the accessible-autocomplete lib (pageScripts) is ready.
+      document.addEventListener('DOMContentLoaded', function () {
+        var sel = document.getElementById('myAssignee-input')
+        if (sel && typeof accessibleAutocomplete === 'function') {
+          accessibleAutocomplete.enhanceSelectElement({
+            selectElement: sel, autoselect: false, defaultValue: {{ myAssignee | dump | safe }},
+            minLength: 1, showAllValues: true, confirmOnBlur: true, displayMenu: 'overlay'
+          })
+        }
+      })
+    </script>
+    {% endif %}
+
+    {% if active == 'team' %}
+    <form method="get" action="caselist-team" class="govuk-!-margin-bottom-5" id="grass-team-form">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="ctx-input">Change team</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <select class="govuk-select" id="ctx-input" name="ctx">
+              {% for t in grasslandsTeams %}<option value="{{ t.id }}"{% if ctx == t.id %} selected{% endif %}>{{ t.name }}</option>{% endfor %}
+              <option value="all"{% if ctx == 'all' %} selected{% endif %}>All teams</option>
+            </select>
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Change</button>
+        </div>
+      </div>
+    </form>
+    <script>
+      // Enhance "Change team" into a single-select autocomplete over the teams.
+      // Deferred so the accessible-autocomplete lib (pageScripts) is ready.
+      document.addEventListener('DOMContentLoaded', function () {
+        var sel = document.getElementById('ctx-input')
+        if (sel && typeof accessibleAutocomplete === 'function') {
+          accessibleAutocomplete.enhanceSelectElement({
+            selectElement: sel, autoselect: false, defaultValue: {{ teamName | dump | safe }},
+            minLength: 1, showAllValues: true, confirmOnBlur: true, displayMenu: 'overlay'
+          })
+        }
+      })
+    </script>
+    {% endif %}
+
     <form method="get" action="caselist-assign" id="grass-cases-form">
       <button type="submit" id="grass-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
 

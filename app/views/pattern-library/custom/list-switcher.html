@@ -1,0 +1,104 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "list-switcher" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "List switcher" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">List switcher</h1>
+      <p class="govuk-body-l">A small control that swaps the <em>subject</em> of a list: a label, a single-select <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">accessible autocomplete</a>, and a "Change" button. Used at the top of a caselist tab to view a different person's or team's cases.</p>
+      <p class="govuk-body">On the Grasslands caselist the "My cases" tab carries a <strong>Change assignee</strong> switcher (its range is every caseworker who has cases) and the "Open cases" tab carries a <strong>Change team</strong> switcher (Team A/B/C/All teams). Picking a value and choosing Change reloads the tab for that subject and re-labels the tab to match (e.g. "R Singh's cases", "Team B cases"). It is single-select — exactly one subject is shown at a time.</p>
+
+      <h2 class="govuk-heading-l">Example</h2>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-list-switcher">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-list-switcher-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <form method="get" action="#">
+              <div class="govuk-form-group govuk-!-margin-bottom-0">
+                <label class="govuk-label govuk-label--s" for="pl-switcher">Change assignee</label>
+                <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+                  <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+                    <select class="govuk-select" id="pl-switcher" name="myAssignee">
+                      <option value="M Walker" selected>M Walker</option>
+                      <option value="R Singh">R Singh</option>
+                      <option value="A Jones">A Jones</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Change</button>
+                </div>
+              </div>
+            </form>
+            <p class="govuk-hint govuk-!-margin-top-2">The <code>&lt;select&gt;</code> is progressively enhanced into a type-ahead autocomplete.</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-list-switcher" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-list-switcher-code">&lt;form method="get" action="caselist"&gt;
+  &lt;label class="govuk-label govuk-label--s" for="myAssignee-input"&gt;Change assignee&lt;/label&gt;
+  &lt;select class="govuk-select" id="myAssignee-input" name="myAssignee"&gt;
+    &lt;!-- one &lt;option&gt; per subject (e.g. every caseworker with cases) --&gt;
+  &lt;/select&gt;
+  &lt;button class="govuk-button govuk-button--secondary"&gt;Change&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- progressive enhancement: single-select autocomplete --&gt;
+&lt;script&gt;
+  accessibleAutocomplete.enhanceSelectElement({
+    selectElement: document.getElementById('myAssignee-input'),
+    defaultValue: 'M Walker', showAllValues: true
+  })
+&lt;/script&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>When a list is normally shown for one subject (my cases, my team) but a user occasionally needs to view it for another.</li>
+        <li>When the set of subjects is more than a handful — the autocomplete lets users type to find one.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To narrow a list by attributes (status, date) — that's a <a class="govuk-link" href="/pattern-library/moj/filter">filter</a>, not a switcher.</li>
+        <li>When users need to compare or combine several subjects at once — a switcher is single-select by design.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">How it works</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>It is a plain <code>&lt;select&gt;</code> + submit button, so it works without JavaScript; the select is enhanced into a single-select autocomplete (see <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">Accessible autocomplete</a>).</li>
+        <li>Choosing Change submits the value, the route records it (in the session) and re-renders the list for that subject.</li>
+        <li>The tab/heading label reflects the current subject, so it's always clear whose list is shown.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/Grasslands/caselist">Grasslands — My cases</a> ("Change assignee" — every caseworker with cases)</li>
+        <li><a class="govuk-link" href="/Grasslands/caselist-team">Grasslands — Open cases</a> ("Change team" — Team A/B/C/All teams)</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -12,25 +12,31 @@
 //     (Golden Grange uses status "live"; its tag/text come from the session.)
 //  2. sbi is a unique 9-digit string per distinct business.
 //  3. submitted date is appropriate to the status (advanced statuses are older).
-//  4. team is A/B/C; assignee is one of that team's caseworkers
-//     (see data/grasslands-teams.js). Teams are balanced ~equally and by age.
+//  4. EVERY case has a team (A/B/C) — a case is always allocated to a team.
+//     If assignee is a caseworker, it MUST be one of that team's caseworkers
+//     (see data/grasslands-teams.js). A case may be allocated to a team but not
+//     yet owned: assignee "Not assigned" with a real team. Teams are balanced
+//     ~equally and by age.
+//  5. Completed cases (Agreement accepted / Rejected / Withdrawn) are ALWAYS
+//     "Not assigned" — they keep their team but have no owner. Only active cases
+//     carry a caseworker.
 module.exports = {
   cases: [
-  { id: "100279", business: "CE FAIRFAX & PARTNERS", sbi: "003849012", submitted: "6 Jan 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "M Walker" },
-  { id: "100280", business: "Eskdale Farm Ltd", sbi: "912849012", submitted: "19 Jan 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "E Carter" },
-  { id: "100281", business: "Ennerdale Farm Ltd", sbi: "712849012", submitted: "1 Feb 2025", status: "Agreement accepted", tag: "green", team: "C", assignee: "A Jones" },
-  { id: "100282", business: "Moors Farm Ltd", sbi: "612849012", submitted: "14 Feb 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "R Singh" },
-  { id: "100283", business: "Buttermere Farm Ltd", sbi: "116549012", submitted: "27 Feb 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "J Jones" },
-  { id: "100284", business: "Sunrise Agriculture", sbi: "112865012", submitted: "12 Mar 2025", status: "Agreement accepted", tag: "green", team: "C", assignee: "L Owusu" },
-  { id: "100285", business: "GRAHAM & SONS", sbi: "188849012", submitted: "25 Mar 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "T Okafor" },
-  { id: "100286", business: "VW RICHARDS & PARTNERS", sbi: "187849012", submitted: "7 Apr 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "P Shah" },
-  { id: "100287", business: "Golden Grange", sbi: "300000100", submitted: "22 Jun 2026", status: "live", tag: "", team: "", assignee: "Not assigned" },
-  { id: "100288", business: "Greater Massingham Farm", sbi: "022849012", submitted: "3 May 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "M Walker" },
-  { id: "100289", business: "Fresh Fields Farm", sbi: "112849019", submitted: "16 May 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "E Carter" },
-  { id: "100290", business: "J F HODGES", sbi: "112849013", submitted: "29 May 2025", status: "Rejected", tag: "red", team: "C", assignee: "A Jones" },
-  { id: "100291", business: "Harvest Horizon", sbi: "112846012", submitted: "11 Jun 2025", status: "Rejected", tag: "red", team: "A", assignee: "R Singh" },
-  { id: "100292", business: "North Sussex Farm Partnership", sbi: "112850012", submitted: "24 Jun 2025", status: "Withdrawn", tag: "orange", team: "B", assignee: "J Jones" },
-  { id: "100293", business: "J RENNER AND SONS", sbi: "012849012", submitted: "7 Jul 2025", status: "Withdrawn", tag: "orange", team: "C", assignee: "L Owusu" },
+  { id: "100279", business: "CE FAIRFAX & PARTNERS", sbi: "003849012", submitted: "6 Jan 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100280", business: "Eskdale Farm Ltd", sbi: "912849012", submitted: "19 Jan 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100281", business: "Ennerdale Farm Ltd", sbi: "712849012", submitted: "1 Feb 2025", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100282", business: "Moors Farm Ltd", sbi: "612849012", submitted: "14 Feb 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100283", business: "Buttermere Farm Ltd", sbi: "116549012", submitted: "27 Feb 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100284", business: "Sunrise Agriculture", sbi: "112865012", submitted: "12 Mar 2025", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100285", business: "GRAHAM & SONS", sbi: "188849012", submitted: "25 Mar 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100286", business: "VW RICHARDS & PARTNERS", sbi: "187849012", submitted: "7 Apr 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100287", business: "Golden Grange", sbi: "300000100", submitted: "22 Jun 2026", status: "live", tag: "", team: "A", assignee: "Not assigned" },
+  { id: "100288", business: "Greater Massingham Farm", sbi: "022849012", submitted: "3 May 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100289", business: "Fresh Fields Farm", sbi: "112849019", submitted: "16 May 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100290", business: "J F HODGES", sbi: "112849013", submitted: "29 May 2025", status: "Rejected", tag: "red", team: "C", assignee: "Not assigned" },
+  { id: "100291", business: "Harvest Horizon", sbi: "112846012", submitted: "11 Jun 2025", status: "Rejected", tag: "red", team: "A", assignee: "Not assigned" },
+  { id: "100292", business: "North Sussex Farm Partnership", sbi: "112850012", submitted: "24 Jun 2025", status: "Withdrawn", tag: "orange", team: "B", assignee: "Not assigned" },
+  { id: "100293", business: "J RENNER AND SONS", sbi: "012849012", submitted: "7 Jul 2025", status: "Withdrawn", tag: "orange", team: "C", assignee: "Not assigned" },
   { id: "100294", business: "T and F Farms", sbi: "102849012", submitted: "20 Jul 2025", status: "Agreement offered", tag: "blue", team: "A", assignee: "T Okafor" },
   { id: "100295", business: "MESSRS J WICKHAM", sbi: "110049012", submitted: "2 Aug 2025", status: "Agreement offered", tag: "blue", team: "B", assignee: "P Shah" },
   { id: "100296", business: "SF RICHARDS & SONS", sbi: "113849012", submitted: "15 Aug 2025", status: "Agreement offered", tag: "blue", team: "C", assignee: "K Reed" },
@@ -53,19 +59,19 @@ module.exports = {
   { id: "100322", business: "Bramblewood Holdings", sbi: "200000322", submitted: "24 Mar 2026", status: "Application received", tag: "grey", team: "B", assignee: "P Shah" },
   { id: "100323", business: "Redholme Farm", sbi: "200000323", submitted: "6 Apr 2026", status: "Application received", tag: "grey", team: "C", assignee: "K Reed" },
   { id: "100324", business: "Pennine Edge Farm", sbi: "200000324", submitted: "19 Apr 2026", status: "Application received", tag: "grey", team: "A", assignee: "M Walker" },
-  { id: "100325", business: "Brackenfell Farm", sbi: "200000325", submitted: "1 Jul 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "E Carter" },
-  { id: "100326", business: "Dovecote Holdings", sbi: "200000326", submitted: "23 Jul 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "A Jones" },
-  { id: "100327", business: "Elmwood Estate", sbi: "200000327", submitted: "15 Aug 2024", status: "Agreement accepted", tag: "green", team: "A", assignee: "R Singh" },
-  { id: "100328", business: "Fernlea Farm", sbi: "200000328", submitted: "7 Sep 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "J Jones" },
-  { id: "100329", business: "Gorsehill Agriculture", sbi: "200000329", submitted: "30 Sep 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "L Owusu" },
-  { id: "100330", business: "Netherby Estate", sbi: "200000330", submitted: "20 Oct 2024", status: "Rejected", tag: "red", team: "A", assignee: "T Okafor" },
-  { id: "100331", business: "Hartwell Farm", sbi: "200000331", submitted: "23 Oct 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "P Shah" },
-  { id: "100332", business: "Ivybridge Holdings", sbi: "200000332", submitted: "15 Nov 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "K Reed" },
-  { id: "100333", business: "Orchard Rise Farm", sbi: "200000333", submitted: "15 Nov 2024", status: "Withdrawn", tag: "orange", team: "A", assignee: "M Walker" },
-  { id: "100334", business: "Juniper Fields", sbi: "200000334", submitted: "8 Dec 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "E Carter" },
-  { id: "100335", business: "Kestrel Farm", sbi: "200000335", submitted: "31 Dec 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "A Jones" },
-  { id: "100336", business: "Linden Grange", sbi: "200000336", submitted: "23 Jan 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "R Singh" },
-  { id: "100337", business: "Mossgate Farm", sbi: "200000337", submitted: "15 Feb 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "J Jones" },
+  { id: "100325", business: "Brackenfell Farm", sbi: "200000325", submitted: "1 Jul 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100326", business: "Dovecote Holdings", sbi: "200000326", submitted: "23 Jul 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100327", business: "Elmwood Estate", sbi: "200000327", submitted: "15 Aug 2024", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100328", business: "Fernlea Farm", sbi: "200000328", submitted: "7 Sep 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100329", business: "Gorsehill Agriculture", sbi: "200000329", submitted: "30 Sep 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100330", business: "Netherby Estate", sbi: "200000330", submitted: "20 Oct 2024", status: "Rejected", tag: "red", team: "A", assignee: "Not assigned" },
+  { id: "100331", business: "Hartwell Farm", sbi: "200000331", submitted: "23 Oct 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100332", business: "Ivybridge Holdings", sbi: "200000332", submitted: "15 Nov 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100333", business: "Orchard Rise Farm", sbi: "200000333", submitted: "15 Nov 2024", status: "Withdrawn", tag: "orange", team: "A", assignee: "Not assigned" },
+  { id: "100334", business: "Juniper Fields", sbi: "200000334", submitted: "8 Dec 2024", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
+  { id: "100335", business: "Kestrel Farm", sbi: "200000335", submitted: "31 Dec 2024", status: "Agreement accepted", tag: "green", team: "C", assignee: "Not assigned" },
+  { id: "100336", business: "Linden Grange", sbi: "200000336", submitted: "23 Jan 2025", status: "Agreement accepted", tag: "green", team: "A", assignee: "Not assigned" },
+  { id: "100337", business: "Mossgate Farm", sbi: "200000337", submitted: "15 Feb 2025", status: "Agreement accepted", tag: "green", team: "B", assignee: "Not assigned" },
   { id: "100338", business: "Primrose Holdings", sbi: "200000338", submitted: "1 Mar 2025", status: "Agreement offered", tag: "blue", team: "C", assignee: "L Owusu" },
   { id: "100339", business: "Quarrybank Farm", sbi: "200000339", submitted: "5 Apr 2025", status: "Agreement offered", tag: "blue", team: "A", assignee: "T Okafor" },
   { id: "100340", business: "Rookery Farm", sbi: "200000340", submitted: "10 May 2025", status: "Agreement offered", tag: "blue", team: "B", assignee: "P Shah" },
@@ -88,18 +94,18 @@ module.exports = {
   { id: "100357", business: "Meadowgate Estate", sbi: "200000357", submitted: "20 Apr 2026", status: "Application received", tag: "grey", team: "A", assignee: "T Okafor" },
   { id: "100358", business: "Nightingale Farm", sbi: "200000358", submitted: "15 May 2026", status: "Application received", tag: "grey", team: "B", assignee: "P Shah" },
   { id: "100359", business: "Oakridge Holdings", sbi: "200000359", submitted: "10 Jun 2026", status: "Application received", tag: "grey", team: "C", assignee: "K Reed" },
-  { id: "100360", business: "Pendle View Farm", sbi: "200000360", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100361", business: "Quayside Holdings", sbi: "200000361", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100362", business: "Ravensworth Estate", sbi: "200000362", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100363", business: "Sandbeck Farm", sbi: "200000363", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100364", business: "Thirlmere Holdings", sbi: "200000364", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100365", business: "Ullswater Farm", sbi: "200000365", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100366", business: "Wansbeck Farm", sbi: "200000366", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100367", business: "Yarrow Estate", sbi: "200000367", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100368", business: "Aldercarr Farm", sbi: "200000368", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100369", business: "Blencathra Holdings", sbi: "200000369", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100370", business: "Coldstream Farm", sbi: "200000370", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100371", business: "Dunkeld Estate", sbi: "200000371", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" },
-  { id: "100372", business: "Ferndale Agriculture", sbi: "200000372", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "", assignee: "Not assigned" }
+  { id: "100360", business: "Pendle View Farm", sbi: "200000360", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "B", assignee: "Not assigned" },
+  { id: "100361", business: "Quayside Holdings", sbi: "200000361", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "C", assignee: "Not assigned" },
+  { id: "100362", business: "Ravensworth Estate", sbi: "200000362", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "A", assignee: "Not assigned" },
+  { id: "100363", business: "Sandbeck Farm", sbi: "200000363", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "B", assignee: "Not assigned" },
+  { id: "100364", business: "Thirlmere Holdings", sbi: "200000364", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "C", assignee: "Not assigned" },
+  { id: "100365", business: "Ullswater Farm", sbi: "200000365", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "A", assignee: "Not assigned" },
+  { id: "100366", business: "Wansbeck Farm", sbi: "200000366", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "B", assignee: "Not assigned" },
+  { id: "100367", business: "Yarrow Estate", sbi: "200000367", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "C", assignee: "Not assigned" },
+  { id: "100368", business: "Aldercarr Farm", sbi: "200000368", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "A", assignee: "Not assigned" },
+  { id: "100369", business: "Blencathra Holdings", sbi: "200000369", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "B", assignee: "Not assigned" },
+  { id: "100370", business: "Coldstream Farm", sbi: "200000370", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "C", assignee: "Not assigned" },
+  { id: "100371", business: "Dunkeld Estate", sbi: "200000371", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "A", assignee: "Not assigned" },
+  { id: "100372", business: "Ferndale Agriculture", sbi: "200000372", submitted: "19 Jun 2026", status: "Application received", tag: "grey", team: "B", assignee: "Not assigned" }
   ]
 }

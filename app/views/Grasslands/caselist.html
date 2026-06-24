@@ -5,16 +5,23 @@
   {% include "FRPS-D2/includes/_defra-header.html" %}
 {% endblock %}
 
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
 
     <h1 class="govuk-heading-xl">Grasslands cases</h1>
 
-    {{ caselist.filters(grassFilters) }}
-    {{ caselist.contextSelector(ctx) }}
-    {{ caselist.tabsAndTable("my", ctx, view) }}
+    {{ caselist.tabsAndTable("my", ctx, view, myAssignee, usersWithCases) }}
 
   </main>
 </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
 {% endblock %}
