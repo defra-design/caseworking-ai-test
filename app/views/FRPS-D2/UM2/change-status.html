@@ -1,0 +1,41 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="martin">R Singh</a></li>
+        <li class="govuk-breadcrumbs__list-item">Change status</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="change-status" method="post">
+          {% set st = data.rsStatus or "Active" %}
+
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"><h1 class="govuk-fieldset__heading">Change status — R Singh</h1></legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="status-active" name="rsStatus" type="radio" value="Active"{% if st == "Active" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="status-active">Active</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="status-suspended" name="rsStatus" type="radio" value="Suspended"{% if st == "Suspended" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="status-suspended">Suspended</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="status-leaver" name="rsStatus" type="radio" value="Leaver"{% if st == "Leaver" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="status-leaver">Leaver</label></div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">Save and continue</button><br>
+          <a href="martin" class="govuk-link">Cancel</a>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

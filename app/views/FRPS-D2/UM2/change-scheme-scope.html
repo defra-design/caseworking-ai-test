@@ -1,0 +1,42 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="team">Team A</a></li>
+        <li class="govuk-breadcrumbs__list-item">Change scheme scope</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="change-scheme-scope" method="post">
+          {% set cur = data.taScope or "SFI" %}
+
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"><h1 class="govuk-fieldset__heading">Change scheme scope — Team A</h1></legend>
+            <div class="govuk-hint">Which grant scheme this team works on.</div>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-sfi" name="taScope" type="radio" value="SFI"{% if cur == "SFI" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="scope-sfi">SFI</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-fetf" name="taScope" type="radio" value="FETF"{% if cur == "FETF" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="scope-fetf">FETF</label></div>
+              <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-ftf" name="taScope" type="radio" value="FTF"{% if cur == "FTF" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="scope-ftf">FTF</label></div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">Save and continue</button><br>
+          <a href="team" class="govuk-link">Cancel</a>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

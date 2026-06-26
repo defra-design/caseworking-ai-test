@@ -6,12 +6,26 @@
   "repoImageBase": "app/assets/images/research",
 
   "screens": {
+    "case-list": {
+      "title": "Case list — your team's applications",
+      "area": "Case management",
+      "summary": "The caseworker list of grant applications (\"Manage rural grant applications\"). Tabbed by status (New / Not started / In progress / Complete / All), with Ref · Grant · Project · Received · Status · Priority · Assigned-to columns, select-and-Assign, and a status filter. The live equivalent is the Grasslands caselist, now organised into My cases / Open cases / All cases tabs.",
+      "currentScreen": "/Grasslands/caselist",
+      "relatedPatterns": ["/pattern-library/patterns/caselist", "/pattern-library/custom/full-list-sort", "/pattern-library/custom/list-switcher", "/pattern-library/custom/status-tags"]
+    },
     "tasklist-decision": {
-      "title": "Task list — decision panel",
-      "area": "Amend application pre-agreement",
-      "summary": "The case Tasks page with the caseworker Decision radio group (Put on hold / Amend / Return to customer / Reject / Withdraw) and a compulsory explanation box.",
+      "title": "Individual case view (task list & decision)",
+      "area": "Case management",
+      "summary": "The individual case view for a grant application — a tabbed page (Tasks, Timeline, Application, Documents/Evidence, Notes, Messages, Assigned users) showing the whole application in one place. The Tasks tab carries the task list (automated checks, application and quality checks) and, once tasks are accepted, the caseworker Decision radio group (Approve / Put on hold / Return to customer / Reject / Withdraw), each with a compulsory explanation for auditing.",
       "currentScreen": "/FRPS-D2/caseReal/tasklist-stage",
-      "relatedPatterns": ["/pattern-library/patterns/task", "/pattern-library/patterns/caselist", "/pattern-library/gds/radios"]
+      "relatedPatterns": ["/pattern-library/patterns/task", "/pattern-library/patterns/timeline", "/pattern-library/patterns/notes", "/pattern-library/gds/radios"]
+    },
+    "land-details": {
+      "title": "Land details (parcel map)",
+      "area": "Case management",
+      "summary": "The land / mapping detail view for a case — a parcel map with highlighted land parcels and a \"Parcel and area\" table (area, intersections such as SSSI / historic features, percentage holding). Introduced for SFI processors who need parcel-level land data when assessing applications. Not yet in the live prototype.",
+      "currentScreen": null,
+      "relatedPatterns": ["/pattern-library/gds/table"]
     },
     "confirm-amend": {
       "title": "Confirm — amend application",
@@ -45,6 +59,193 @@
 
   "reports": [
     {
+      "id": "2024-08-rpa-internal-user-problems",
+      "title": "Future Grants — RPA internal user problems",
+      "author": "Nick Buckland",
+      "role": "",
+      "fieldworkDate": "2024-08-05",
+      "datePrecision": "day",
+      "date": "2024-08",
+      "system": "DEFRA Future Grants — RPA caseworker process for FTF / FETF grants (as-is)",
+      "stage": "Discovery",
+      "method": "7 × 1-hour depth interviews with RPA staff",
+      "sampleSize": 7,
+      "participants": "2 FTF appraisers, 2 FETF appraisers, 1 FTF SME, 1 Executive Officer, 1 Higher Executive Officer",
+      "confidence": "Indicative discovery — small qualitative sample (n=7), partial role coverage, findings are interpretative. Directional, not representative.",
+      "digest": "2024-08-rpa-internal-user-problems/report.md",
+      "sourceFile": "FCP UR Copy of Future Grants _ RPA Research _ Summary 060824.pptx",
+      "headline": "RPA caseworkers process FTF/FETF grants through Giles plus a sprawl of Excel/Word — most applications fail first time and manual checking, fragmented guidance and poor system integration drive delays and errors.",
+      "kind": "discovery",
+      "themes": [
+        { "title": "Most grant applications fail first time", "detail": "Staff estimate 90%+ of FTF and ~60% of FETF applications need further correspondence — missing documents, wrong formats, missing invoices/match-funding evidence, missing RPA registration or permissions, FETF items not matching the category spec." },
+        { "title": "Applicants do not understand what is required of them", "detail": "They don't know preferred formats, that they must be registered, how permissions work, what evidence is acceptable, or how much detail to give." },
+        { "title": "Application forms are too complicated", "detail": "Complex and confusing for applicants; much technical content is set by other bodies (e.g. the Environment Agency) and defended as \"as complex as it needs to be\"." },
+        { "title": "Most of the work is done in Excel and Word", "detail": "Cases are logged in Giles, but active checks and scoring run in Excel/Word on SharePoint (ECR, scoring spreadsheet, tracker) with heavy copy-paste and duplication." },
+        { "title": "Manual processes require time-consuming manual checking", "detail": "Laborious checking and re-checking across many documents and guidance; manual steps also cause small human errors. \"We have to take screenshots of everything.\"" },
+        { "title": "Systems are inflexible to different digital formats", "detail": "Incompatible supporting-information formats cause delays; e.g. third-party transfer links (WeTransfer) can't be accepted." },
+        { "title": "Internal guidance can be overwhelming", "detail": "Guidance is spread across many places (RPA hub, Word, Excel, SharePoint); staff keep several guidance pages open at once." },
+        { "title": "RPA staff cover multiple schemes, which can be challenging", "detail": "Non-specialists need a working knowledge of many schemes and find it hard to stay on top of them all." },
+        { "title": "There is a lack of integration with RPA systems and other organisations", "detail": "Many checks are manual — RPA call centre, registration/permissions, Companies House, dual-funding checks with other arm's-length bodies; disconnected CRM." },
+        { "title": "The 'clock stop' mechanism may incentivise delays", "detail": "Appraisers have 60 (FTF) / 30 (FETF) working days; stopping the clock for missing info resets the KPI and may be used to manage busy periods." },
+        { "title": "Technical checks usually cause significant delays", "detail": "Slurry applications need Environment Agency checks, typically 2–9+ months." },
+        { "title": "Application windows and seasonality cause volume spikes", "detail": "Tight application windows and the farming calendar create demand spikes that are hard to staff." },
+        { "title": "Concerns that agents submit poor-quality applications", "detail": "Most FTF/FETF applications come via agents; staff perceive these as poorer quality and sometimes unresponsive." }
+      ]
+    },
+    {
+      "id": "2024-10-future-grants-general-themes",
+      "title": "Future Grants — general research themes (farmers & agents)",
+      "author": "Nick Buckland",
+      "role": "",
+      "fieldworkDate": "2024-10-31",
+      "datePrecision": "month",
+      "date": "2024-10",
+      "system": "DEFRA Future Grants — FETF apply / claims (farmer & agent research)",
+      "stage": "Discovery",
+      "method": "13 × 1-hour qualitative interviews (feedback on new FETF apply / claims designs; general-themes synthesis)",
+      "sampleSize": 13,
+      "participants": "9 farmers (large >£1m, medium £50k–£500k, small <£50k turnover) and 4 farming agents; contributor Naomi Wilcock",
+      "confidence": "Indicative qualitative — 13 in-depth interviews, not statistically generalisable; self-reported and interpretative. Illuminates patterns, not population estimates.",
+      "digest": "2024-10-future-grants-general-themes/report.md",
+      "sourceFile": "Future Grants _ General Research Themes _ Summary 181124.pptx",
+      "headline": "Farmers and agents see the grants landscape as too complex and fragmented post-BPS, distrust the RPA/Defra, and many can't apply without agent help — with consistent pain across discovering, applying for and claiming grants.",
+      "kind": "discovery",
+      "themes": [
+        { "title": "Macro pressures shape how farmers consume grants", "detail": "Global-market and supply-chain pressure, high input costs, high debt, low cash (\"asset rich, cash poor\"), climate impacts and frequent grant changes mean farmers seek funding to stay viable." },
+        { "title": "Grant schemes feel too complex — and increasingly so", "detail": "The shift from BPS (\"simple, one form, one payment a year\") to many unfamiliar, changing schemes requiring separate applications for much the same information." },
+        { "title": "The grants & payments landscape is complicated", "detail": "Too many schemes; similar, confusing, unmemorable names; overlapping criteria; complex and inconsistent application requirements between schemes." },
+        { "title": "Many farmers can't apply without an agent", "detail": "Complexity drives reliance on agents — \"90% of the time we are doing the application for them\" — who are both frustrated by and commercially reliant on that complexity." },
+        { "title": "Low trust — RPA/Defra seen as disconnected and high-risk", "detail": "Requirements feel too prescriptive and not feasible; a perception that the RPA looks for fault and withholds money. \"Any engagement with the RPA is a risk.\"" },
+        { "title": "Farming is localised and contextual", "detail": "Schemes are felt to ignore the local, contextual detail farmers (as custodians) know best; participants favour a more collaborative, less prescriptive approach." },
+        { "title": "A significant group are \"analogue by default\" — risk of digital exclusion", "detail": "Paper records, low digital skills, limited hardware and help. \"A lot of the farmers I know will not be able to do this… they won't know how to digitise the paperwork.\"" },
+        { "title": "Informal, localised supply chains", "detail": "Second-hand kit, preferred local suppliers, trusted help and the recycling of BPS money — flexible purchasing requirements are needed." },
+        { "title": "Perception that grants favour larger, intensive operators", "detail": "Larger farms can afford consultants, in-house research and upfront capital; smaller operators feel disadvantaged." },
+        { "title": "Consistent pain across the journey — discover, decide, apply, claim", "detail": "Hard to find/understand schemes; eligibility and scoring confusing; repeated information; not all journeys start in the RPA portal; restrictive windows out of sync with the farming calendar; confusing item specs/codes; payment delays and cashflow strain; no claim-status visibility; all-or-nothing claims." }
+      ]
+    },
+    {
+      "id": "2024-11-fcp-themes",
+      "title": "FCP themes — challenges in the grants space",
+      "author": "Not stated in the deliverable",
+      "role": "",
+      "fieldworkDate": "2024-11-05",
+      "datePrecision": "day",
+      "date": "2024-11",
+      "system": "Farming and Countryside Programme (FCP) — applicant / grants discovery",
+      "stage": "Discovery",
+      "method": "Qualitative research with farmers and advisors / agents",
+      "sampleSize": null,
+      "participants": "Farmers and advisors / agents (sample size not stated in the deliverable)",
+      "confidence": "Discovery-phase thematic synthesis, captured from a single summary slide with no sample size or method detail. Treat as directional context, not measured findings.",
+      "digest": "2024-11-fcp-themes/report.md",
+      "sourceFile": "FCP Themes _ 051124.pptx",
+      "headline": "Farmers and advisors find the grants space hard to navigate — analogue by default, low trust in Defra/RPA, confusing schemes and overwhelming guidance — the discovery backdrop to the caseworking work.",
+      "kind": "discovery",
+      "themes": [
+        { "title": "Many farming processes are analogue by default", "detail": "Smaller operators say their processes are paper-based and they would struggle to digitise them." },
+        { "title": "Low trust in Defra and RPA among farmers and advisors", "detail": "Participants feel Defra and RPA are difficult to work with and detached from the realities of farming." },
+        { "title": "It is easy to confuse different schemes", "detail": "Participants frequently struggle to differentiate between schemes." },
+        { "title": "Grant benefit skews towards larger operators", "detail": "Many feel the complexity of grant schemes favours larger, more intensive operators." },
+        { "title": "Applying for grants feels onerous", "detail": "Many farmers say the proposed process feels more onerous than previous processes." },
+        { "title": "It is difficult to understand eligibility and scoring", "detail": "Profitable farms rely on agents to decipher the rules; smaller operators can feel left behind." },
+        { "title": "Grant guidance is overwhelming", "detail": "Participants feel existing guidance is verbose and difficult to understand." },
+        { "title": "Grant application windows make planning difficult", "detail": "Timelines are tight and the forward look is limited." }
+      ]
+    },
+    {
+      "id": "2025-01-rpa-case-management",
+      "title": "Usability testing of RPA case management designs",
+      "author": "Nick Buckland",
+      "role": "",
+      "fieldworkDate": "2025-01-23",
+      "datePrecision": "day",
+      "date": "2025-01",
+      "system": "DEFRA Future Grants — RPA case management (caseworker prototype) for FETF / FTF grants",
+      "stage": "Alpha — early clickable Figma prototype",
+      "method": "10 × 1-hour moderated usability tests on a clickable Figma prototype",
+      "sampleSize": 10,
+      "participants": "RPA grant-appraisal staff: EO Appraisers, HEO Workflow Managers, HEO Subject Matter Experts (SMEXs). Contributors: Chas Linn, Naomi Wilcock, Rebekah Broughton, Mark Stead, Garry Prior",
+      "confidence": "Indicative usability study — 10 moderated sessions on an early concept prototype; qualitative and directional (reactions to early designs, not validated outcomes). Further research flagged for status terminology and messaging.",
+      "digest": "2025-01-rpa-case-management/report.md",
+      "sourceFile": "Future Grants _ RPA Case Management _ Summary 280125.pptx",
+      "headline": "RPA staff were overwhelmingly positive about a consolidated Case List and Individual Case View prototype — keen on automation, one-place information and role-specific views — with refinements needed to status terminology, an actions column, applicant details, and notes/messages."
+    },
+    {
+      "id": "2025-06-rpa-appraiser-research",
+      "title": "Research with RPA Appraisers (case management debrief)",
+      "author": "Nick Buckland",
+      "role": "",
+      "fieldworkDate": "2025-06-10",
+      "datePrecision": "month",
+      "date": "2025-06",
+      "system": "DEFRA Future Grants — RPA case management for Farming Transformation Fund (FTF), heading into MVP",
+      "stage": "Alpha → MVP definition (private beta targeted Sept 2025)",
+      "method": "Mixed-method: 8 in-depth qualitative interviews + a quantitative survey of 37 respondents",
+      "sampleSize": 8,
+      "participants": "Interviews: EO Appraisers, HEO Workflow Managers, SMEXs. Survey (n=37): Appraisers, Workflow Managers, SMEXs and senior management",
+      "confidence": "Indicative — 8 depth interviews plus a 37-person survey across a small, FTF-focused operational team. The survey adds quantitative weight but the population is small; treat percentages as directional priorities, not precise measures.",
+      "digest": "2025-06-rpa-appraiser-research/report.md",
+      "sourceFile": "Case Management Debrief 100625.pptx",
+      "headline": "FTF appraisers and workflow managers rate current workload processes 3.35/5 — top frustrations are manual trackers/spreadsheets, unfair opaque allocation, QC/panel bottlenecks, scattered guidance and poor customer comms; they most want applicant evidence upload (68%), automated checks (46%) and in-system messaging (43%). MVP private beta targeted Sept 2025.",
+      "kind": "discovery",
+      "themes": [
+        { "title": "Manual processes and lack of automation (top frustration)", "detail": "Heavy reliance on trackers, spreadsheets and manual checks. \"Zero automation, no case management function, reliant on trackers to support.\" Staff want automated tasks and integrated systems." },
+        { "title": "Unfair, opaque work allocation", "detail": "Cases allocated without notice or regard to existing workload/complexity; KPIs distorted by RFIs dropping priority. \"Work is allocated to you even if you have a lot of cases already.\" Want fair, transparent allocation with manager visibility of complexity and workload." },
+        { "title": "Process delays & bottlenecks", "detail": "Long waits for QCs, SMEx advice and panel decisions; KPI clock resets seen as gaming the system. Want streamlined approvals and fewer unnecessary checks — \"one process where you do everything and get it QC'd at the end.\"" },
+        { "title": "Complex, scattered guidance", "detail": "Lengthy ECR/SIG guidance, easy to miss points; near-universal RFIs are taken as evidence the process is too hard. Want clear, task-aligned guidance and checklists, ideally embedded in the system." },
+        { "title": "Poor customer communication & progress visibility", "detail": "Constant back-and-forth email, blank Word/Excel documents that invite errors, an outdated email-inbox interface. Want applicant upload, pre-filled documents, clearer prompts and shared status visibility." },
+        { "title": "Most-wanted features", "detail": "Applicants upload evidence directly (68%), automated 3rd-party checks (46%), direct messaging with applicants and full message history (43% each), clear deadlines/reminders (32%), end-to-end progress tracking to payment (30%), assign/reassign a case (16%)." },
+        { "title": "How staff find cases — search & filters", "detail": "Staff search first by Project reference (89%), then SBI (62%), business name and applicant name. Most-helpful filters: project reference, SBI, appraiser, grant name, KPI status, case status." },
+        { "title": "Status labels staff want", "detail": "A rich lifecycle vocabulary: Unassigned, Application received, ECR / Full appraisal in progress, Awaiting customer info (RFI), Awaiting SMEx advice, On clock stop, Awaiting/in QC, Approved, Contracted, Rejected, Withdrawn, Closed, Rework required — plus indicators (KPI status, case owner, linked cases)." },
+        { "title": "Distinct Appraiser vs Workflow Manager needs", "detail": "Appraisers: find/return to active projects, see urgent actions and deadlines, know when a customer responded, one-place overview, less manual entry. Managers: see each member's workload, track all active projects, filter by scheme/deadline, judge case complexity for fair allocation, monitor on-hold cases." }
+      ]
+    },
+    {
+      "id": "2025-06-sfi-processors-case-management",
+      "title": "Case management debrief — SFI Processors (combined survey)",
+      "author": "Nick Buckland",
+      "role": "",
+      "fieldworkDate": "2025-06-19",
+      "datePrecision": "month",
+      "date": "2025-06",
+      "system": "DEFRA Future Grants — RPA case management across FTF Appraisers and SFI Processors, heading into MVP",
+      "stage": "Alpha → MVP definition (private beta targeted Sept 2025)",
+      "method": "Mixed-method: combined RPA workload survey (n=76, FTF Appraisers + SFI Processors) for feature & filter questions; qualitative base (8 FTF interviews) shared with the FTF-only debrief",
+      "sampleSize": 76,
+      "participants": "FTF Appraisers, HEO Workflow Managers, SMEXs, SFI Processors and senior management (combined survey n=76)",
+      "confidence": "Indicative — combined survey n=76 broadens the quantitative view across FTF Appraisers and SFI Processors, but qualitative depth (n=8 interviews) and open-text frustrations remain FTF-focused (n=37). Directional cross-team priorities.",
+      "digest": "2025-06-sfi-processors-case-management/report.md",
+      "sourceFile": "FRPS Case Management Debrief 190625 .pptx",
+      "headline": "Extending the workload survey to SFI Processors (n=76) confirms priorities hold across teams: staff most want everything about a case in one place (88%) and end-to-end progress tracking; the strongest case-list filters are SBI (87%), Case status (78%) and Application reference (72%).",
+      "kind": "discovery",
+      "themes": [
+        { "title": "Priorities hold across FTF Appraisers and SFI Processors", "detail": "Extending the survey to SFI processors (n=76 combined) validates the FTF debrief — the same frustrations and feature priorities recur across both teams, supporting a single case-management design usable by both." },
+        { "title": "\"Everything in one place\" is the dominant feature ask (n=76)", "detail": "Having all information in one place 88%; track progress application→payment 45%; see full history of messages and actions 43%; direct messaging 25%; clear deadlines/reminders 22%; assign/reassign a case 12%." },
+        { "title": "Strongest case-list filters: SBI, Case status, Application reference (n=76)", "detail": "SBI 87%, Case status 78%, Application reference 72%, then who it's assigned to 46%, applicant name 46%, submission date 40%, business name 38%, due date 28%, applicant location 4%." },
+        { "title": "Same core frustrations as the FTF debrief", "detail": "Manual processes & lack of automation, unfair/opaque allocation, QC/panel bottlenecks, scattered guidance and poor customer comms — shared with the 10 June appraiser debrief and not re-counted here (open-text base n=37)." },
+        { "title": "Same desired solutions and role needs", "detail": "Automation, process streamlining, clearer embedded guidance, customer upload/pre-fill, and fair allocation with manager visibility; distinct Appraiser vs Workflow-Manager needs — carried in the companion report." },
+        { "title": "Heading to MVP — aligned across teams", "detail": "Concurrent FTF + SFI research aims to align case-management designs across both teams; MVP working private beta targeted September 2025." }
+      ]
+    },
+    {
+      "id": "2025-06-case-management-design-history",
+      "title": "RPA case management — design history + SFI processor research",
+      "author": "Naomi Wilcock, Nick Buckland, Chas Linn",
+      "role": "",
+      "fieldworkDate": "2025-06-17",
+      "datePrecision": "day",
+      "date": "2025-06",
+      "system": "DEFRA Future Grants — reusable RPA case management (FTF + SFI), heading into SFI private beta Day 1 (Sept 2025)",
+      "stage": "Alpha → MVP (HTML prototype on GOV.UK + MOJ Design System)",
+      "method": "Design-history synthesis (Jan–June 2025) + SFI processor research: 8 in-depth interviews + an 84-respondent survey",
+      "sampleSize": 84,
+      "participants": "SFI processors — AO Appraisers and Workflow Managers (interviews); AOs, EOs and senior management (survey n=84). Earlier phases: RPA grant appraisers",
+      "confidence": "Mixed — the design-history narrative is a factual record of the team's own work; the SFI processor findings are indicative (8 interviews + 84 survey across a stressed, SitiAgri-dependent team). Directional priorities, not precise measures.",
+      "digest": "2025-06-case-management-design-history/report.md",
+      "sourceFile": "Case Management Design History 170625.pptx",
+      "headline": "The June 2025 HTML iteration evolved the case list (Team tab, Priority/Stage/Status + RFI flags, search & filter) and case view (Application review + decision recording, guidance, customer contact) and introduced a Land details map; an 84-person SFI survey reaffirmed SBI/case-status/application-reference filters and 'everything in one place' (88%)."
+    },
+    {
       "id": "2026-01-amendments-pre-agreement",
       "title": "Amendments to grant applications pre agreement",
       "author": "Janice Hannaway",
@@ -66,9 +267,195 @@
 
   "captures": [
     {
-      "reportId": "2026-01-amendments-pre-agreement",
+      "reportId": "2025-01-rpa-case-management",
+      "screenId": "case-list",
+      "noteKind": "first-capture",
+      "images": [
+        { "src": "2025-01-rpa-case-management/case-list.png", "state": "Your team's applications — tabbed by status, with select-and-Assign" },
+        { "src": "2025-01-rpa-case-management/case-list--status-priority.png", "state": "Status & priority columns (detail)" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "All participants understood the case-list view and every column heading, and felt able to organise cases by priority and status.",
+        "Particularly liked the priority column (priority level + days left to hit the KPI); some wanted KPI days-remaining shown across all cases.",
+        "Felt similar to other case-management systems, especially Universal Credit.",
+        "Role-specific views seen as essential: EO Appraisers want their assigned cases and priorities; HEO Workflow Managers a team overview by urgency against the 60-day KPI; HEO SMEXs to filter by specialism; SEOs team-level performance and KPI analysis.",
+        "Status terminology ('in progress', 'on hold', 'ready for QC', 'approved', 'rejected', 'withdrawn') was important but a source of confusion; some felt completed cases were redundant and preferred focusing on active cases."
+      ],
+      "recommendedChanges": [
+        {
+          "text": "Add an 'Actions' column showing the last action / outstanding actions / new messages per case.",
+          "status": "outstanding",
+          "evidence": "/Grasslands/caselist",
+          "resolvedNote": "Live caselist has no actions/last-action column.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Show applicant details alongside the project name to add context and spot multiple applications from one client.",
+          "status": "addressed",
+          "evidence": "/Grasslands/caselist",
+          "resolvedNote": "Live caselist shows a Business (applicant) column alongside the case ID and SBI.",
+          "resolvedDate": "2026-06-25"
+        },
+        {
+          "text": "Provide role-specific views (appraiser's own cases; manager team overview; SMEX specialisation filter; SEO performance).",
+          "status": "partial",
+          "evidence": "/Grasslands/caselist",
+          "resolvedNote": "Live caselist has three role-tailored tabs — the user's own cases ({name}'s cases), team cases ({team} cases) and All cases — plus team/assignee/status filters. Appraiser and manager views exist, but no SMEX specialisation filter or SEO performance analytics.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Refine and clarify case-status terminology to align with future workflows.",
+          "status": "partial",
+          "evidence": "/Grasslands/caselist",
+          "resolvedNote": "Live caselist uses a defined status set with coloured tags, but the deck flagged ongoing research need on labels.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Show KPI days-remaining / priority across all cases in the list.",
+          "status": "outstanding",
+          "evidence": "/Grasslands/caselist",
+          "resolvedNote": "Live caselist has no priority or KPI-days column.",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Add flags & notifications for outstanding/new actions (new messages, status changes).",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        }
+      ]
+    },
+    {
+      "reportId": "2025-01-rpa-case-management",
       "screenId": "tasklist-decision",
       "noteKind": "first-capture",
+      "images": [
+        { "src": "2025-01-rpa-case-management/tasklist-decision--tasks.png", "state": "Tasks tab — full application tasks & automated checks (Companies House / Spotlight / HMRC)" },
+        { "src": "2025-01-rpa-case-management/tasklist-decision--documents.png", "state": "Documents tab — grouped evidence (licences, accounts, plans, permissions, quotes)" },
+        { "src": "2025-01-rpa-case-management/tasklist-decision--messages.png", "state": "Messages tab — message the applicant + message history" },
+        { "src": "2025-01-rpa-case-management/tasklist-decision--assigned-users.png", "state": "Assigned users tab — assign and view previous assignees" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "Appreciated the layout and look and feel; the main value was seeing everything about a case in one place without navigating folders.",
+        "Automated checks (reconciling business info with HMRC / Companies House / Spotlight) seen as a significant improvement over current processes.",
+        "The timeline feature was well received — contact history without trawling SharePoint.",
+        "Documents/evidence: wanted to categorise and relabel evidence for consistency and scanning, and to archive older documents.",
+        "Notes vs messages: the distinction was unclear; frequent use of template copy in emails suggested building templates into the design.",
+        "The design assumed messages go to the applicant, but many cases are handled by an agent — communication preferences (applicant vs agent) are needed.",
+        "'Assigned users' was less useful, particularly for Appraisers."
+      ],
+      "recommendedChanges": [
+        {
+          "text": "Let caseworkers categorise, relabel and archive uploaded evidence.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Clarify the distinction between internal notes and external messages (explore alternative labels).",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Provide template copy for common case communications.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Support communication preferences — send messages to the applicant or their agent.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        },
+        {
+          "text": "Provide a way to record and track telephone contact with applicants.",
+          "status": "outstanding",
+          "evidence": "",
+          "resolvedNote": "",
+          "resolvedDate": ""
+        }
+      ]
+    },
+    {
+      "reportId": "2025-06-case-management-design-history",
+      "screenId": "case-list",
+      "noteKind": "what-changed",
+      "note": "June 2025 HTML iteration (GOV.UK + MOJ Design System) of the Jan 2025 Figma list: tabs became Your applications / Team applications / All applications; separate Priority, Stage and Status columns plus a Flag column (RFI sent / RFI overdue); a Reassign case action; and a new search (project ID, business name, status or assignee) and filter (Grant / Stage / Status / Assignee) panel.",
+      "noteDrivenBy": "2025-06-rpa-appraiser-research",
+      "images": [
+        { "src": "2025-06-case-management-design-history/case-list.png", "state": "Iterated case list — Your/Team/All applications tabs, Priority·Stage·Status·Flag columns, RFI flags" },
+        { "src": "2025-06-case-management-design-history/case-list--search-filter.png", "state": "New search & filter — search by project ID/business/status/assignee; filter by Grant/Stage/Status/Assignee" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "Iteration driven by co-design and survey insights: new columns, a Team applications tab for managers, clearer priority/stage/status labels and RFI flags, and new search & filter.",
+        "SFI processors confirmed they need quick access to SBI, application reference, business name, case status, priority, key dates and who the case is assigned to. \"Especially useful if there's more than one application for an SBI.\"",
+        "Managers rely on filters (KPI risk, scheme type, stage) to allocate and monitor; appraisers prefer minimal filters due to smaller caseloads.",
+        "Survey priorities (n=84): top filters SBI 87%, case status 78%, application reference 72%, assignee 46%, applicant name 46%."
+      ],
+      "recommendedChanges": [
+        { "text": "Role-tailored tabs (own / team / all applications).", "status": "addressed", "evidence": "/Grasslands/caselist", "resolvedNote": "Live caselist has three role-tailored tabs: the user's own cases ({name}'s cases), team cases ({team} cases) and All cases.", "resolvedDate": "2026-06-26" },
+        { "text": "Search by project ID / business name / status / assignee and filter by Grant / Stage / Status / Assignee.", "status": "partial", "evidence": "/Grasslands/caselist", "resolvedNote": "Live caselist has SBI search and Status, Team and Assignee filters; not yet Grant/Stage filters or full multi-field search.", "resolvedDate": "" },
+        { "text": "Separate Priority, Stage and Status columns with RFI / workflow flags.", "status": "outstanding", "evidence": "/Grasslands/caselist", "resolvedNote": "Live caselist shows Status (with coloured tags) but no separate Priority/Stage columns or RFI Flag column.", "resolvedDate": "" }
+      ]
+    },
+    {
+      "reportId": "2025-06-case-management-design-history",
+      "screenId": "tasklist-decision",
+      "noteKind": "what-changed",
+      "note": "June 2025 HTML iteration: the Tasks tab became an 'Application review' with a review checklist, a conflict-of-interest warning, in-context guidance ('Application review checklist guide'), a Customer contact tab, and the first decision-recording control — a Decision radio (Pass / Request more information / Recommend rejection). The SFI variant surfaced case-management 'issues' (eligibility check, available-area calculation, SSSI consent), each with a 'Take action' button.",
+      "noteDrivenBy": "2025-01-rpa-case-management",
+      "images": [
+        { "src": "2025-06-case-management-design-history/tasklist-decision--review.png", "state": "Application review — checklist + Decision radio (Pass / Request more information / Recommend rejection)" },
+        { "src": "2025-06-case-management-design-history/tasklist-decision--sfi-actions.png", "state": "SFI case view — review actions (eligibility, available area, SSSI consent) with Take action" },
+        { "src": "2025-06-case-management-design-history/tasklist-decision--guidance.png", "state": "In-context guidance — Application review checklist guide" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "Consolidating everything about a case in one place remained the dominant ask (88% of the n=84 SFI survey).",
+        "SFI processors want to flag checks/issues ('case managements'), a clear list of what needs checking, visual identification of which land parcels need review (SSSI, Inheritance Tax Exemption), a timeline of how each issue was resolved, a case history log, and full message history with the applicant.",
+        "The new Decision control (Pass / Request more information / Recommend rejection) introduced explicit decision-recording on a case/task."
+      ],
+      "recommendedChanges": [
+        { "text": "Provide a way to record a decision on a case or task.", "status": "addressed", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "resolvedNote": "The live case view carries a caseworker Decision radio group (expanded since to put on hold / amend / return / reject / withdraw).", "resolvedDate": "2026-06-26" },
+        { "text": "Surface case-management 'issues' with per-issue actions and which land parcels need review.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Show a timeline of issue resolution and a full case history log.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" }
+      ]
+    },
+    {
+      "reportId": "2025-06-case-management-design-history",
+      "screenId": "land-details",
+      "noteKind": "first-capture",
+      "images": [
+        { "src": "2025-06-case-management-design-history/land-details.png", "state": "Parcel map with highlighted land + Parcel and area table (area, intersections, percentage holding)" }
+      ],
+      "verdict": "mixed",
+      "findings": [
+        "Introduced for SFI processors, who need parcel-level land data when assessing applications.",
+        "Existing mapping (SitiAgri, Defra Magic Maps) is broadly adequate but should be integrated into a single case-management system.",
+        "Desired data layers: land use, land cover, recent customer-submitted changes, dual-funding evidence; parcel intersections with SSSI, historic features, flood risk, scheduled monuments, SHINE, Inheritance Tax Exemption, moorland line, GIXX."
+      ],
+      "recommendedChanges": [
+        { "text": "Integrate mapping into the case-management system rather than separate tools.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Surface the desired land-data layers and parcel intersections (SSSI, ITE, flood risk, etc.).", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Confirm which land data to surface for SFI Day 1.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" }
+      ]
+    },
+    {
+      "reportId": "2026-01-amendments-pre-agreement",
+      "screenId": "tasklist-decision",
+      "noteKind": "what-changed",
+      "note": "Building on the June-2025 'Application review' design — which introduced a Decision radio (Pass / Request more information / Recommend rejection) and in-context guidance — the amend-pre-agreement study tested an expanded decision set (Put on hold / Amend / Return to customer / Reject / Withdraw) with a compulsory explanation, focusing on the amend / return-to-customer flow.",
+      "noteDrivenBy": "2025-06-case-management-design-history",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--default.png", "state": "Default — no decision selected" },
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--amend-selected.png", "state": "\"Amend\" selected (caseworker amends)" },

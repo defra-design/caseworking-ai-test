@@ -148,10 +148,26 @@ function buildResearchArchive () {
     return acc
   }, [])
 
+  // Reports list (newest first), each augmented with what it captured so the
+  // archive index can show report-level findings — including discovery reports
+  // that have themes but no screen captures.
+  const reportsList = m.reports.slice()
+    .sort(function (a, b) { return fieldworkTime(b) - fieldworkTime(a) })
+    .map(function (r) {
+      const caps = m.captures.filter(function (c) { return c.reportId === r.id })
+      const screenIds = []
+      caps.forEach(function (c) { if (screenIds.indexOf(c.screenId) === -1) screenIds.push(c.screenId) })
+      return Object.assign({}, r, {
+        captureCount: caps.length,
+        screenIds: screenIds,
+        screenCount: screenIds.length
+      })
+    })
+
   return {
     imageBase: m.imageBase,
     screens: screens,
-    reports: m.reports.slice().sort(function (a, b) { return fieldworkTime(b.report) - fieldworkTime(a.report) }),
+    reports: reportsList,
     archiveRollup: rollupRecs(allRecs),
     backlog: backlog,
     areas: areas
@@ -3992,6 +4008,106 @@ makeTaskRoute('/task5m6C3', {
   outcomes:          MONTH5_OUTCOMES,
   redirectTo:        D2C3T,
 });
+
+// --- FRPS-D2 user management: make Create user / team / role persist in-session ---
+// Each form posts to its list page; we append the submitted item to a session
+// array that the list template renders after the seeded rows, then redirect (GET).
+function umArr (v) {
+  return [].concat(v || []).filter(function (x) { return x && x !== '_unchecked' })
+}
+
+router.post('/FRPS-D2/UM2/users', function (req, res) {
+  const d = req.session.data
+  d.umUsers = d.umUsers || []
+  d.umUsers.push({
+    name:        req.body.name || 'New user',
+    email:       req.body.email || '',
+    teams:       umArr(req.body.teams),
+    accessRole:  req.body.accessRole || 'Caseworker',
+    mgrScope:    req.body.mgrScope || '',
+    specialisms: umArr(req.body.specialisms)
+  })
+  res.redirect('/FRPS-D2/UM2/users')
+})
+
+router.post('/FRPS-D2/UM2/teams', function (req, res) {
+  const d = req.session.data
+  d.umTeams = d.umTeams || []
+  d.umTeams.push({
+    name:  req.body.name || 'New team',
+    lead:  req.body.lead || '',
+    scope: req.body.scope || ''
+  })
+  res.redirect('/FRPS-D2/UM2/teams')
+})
+
+router.post('/FRPS-D2/UM2/scheme-roles', function (req, res) {
+  const d = req.session.data
+  d.umRoles = d.umRoles || []
+  d.umRoles.push({
+    code:        req.body.code || 'NEW_ROLE',
+    description: req.body.description || '',
+    assignable:  req.body.assignable || 'Yes'
+  })
+  res.redirect('/FRPS-D2/UM2/scheme-roles')
+})
+
+// Change links on the user (martin) and team detail pages. Each saves the new
+// value to session and returns to the detail page, which renders from session
+// with a fallback to the seeded default.
+router.post('/FRPS-D2/UM2/change-status', function (req, res) {
+  req.session.data.rsStatus = req.body.rsStatus || 'Active'
+  res.redirect('/FRPS-D2/UM2/martin')
+})
+
+router.post('/FRPS-D2/UM2/change-teams', function (req, res) {
+  req.session.data.rsTeams = req.body.rsTeams || 'Team A'
+  res.redirect('/FRPS-D2/UM2/martin')
+})
+
+router.post('/FRPS-D2/UM2/change-access-role', function (req, res) {
+  req.session.data.rsRole = req.body.rsRole || 'Caseworker'
+  req.session.data.rsScope = req.body.rsScope || ''
+  res.redirect('/FRPS-D2/UM2/martin')
+})
+
+router.post('/FRPS-D2/UM2/change-specialisms', function (req, res) {
+  const list = umArr(req.body.specialisms)
+  req.session.data.rsSpecialisms = list.length ? list.join(', ') : '—'
+  res.redirect('/FRPS-D2/UM2/martin')
+})
+
+router.post('/FRPS-D2/UM2/change-lead', function (req, res) {
+  req.session.data.taLead = req.body.taLead || 'M Walker'
+  res.redirect('/FRPS-D2/UM2/team')
+})
+
+router.post('/FRPS-D2/UM2/change-scheme-scope', function (req, res) {
+  req.session.data.taScope = req.body.taScope || 'SFI'
+  res.redirect('/FRPS-D2/UM2/team')
+})
+
+// Team membership actions. Added members start with no open cases, so they can
+// be removed directly; seeded members have open cases and show a reassign note
+// instead of a Remove button. Delete is only offered when no members/cases remain.
+router.post('/FRPS-D2/UM2/add-member', function (req, res) {
+  const d = req.session.data
+  d.taMembers = d.taMembers || []
+  if (req.body.member) d.taMembers.push({ name: req.body.member })
+  res.redirect('/FRPS-D2/UM2/team')
+})
+
+router.post('/FRPS-D2/UM2/remove-member', function (req, res) {
+  const d = req.session.data
+  const i = parseInt(req.body.index, 10)
+  if (d.taMembers && i >= 0 && i < d.taMembers.length) d.taMembers.splice(i, 1)
+  res.redirect('/FRPS-D2/UM2/team')
+})
+
+router.post('/FRPS-D2/UM2/delete-team', function (req, res) {
+  // Only reachable when the team has no members and no open cases.
+  res.redirect('/FRPS-D2/UM2/teams')
+})
 
 // --- Utility routes ---
 

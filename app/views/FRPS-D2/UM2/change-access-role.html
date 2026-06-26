@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="martin">R Singh</a></li>
+        <li class="govuk-breadcrumbs__list-item">Change access role</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="change-access-role" method="post">
+          {% set ar = data.rsRole or "Caseworker" %}
+          {% set sc = data.rsScope or "team" %}
+
+          <h1 class="govuk-heading-l">Change access role — R Singh</h1>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Access role</legend>
+              <div class="govuk-hint">Controls what they can see and allocate. Most users are Caseworkers.</div>
+              <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="role-cw" name="rsRole" type="radio" value="Caseworker"{% if ar == "Caseworker" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="role-cw">Caseworker</label>
+                  <div class="govuk-hint govuk-radios__hint">Sees My cases and the queues of teams they're in.</div></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="role-mgr" name="rsRole" type="radio" value="Manager"{% if ar == "Manager" %} checked{% endif %} data-aria-controls="mgr-scope"><label class="govuk-label govuk-radios__label" for="role-mgr">Manager</label>
+                  <div class="govuk-hint govuk-radios__hint">Allocates and reassigns; can see across the teams they manage.</div></div>
+                <div class="govuk-radios__conditional{% if ar != 'Manager' %} govuk-radios__conditional--hidden{% endif %}" id="mgr-scope">
+                  <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Manager scope</legend>
+                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                      <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-team" name="rsScope" type="radio" value="team"{% if sc == "team" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="scope-team">Their teams only</label></div>
+                      <div class="govuk-radios__item"><input class="govuk-radios__input" id="scope-senior" name="rsScope" type="radio" value="senior"{% if sc == "senior" %} checked{% endif %}><label class="govuk-label govuk-radios__label" for="scope-senior">Senior — all cases, unallocated, move between teams</label></div>
+                    </div>
+                  </fieldset>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button><br>
+          <a href="martin" class="govuk-link">Cancel</a>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

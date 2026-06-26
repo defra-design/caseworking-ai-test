@@ -17,7 +17,7 @@
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Scheme roles</h1>
     <div style="display: flex; justify-content: flex-end;">
-      <a href="#" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create role</a>
+      <a href="create-role" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create role</a>
     </div>
     <p class="govuk-body">Grant-scheme permission codes from the IDP / Manage grants. Unchanged — only renamed from "Roles" so it isn't confused with the new <strong>access role</strong> (Caseworker / Manager) and <strong>specialisms</strong>, which live on the user.</p>
 
@@ -50,6 +50,13 @@
           <td class="govuk-table__cell">Data change authority — farm record view</td>
           <td class="govuk-table__cell">Yes</td>
         </tr>
+        {% for r in data.umRoles %}
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="#">{{ r.code }}</a></th>
+          <td class="govuk-table__cell">{{ r.description or "—" }}</td>
+          <td class="govuk-table__cell">{{ r.assignable or "Yes" }}</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
 

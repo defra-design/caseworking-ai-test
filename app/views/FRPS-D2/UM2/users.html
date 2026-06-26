@@ -104,6 +104,16 @@
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Leaver</strong></td>
         </tr>
 
+        {% for u in data.umUsers %}
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">{{ u.name }}</a><br><span class="govuk-body-s">{{ u.email }}</span></th>
+          <td class="govuk-table__cell">{% if u.teams.length %}{{ u.teams | join(", ") }}{% else %}—{% endif %}</td>
+          <td class="govuk-table__cell">{% if u.accessRole == "Manager" %}<strong class="govuk-tag govuk-tag--purple">Manager</strong>{% if u.mgrScope == "senior" %} <span class="govuk-body-s">(senior)</span>{% endif %}{% else %}<strong class="govuk-tag govuk-tag--blue">Caseworker</strong>{% endif %}</td>
+          <td class="govuk-table__cell">{% if u.specialisms.length %}{{ u.specialisms | join(", ") }}{% else %}—{% endif %}</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
+        </tr>
+        {% endfor %}
+
       </tbody>
     </table>
 

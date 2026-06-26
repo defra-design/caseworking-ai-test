@@ -17,7 +17,7 @@
 
     <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Teams</h1>
     <div style="display: flex; justify-content: flex-end;">
-      <a href="team" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create team</a>
+      <a href="create-team" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create team</a>
     </div>
     <p class="govuk-body">Work-allocation teams that own cases. Open and unallocated counts come from the live caseload.</p>
 
@@ -53,6 +53,15 @@
           <td class="govuk-table__cell govuk-table__cell--numeric">16</td>
           <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
         </tr>
+        {% for t in data.umTeams %}
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="team">{{ t.name }}</a>{% if t.scope %} <span class="govuk-body-s">({{ t.scope }})</span>{% endif %}</th>
+          <td class="govuk-table__cell">{{ t.lead or "—" }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">0</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
 

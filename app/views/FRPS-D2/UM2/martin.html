@@ -29,8 +29,13 @@
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Status</dt>
-            <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--green">Active</strong></dd>
-            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> status</span></a></dd>
+            <dd class="govuk-summary-list__value">
+              {% set st = data.rsStatus or "Active" %}
+              {% if st == "Active" %}<strong class="govuk-tag govuk-tag--green">Active</strong>
+              {% elif st == "Suspended" %}<strong class="govuk-tag govuk-tag--yellow">Suspended</strong>
+              {% else %}<strong class="govuk-tag govuk-tag--red">{{ st }}</strong>{% endif %}
+            </dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="change-status">Change<span class="govuk-visually-hidden"> status</span></a></dd>
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Last login</dt>
@@ -40,18 +45,22 @@
 
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Teams</dt>
-            <dd class="govuk-summary-list__value">Team A</dd>
-            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> teams</span></a></dd>
+            <dd class="govuk-summary-list__value">{{ data.rsTeams or "Team A" }}</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="change-teams">Change<span class="govuk-visually-hidden"> teams</span></a></dd>
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Access role</dt>
-            <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></dd>
-            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> access role</span></a></dd>
+            <dd class="govuk-summary-list__value">
+              {% set ar = data.rsRole or "Caseworker" %}
+              {% if ar == "Manager" %}<strong class="govuk-tag govuk-tag--purple">Manager</strong>{% if data.rsScope == "senior" %} <span class="govuk-body-s">(senior)</span>{% endif %}
+              {% else %}<strong class="govuk-tag govuk-tag--blue">Caseworker</strong>{% endif %}
+            </dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="change-access-role">Change<span class="govuk-visually-hidden"> access role</span></a></dd>
           </div>
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Specialisms</dt>
-            <dd class="govuk-summary-list__value">Finance officer</dd>
-            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="#">Change<span class="govuk-visually-hidden"> specialisms</span></a></dd>
+            <dd class="govuk-summary-list__value">{{ data.rsSpecialisms or "Finance officer" }}</dd>
+            <dd class="govuk-summary-list__actions"><a class="govuk-link" href="change-specialisms">Change<span class="govuk-visually-hidden"> specialisms</span></a></dd>
           </div>
 
           <div class="govuk-summary-list__row">
@@ -68,8 +77,7 @@
         </dl>
 
         <div class="govuk-button-group">
-          <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">Save changes</button>
-          <a class="govuk-link" href="users">Back to users</a>
+          <a class="govuk-button" href="users" data-module="govuk-button">Done</a>
         </div>
 
       </div>

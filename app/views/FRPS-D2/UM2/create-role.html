@@ -1,0 +1,58 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="scheme-roles">Scheme roles</a></li>
+        <li class="govuk-breadcrumbs__list-item">Create role</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="scheme-roles" method="post">
+
+          <h1 class="govuk-heading-l">Create role</h1>
+          <p class="govuk-body">Add a grant-scheme permission code (a <strong>scheme role</strong>). These come from the IDP / Manage grants and are separate from a user's <strong>access role</strong> (Caseworker / Manager) and <strong>specialisms</strong>.</p>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="code">Code</label>
+            <div class="govuk-hint">Short uppercase identifier, e.g. PMF_READ.</div>
+            <input class="govuk-input govuk-input--width-20" id="code" name="code" type="text" spellcheck="false">
+          </div>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="description">Description</label>
+            <div class="govuk-hint">What the code permits, e.g. "Pigs Might Fly read only".</div>
+            <input class="govuk-input govuk-input--width-30" id="description" name="description" type="text">
+          </div>
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Assignable</legend>
+              <div class="govuk-hint">Whether this role can be assigned to users.</div>
+              <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="assignable-yes" name="assignable" type="radio" value="Yes" checked><label class="govuk-label govuk-radios__label" for="assignable-yes">Yes</label></div>
+                <div class="govuk-radios__item"><input class="govuk-radios__input" id="assignable-no" name="assignable" type="radio" value="No"><label class="govuk-label govuk-radios__label" for="assignable-no">No</label></div>
+              </div>
+            </fieldset>
+          </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button><br>
+          <a href="scheme-roles" class="govuk-link">Cancel</a>
+
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

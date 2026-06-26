@@ -42,6 +42,30 @@
 
       <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
 
+      {# --- Research reports (every study, newest first) --- #}
+      <h2 class="govuk-heading-l">Research reports</h2>
+      <p class="govuk-body">Every study in the archive, newest first. Screen-level studies thread into the per-screen change-history below; discovery reports capture the themes that set the context.</p>
+      {% for r in archive.reports %}
+      <div class="app-research-card">
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+          {{ r.title }}
+          {% if r.kind == "discovery" %}<strong class="govuk-tag govuk-tag--grey govuk-!-margin-left-1">Discovery</strong>{% elif r.indicative %}<strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-1">Indicative · n={{ r.sampleSize }}</strong>{% endif %}
+        </h3>
+        <p class="govuk-body-s govuk-!-margin-bottom-2">{{ r.date }}{% if r.author and r.author != "Not stated in the deliverable" %} · {{ r.author }}{% if r.role %}, {{ r.role }}{% endif %}{% endif %} · {{ r.method }}{% if r.sampleSize %} · n={{ r.sampleSize }}{% endif %}</p>
+        <p class="govuk-body govuk-!-margin-bottom-2">{{ r.headline }}</p>
+        {% if r.themes and r.themes.length %}
+        <ul class="govuk-list govuk-list--bullet govuk-body-s">
+          {% for t in r.themes %}<li><strong>{{ t.title }}.</strong> {{ t.detail }}</li>{% endfor %}
+        </ul>
+        {% elif r.screenCount %}
+        <p class="govuk-body-s">Captured {{ r.screenCount }} screen{{ "s" if r.screenCount != 1 }}: {% for sid in r.screenIds %}{% set outerLast = loop.last %}{% for s in archive.screens %}{% if s.id == sid %}<a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>{% if not outerLast %}, {% endif %}{% endif %}{% endfor %}{% endfor %}.</p>
+        {% endif %}
+        <p class="govuk-body-s govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Confidence:</span> {{ r.confidence }}</p>
+      </div>
+      {% endfor %}
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
       {# --- Filter (GET form, modelled on the calculations-filter pattern) --- #}
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">

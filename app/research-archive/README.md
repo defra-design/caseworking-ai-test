@@ -88,6 +88,8 @@ report + captures to `manifest.json`.
 
 ## Index
 
-- **Reports:** 1
-- **Screens tracked:** 5
+- **Reports:** 8 (5 discovery, 3 usability/design)
+- **Screens tracked:** 7
 - **Latest:** 2026-01 — *Amendments to grant applications pre agreement* (Janice Hannaway)
+- **Earliest:** 2024-08 — *Future Grants — RPA internal user problems* (Nick Buckland; discovery, no screens)
+- **Deepest history:** `tasklist-decision` (individual case view) — Jan 2025 baseline → Jun 2025 Application review + decision → Jan 2026 amend decision panel → live

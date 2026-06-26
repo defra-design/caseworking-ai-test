@@ -34,15 +34,16 @@
           </div>
 
           <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Teams</legend>
-              <div class="govuk-hint">A user can belong to more than one team.</div>
-              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-a" name="teams" type="checkbox" value="A"><label class="govuk-label govuk-checkboxes__label" for="team-a">Team A</label></div>
-                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-b" name="teams" type="checkbox" value="B"><label class="govuk-label govuk-checkboxes__label" for="team-b">Team B</label></div>
-                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="team-c" name="teams" type="checkbox" value="C"><label class="govuk-label govuk-checkboxes__label" for="team-c">Team C</label></div>
-              </div>
-            </fieldset>
+            <label class="govuk-label govuk-label--s" for="teams">Team</label>
+            <div class="govuk-hint">The team this user joins. They can be added to more teams later from their user page.</div>
+            <select class="govuk-select" id="teams" name="teams">
+              <option value="Team A">Team A</option>
+              <option value="Team B">Team B</option>
+              <option value="Team C">Team C</option>
+              {% for t in data.umTeams %}
+              <option value="{{ t.name }}">{{ t.name }}</option>
+              {% endfor %}
+            </select>
           </div>
 
           <div class="govuk-form-group">

@@ -1,0 +1,46 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="martin">R Singh</a></li>
+        <li class="govuk-breadcrumbs__list-item">Change team</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="change-teams" method="post">
+          {% set cur = data.rsTeams or "Team A" %}
+
+          <h1 class="govuk-heading-l">Change team — R Singh</h1>
+
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="rsTeams">Team</label>
+            <select class="govuk-select" id="rsTeams" name="rsTeams">
+              <option value="Team A"{% if cur == "Team A" %} selected{% endif %}>Team A</option>
+              <option value="Team B"{% if cur == "Team B" %} selected{% endif %}>Team B</option>
+              <option value="Team C"{% if cur == "Team C" %} selected{% endif %}>Team C</option>
+              {% for t in data.umTeams %}
+              <option value="{{ t.name }}"{% if cur == t.name %} selected{% endif %}>{{ t.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button><br>
+          <a href="martin" class="govuk-link">Cancel</a>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
