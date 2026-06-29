@@ -49,54 +49,109 @@
   ],
 
   "screens": {
-    "case-list": {
-      "title": "Case list — your team's applications",
+    "caselist": {
+      "title": "Caselist",
       "area": "Case management",
-      "summary": "The caseworker list of grant applications (\"Manage rural grant applications\"). Tabbed by status (New / Not started / In progress / Complete / All), with Ref · Grant · Project · Received · Status · Priority · Assigned-to columns, select-and-Assign, and a status filter. The live equivalent is the Grasslands caselist, now organised into My cases / Open cases / All cases tabs.",
+      "deployed": true,
+      "summary": "The caseworker list of grant applications. Tested as a tabbed status list (Jan 2025), simplified to a single list for D1/D2, and now reintroduced in Grasslands with My cases / {team} cases / All cases tabs, search and filtering.",
       "currentScreen": "/Grasslands/caselist",
       "relatedPatterns": ["/pattern-library/patterns/caselist", "/pattern-library/custom/full-list-sort", "/pattern-library/custom/list-switcher", "/pattern-library/custom/status-tags"]
     },
-    "tasklist-decision": {
-      "title": "Individual case view (task list & decision)",
+    "tasklist": {
+      "title": "Tasks – Tasklist",
       "area": "Case management",
-      "summary": "The individual case view for a grant application — a tabbed page (Tasks, Timeline, Application, Documents/Evidence, Notes, Messages, Assigned users) showing the whole application in one place. The Tasks tab carries the task list (automated checks, application and quality checks) and, once tasks are accepted, the caseworker Decision radio group (Approve / Put on hold / Return to customer / Reject / Withdraw), each with a compulsory explanation for auditing.",
+      "deployed": true,
+      "summary": "The Tasks tab of a case — the list of review tasks and automated checks, and (once tasks are accepted) the caseworker Decision radio group (Approve / Put on hold / Return to customer / Reject / Withdraw) with a compulsory explanation for auditing.",
       "currentScreen": "/FRPS-D2/caseReal/tasklist-stage",
-      "relatedPatterns": ["/pattern-library/patterns/task", "/pattern-library/patterns/timeline", "/pattern-library/patterns/notes", "/pattern-library/gds/radios"]
+      "relatedPatterns": ["/pattern-library/patterns/task", "/pattern-library/gds/radios"]
+    },
+    "task-page": {
+      "title": "Tasks – Task page",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "An individual task within a case (e.g. an eligibility or quality check) — its detail, the checks to make, and the caseworker's decision on that task.",
+      "currentScreen": "/FRPS-D2/caseReal/task-1",
+      "relatedPatterns": ["/pattern-library/patterns/task"]
+    },
+    "confirmation": {
+      "title": "Confirmation page",
+      "area": "Amend application pre-agreement",
+      "deployed": true,
+      "summary": "The amend / return decision flow: the 'are you sure?' interstitials and the outcome pages for amending or returning an application before agreement, under the withdraw-and-duplicate model.",
+      "currentScreen": "/FRPS-D2/caseReal/amend-confirm",
+      "relatedPatterns": ["/pattern-library/gds/warning-text", "/pattern-library/gds/radios", "/pattern-library/patterns/task"]
+    },
+    "application": {
+      "title": "Application",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The submitted application detail within a case — the applicant's answers and submitted information.",
+      "currentScreen": null,
+      "relatedPatterns": []
+    },
+    "calculations": {
+      "title": "Calculations",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The grant calculations / payment working within a case.",
+      "currentScreen": null,
+      "relatedPatterns": ["/pattern-library/patterns/calculations"]
+    },
+    "timeline": {
+      "title": "Timeline",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The case history timeline — events and contact shown in chronological order.",
+      "currentScreen": null,
+      "relatedPatterns": ["/pattern-library/patterns/timeline"]
+    },
+    "notes": {
+      "title": "Notes",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "Internal case notes added by caseworkers.",
+      "currentScreen": null,
+      "relatedPatterns": ["/pattern-library/patterns/notes"]
+    },
+    "agreement": {
+      "title": "Agreement",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The grant agreement issued once a case is approved.",
+      "currentScreen": null,
+      "relatedPatterns": []
+    },
+    "documents": {
+      "title": "Documents",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The documents / evidence tab — supporting files grouped by type (licences, accounts, plans, permissions, quotes).",
+      "currentScreen": null,
+      "relatedPatterns": []
+    },
+    "assigned-users": {
+      "title": "Assigned users",
+      "area": "Case management",
+      "deployed": true,
+      "summary": "The assigned-users tab — who the case is assigned to, with assignment history.",
+      "currentScreen": null,
+      "relatedPatterns": []
     },
     "land-details": {
-      "title": "Land details (parcel map)",
+      "title": "Land details",
       "area": "Case management",
-      "summary": "The land / mapping detail view for a case — a parcel map with highlighted land parcels and a \"Parcel and area\" table (area, intersections such as SSSI / historic features, percentage holding). Introduced for SFI processors who need parcel-level land data when assessing applications. Not yet in the live prototype.",
+      "deployed": false,
+      "summary": "The land / mapping detail view for a case — a parcel map with highlighted land and a 'Parcel and area' table (area, intersections such as SSSI / historic features, percentage holding). Designed for SFI processors; not yet deployed.",
       "currentScreen": null,
       "relatedPatterns": ["/pattern-library/gds/table"]
     },
-    "confirm-amend": {
-      "title": "Confirm — amend application",
-      "area": "Amend application pre-agreement",
-      "summary": "\"Are you sure you want to amend this application?\" interstitial. Warns the current application will be withdrawn and a duplicate created in Grants-UI, with all review tasks restarted.",
-      "currentScreen": "/FRPS-D2/caseReal/amend-confirm",
-      "relatedPatterns": ["/pattern-library/gds/warning-text", "/pattern-library/gds/radios"]
-    },
-    "confirm-return": {
-      "title": "Confirm — return to customer",
-      "area": "Amend application pre-agreement",
-      "summary": "\"Are you sure you want to return this application to the customer?\" interstitial. Same withdraw-and-duplicate model as confirm-amend, but the customer resubmits.",
-      "currentScreen": "/FRPS-D2/caseReal/return-confirm",
-      "relatedPatterns": ["/pattern-library/gds/warning-text", "/pattern-library/gds/radios"]
-    },
-    "confirmation-amend": {
-      "title": "Confirmation — amending application",
-      "area": "Amend application pre-agreement",
-      "summary": "Outcome page after confirming an amend. States the application has been withdrawn and links out to Grants-UI to make the amendment.",
-      "currentScreen": "/FRPS-D2/caseReal/task-1Am",
-      "relatedPatterns": ["/pattern-library/patterns/task"]
-    },
-    "confirmation-return": {
-      "title": "Confirmation — returned to customer",
-      "area": "Amend application pre-agreement",
-      "summary": "Outcome page after confirming a return to customer. States the application has been withdrawn and a new one will be submitted by the customer once amended.",
-      "currentScreen": "/FRPS-D2/caseReal/tasklist-stage",
-      "relatedPatterns": ["/pattern-library/patterns/task"]
+    "messages": {
+      "title": "Messages",
+      "area": "Case management",
+      "deployed": false,
+      "summary": "Messaging with the applicant or agent, with a full message history and template copy. Explored in Jan 2025; not yet deployed.",
+      "currentScreen": null,
+      "relatedPatterns": []
     }
   },
 
@@ -314,7 +369,7 @@
   "captures": [
     {
       "reportId": "2025-01-rpa-case-management",
-      "screenId": "case-list",
+      "screenId": "caselist",
       "noteKind": "first-capture",
       "images": [
         { "src": "2025-01-rpa-case-management/case-list.png", "state": "Your team's applications — tabbed by status, with select-and-Assign" },
@@ -376,66 +431,71 @@
     },
     {
       "reportId": "2025-01-rpa-case-management",
-      "screenId": "tasklist-decision",
+      "screenId": "tasklist",
       "noteKind": "first-capture",
       "images": [
-        { "src": "2025-01-rpa-case-management/tasklist-decision--tasks.png", "state": "Tasks tab — full application tasks & automated checks (Companies House / Spotlight / HMRC)" },
-        { "src": "2025-01-rpa-case-management/tasklist-decision--documents.png", "state": "Documents tab — grouped evidence (licences, accounts, plans, permissions, quotes)" },
-        { "src": "2025-01-rpa-case-management/tasklist-decision--messages.png", "state": "Messages tab — message the applicant + message history" },
+        { "src": "2025-01-rpa-case-management/tasklist-decision--tasks.png", "state": "Tasks tab — full application tasks & automated checks (Companies House / Spotlight / HMRC)" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "Coverage: the full case view was walked — Tasks, Application, Land, Documents, Notes, Messages, Timeline and Assigned users. Comments were recorded on the tabs that have their own screens below; the rest were tested with no issues recorded.",
+        "Appreciated the layout and look and feel; the main value was seeing everything about a case in one place without navigating folders.",
+        "Automated checks (reconciling business info with HMRC / Companies House / Spotlight) seen as a significant improvement over current processes.",
+        "The timeline feature was well received — contact history without trawling SharePoint."
+      ],
+      "recommendedChanges": []
+    },
+    {
+      "reportId": "2025-01-rpa-case-management",
+      "screenId": "documents",
+      "noteKind": "first-capture",
+      "images": [
+        { "src": "2025-01-rpa-case-management/tasklist-decision--documents.png", "state": "Documents tab — grouped evidence (licences, accounts, plans, permissions, quotes)" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
+        "Access to uploaded documents and supporting evidence was appreciated.",
+        "Wanted to categorise and relabel evidence for consistency and ease of scanning, and to archive older documents."
+      ],
+      "recommendedChanges": [
+        { "text": "Let caseworkers categorise, relabel and archive uploaded evidence.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" }
+      ]
+    },
+    {
+      "reportId": "2025-01-rpa-case-management",
+      "screenId": "assigned-users",
+      "noteKind": "first-capture",
+      "images": [
         { "src": "2025-01-rpa-case-management/tasklist-decision--assigned-users.png", "state": "Assigned users tab — assign and view previous assignees" }
       ],
       "verdict": "mostly-worked",
       "findings": [
-        "Coverage: the full case view was walked — the Tasks, Application, Land, Documents, Notes, Messages, Timeline and Assigned-users tabs were all tested. Comments were recorded on the tabs noted below; the remaining tabs were tested with no issues recorded.",
-        "Appreciated the layout and look and feel; the main value was seeing everything about a case in one place without navigating folders.",
-        "Automated checks (reconciling business info with HMRC / Companies House / Spotlight) seen as a significant improvement over current processes.",
-        "The timeline feature was well received — contact history without trawling SharePoint.",
-        "Documents/evidence: wanted to categorise and relabel evidence for consistency and scanning, and to archive older documents.",
+        "The 'Assigned users' tab was less useful, particularly for Appraisers."
+      ],
+      "recommendedChanges": []
+    },
+    {
+      "reportId": "2025-01-rpa-case-management",
+      "screenId": "messages",
+      "noteKind": "first-capture",
+      "images": [
+        { "src": "2025-01-rpa-case-management/tasklist-decision--messages.png", "state": "Messages tab — message the applicant + message history" }
+      ],
+      "verdict": "mostly-worked",
+      "findings": [
         "Notes vs messages: the distinction was unclear; frequent use of template copy in emails suggested building templates into the design.",
-        "The design assumed messages go to the applicant, but many cases are handled by an agent — communication preferences (applicant vs agent) are needed.",
-        "'Assigned users' was less useful, particularly for Appraisers."
+        "The design assumed messages go to the applicant, but many cases are handled by an agent — communication preferences (applicant vs agent) are needed."
       ],
       "recommendedChanges": [
-        {
-          "text": "Let caseworkers categorise, relabel and archive uploaded evidence.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Clarify the distinction between internal notes and external messages (explore alternative labels).",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Provide template copy for common case communications.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Support communication preferences — send messages to the applicant or their agent.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Provide a way to record and track telephone contact with applicants.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        }
+        { "text": "Clarify the distinction between internal notes and external messages (explore alternative labels).", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Provide template copy for common case communications.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Support communication preferences — send messages to the applicant or their agent.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Provide a way to record and track telephone contact with applicants.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" }
       ]
     },
     {
       "reportId": "2025-06-case-management-design-history",
-      "screenId": "case-list",
+      "screenId": "caselist",
       "noteKind": "what-changed",
       "note": "Design exploration for D1 (June 2025): a richer case list with Your / Team / All applications tabs, separate Priority, Stage and Status columns plus an RFI Flag column, a Reassign case action, and a search + filter panel. Why it didn't ship as-is: the FRPS-PB-D1 build was deliberately simplified for delivery and scope-management reasons — D1 shipped a single list, one-at-a-time assignment, and no search or filtering. These richer features were kept as deferred proposals; D2 also kept the simplified list, and they are being reintroduced only now in Grasslands (untested).",
       "noteDrivenBy": "2025-06-rpa-appraiser-research",
@@ -460,7 +520,7 @@
     },
     {
       "reportId": "2025-06-case-management-design-history",
-      "screenId": "tasklist-decision",
+      "screenId": "tasklist",
       "noteKind": "what-changed",
       "note": "June 2025 HTML iteration: the Tasks tab became an 'Application review' with a review checklist, a conflict-of-interest warning, in-context guidance ('Application review checklist guide'), and the first decision-recording control — a Decision radio (Pass / Request more information / Recommend rejection). The SFI variant surfaced case-management 'issues' (eligibility check, available-area calculation, SSSI consent), each with a 'Take action' button. These case-view screens shipped in D1. Out of scope for D1: the Messages tab and the Land tab (both deferred).",
       "noteDrivenBy": "2025-01-rpa-case-management",
@@ -507,7 +567,7 @@
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
-      "screenId": "tasklist-decision",
+      "screenId": "tasklist",
       "noteKind": "what-changed",
       "note": "Building on the June-2025 'Application review' design — which introduced a Decision radio (Pass / Request more information / Recommend rejection) and in-context guidance — D2 expanded the decision set (Approve / Put on hold / Amend / Return to customer / Reject / Withdraw) and added the amend / return flow. Why the change: this amend / return / withdraw functionality was new — rolled out and deployed quickly, ahead of full design refinement, which is why this study surfaced confusion around the withdraw-and-duplicate model.",
       "noteDrivenBy": "2025-06-case-management-design-history",
@@ -542,138 +602,33 @@
     },
     {
       "reportId": "2026-01-amendments-pre-agreement",
-      "screenId": "confirm-amend",
+      "screenId": "confirmation",
       "noteKind": "first-capture",
-      "rationale": "The withdraw-and-duplicate amend model reflects new functionality that was rolled out and deployed quickly; the anxiety/confusion this study found is a consequence of that fast rollout, not a settled design.",
+      "rationale": "The amend / return confirmation flow uses a withdraw-and-duplicate model — new functionality rolled out and deployed quickly; the anxiety and confusion this study found are a consequence of that fast rollout, not a settled design.",
       "images": [
-        { "src": "2026-01-amendments-pre-agreement/confirm-amend.png", "state": "Are you sure you want to amend this application?" }
+        { "src": "2026-01-amendments-pre-agreement/confirm-amend.png", "state": "Amend — \"Are you sure you want to amend this application?\" interstitial" },
+        { "src": "2026-01-amendments-pre-agreement/confirm-return.png", "state": "Return — \"Are you sure you want to return this application to the customer?\" interstitial" },
+        { "src": "2026-01-amendments-pre-agreement/confirmation-amend.png", "state": "Amend outcome — withdrawn, amend in Grants-UI" },
+        { "src": "2026-01-amendments-pre-agreement/confirmation-return.png", "state": "Return outcome — application returned to customer for amending" }
       ],
       "verdict": "problem",
       "findings": [
-        "Confusion and anxiety about the current application being \"withdrawn\" and the amendment being a separate \"duplicate application\".",
-        "\"Withdraw\" read as the same as \"reject\"; participants feared irreversible / \"ghost\" applications blocking land parcels.",
-        "Unclear whether the duplicate would be pre-populated with the original information, and whether the original stays visible/editable.",
-        "\"Grants-UI\" terminology not understood.",
-        "Quotes: \"I see withdraw and reject as same thing\" (P1); \"Is there a process for withdrawing that, or is the system doing it automatically...?\" (P1)."
+        "Confusion and anxiety about the current application being \"withdrawn\" and the amendment being a separate \"duplicate application\". \"Withdraw\" read as the same as \"reject\"; participants feared irreversible / \"ghost\" applications blocking land parcels.",
+        "Unclear whether the duplicate would be pre-populated with the original information, and whether the original stays visible/editable. \"Grants-UI\" terminology not understood.",
+        "Return: making the applicant redo an entire application felt frustrating, as completing one can take several days.",
+        "The outcome pages felt confusing; participants wanted a view of what changed between the old and new application, and worried that repeated amendments would stack up application/case numbers and confuse applicants and staff.",
+        "Restart-all-tasks messaging raised workload concerns, especially for complex applications (80+ checks).",
+        "Quotes: \"I see withdraw and reject as same thing\" (P1); \"Changing case numbers will make this real confusing… they are just going to stack up\" (P1)."
       ],
       "recommendedChanges": [
-        {
-          "text": "Replace \"withdraw\" with clearer language to avoid \"ghost application\" anxiety.",
-          "status": "outstanding",
-          "evidence": "/FRPS-D2/caseReal/amend-confirm",
-          "resolvedNote": "Live amend-confirm still reads \"withdraw the current application\".",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Explicitly state what happens to the withdrawn record and the caseworker's work, and whether forms are pre-populated.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Simplify \"Grants-UI\" to plain language (participants suggested \"duplicate application\").",
-          "status": "outstanding",
-          "evidence": "/FRPS-D2/caseReal/amend-confirm",
-          "resolvedNote": "\"Grants-UI\" still used verbatim on the live screen.",
-          "resolvedDate": ""
-        }
-      ]
-    },
-    {
-      "reportId": "2026-01-amendments-pre-agreement",
-      "screenId": "confirm-return",
-      "noteKind": "first-capture",
-      "images": [
-        { "src": "2026-01-amendments-pre-agreement/confirm-return.png", "state": "Are you sure you want to return this application to the customer?" }
-      ],
-      "verdict": "problem",
-      "findings": [
-        "Same withdraw + duplicate model as confirm-amend, with the same confusion.",
-        "Felt that making the applicant redo an entire application would be frustrating, as completing one can take several days."
-      ],
-      "recommendedChanges": [
-        {
-          "text": "Clarify data retention for the customer-facing resubmission (pre-populated vs from scratch, what happens to the original).",
-          "status": "partial",
-          "evidence": "/FRPS-D2/caseReal/return-confirm",
-          "resolvedNote": "Live return-confirm now reads \"close this current application making it view only\" and \"create a new identical application for the customer to review, amend and re-submit\" — the original's fate and pre-population are now stated. \"Withdraw\" has been dropped on this screen.",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Reframe so a return for amendment does not read as a full restart.",
-          "status": "outstanding",
-          "evidence": "/FRPS-D2/caseReal/return-confirm",
-          "resolvedNote": "Live screen still says \"require casework to be started from scratch on the newly submitted case\".",
-          "resolvedDate": ""
-        }
-      ]
-    },
-    {
-      "reportId": "2026-01-amendments-pre-agreement",
-      "screenId": "confirmation-amend",
-      "noteKind": "first-capture",
-      "images": [
-        { "src": "2026-01-amendments-pre-agreement/confirmation-amend.png", "state": "Amending application — withdrawn, amend in Grants-UI" }
-      ],
-      "verdict": "problem",
-      "findings": [
-        "No understanding of the content referencing Grants-UI; page generally felt confusing, though participants did spot the link to Grants-UI.",
-        "Wanted something to show the differences between the new and old versions of the application.",
-        "Worried that numerous amendments would create stacking application/case numbers that confuse applicants and staff.",
-        "Quotes: \"this doesn't make a huge amount of sense, so it'll automatically be submitted when I've done my mapping change?\" (P2); \"Changing case numbers will make this real confusing... they are just going to stack up\" (P1)."
-      ],
-      "recommendedChanges": [
-        {
-          "text": "Show what changed between original and amended application (diff view), essential for large multi-parcel cases.",
-          "status": "outstanding",
-          "evidence": "/FRPS-D2/caseReal/task-1Am",
-          "resolvedNote": "No diff/change view on the live confirmation page.",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Clarify the Grants-UI handoff and the submission / mapping sequence.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Rethink case-number proliferation across repeated amendments.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        }
-      ]
-    },
-    {
-      "reportId": "2026-01-amendments-pre-agreement",
-      "screenId": "confirmation-return",
-      "noteKind": "first-capture",
-      "images": [
-        { "src": "2026-01-amendments-pre-agreement/confirmation-return.png", "state": "Application returned to customer for amending" }
-      ],
-      "verdict": "problem",
-      "findings": [
-        "Restates that the application has been withdrawn and all review tasks will need restarting once the amended application is submitted.",
-        "Restart-all-tasks messaging raised workload concerns, especially for complex applications (80+ checks)."
-      ],
-      "recommendedChanges": [
-        {
-          "text": "Clear task-restart logic so caseworkers understand exactly what needs re-doing vs what is preserved.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        },
-        {
-          "text": "Change-history / reuse of prior work to reduce re-work on complex multi-parcel applications.",
-          "status": "outstanding",
-          "evidence": "",
-          "resolvedNote": "",
-          "resolvedDate": ""
-        }
+        { "text": "Replace \"withdraw\" with clearer language to avoid \"ghost application\" anxiety.", "status": "outstanding", "evidence": "/FRPS-D2/caseReal/amend-confirm", "resolvedNote": "Live amend-confirm still reads \"withdraw the current application\".", "resolvedDate": "" },
+        { "text": "Explicitly state what happens to the withdrawn record and the caseworker's work, and whether forms are pre-populated.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Simplify \"Grants-UI\" to plain language (participants suggested \"duplicate application\").", "status": "outstanding", "evidence": "/FRPS-D2/caseReal/amend-confirm", "resolvedNote": "\"Grants-UI\" still used verbatim on the live screen.", "resolvedDate": "" },
+        { "text": "Clarify data retention for the customer-facing resubmission (pre-populated vs from scratch, what happens to the original).", "status": "partial", "evidence": "/FRPS-D2/caseReal/return-confirm", "resolvedNote": "Live return-confirm now reads \"close this current application making it view only\" and \"create a new identical application for the customer to review, amend and re-submit\" — the original's fate and pre-population are now stated; \"Withdraw\" has been dropped on this screen.", "resolvedDate": "" },
+        { "text": "Reframe so a return for amendment does not read as a full restart.", "status": "outstanding", "evidence": "/FRPS-D2/caseReal/return-confirm", "resolvedNote": "Live screen still says \"require casework to be started from scratch on the newly submitted case\".", "resolvedDate": "" },
+        { "text": "Show what changed between original and amended application (diff view), essential for large multi-parcel cases.", "status": "outstanding", "evidence": "/FRPS-D2/caseReal/task-1Am", "resolvedNote": "No diff/change view on the live confirmation page.", "resolvedDate": "" },
+        { "text": "Rethink case-number proliferation across repeated amendments.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" },
+        { "text": "Clear task-restart logic so caseworkers understand exactly what needs re-doing vs what is preserved.", "status": "outstanding", "evidence": "", "resolvedNote": "", "resolvedDate": "" }
       ]
     }
   ]

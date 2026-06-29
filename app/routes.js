@@ -225,6 +225,8 @@ router.get('/pattern-library/research', function (req, res) {
   res.render('pattern-library/research/index', {
     archive: archive,
     screensFiltered: screens,
+    screensDeployed: screens.filter(function (s) { return s.deployed }),
+    screensNotDeployed: screens.filter(function (s) { return !s.deployed }),
     filter: filter,
     area: area
   })

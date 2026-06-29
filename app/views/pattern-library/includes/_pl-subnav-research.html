@@ -1,16 +1,26 @@
 <nav class="app-subnav" aria-label="Research history">
   <h2 class="app-subnav__theme">Research history</h2>
   <ul class="app-subnav__section">
-
     <li class="app-subnav__section-item{% if not screen %} app-subnav__section-item--current{% endif %}">
       <a class="app-subnav__link" href="/pattern-library/research">Overview</a>
     </li>
+  </ul>
 
-    {% for s in archive.screens %}
+  <h2 class="app-subnav__theme">Deployed</h2>
+  <ul class="app-subnav__section">
+    {% for s in archive.screens %}{% if s.deployed %}
     <li class="app-subnav__section-item{% if screen and screen.id == s.id %} app-subnav__section-item--current{% endif %}">
       <a class="app-subnav__link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
     </li>
-    {% endfor %}
+    {% endif %}{% endfor %}
+  </ul>
 
+  <h2 class="app-subnav__theme">Not yet deployed</h2>
+  <ul class="app-subnav__section">
+    {% for s in archive.screens %}{% if not s.deployed %}
+    <li class="app-subnav__section-item{% if screen and screen.id == s.id %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+    </li>
+    {% endif %}{% endfor %}
   </ul>
 </nav>

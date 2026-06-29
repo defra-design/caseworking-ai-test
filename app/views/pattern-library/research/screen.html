@@ -52,6 +52,10 @@
       <h2 class="govuk-heading-l govuk-!-margin-top-6">History</h2>
       <p class="govuk-body">Oldest first, flowing down to the current design. The note in the gap before an item explains what changed since the previous capture.</p>
 
+      {% if screen.captureCount == 0 %}
+      <div class="govuk-inset-text">No research recorded yet — this screen is part of the caseworking system but hasn't been user-tested in the reports captured so far.</div>
+      {% endif %}
+
       <ol class="moj-timeline moj-timeline--full">
 
         {% for cap in screen.captures %}

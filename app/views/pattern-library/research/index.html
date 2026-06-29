@@ -157,16 +157,34 @@
           {% if screensFiltered.length == 0 %}
           <p class="govuk-body">No screens match this filter.</p>
           {% endif %}
-          {% for s in screensFiltered %}
+
+          {% if screensDeployed.length %}
+          <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-2">Deployed</h3>
+          {% for s in screensDeployed %}
           <div class="app-research-card">
-            <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
               <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
-              {{ research.verdictTag(s.latestVerdict) }}
-            </h3>
+              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
+            </h4>
             <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
-            {{ research.coverageBar(s.rollup) }}
+            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
           </div>
           {% endfor %}
+          {% endif %}
+
+          {% if screensNotDeployed.length %}
+          <h3 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-2">Patterns not yet deployed</h3>
+          {% for s in screensNotDeployed %}
+          <div class="app-research-card">
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
+              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
+            </h4>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
+            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
+          </div>
+          {% endfor %}
+          {% endif %}
         </div>
       </div>
 
