@@ -164,10 +164,46 @@ function buildResearchArchive () {
       })
     })
 
+  // --- Pillar the archive around the three interface-development stages ---
+  // Each screen-testing report carries a `stage` (1/2/3); discovery/survey
+  // reports carry none and fall into "Context". Screens tested in a stage are
+  // derived from that stage's captures; a capture with no findings and no
+  // recommendations means "tested, no issues recorded".
+  const STAGE_META = {
+    1: { n: 1, title: 'Stage 1 — FG-casework', blurb: 'The first built caseworking interface (case list + case view), tested as an early concept.', liveUrl: '/FG-casework/caselist-my' },
+    2: { n: 2, title: 'Stage 2 — FRPS Private Beta, Day 1', blurb: 'The HTML prototype iteration built for the SFI Private Beta Day 1, tested with appraisers and SFI processors.', liveUrl: '/FRPS-PB-D1/caselist-my' },
+    3: { n: 3, title: 'Stage 3 — FRPS-D2', blurb: 'The current iteration, tested for the amend-application-pre-agreement flow.', liveUrl: '/FRPS-D2/caseReal/tasklist-stage' }
+  }
+
+  function stageScreens (n) {
+    const out = []
+    screens.forEach(function (s) {
+      const caps = s.captures.filter(function (c) { return c.report && c.report.iteration === n })
+      if (!caps.length) return
+      const c = caps[caps.length - 1]
+      const noIssues = (!c.findings || c.findings.length === 0) &&
+                       (!c.recommendedChanges || c.recommendedChanges.length === 0)
+      out.push({ id: s.id, title: s.title, currentScreen: s.currentScreen, verdict: c.verdict, noIssues: noIssues, shipped: c.shippedInStage !== false })
+    })
+    return out
+  }
+
+  const stages = [1, 2, 3].map(function (n) {
+    return Object.assign({}, STAGE_META[n], {
+      reports: reportsList.filter(function (r) { return r.iteration === n }),
+      screens: stageScreens(n)
+    })
+  })
+
+  const contextReports = reportsList.filter(function (r) { return !r.iteration })
+
   return {
     imageBase: m.imageBase,
     screens: screens,
     reports: reportsList,
+    stages: stages,
+    contextReports: contextReports,
+    grasslandsChanges: m.grasslandsChanges || [],
     archiveRollup: rollupRecs(allRecs),
     backlog: backlog,
     areas: areas

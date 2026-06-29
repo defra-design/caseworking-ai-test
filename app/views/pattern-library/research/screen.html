@@ -1,5 +1,5 @@
 {% extends "layouts/main.html" %}
-{% set plSection = "patterns" %}
+{% set plSection = "research" %}
 {% import "pattern-library/includes/_research-macros.html" as research %}
 
 {% block header %}
@@ -11,7 +11,7 @@
 
   {{ govukBreadcrumbs({ items: [
     { text: "Pattern library", href: "/pattern-library" },
-    { text: "Research archive", href: "/pattern-library/research" },
+    { text: "Research history", href: "/pattern-library/research" },
     { text: screen.title }
   ]}) }}
 

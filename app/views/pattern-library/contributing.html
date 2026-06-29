@@ -1,5 +1,6 @@
 {% extends "layouts/main.html" %}
 {% set plSection = "contributing" %}
+{% set activePage = "contributing" %}
 
 {% block header %}
   {% include "pattern-library/includes/_pl-header.html" %}
@@ -10,13 +11,15 @@
 
   {{ govukBreadcrumbs({ items: [
     { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
     { text: "Contributing" }
   ]}) }}
 
-  <main class="govuk-main-wrapper" id="main-content" role="main">
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <main class="app-split-pane__content" id="main-content" role="main">
 
         <h1 class="govuk-heading-xl">Contributing</h1>
         <p class="govuk-body-l">How to use, extend and maintain this library so the prototype stays consistent as it grows.</p>
@@ -72,9 +75,7 @@
           <li>Finish the missing component and pattern pages.</li>
         </ul>
 
-      </div>
-    </div>
-
-  </main>
+    </main>
+  </div>
 </div>
 {% endblock %}

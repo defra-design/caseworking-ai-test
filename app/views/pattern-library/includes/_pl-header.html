@@ -12,7 +12,7 @@
       <nav aria-label="Main menu">
         <ul class="app-pl-header__nav-list">
           <li>
-            <a href="/pattern-library/foundations/colour" class="app-pl-header__nav-link{% if plSection == 'foundations' %} app-pl-header__nav-link--active{% endif %}">Foundations</a>
+            <a href="/pattern-library/foundations/colour" class="app-pl-header__nav-link{% if plSection == 'foundations' or plSection == 'accessibility' or plSection == 'contributing' %} app-pl-header__nav-link--active{% endif %}">Foundations</a>
           </li>
           <li class="app-pl-header__nav-group">
             <span class="app-pl-header__nav-label">Components:</span>
@@ -24,10 +24,7 @@
             <a href="/pattern-library/patterns/caselist" class="app-pl-header__nav-link{% if plSection == 'patterns' %} app-pl-header__nav-link--active{% endif %}">Patterns</a>
           </li>
           <li>
-            <a href="/pattern-library/accessibility" class="app-pl-header__nav-link{% if plSection == 'accessibility' %} app-pl-header__nav-link--active{% endif %}">Accessibility</a>
-          </li>
-          <li>
-            <a href="/pattern-library/contributing" class="app-pl-header__nav-link{% if plSection == 'contributing' %} app-pl-header__nav-link--active{% endif %}">Contributing</a>
+            <a href="/pattern-library/research" class="app-pl-header__nav-link{% if plSection == 'research' %} app-pl-header__nav-link--active{% endif %}">Research history</a>
           </li>
         </ul>
       </nav>

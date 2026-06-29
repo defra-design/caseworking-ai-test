@@ -1,5 +1,6 @@
 {% extends "layouts/main.html" %}
 {% set plSection = "accessibility" %}
+{% set activePage = "accessibility" %}
 
 {% block header %}
   {% include "pattern-library/includes/_pl-header.html" %}
@@ -10,13 +11,15 @@
 
   {{ govukBreadcrumbs({ items: [
     { text: "Pattern library", href: "/pattern-library" },
+    { text: "Foundations", href: "/pattern-library/foundations/colour" },
     { text: "Accessibility" }
   ]}) }}
 
-  <main class="govuk-main-wrapper" id="main-content" role="main">
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-foundations.html" %}
+    </div>
+    <main class="app-split-pane__content" id="main-content" role="main">
 
         <h1 class="govuk-heading-xl">Accessibility</h1>
         <p class="govuk-body-l">Services built with this library must meet WCAG 2.2 AA. GOV.UK and MOJ components are accessible out of the box — most risk in this prototype comes from the hand-built custom styles. This page covers what to check.</p>
@@ -64,9 +67,7 @@
           <li>Confirm errors are announced and linked.</li>
         </ol>
 
-      </div>
-    </div>
-
-  </main>
+    </main>
+  </div>
 </div>
 {% endblock %}

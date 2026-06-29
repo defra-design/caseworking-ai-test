@@ -5,6 +5,49 @@
   "imageBase": "/public/images/research",
   "repoImageBase": "app/assets/images/research",
 
+  "grasslandsChanges": [
+    {
+      "title": "Multi-tab caselist reintroduced",
+      "change": "Three context-switching tabs — \"{name}'s cases\", \"{team} cases\" and \"All cases\" — replace the single simplified list of D1/D2.",
+      "why": "Multiple-case assignment is needed at scale: up to ~2,000 cases worked by 10 teams of 10+ plus specialist workers, where D1 assumed only a single caseworker."
+    },
+    {
+      "title": "Search and filtering reintroduced",
+      "change": "A permanent SBI search plus a collapsible Status \"filter list\" with removable MOJ filter tags on the All cases tab.",
+      "why": "Needed for managing a large case set."
+    },
+    {
+      "title": "Per-tab subject switchers",
+      "change": "A \"Change assignee\" autocomplete on My cases and a \"Change team\" autocomplete on Open cases.",
+      "why": "The tab switches let managers focus on individuals, and see the caseload of other teams."
+    },
+    {
+      "title": "Team-based assignment model",
+      "change": "Cases can be assigned to a team with no owner yet; assigning a case to a person in a team automatically places it in that team's context; Completed cases are always unassigned.",
+      "why": "Cases assigned to a team let team members self-serve work from that subset."
+    },
+    {
+      "title": "Multi-select bulk assign / reassign",
+      "change": "Select multiple cases and assign or reassign them in one action, replacing the one-at-a-time assignment of D1/D2.",
+      "why": "Same scale driver as the multi-tab list — multiple-case assignment is needed for ~2,000 cases across many teams."
+    },
+    {
+      "title": "Full-list server-side sorting",
+      "change": "Sorting applies across the entire tab list, not just the visible page.",
+      "why": "This is how the actual live app works."
+    },
+    {
+      "title": "Status colour model",
+      "change": "Caselist status tags follow a defined colour model.",
+      "why": "Mirrors the live colour coding: blue = active / no problems, green = positive outcome, grey = not being worked, yellow = on hold, orange = customer ended, red = bad outcome ended."
+    },
+    {
+      "title": "User management for teams & roles",
+      "change": "Create user / team / role, the Change flows, the team-picker dropdown, and condition-gated deletes.",
+      "why": "Needed to support the new tabs and team/role-specific tasks."
+    }
+  ],
+
   "screens": {
     "case-list": {
       "title": "Case list — your team's applications",
@@ -155,6 +198,7 @@
     {
       "id": "2025-01-rpa-case-management",
       "title": "Usability testing of RPA case management designs",
+      "iteration": 1,
       "author": "Nick Buckland",
       "role": "",
       "fieldworkDate": "2025-01-23",
@@ -230,6 +274,7 @@
     {
       "id": "2025-06-case-management-design-history",
       "title": "RPA case management — design history + SFI processor research",
+      "iteration": 2,
       "author": "Naomi Wilcock, Nick Buckland, Chas Linn",
       "role": "",
       "fieldworkDate": "2025-06-17",
@@ -248,6 +293,7 @@
     {
       "id": "2026-01-amendments-pre-agreement",
       "title": "Amendments to grant applications pre agreement",
+      "iteration": 3,
       "author": "Janice Hannaway",
       "role": "User Researcher",
       "fieldworkDate": "2026-01-01",
@@ -276,6 +322,7 @@
       ],
       "verdict": "mostly-worked",
       "findings": [
+        "Coverage: the case list was tested across its status tabs (New, Not started, In progress, Complete, All); all were understood, with the comments below being the only issues recorded.",
         "All participants understood the case-list view and every column heading, and felt able to organise cases by priority and status.",
         "Particularly liked the priority column (priority level + days left to hit the KPI); some wanted KPI days-remaining shown across all cases.",
         "Felt similar to other case-management systems, especially Universal Credit.",
@@ -339,6 +386,7 @@
       ],
       "verdict": "mostly-worked",
       "findings": [
+        "Coverage: the full case view was walked — the Tasks, Application, Land, Documents, Notes, Messages, Timeline and Assigned-users tabs were all tested. Comments were recorded on the tabs noted below; the remaining tabs were tested with no issues recorded.",
         "Appreciated the layout and look and feel; the main value was seeing everything about a case in one place without navigating folders.",
         "Automated checks (reconciling business info with HMRC / Companies House / Spotlight) seen as a significant improvement over current processes.",
         "The timeline feature was well received — contact history without trawling SharePoint.",
@@ -389,8 +437,10 @@
       "reportId": "2025-06-case-management-design-history",
       "screenId": "case-list",
       "noteKind": "what-changed",
-      "note": "June 2025 HTML iteration (GOV.UK + MOJ Design System) of the Jan 2025 Figma list: tabs became Your applications / Team applications / All applications; separate Priority, Stage and Status columns plus a Flag column (RFI sent / RFI overdue); a Reassign case action; and a new search (project ID, business name, status or assignee) and filter (Grant / Stage / Status / Assignee) panel.",
+      "note": "Design exploration for D1 (June 2025): a richer case list with Your / Team / All applications tabs, separate Priority, Stage and Status columns plus an RFI Flag column, a Reassign case action, and a search + filter panel. Why it didn't ship as-is: the FRPS-PB-D1 build was deliberately simplified for delivery and scope-management reasons — D1 shipped a single list, one-at-a-time assignment, and no search or filtering. These richer features were kept as deferred proposals; D2 also kept the simplified list, and they are being reintroduced only now in Grasslands (untested).",
       "noteDrivenBy": "2025-06-rpa-appraiser-research",
+      "shippedInStage": false,
+      "rationale": "Simplified for D1 delivery and scope management: one list, one-at-a-time assignment, no search/filter. The richer design stayed deferred through D2 and is being reintroduced only in Grasslands.",
       "images": [
         { "src": "2025-06-case-management-design-history/case-list.png", "state": "Iterated case list — Your/Team/All applications tabs, Priority·Stage·Status·Flag columns, RFI flags" },
         { "src": "2025-06-case-management-design-history/case-list--search-filter.png", "state": "New search & filter — search by project ID/business/status/assignee; filter by Grant/Stage/Status/Assignee" }
@@ -412,8 +462,10 @@
       "reportId": "2025-06-case-management-design-history",
       "screenId": "tasklist-decision",
       "noteKind": "what-changed",
-      "note": "June 2025 HTML iteration: the Tasks tab became an 'Application review' with a review checklist, a conflict-of-interest warning, in-context guidance ('Application review checklist guide'), a Customer contact tab, and the first decision-recording control — a Decision radio (Pass / Request more information / Recommend rejection). The SFI variant surfaced case-management 'issues' (eligibility check, available-area calculation, SSSI consent), each with a 'Take action' button.",
+      "note": "June 2025 HTML iteration: the Tasks tab became an 'Application review' with a review checklist, a conflict-of-interest warning, in-context guidance ('Application review checklist guide'), and the first decision-recording control — a Decision radio (Pass / Request more information / Recommend rejection). The SFI variant surfaced case-management 'issues' (eligibility check, available-area calculation, SSSI consent), each with a 'Take action' button. These case-view screens shipped in D1. Out of scope for D1: the Messages tab and the Land tab (both deferred).",
       "noteDrivenBy": "2025-01-rpa-case-management",
+      "shippedInStage": true,
+      "rationale": "Case view shipped in D1 with decision recording, embedded guidance and the SFI case-management issues. Messages and Land tabs were out of scope for D1.",
       "images": [
         { "src": "2025-06-case-management-design-history/tasklist-decision--review.png", "state": "Application review — checklist + Decision radio (Pass / Request more information / Recommend rejection)" },
         { "src": "2025-06-case-management-design-history/tasklist-decision--sfi-actions.png", "state": "SFI case view — review actions (eligibility, available area, SSSI consent) with Take action" },
@@ -435,11 +487,14 @@
       "reportId": "2025-06-case-management-design-history",
       "screenId": "land-details",
       "noteKind": "first-capture",
+      "shippedInStage": false,
+      "rationale": "Out of scope for D1 — the Land tab was deferred from the FRPS-PB-D1 build. This is the design as explored, not shipped in D1.",
       "images": [
         { "src": "2025-06-case-management-design-history/land-details.png", "state": "Parcel map with highlighted land + Parcel and area table (area, intersections, percentage holding)" }
       ],
       "verdict": "mixed",
       "findings": [
+        "Out of scope for D1 — the Land tab was deferred from the FRPS-PB-D1 build; the design below is what was explored, not what shipped.",
         "Introduced for SFI processors, who need parcel-level land data when assessing applications.",
         "Existing mapping (SitiAgri, Defra Magic Maps) is broadly adequate but should be integrated into a single case-management system.",
         "Desired data layers: land use, land cover, recent customer-submitted changes, dual-funding evidence; parcel intersections with SSSI, historic features, flood risk, scheduled monuments, SHINE, Inheritance Tax Exemption, moorland line, GIXX."
@@ -454,8 +509,9 @@
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "tasklist-decision",
       "noteKind": "what-changed",
-      "note": "Building on the June-2025 'Application review' design — which introduced a Decision radio (Pass / Request more information / Recommend rejection) and in-context guidance — the amend-pre-agreement study tested an expanded decision set (Put on hold / Amend / Return to customer / Reject / Withdraw) with a compulsory explanation, focusing on the amend / return-to-customer flow.",
+      "note": "Building on the June-2025 'Application review' design — which introduced a Decision radio (Pass / Request more information / Recommend rejection) and in-context guidance — D2 expanded the decision set (Approve / Put on hold / Amend / Return to customer / Reject / Withdraw) and added the amend / return flow. Why the change: this amend / return / withdraw functionality was new — rolled out and deployed quickly, ahead of full design refinement, which is why this study surfaced confusion around the withdraw-and-duplicate model.",
       "noteDrivenBy": "2025-06-case-management-design-history",
+      "rationale": "Amend / return / withdraw was new functionality rolled out and deployed quickly; design refinement (this study's findings) came afterwards.",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--default.png", "state": "Default — no decision selected" },
         { "src": "2026-01-amendments-pre-agreement/tasklist-decision--amend-selected.png", "state": "\"Amend\" selected (caseworker amends)" },
@@ -488,6 +544,7 @@
       "reportId": "2026-01-amendments-pre-agreement",
       "screenId": "confirm-amend",
       "noteKind": "first-capture",
+      "rationale": "The withdraw-and-duplicate amend model reflects new functionality that was rolled out and deployed quickly; the anxiety/confusion this study found is a consequence of that fast rollout, not a settled design.",
       "images": [
         { "src": "2026-01-amendments-pre-agreement/confirm-amend.png", "state": "Are you sure you want to amend this application?" }
       ],
