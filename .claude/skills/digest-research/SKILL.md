@@ -165,6 +165,23 @@ is a **pure append**: never renumber, edit, or delete an existing record.
     `addressed` (green — **requires `evidence` URL + `resolvedDate`**) ·
     `partial` (yellow) · `outstanding` (red) · `rejected` (grey). Put what you
     found in the live design in `resolvedNote`.
+- Append a **`versions`** entry for each screen state the report captured:
+  `{ screenId, versionId: "<screenId>@<YYYY-MM>", date, sortDate (full ISO),
+  image (primary capture src or null), changeReason, changeType
+  ("research-driven" for tested changes), changeDriverRefs }`. A capture is
+  matched to its version **at render** by `screenId@report.date` — so the
+  version's `date` must equal the report's `date`. A design change made *without*
+  research gets a `versions` entry with **no** matching capture (changeType
+  `design`/`policy`/`tech`/`accessibility`); it still renders, with a
+  "No research findings" note. The per-screen history is the versions list,
+  sorted by `sortDate`.
+- If the report surfaces a new **persona** or **need**, add to `personas{}` /
+  `needs[]`: a need is `{ id, personaId, statement ("I need… so that…"), source
+  ("research"|"added"), sourceRef (report id or null), status ("met"|"partial"|
+  "unmet"), evidence (live URL — **required when `met`**), relatedScreens[] }`.
+- Mark a screen `"deployed": false` when it is a pattern not yet in the live
+  build (e.g. Land details, Messages); deployed screens omit the flag or set it
+  `true`.
 
 After writing, **validate it parses** (`node -e "require('./app/research-archive/manifest.json')"`)
 and reconcile counts in `README.md`. The human-readable

@@ -50,3 +50,47 @@
   <p class="govuk-body-s">No recommendations recorded.</p>
   {% endif %}
 {% endmacro %}
+
+{% macro changeTypeTag(t) %}
+  {%- if t == "research-driven" -%}<strong class="govuk-tag govuk-tag--blue">Research-driven</strong>
+  {%- elif t == "design" -%}<strong class="govuk-tag govuk-tag--grey">Design</strong>
+  {%- elif t == "policy" -%}<strong class="govuk-tag govuk-tag--purple">Policy</strong>
+  {%- elif t == "tech" -%}<strong class="govuk-tag govuk-tag--grey">Tech</strong>
+  {%- elif t == "accessibility" -%}<strong class="govuk-tag govuk-tag--turquoise">Accessibility</strong>
+  {%- endif -%}
+{% endmacro %}
+
+{% macro needsTag(status) %}
+  {%- if status == "met" -%}<strong class="govuk-tag govuk-tag--green">Met</strong>
+  {%- elif status == "partial" -%}<strong class="govuk-tag govuk-tag--yellow">Partial</strong>
+  {%- else -%}<strong class="govuk-tag govuk-tag--red">Unmet</strong>{%- endif -%}
+{% endmacro %}
+
+{% macro needsBar(rollup) %}
+  {% if rollup.total > 0 %}
+  <div class="app-coverage-bar" aria-hidden="true">
+    {% if rollup.pctMet %}<span style="width:{{ rollup.pctMet }}%; background:#00703c"></span>{% endif %}
+    {% if rollup.pctPart %}<span style="width:{{ rollup.pctPart }}%; background:#ffdd00"></span>{% endif %}
+    {% if rollup.pctUnmet %}<span style="width:{{ rollup.pctUnmet }}%; background:#d4351c"></span>{% endif %}
+  </div>
+  <p class="govuk-body-s govuk-!-margin-top-1">{{ rollup.met }} met · {{ rollup.partial }} partial · {{ rollup.unmet }} unmet · <span class="govuk-!-font-weight-regular">{{ rollup.fromResearch }} from research, {{ rollup.added }} added</span></p>
+  {% else %}<p class="govuk-body-s">No needs recorded.</p>{% endif %}
+{% endmacro %}
+
+{# One research-report card (used by Background + hub). Uses only r.* fields. #}
+{% macro reportCard(r) %}
+<div class="app-research-card">
+  <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
+    {{ r.title }}
+    {% if r.kind == "discovery" %}<strong class="govuk-tag govuk-tag--grey govuk-!-margin-left-1">Discovery</strong>{% elif r.indicative %}<strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-1">Indicative · n={{ r.sampleSize }}</strong>{% endif %}
+  </h4>
+  <p class="govuk-body-s govuk-!-margin-bottom-2">{{ r.date }}{% if r.author and r.author != "Not stated in the deliverable" %} · {{ r.author }}{% if r.role %}, {{ r.role }}{% endif %}{% endif %} · {{ r.method }}{% if r.sampleSize %} · n={{ r.sampleSize }}{% endif %}</p>
+  <p class="govuk-body govuk-!-margin-bottom-2">{{ r.headline }}</p>
+  {% if r.themes and r.themes.length %}
+  <ul class="govuk-list govuk-list--bullet govuk-body-s">
+    {% for t in r.themes %}<li><strong>{{ t.title }}.</strong> {{ t.detail }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  <p class="govuk-body-s govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Confidence:</span> {{ r.confidence }}</p>
+</div>
+{% endmacro %}

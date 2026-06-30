@@ -106,3 +106,44 @@ per report, and archive-wide (all derived, never hand-written).
   task seems to require editing an existing record, the schema is wrong.
 - **Carry the confidence caveat** into every rendered item; small-sample
   findings render as indicative, not settled fact.
+
+---
+
+## v2.1 — screen-first additions
+
+The three-object model (`screens` / `reports` / `captures`) is unchanged. v2.1
+adds a version spine and a personas/needs model on top.
+
+### `versions[]` (top-level) — the history spine
+One entry per **design state** of a screen. A screen's history is its versions
+(sorted by `sortDate`), not its captures.
+
+| field | meaning |
+|---|---|
+| `screenId` | the screen this version belongs to |
+| `versionId` | stable id, `"<screenId>@<YYYY-MM>"` |
+| `date` | display (`YYYY-MM`) — **must equal the report's `date`** when a capture exists |
+| `sortDate` | full ISO — orders versions (derived label = index+1, 1 = baseline) |
+| `image` | primary screenshot src (relative to `imageBase`) or `null` |
+| `changeReason` | why this version came about — rendered in the gap before it |
+| `changeType` | `research-driven` \| `design` \| `policy` \| `tech` \| `accessibility` |
+| `changeDriverRefs` | optional report ids that drove the change |
+
+**Render rule:** a capture attaches to a version by matching `screenId@report.date`
+to `versionId`. A version with no matching capture is a design-only change and
+renders with a "No research findings" note. `version` is never stored — derived.
+
+### `personas{}` + `needs[]`
+`personas` is a registry like `screens` (`name`, `role`, `summary`). `needs[]` is
+the join: `{ id, personaId, statement, source ("research"|"added"), sourceRef,
+status ("met"|"partial"|"unmet"), evidence (live URL — required when `met`),
+relatedScreens[] }`. Rendered on the persona page, the screen page ("needs this
+screen serves"), and Coverage (needs-met rollup).
+
+### `screens[screenId].deployed`
+Boolean. `false` = a pattern not yet in the live build (grouped under
+"Patterns not yet deployed"); omit or `true` for deployed screens.
+
+### `grasslandsChanges[]`
+A separate, not-yet-tested design stream recorded as `{ title, change, why }`,
+surfaced under Coverage.

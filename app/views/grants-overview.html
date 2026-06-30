@@ -1,0 +1,121 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  <div class="govuk-phase-banner govuk-!-margin-top-2">
+    <p class="govuk-phase-banner__content">
+      <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
+      <span class="govuk-phase-banner__text">This is a new service design. Your <a class="govuk-link" href="#">feedback</a> will help us improve it.</span>
+    </p>
+  </div>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <p class="govuk-body govuk-!-margin-bottom-1"><strong>Home (Grants overview)</strong></p>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Grant schemes budget overview</h1>
+    <p class="govuk-body-l">Monitor active allocations, pipeline claims and alert states across all public funding initiatives. Adjust thresholds to protect public funds.</p>
+
+    {# --- Top-line figures --- #}
+    <div class="govuk-grid-row govuk-!-margin-top-6">
+      <div class="govuk-grid-column-one-third">
+        <div class="app-stat-card">
+          <p class="app-stat-card__label">Total available portfolio</p>
+          <p class="app-stat-card__value">£4,200,000</p>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="app-stat-card app-stat-card--blue">
+          <p class="app-stat-card__label">Total allocated (approved)</p>
+          <p class="app-stat-card__value">£380,000</p>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="app-stat-card app-stat-card--red">
+          <p class="app-stat-card__label">Total pipeline (risk pot)</p>
+          <p class="app-stat-card__value">£460,000</p>
+        </div>
+      </div>
+    </div>
+
+    {# --- Aggregated portfolio health --- #}
+    <div class="govuk-inset-text govuk-!-margin-top-6" style="border-color:#b1b4b6;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-0">Aggregated portfolio health</h2>
+        <strong class="govuk-tag govuk-tag--green">Stable</strong>
+      </div>
+      <div class="app-budget-bar">
+        <span class="app-budget-bar__approved" style="width:9%;">Approved (9%)</span>
+        <span class="app-budget-bar__pipeline" style="width:11%;">Pipeline (11%)</span>
+        <span class="app-budget-bar__remaining">Remaining (80%)</span>
+      </div>
+      <div class="govuk-!-margin-top-2" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+        <span class="govuk-body-s govuk-!-margin-bottom-0">Approved: <strong>£380,000</strong></span>
+        <span class="govuk-body-s govuk-!-margin-bottom-0">Pipeline: <strong>£460,000</strong></span>
+        <span class="govuk-body-s govuk-!-margin-bottom-0">Uncommitted remaining: <strong>£3,360,000</strong></span>
+      </div>
+    </div>
+
+    {# --- Active grant schemes --- #}
+    <h2 class="govuk-heading-l govuk-!-margin-top-6">Active grant schemes</h2>
+    <p class="govuk-body">Select a scheme to open its caseworking list.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Scheme name</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total pot</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Approved</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Pipeline</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Commitment ratio</th>
+          <th scope="col" class="govuk-table__header">Alert status</th>
+          <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">Green Tech Innovation Fund</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£2,500,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£265,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£375,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">25.6%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">Community Spaces Regeneration</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£500,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£55,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£40,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">19.0%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">SME Digital Infrastructure Uplift</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£1,200,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£60,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£45,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">8.8%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    {# --- Help --- #}
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Get help with this service</h2>
+    <p class="govuk-body">If you have questions about grant caps, pipeline values, or need support configuring thresholds:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Contact the Grants Advisory Team on <strong>0300 123 4567</strong> (Mon to Fri, 9am to 5pm)</li>
+      <li>Email our delivery desk at <a class="govuk-link" href="#">grants.service@gov.uk</a></li>
+      <li>Read the <a class="govuk-link" href="#">Budget allocation &amp; safeguard policy guide (opens in new tab)</a></li>
+    </ul>
+
+  </main>
+</div>
+{% endblock %}

@@ -155,6 +155,93 @@
     }
   },
 
+  "//versions": "A screen's history is its design VERSIONS (states over time), sorted by sortDate. Research captures attach to a version via screenId@date; a version may have no capture (design-only) and still renders. Order/label derived at render — never authored.",
+  "versions": [
+    { "screenId": "caselist", "versionId": "caselist@2025-01", "date": "2025-01", "sortDate": "2025-01-23", "image": "2025-01-rpa-case-management/case-list.png", "changeReason": "First tested concept — a status-tabbed case list (New / Not started / In progress / Complete / All) with select-and-assign.", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+    { "screenId": "caselist", "versionId": "caselist@2025-06", "date": "2025-06", "sortDate": "2025-06-17", "image": "2025-06-case-management-design-history/case-list.png", "changeReason": "Richer list explored for D1 (Your/Team/All tabs, Priority/Stage/Status + RFI flag, search & filter). Deferred for delivery/scope.", "changeType": "research-driven", "changeDriverRefs": ["2025-06-case-management-design-history"] },
+    { "screenId": "caselist", "versionId": "caselist@2025-09", "date": "2025-09", "sortDate": "2025-09-01", "image": null, "changeReason": "Simplified single list shipped for D1 — one list, one-at-a-time assignment, no search or filter (delivery & scope management).", "changeType": "design" },
+    { "screenId": "caselist", "versionId": "caselist@2026-06", "date": "2026-06", "sortDate": "2026-06-01", "image": null, "changeReason": "Grasslands: rich list reintroduced for scale (My / {team} / All tabs, search, status filter, bulk assign, team model). Not yet tested.", "changeType": "design" },
+
+    { "screenId": "tasklist", "versionId": "tasklist@2025-01", "date": "2025-01", "sortDate": "2025-01-23", "image": "2025-01-rpa-case-management/tasklist-decision--tasks.png", "changeReason": "First tested concept — the case view Tasks tab with automated checks (Companies House / Spotlight / HMRC) and the application/quality task list.", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+    { "screenId": "tasklist", "versionId": "tasklist@2025-06", "date": "2025-06", "sortDate": "2025-06-17", "image": "2025-06-case-management-design-history/tasklist-decision--review.png", "changeReason": "Tasks tab became 'Application review' with a Decision control (Pass / Request more information / Recommend rejection), in-context guidance, and SFI case-management issues.", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+    { "screenId": "tasklist", "versionId": "tasklist@2026-01", "date": "2026-01", "sortDate": "2026-01-01", "image": "2026-01-amendments-pre-agreement/tasklist-decision--default.png", "changeReason": "Decision set expanded (Approve / Put on hold / Amend / Return to customer / Reject / Withdraw) and the amend/return flow added — new functionality rolled out and deployed quickly.", "changeType": "research-driven", "changeDriverRefs": ["2025-06-case-management-design-history"] },
+
+    { "screenId": "documents", "versionId": "documents@2025-01", "date": "2025-01", "sortDate": "2025-01-23", "image": "2025-01-rpa-case-management/tasklist-decision--documents.png", "changeReason": "First tested concept — a Documents tab grouping supporting evidence (licences, accounts, plans, permissions, quotes).", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+
+    { "screenId": "assigned-users", "versionId": "assigned-users@2025-01", "date": "2025-01", "sortDate": "2025-01-23", "image": "2025-01-rpa-case-management/tasklist-decision--assigned-users.png", "changeReason": "First tested concept — an Assigned-users tab to assign a case and view assignment history.", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+
+    { "screenId": "messages", "versionId": "messages@2025-01", "date": "2025-01", "sortDate": "2025-01-23", "image": "2025-01-rpa-case-management/tasklist-decision--messages.png", "changeReason": "First tested concept — a Messages tab to message the applicant with a message history. Not deployed.", "changeType": "research-driven", "changeDriverRefs": ["2025-01-rpa-case-management"] },
+
+    { "screenId": "land-details", "versionId": "land-details@2025-06", "date": "2025-06", "sortDate": "2025-06-17", "image": "2025-06-case-management-design-history/land-details.png", "changeReason": "Land details map explored for SFI processors (parcel map + intersections table). Deferred — out of scope for D1.", "changeType": "research-driven", "changeDriverRefs": ["2025-06-case-management-design-history"] },
+
+    { "screenId": "confirmation", "versionId": "confirmation@2026-01", "date": "2026-01", "sortDate": "2026-01-01", "image": "2026-01-amendments-pre-agreement/confirm-amend.png", "changeReason": "Amend / return confirmation flow (the withdraw-and-duplicate model) — new functionality rolled out and deployed quickly.", "changeType": "research-driven", "changeDriverRefs": ["2025-06-case-management-design-history"] }
+  ],
+
+  "//personas": "Persona registry (like screens). needs[] join a persona to the screens that should serve it. Populated from the UR 'User Needs Summary' (Confluence, Jun 2025). A need is only 'met' with an evidence link.",
+  "personas": {
+    "farmer": {
+      "name": "Farmer or farming agent",
+      "role": "Applies for and claims grant funding",
+      "summary": "Runs an agricultural business under cost, supply-chain and climate pressure; needs to find, apply for and claim grants with minimal disruption and cost — and often feels forced to hire an agent."
+    },
+    "grant-appraiser": {
+      "name": "Grant appraiser",
+      "role": "Assesses and decides grant applications",
+      "summary": "Works a queue of cases; needs tools and consistent guidance to assess efficiently, focus on strong applications and decide quickly and safely — with less manual admin."
+    },
+    "workflow-manager": {
+      "name": "Workflow manager / Team lead",
+      "role": "Allocates and oversees a team's cases",
+      "summary": "Needs visibility and control over team workload and case progress to allocate fairly by complexity, track holds and avoid processing delays."
+    },
+    "sfi-processor": {
+      "name": "SFI processor",
+      "role": "Processes Sustainable Farming Incentive applications",
+      "summary": "Handles land-based SFI cases; needs a reliable system, parcel-level land data, clear notes and hold tracking, and smart search/status to process without rework."
+    },
+    "policy-staff": {
+      "name": "Policy & scheme-design staff",
+      "role": "Designs schemes and forecasts uptake",
+      "summary": "Needs visibility into likely volumes, eligibility and uptake to plan budgets and shape schemes that deliver environmental and policy outcomes."
+    }
+  },
+  "needs": [
+    { "id": "need-find-grants", "personaId": "farmer", "statement": "I need to discover relevant, timely funding opportunities, so I don't miss out on support.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-know-eligibility", "personaId": "farmer", "statement": "I need to know whether my project is eligible before I invest time, so I don't waste effort on unsuitable applications.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-clear-apply-steps", "personaId": "farmer", "statement": "I need clear steps, timelines and evidence requirements, so I can apply successfully without hiring an agent.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-track-application", "personaId": "farmer", "statement": "I need to see how my application is progressing, so I can plan with confidence.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-amend-application", "personaId": "farmer", "statement": "I need to change or withdraw an application in progress, so I can accommodate changes to my project.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/amend-confirm", "relatedScreens": ["confirmation"] },
+    { "id": "need-timely-decision", "personaId": "farmer", "statement": "I need a timely, transparent decision, so I can make financial and operational plans.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": ["confirmation", "agreement"] },
+    { "id": "need-claim-guidance", "personaId": "farmer", "statement": "I need clear guidance on claim evidence and submission, so my claim is processed quickly.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-payment-timeline", "personaId": "farmer", "statement": "I need to know when and where payment will be made, so I can plan my finances.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+
+    { "id": "need-find-return-cases", "personaId": "grant-appraiser", "statement": "I need to easily find and return to my active cases, so I work efficiently and don't lose track.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "met", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-prioritise-deadlines", "personaId": "grant-appraiser", "statement": "I need to prioritise by deadline and urgency, so I meet KPIs.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-case-history-one-place", "personaId": "grant-appraiser", "statement": "I need the full case history and customer responses in one place, so I can resolve issues without trawling systems.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist", "timeline", "messages", "documents"] },
+    { "id": "need-consistent-guidance", "personaId": "grant-appraiser", "statement": "I need to apply checks using consistent, accessible guidance, so I assess accurately.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist"] },
+    { "id": "need-reduce-duplicate-entry", "personaId": "grant-appraiser", "statement": "I need to reduce duplicate data entry and admin, so I can focus on decisions.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": ["tasklist", "application"] },
+    { "id": "need-record-decision", "personaId": "grant-appraiser", "statement": "I need to record a decision in one obvious place, so I don't miss a step.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "met", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist"] },
+    { "id": "need-identify-duplicates", "personaId": "grant-appraiser", "statement": "I need to spot when an applicant has made multiple applications, so only one goes through appraisal.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-fair-work-allocation", "personaId": "grant-appraiser", "statement": "I need work allocated to me fairly and transparently, so my workload stays manageable.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+
+    { "id": "need-team-workload", "personaId": "workflow-manager", "statement": "I need to see what each team member is working on, so I can manage workload.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist", "assigned-users"] },
+    { "id": "need-monitor-active", "personaId": "workflow-manager", "statement": "I need to monitor the status of all active projects, so I can prevent delays.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-filter-scheme-deadline", "personaId": "workflow-manager", "statement": "I need to filter by scheme type and deadline, so I can manage peaks and prioritise support.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-case-complexity", "personaId": "workflow-manager", "statement": "I need to understand case complexity, so I can allocate work fairly and match it to capacity.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": ["caselist"] },
+    { "id": "need-track-holds", "personaId": "workflow-manager", "statement": "I need to track holds and customer action points, so I can unblock progress.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist", "tasklist"] },
+    { "id": "need-allocate-reassign", "personaId": "workflow-manager", "statement": "I need to allocate and reassign cases, so resources match demand.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "met", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist", "assigned-users"] },
+
+    { "id": "need-reliable-system", "personaId": "sfi-processor", "statement": "I need a reliable, user-friendly case management system, so I can process without crashes or manual workarounds.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist"] },
+    { "id": "need-land-data", "personaId": "sfi-processor", "statement": "I need parcel-level land data inside the case, so I can check eligibility without leaving the system.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": ["land-details"] },
+    { "id": "need-end-to-end-visibility", "personaId": "sfi-processor", "statement": "I need end-to-end case visibility with clear notes and hold tracking, so I reduce rework and enable smooth handovers.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist", "notes", "timeline"] },
+    { "id": "need-smart-search-status", "personaId": "sfi-processor", "statement": "I need smart search, filters and clear status indicators, so I can quickly find and prioritise the right cases.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/Grasslands/caselist", "relatedScreens": ["caselist"] },
+    { "id": "need-current-guidance", "personaId": "sfi-processor", "statement": "I need clear, up-to-date guidance and access to expert support, so I can process accurately and confidently.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "partial", "evidence": "/FRPS-D2/caseReal/tasklist-stage", "relatedScreens": ["tasklist"] },
+    { "id": "need-early-test-access", "personaId": "sfi-processor", "statement": "I need input into changes and early access to test systems, so schemes aren't launched before they're ready.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+
+    { "id": "need-forecast-uptake", "personaId": "policy-staff", "statement": "I need visibility of likely application volumes and uptake, so I can plan budgets and resources.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] },
+    { "id": "need-policy-alignment", "personaId": "policy-staff", "statement": "I need to see whether applications meet policy aims and deliver the best environmental outcomes, so I can shape schemes.", "source": "research", "sourceRef": "UR User Needs Summary (Jun 2025)", "status": "unmet", "evidence": "", "relatedScreens": [] }
+  ],
+
   "reports": [
     {
       "id": "2024-08-rpa-internal-user-problems",

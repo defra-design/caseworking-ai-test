@@ -2,23 +2,6 @@
 {% set plSection = "research" %}
 {% import "pattern-library/includes/_research-macros.html" as research %}
 
-{% macro reportCard(r) %}
-<div class="app-research-card">
-  <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
-    {{ r.title }}
-    {% if r.kind == "discovery" %}<strong class="govuk-tag govuk-tag--grey govuk-!-margin-left-1">Discovery</strong>{% elif r.indicative %}<strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-1">Indicative · n={{ r.sampleSize }}</strong>{% endif %}
-  </h4>
-  <p class="govuk-body-s govuk-!-margin-bottom-2">{{ r.date }}{% if r.author and r.author != "Not stated in the deliverable" %} · {{ r.author }}{% if r.role %}, {{ r.role }}{% endif %}{% endif %} · {{ r.method }}{% if r.sampleSize %} · n={{ r.sampleSize }}{% endif %}</p>
-  <p class="govuk-body govuk-!-margin-bottom-2">{{ r.headline }}</p>
-  {% if r.themes and r.themes.length %}
-  <ul class="govuk-list govuk-list--bullet govuk-body-s">
-    {% for t in r.themes %}<li><strong>{{ t.title }}.</strong> {{ t.detail }}</li>{% endfor %}
-  </ul>
-  {% endif %}
-  <p class="govuk-body-s govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Confidence:</span> {{ r.confidence }}</p>
-</div>
-{% endmacro %}
-
 {% block header %}
   {% include "pattern-library/includes/_pl-header.html" %}
 {% endblock %}
@@ -38,180 +21,47 @@
     <div class="app-split-pane__content">
 
       <h1 class="govuk-heading-xl">
-        Research archive
+        Research history
         <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-2">Experimental</strong>
       </h1>
-      <p class="govuk-body-l">A visual change-history of key caseworking screens across user-research reports over time. Each screen shows how it evolved, what research drove each change, and which proposals are now in the live design.</p>
-      <p class="govuk-body">Everything here is derived from <code>app/research-archive/manifest.json</code> — the single source of truth. Add a report by appending to it; the timelines re-order and re-version themselves.</p>
+      <p class="govuk-body-l">How the caseworking screens have evolved, what research drove each change, and how today's design serves real user needs. Everything is derived from <code>app/research-archive/manifest.json</code> — the single source of truth.</p>
 
-      {# --- Index counts --- #}
       <dl class="app-pl-meta govuk-!-margin-bottom-6">
-        <div><dt class="govuk-body-s">Reports tracked</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.reports.length }}</dd></div>
-        <div><dt class="govuk-body-s">Screens tracked</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.screens.length }}</dd></div>
-        <div><dt class="govuk-body-s">Latest report</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.reports[0].date }}</dd></div>
+        <div><dt class="govuk-body-s">Reports</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.reports.length }}</dd></div>
+        <div><dt class="govuk-body-s">Screens</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.screens.length }}</dd></div>
+        <div><dt class="govuk-body-s">Personas</dt><dd class="govuk-heading-m govuk-!-margin-bottom-0">{{ archive.personas.length }}</dd></div>
       </dl>
 
-      {# --- Archive-wide coverage rollup --- #}
-      <h2 class="govuk-heading-l">Coverage across all research</h2>
-      <p class="govuk-body">How many design proposals from every report are now reflected in the live prototype. A tracker, not a scorecard — an <em>outstanding</em> proposal from a small study may simply be waiting for stronger evidence.</p>
-      {{ research.coverageBar(archive.archiveRollup) }}
-
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-
-      {# --- Context: discovery & survey studies that set the backdrop --- #}
-      <h2 class="govuk-heading-l">Context</h2>
-      <p class="govuk-body">Discovery and survey studies that set the backdrop. These are not tied to a single interface iteration — they describe the problem space the caseworking interfaces respond to.</p>
-      {% for r in archive.contextReports %}{{ reportCard(r) }}{% endfor %}
-
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-
-      {# --- Testing pillared around the three interface-development stages --- #}
-      <h2 class="govuk-heading-l">Testing by interface stage</h2>
-      <p class="govuk-body">All screen testing is organised around the three stages of interface development. Every screen tested in a stage is listed below — including those with <strong>no issues recorded</strong>, which means the screen was tested and nothing needed changing.</p>
-
-      {% for st in archive.stages %}
-      <h3 class="govuk-heading-m govuk-!-margin-top-6">{{ st.title }}</h3>
-      <p class="govuk-body-s">{{ st.blurb }}{% if st.liveUrl %} · <a class="govuk-link" href="{{ st.liveUrl }}">View live interface</a>{% endif %}</p>
-
-      {% for r in st.reports %}{{ reportCard(r) }}{% endfor %}
-
-      {% if st.screens.length %}
-      <p class="govuk-body govuk-!-margin-bottom-1"><strong>Screens tested in this stage</strong></p>
-      <ul class="govuk-list">
-        {% for s in st.screens %}
-        <li class="govuk-!-margin-bottom-1">
-          <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
-          {% if s.noIssues %}<strong class="govuk-tag govuk-tag--green">Tested — no issues recorded</strong>{% else %}{{ research.verdictTag(s.verdict) }}{% endif %}{% if not s.shipped %} <strong class="govuk-tag govuk-tag--grey">Deferred — not shipped this stage</strong>{% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p class="govuk-body-s govuk-hint">No screen captures recorded for this stage yet.</p>
-      {% endif %}
-      {% endfor %}
-
-      {% if archive.grasslandsChanges.length %}
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-
-      {# --- Grasslands: a separate, not-yet-tested design stream --- #}
-      <h2 class="govuk-heading-l">Grasslands <strong class="govuk-tag govuk-tag--grey govuk-!-margin-left-1">Untested</strong></h2>
-      <p class="govuk-body">A separate design stream that reintroduces richer caseworking functionality for scale (up to ~2,000 cases across many teams) and to mirror the live app. None of these changes has been user-tested yet — they are recorded here with the reason for each so testing can be planned.</p>
-      <dl class="govuk-summary-list">
-        {% for g in archive.grasslandsChanges %}
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key" style="width:33%;">{{ g.title }}</dt>
-          <dd class="govuk-summary-list__value">
-            <p class="govuk-body govuk-!-margin-bottom-1">{{ g.change }}</p>
-            <p class="govuk-body-s govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Why:</span> {{ g.why }}</p>
-          </dd>
-        </div>
-        {% endfor %}
-      </dl>
-      {% endif %}
-
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-
-      {# --- Filter (GET form, modelled on the calculations-filter pattern) --- #}
       <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-          <form method="get" action="/pattern-library/research" class="app-research-filter">
-            <h2 class="govuk-heading-m">Filter screens</h2>
-
-            <div class="govuk-form-group">
-              <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Show</legend>
-                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                  <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="f-all" name="filter" type="radio" value="all" {% if filter == "all" %}checked{% endif %}>
-                    <label class="govuk-label govuk-radios__label" for="f-all">All screens</label>
-                  </div>
-                  <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="f-unresolved" name="filter" type="radio" value="unresolved" {% if filter == "unresolved" %}checked{% endif %}>
-                    <label class="govuk-label govuk-radios__label" for="f-unresolved">Unresolved problems</label>
-                  </div>
-                  <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="f-changed" name="filter" type="radio" value="changed" {% if filter == "changed" %}checked{% endif %}>
-                    <label class="govuk-label govuk-radios__label" for="f-changed">Changed across reports</label>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-
-            <div class="govuk-form-group">
-              <label class="govuk-label govuk-label--s" for="f-area">Area</label>
-              <select class="govuk-select" id="f-area" name="area">
-                <option value="">All areas</option>
-                {% for a in archive.areas %}
-                <option value="{{ a }}" {% if area == a %}selected{% endif %}>{{ a }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <button type="submit" class="govuk-button" data-module="govuk-button">Apply filters</button>
-          </form>
+        <div class="govuk-grid-column-one-half">
+          <div class="app-research-card govuk-!-margin-bottom-4">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1"><a class="govuk-link" href="/pattern-library/research/background">Background research</a></h2>
+            <p class="govuk-body">The discovery and survey studies that set the context — the problem space the caseworking interfaces respond to.</p>
+          </div>
         </div>
-
-        {# --- Screen grid --- #}
-        <div class="govuk-grid-column-two-thirds">
-          <h2 class="govuk-heading-m">Tracked screens <span class="govuk-body-s">({{ screensFiltered.length }})</span></h2>
-          {% if screensFiltered.length == 0 %}
-          <p class="govuk-body">No screens match this filter.</p>
-          {% endif %}
-
-          {% if screensDeployed.length %}
-          <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-2">Deployed</h3>
-          {% for s in screensDeployed %}
-          <div class="app-research-card">
-            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
-              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
-              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
-            </h4>
-            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
-            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
+        <div class="govuk-grid-column-one-half">
+          <div class="app-research-card govuk-!-margin-bottom-4">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1"><a class="govuk-link" href="/pattern-library/research/screens">Screen histories</a></h2>
+            <p class="govuk-body">Every tracked screen's design versions over time — current design first, with research observations and the reason for each change.</p>
           </div>
-          {% endfor %}
-          {% endif %}
-
-          {% if screensNotDeployed.length %}
-          <h3 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-2">Patterns not yet deployed</h3>
-          {% for s in screensNotDeployed %}
-          <div class="app-research-card">
-            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
-              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
-              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
-            </h4>
-            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
-            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <div class="app-research-card govuk-!-margin-bottom-4">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1"><a class="govuk-link" href="/pattern-library/research/personas">Personas &amp; needs</a></h2>
+            <p class="govuk-body">Who uses the system and what they need — each need tracked as met, partial or unmet against the live design.</p>
           </div>
-          {% endfor %}
-          {% endif %}
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <div class="app-research-card govuk-!-margin-bottom-4">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1"><a class="govuk-link" href="/pattern-library/research/coverage">Coverage</a></h2>
+            <p class="govuk-body">How many design proposals and user needs are now met in the live product, plus the outstanding backlog and screens with no research yet.</p>
+            {{ research.coverageBar(archive.archiveRollup) }}
+          </div>
         </div>
       </div>
 
-      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-
-      {# --- Outstanding-only backlog (3.4) --- #}
-      <h2 class="govuk-heading-l">Outstanding research</h2>
-      <p class="govuk-body">Every recommendation not yet fully in the live design, across all reports, most severe first. This is the live backlog of research still to act on.</p>
-      {% if archive.backlog.length == 0 %}
-      <p class="govuk-body">Nothing outstanding — every recommendation is addressed.</p>
-      {% else %}
-      <ul class="govuk-task-list">
-        {% for item in archive.backlog %}
-        <li class="govuk-task-list__item govuk-task-list__item--with-link">
-          <div class="govuk-task-list__name-and-hint">
-            <a class="govuk-link govuk-task-list__link" href="/pattern-library/research/screens/{{ item.screenId }}">{{ item.rec.text }}</a>
-            <p class="govuk-task-list__hint">{{ item.screenTitle }} · {{ item.report.date }}{% if item.rec.resolvedNote %} — {{ item.rec.resolvedNote }}{% endif %}</p>
-          </div>
-          <div class="govuk-task-list__status">
-            {{ research.statusTag(item.rec.status) }}
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-
     </div>
   </div>
+
 </div>
 {% endblock %}

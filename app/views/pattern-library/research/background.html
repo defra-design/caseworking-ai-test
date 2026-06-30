@@ -1,0 +1,33 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "research" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Research history", href: "/pattern-library/research" },
+    { text: "Background research" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Background research</h1>
+      <p class="govuk-body-l">Discovery and survey studies that set the backdrop. These are not tied to a single interface iteration — they describe the problem space the caseworking interfaces respond to. Screen-level testing lives under <a class="govuk-link" href="/pattern-library/research/screens">Screen histories</a>.</p>
+
+      {% for r in archive.contextReports %}{{ research.reportCard(r) }}{% endfor %}
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -86,10 +86,26 @@ images, reuses existing `screenId`s where the same screen reappears (so the
 history threads together), writes the `report.md` digest, and appends the new
 report + captures to `manifest.json`.
 
+## Screen-first structure (v2.1)
+
+The archive is now organised **screen-first**: the unit of history is a design
+**version** of a screen (`versions[]`); research **captures** attach to a version
+(matched at render by `screenId@<report date>`); and **personas + needs** sit
+alongside as the "why". A screen has a history even with no research — a `versions`
+entry with no matching capture renders with a "No research findings" note.
+
+The rendered surface has four areas under **Research history**:
+`/pattern-library/research/background` · `/screens` (+ `/screens/<id>`) ·
+`/personas` (+ `/personas/<id>`) · `/coverage`.
+
+New top-level manifest keys: `versions[]`, `personas{}`, `needs[]`,
+`grasslandsChanges[]`; screens carry a `deployed` boolean.
+
 ## Index
 
 - **Reports:** 8 (5 discovery, 3 usability/design)
-- **Screens tracked:** 7
+- **Screens tracked:** 13 (11 deployed, 2 not yet deployed — Land details, Messages)
+- **Versions:** 12 · **Personas:** 3 · **Needs:** 5 (seeded)
 - **Latest:** 2026-01 — *Amendments to grant applications pre agreement* (Janice Hannaway)
 - **Earliest:** 2024-08 — *Future Grants — RPA internal user problems* (Nick Buckland; discovery, no screens)
-- **Deepest history:** `tasklist-decision` (individual case view) — Jan 2025 baseline → Jun 2025 Application review + decision → Jan 2026 amend decision panel → live
+- **Deepest history:** `tasklist` (case view Tasks) — Jan 2025 baseline → Jun 2025 Application review + decision → Jan 2026 amend decision panel → live

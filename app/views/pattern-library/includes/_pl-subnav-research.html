@@ -1,11 +1,24 @@
 <nav class="app-subnav" aria-label="Research history">
   <h2 class="app-subnav__theme">Research history</h2>
   <ul class="app-subnav__section">
-    <li class="app-subnav__section-item{% if not screen %} app-subnav__section-item--current{% endif %}">
+    <li class="app-subnav__section-item{% if researchArea == 'hub' %} app-subnav__section-item--current{% endif %}">
       <a class="app-subnav__link" href="/pattern-library/research">Overview</a>
+    </li>
+    <li class="app-subnav__section-item{% if researchArea == 'background' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/background">Background research</a>
+    </li>
+    <li class="app-subnav__section-item{% if researchArea == 'screens' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/screens">Screen histories</a>
+    </li>
+    <li class="app-subnav__section-item{% if researchArea == 'personas' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/personas">Personas &amp; needs</a>
+    </li>
+    <li class="app-subnav__section-item{% if researchArea == 'coverage' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/coverage">Coverage</a>
     </li>
   </ul>
 
+  {% if researchArea == 'screens' %}
   <h2 class="app-subnav__theme">Deployed</h2>
   <ul class="app-subnav__section">
     {% for s in archive.screens %}{% if s.deployed %}
@@ -14,7 +27,6 @@
     </li>
     {% endif %}{% endfor %}
   </ul>
-
   <h2 class="app-subnav__theme">Not yet deployed</h2>
   <ul class="app-subnav__section">
     {% for s in archive.screens %}{% if not s.deployed %}
@@ -23,4 +35,16 @@
     </li>
     {% endif %}{% endfor %}
   </ul>
+  {% endif %}
+
+  {% if researchArea == 'personas' %}
+  <h2 class="app-subnav__theme">Personas</h2>
+  <ul class="app-subnav__section">
+    {% for p in archive.personas %}
+    <li class="app-subnav__section-item{% if persona and persona.id == p.id %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/research/personas/{{ p.id }}">{{ p.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 </nav>

@@ -1,0 +1,109 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "research" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Research history", href: "/pattern-library/research" },
+    { text: "Screen histories" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Screen histories</h1>
+      <p class="govuk-body-l">Every tracked screen and how it has changed. Each screen page leads with the current live design, then its version history with research observations and the reason for each change.</p>
+
+      {# --- Screen grid, grouped by deployment --- #}
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+          <form method="get" action="/pattern-library/research/screens" class="app-research-filter">
+            <h2 class="govuk-heading-m">Filter screens</h2>
+            <div class="govuk-form-group">
+              <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Show</legend>
+                <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
+                  <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-all" name="filter" type="radio" value="all" {% if filter == "all" %}checked{% endif %}><label class="govuk-label govuk-radios__label" for="f-all">All screens</label></div>
+                  <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-unresolved" name="filter" type="radio" value="unresolved" {% if filter == "unresolved" %}checked{% endif %}><label class="govuk-label govuk-radios__label" for="f-unresolved">Unresolved problems</label></div>
+                  <div class="govuk-radios__item"><input class="govuk-radios__input" id="f-changed" name="filter" type="radio" value="changed" {% if filter == "changed" %}checked{% endif %}><label class="govuk-label govuk-radios__label" for="f-changed">More than one version</label></div>
+                </div>
+              </fieldset>
+            </div>
+            <button type="submit" class="govuk-button" data-module="govuk-button">Apply filters</button>
+          </form>
+        </div>
+
+        <div class="govuk-grid-column-two-thirds">
+          <h2 class="govuk-heading-m">Tracked screens <span class="govuk-body-s">({{ screensFiltered.length }})</span></h2>
+          {% if screensFiltered.length == 0 %}<p class="govuk-body">No screens match this filter.</p>{% endif %}
+
+          {% if screensDeployed.length %}
+          <h3 class="govuk-heading-s govuk-!-margin-top-2 govuk-!-margin-bottom-2">Deployed</h3>
+          {% for s in screensDeployed %}
+          <div class="app-research-card">
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
+              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
+            </h4>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.versionCount }} version{{ "s" if s.versionCount != 1 }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
+            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% if screensNotDeployed.length %}
+          <h3 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-2">Patterns not yet deployed</h3>
+          {% for s in screensNotDeployed %}
+          <div class="app-research-card">
+            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
+              <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+              {% if s.captureCount %}{{ research.verdictTag(s.latestVerdict) }}{% else %}<strong class="govuk-tag govuk-tag--grey">No research recorded yet</strong>{% endif %}
+            </h4>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">{{ s.area }} · {{ s.versionCount }} version{{ "s" if s.versionCount != 1 }} · {{ s.captureCount }} capture{{ "s" if s.captureCount != 1 }}</p>
+            {% if s.captureCount %}{{ research.coverageBar(s.rollup) }}{% endif %}
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      {# --- Testing by interface stage --- #}
+      <h2 class="govuk-heading-l">Testing by interface stage</h2>
+      <p class="govuk-body">Screen testing is organised around the three stages of interface development. Every screen tested in a stage is listed — including those with <strong>no issues recorded</strong>.</p>
+
+      {% for st in archive.stages %}
+      <h3 class="govuk-heading-m govuk-!-margin-top-6">{{ st.title }}</h3>
+      <p class="govuk-body-s">{{ st.blurb }}{% if st.liveUrl %} · <a class="govuk-link" href="{{ st.liveUrl }}">View live interface</a>{% endif %}</p>
+      {% for r in st.reports %}{{ research.reportCard(r) }}{% endfor %}
+      {% if st.screens.length %}
+      <p class="govuk-body govuk-!-margin-bottom-1"><strong>Screens tested in this stage</strong></p>
+      <ul class="govuk-list">
+        {% for s in st.screens %}
+        <li class="govuk-!-margin-bottom-1">
+          <a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>
+          {% if s.noIssues %}<strong class="govuk-tag govuk-tag--green">Tested — no issues recorded</strong>{% else %}{{ research.verdictTag(s.verdict) }}{% endif %}{% if not s.shipped %} <strong class="govuk-tag govuk-tag--grey">Deferred — not shipped this stage</strong>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="govuk-body-s govuk-hint">No screen captures recorded for this stage yet.</p>
+      {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

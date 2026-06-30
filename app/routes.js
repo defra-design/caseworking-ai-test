@@ -78,6 +78,39 @@ function rollupRecs (recs) {
   return c
 }
 
+// Parse an ISO date string (e.g. a version sortDate) to a sortable number.
+function dateTime (s) {
+  const t = Date.parse(s || '')
+  return Number.isNaN(t) ? 0 : t
+}
+
+// Human-readable date — "17 June 2025" (day precision) or "June 2025" (month).
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December']
+function prettyDate (iso, precision) {
+  if (!iso) return ''
+  const p = String(iso).split('-')
+  const mi = parseInt(p[1], 10) - 1
+  if (mi < 0 || mi > 11) return iso
+  if (precision === 'month' || !p[2]) return MONTH_NAMES[mi] + ' ' + p[0]
+  return parseInt(p[2], 10) + ' ' + MONTH_NAMES[mi] + ' ' + p[0]
+}
+
+// Roll up persona needs by status (met / partial / unmet) + provenance.
+function rollupNeeds (list) {
+  const c = { met: 0, partial: 0, unmet: 0, total: list.length, fromResearch: 0, added: 0 }
+  list.forEach(function (n) {
+    if (c[n.status] !== undefined) c[n.status]++
+    if (n.source === 'research') c.fromResearch++; else c.added++
+  })
+  const pct = function (x) { return c.total ? Math.round((x / c.total) * 100) : 0 }
+  c.pctMet = pct(c.met)
+  c.pctPart = pct(c.partial)
+  c.pctUnmet = pct(c.unmet)
+  c.openCount = c.partial + c.unmet
+  return c
+}
+
 // Build the fully-derived archive model the templates render from.
 function buildResearchArchive () {
   const m = loadManifest()
@@ -104,10 +137,39 @@ function buildResearchArchive () {
 
     const recs = caps.reduce(function (acc, c) { return acc.concat(c.recommendedChanges) }, [])
     const latest = caps[caps.length - 1] || null
+
+    // Version spine: a screen's history is its design versions (sorted by
+    // sortDate). A research capture attaches to a version via screenId@date;
+    // a version may have no capture (design-only) and still renders.
+    const screenVersions = (m.versions || [])
+      .filter(function (v) { return v.screenId === id })
+      .slice()
+      .sort(function (a, b) { return dateTime(a.sortDate) - dateTime(b.sortDate) })
+      .map(function (v, i) {
+        const cap = caps.find(function (c) { return (c.screenId + '@' + (c.report ? c.report.date : '')) === v.versionId }) || null
+        const displayDate = cap
+          ? prettyDate(cap.report.fieldworkDate, cap.report.datePrecision)
+          : prettyDate(v.sortDate, 'month')
+        return Object.assign({}, v, { label: i + 1, isBaseline: i === 0, capture: cap, displayDate: displayDate })
+      })
+    screenVersions.forEach(function (v, i) { v.previous = i > 0 ? screenVersions[i - 1] : null })
+
+    // Hero image = most recent version that has a screenshot; last-changed = newest version date.
+    let heroImage = null
+    for (let hv = screenVersions.length - 1; hv >= 0; hv--) { if (screenVersions[hv].image) { heroImage = screenVersions[hv].image; break } }
+    const lastVersion = screenVersions[screenVersions.length - 1] || null
+
+    const screenNeeds = (m.needs || []).filter(function (n) { return (n.relatedScreens || []).indexOf(id) !== -1 })
+
     return Object.assign({}, meta, {
       id: id,
       captures: caps,
       captureCount: caps.length,
+      versions: screenVersions,
+      versionCount: screenVersions.length,
+      heroImage: heroImage,
+      lastChangedDate: lastVersion ? lastVersion.date : null,
+      needs: screenNeeds,
       latestVerdict: latest ? latest.verdict : null,
       rollup: rollupRecs(recs)
     })
@@ -197,6 +259,20 @@ function buildResearchArchive () {
 
   const contextReports = reportsList.filter(function (r) { return !r.iteration })
 
+  // --- Personas & needs (Move 4) ---
+  const allNeeds = (m.needs || []).map(function (n) {
+    const screenTitles = (n.relatedScreens || []).map(function (sid) { return m.screens[sid] ? m.screens[sid].title : sid })
+    const persona = m.personas && m.personas[n.personaId] ? m.personas[n.personaId] : null
+    return Object.assign({}, n, { screenTitles: screenTitles, personaName: persona ? persona.name : n.personaId })
+  })
+  const personas = Object.keys(m.personas || {}).map(function (pid) {
+    const pneeds = allNeeds.filter(function (n) { return n.personaId === pid })
+    return Object.assign({}, m.personas[pid], { id: pid, needs: pneeds, rollup: rollupNeeds(pneeds) })
+  })
+
+  // Screens with a tracked history but no research captures yet.
+  const screensNoResearch = screens.filter(function (s) { return s.captureCount === 0 })
+
   return {
     imageBase: m.imageBase,
     screens: screens,
@@ -204,14 +280,28 @@ function buildResearchArchive () {
     stages: stages,
     contextReports: contextReports,
     grasslandsChanges: m.grasslandsChanges || [],
+    personas: personas,
+    needs: allNeeds,
+    needsRollup: rollupNeeds(allNeeds),
+    screensNoResearch: screensNoResearch,
     archiveRollup: rollupRecs(allRecs),
     backlog: backlog,
     areas: areas
   }
 }
 
-// Archive index — grid of tracked screens + coverage rollup + filters/backlog.
+// Research history — hub landing (links to the four areas).
 router.get('/pattern-library/research', function (req, res) {
+  res.render('pattern-library/research/index', { archive: buildResearchArchive(), researchArea: 'hub' })
+})
+
+// Area 1 — Background research (discovery / survey studies + themes).
+router.get('/pattern-library/research/background', function (req, res) {
+  res.render('pattern-library/research/background', { archive: buildResearchArchive(), researchArea: 'background' })
+})
+
+// Area 2 — Screen histories index (stage pillars + screens grid + filter).
+router.get('/pattern-library/research/screens', function (req, res) {
   const archive = buildResearchArchive()
   const filter = req.query.filter || 'all' // all | unresolved | changed
   const area = req.query.area || ''
@@ -220,10 +310,11 @@ router.get('/pattern-library/research', function (req, res) {
   if (filter === 'unresolved') {
     screens = screens.filter(function (s) { return s.rollup.openCount > 0 })
   } else if (filter === 'changed') {
-    screens = screens.filter(function (s) { return s.captureCount > 1 })
+    screens = screens.filter(function (s) { return s.versionCount > 1 })
   }
-  res.render('pattern-library/research/index', {
+  res.render('pattern-library/research/screens', {
     archive: archive,
+    researchArea: 'screens',
     screensFiltered: screens,
     screensDeployed: screens.filter(function (s) { return s.deployed }),
     screensNotDeployed: screens.filter(function (s) { return !s.deployed }),
@@ -232,15 +323,30 @@ router.get('/pattern-library/research', function (req, res) {
   })
 })
 
-// Per-screen history.
+// Area 2 — one screen's history.
 router.get('/pattern-library/research/screens/:screenId', function (req, res, next) {
   const archive = buildResearchArchive()
   const screen = archive.screens.find(function (s) { return s.id === req.params.screenId })
   if (!screen) return next()
-  res.render('pattern-library/research/screen', {
-    archive: archive,
-    screen: screen
-  })
+  res.render('pattern-library/research/screen', { archive: archive, screen: screen, researchArea: 'screens' })
+})
+
+// Area 3 — Personas & needs (list).
+router.get('/pattern-library/research/personas', function (req, res) {
+  res.render('pattern-library/research/personas', { archive: buildResearchArchive(), researchArea: 'personas' })
+})
+
+// Area 3 — one persona.
+router.get('/pattern-library/research/personas/:personaId', function (req, res, next) {
+  const archive = buildResearchArchive()
+  const persona = archive.personas.find(function (p) { return p.id === req.params.personaId })
+  if (!persona) return next()
+  res.render('pattern-library/research/persona', { archive: archive, persona: persona, researchArea: 'personas' })
+})
+
+// Area 4 — Coverage (rollups, outstanding backlog, grasslands, needs-met, no-research).
+router.get('/pattern-library/research/coverage', function (req, res) {
+  res.render('pattern-library/research/coverage', { archive: buildResearchArchive(), researchArea: 'coverage' })
 })
 
 // ============================================================

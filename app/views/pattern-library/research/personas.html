@@ -1,0 +1,44 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "research" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Research history", href: "/pattern-library/research" },
+    { text: "Personas & needs" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Personas &amp; needs</h1>
+      <p class="govuk-body-l">Who uses the caseworking system and what they need. Each need is tagged with where it came from (research or added) and its status against the live design. Needs can be added independent of research.</p>
+      <div class="govuk-inset-text">Populated from the UR <strong>User Needs Summary</strong> (Confluence, June 2025), which synthesises past research reports. Statuses are triaged against the current live design.</div>
+
+      {% for p in archive.personas %}
+      <div class="app-research-card">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-1">
+          <span class="app-persona-monogram" aria-hidden="true">{{ p.name | truncate(1, true, "") }}</span>
+          <a class="govuk-link" href="/pattern-library/research/personas/{{ p.id }}">{{ p.name }}</a>
+        </h2>
+        <p class="govuk-body-s govuk-!-margin-bottom-1">{{ p.role }}</p>
+        <p class="govuk-body govuk-!-margin-bottom-2">{{ p.summary }}</p>
+        {{ research.needsBar(p.rollup) }}
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

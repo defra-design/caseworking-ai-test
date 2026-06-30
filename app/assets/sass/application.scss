@@ -1473,6 +1473,56 @@
 }
 
 // Segmented coverage bar — flex row of GOV.UK palette colours
+// Grant schemes budget overview — stat cards + portfolio health bar.
+// Colours reuse the existing GOV.UK tag palette (blue / orange / red / green / grey).
+.app-stat-card {
+  padding: 15px 20px;
+  background: #f3f2f1;
+  border-left: 5px solid #0b0c0c;
+  height: 100%;
+  box-sizing: border-box;
+}
+.app-stat-card--blue { background: #eef4fa; border-left-color: #1d70b8; }
+.app-stat-card--red  { background: #fbeae8; border-left-color: #d4351c; }
+.app-stat-card__label {
+  margin: 0 0 5px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #505a5f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.app-stat-card__value { margin: 0; font-size: 36px; line-height: 1.1; font-weight: 700; }
+.app-stat-card--blue .app-stat-card__value { color: #1d70b8; }
+.app-stat-card--red  .app-stat-card__value { color: #d4351c; }
+
+.app-budget-bar {
+  display: flex;
+  width: 100%;
+  height: 36px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #b1b4b6;
+  font-size: 14px;
+}
+.app-budget-bar span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 6px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.app-budget-bar .app-budget-bar__approved { background: #1d70b8; }
+.app-budget-bar .app-budget-bar__pipeline { background: #f47738; }
+.app-budget-bar .app-budget-bar__remaining { flex: 1 1 auto; background: #b1b4b6; color: #0b0c0c; }
+
+.app-num-approved { color: #1d70b8; font-weight: 700; }
+.app-num-pipeline { color: #f47738; font-weight: 700; }
+
 .app-coverage-bar {
   display: flex;
   width: 100%;
@@ -1510,6 +1560,42 @@
 // Related-patterns sidebar block
 .app-research-related {
   margin-top: 30px;
+}
+
+// Version-history item header (caselist trial): more space above, author on its
+// own line, and a prominent exact date.
+.app-research-version {
+  margin-top: 35px;
+}
+.app-research-byline {
+  color: #505a5f;
+}
+.app-research-date {
+  font-size: 19px;
+  font-weight: 700;
+  color: #0b0c0c;
+}
+
+// Persona monogram — a simple initial avatar (no stock photos)
+.app-persona-monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #1d70b8;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  vertical-align: middle;
+}
+.app-persona-monogram--lg {
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
 }
 
 // "What changed" connector item — drop the timeline dot, it's a gap note

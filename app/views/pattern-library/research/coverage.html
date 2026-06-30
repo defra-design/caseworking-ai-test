@@ -1,0 +1,91 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "research" %}
+{% import "pattern-library/includes/_research-macros.html" as research %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Research history", href: "/pattern-library/research" },
+    { text: "Coverage" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-research.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Coverage</h1>
+      <p class="govuk-body-l">How many design proposals and user needs are now reflected in the live product. A tracker, not a scorecard — an outstanding item from a small study may simply be waiting for stronger evidence.</p>
+
+      <h2 class="govuk-heading-l">Design proposals — all research</h2>
+      {{ research.coverageBar(archive.archiveRollup) }}
+
+      <h2 class="govuk-heading-l govuk-!-margin-top-6">User needs met</h2>
+      {{ research.needsBar(archive.needsRollup) }}
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      {# --- Outstanding backlog --- #}
+      <h2 class="govuk-heading-l">Outstanding research</h2>
+      <p class="govuk-body">Every recommendation still <strong>outstanding</strong> or <strong>partial</strong> against the live design, most severe first.</p>
+      {% if archive.backlog.length == 0 %}
+      <p class="govuk-body">Nothing outstanding — everything proposed is reflected in the live design.</p>
+      {% else %}
+      <ul class="govuk-task-list">
+        {% for b in archive.backlog %}
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
+          <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" href="/pattern-library/research/screens/{{ b.screenId }}">{{ b.rec.text }}</a>
+            <p class="govuk-task-list__hint">{{ b.screenTitle }} · {{ b.report.date }}{% if b.rec.resolvedNote %} · {{ b.rec.resolvedNote }}{% endif %}</p>
+          </div>
+          <div class="govuk-task-list__status">{{ research.statusTag(b.rec.status) }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      {# --- Screens with no research yet --- #}
+      <h2 class="govuk-heading-l">Screens with no research yet</h2>
+      {% if archive.screensNoResearch.length %}
+      <p class="govuk-body">Tracked screens that are part of the system but haven't been user-tested in any report so far.</p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for s in archive.screensNoResearch %}
+        <li><a class="govuk-link" href="/pattern-library/research/screens/{{ s.id }}">{{ s.title }}</a>{% if not s.deployed %} <strong class="govuk-tag govuk-tag--grey">Not yet deployed</strong>{% endif %}</li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="govuk-body">Every tracked screen has at least one research capture.</p>
+      {% endif %}
+
+      {% if archive.grasslandsChanges.length %}
+      <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+      <h2 class="govuk-heading-l">Grasslands <strong class="govuk-tag govuk-tag--grey govuk-!-margin-left-1">Untested</strong></h2>
+      <p class="govuk-body">A separate design stream that reintroduces richer functionality for scale and to mirror the live app. None of these changes has been user-tested yet — recorded here with the reason for each so testing can be planned.</p>
+      <dl class="govuk-summary-list">
+        {% for g in archive.grasslandsChanges %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key" style="width:33%;">{{ g.title }}</dt>
+          <dd class="govuk-summary-list__value">
+            <p class="govuk-body govuk-!-margin-bottom-1">{{ g.change }}</p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">Why:</span> {{ g.why }}</p>
+          </dd>
+        </div>
+        {% endfor %}
+      </dl>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
