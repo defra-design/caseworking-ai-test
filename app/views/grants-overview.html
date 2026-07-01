@@ -1,11 +1,16 @@
 {% extends "layouts/main.html" %}
 
+{# Match the GTIF caselist width — widen the layout's container (and the header
+   to align with it). See GTIF-caselist.html for the same treatment. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
 {% endblock %}
 
 {% block content %}
-<div class="govuk-width-container">
+<div class="govuk-width-container app-caselist-wide">
 
   <div class="govuk-phase-banner govuk-!-margin-top-2">
     <p class="govuk-phase-banner__content">
@@ -53,10 +58,10 @@
         <span class="app-budget-bar__pipeline" style="width:11%;">11%</span>
         <span class="app-budget-bar__remaining">80%</span>
       </div>
-      <div class="app-budget-key govuk-!-margin-top-2">
-        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span>Approved: <strong class="govuk-!-margin-left-1">£380,000</strong></span>
-        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--pipeline"></span>Pipeline: <strong class="govuk-!-margin-left-1">£460,000</strong></span>
-        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--remaining"></span>Uncommitted remaining: <strong class="govuk-!-margin-left-1">£3,360,000</strong></span>
+      <div class="app-budget-key app-budget-key--aligned govuk-!-margin-top-2">
+        <span class="app-budget-key__item" style="left:0%;"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span><span class="app-budget-key__label">Approved</span><strong class="app-budget-key__figure">£380,000</strong></span>
+        <span class="app-budget-key__item" style="left:9%;"><span class="app-budget-key__swatch app-budget-key__swatch--pipeline"></span><span class="app-budget-key__label">Pipeline</span><strong class="app-budget-key__figure">£460,000</strong></span>
+        <span class="app-budget-key__item" style="left:20%;"><span class="app-budget-key__swatch app-budget-key__swatch--remaining"></span><span class="app-budget-key__label">Uncommitted remaining</span><strong class="app-budget-key__figure">£3,360,000</strong></span>
       </div>
     </div>
 
