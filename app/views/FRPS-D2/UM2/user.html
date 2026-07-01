@@ -1,0 +1,65 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users">Users</a></li>
+        <li class="govuk-breadcrumbs__list-item">{{ u.name }}</li>
+      </ol>
+    </nav>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">{{ u.name }}</h1>
+
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Email</dt>
+            <dd class="govuk-summary-list__value">{{ u.email or "—" }}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Status</dt>
+            <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--green">Active</strong></dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Teams</dt>
+            <dd class="govuk-summary-list__value">{% if u.teams.length %}{{ u.teams | join(", ") }}{% else %}—{% endif %}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Access role</dt>
+            <dd class="govuk-summary-list__value">
+              {% if u.accessRole == "Manager" %}<strong class="govuk-tag govuk-tag--purple">Manager</strong>{% if u.mgrScope == "senior" %} <span class="govuk-body-s">(senior)</span>{% endif %}
+              {% else %}<strong class="govuk-tag govuk-tag--blue">Caseworker</strong>{% endif %}
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Specialisms</dt>
+            <dd class="govuk-summary-list__value">{% if u.specialisms.length %}{{ u.specialisms | join(", ") }}{% else %}—{% endif %}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Scheme roles</dt>
+            <dd class="govuk-summary-list__value">{% if u.schemeRoles.length %}{{ u.schemeRoles | join(", ") }}{% else %}—{% endif %}</dd>
+          </div>
+        </dl>
+
+        <p class="govuk-body-s govuk-hint">Set at creation. In this prototype, per-user editing of teams, access role, specialisms and scheme roles is demonstrated on the <a class="govuk-link" href="martin">R Singh</a> reference user.</p>
+
+        <div class="govuk-button-group">
+          <a class="govuk-button" href="users" data-module="govuk-button">Done</a>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

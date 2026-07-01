@@ -4238,7 +4238,34 @@ router.post('/FRPS-D2/UM2/change-specialisms', function (req, res) {
 router.post('/FRPS-D2/UM2/change-scheme-roles', function (req, res) {
   const list = umArr(req.body.rsSchemeRoles)
   req.session.data.rsSchemeRoles = list.length ? list.join(', ') : '—'
+  // Persist the optional start/end date for each selected role.
+  const dates = {}
+  list.forEach(function (code) {
+    dates[code] = { start: req.body['start-' + code] || '', end: req.body['end-' + code] || '' }
+  })
+  req.session.data.rsRoleDates = dates
   res.redirect('/FRPS-D2/UM2/martin')
+})
+
+// R Singh detail — precompute the scheme roles with their persisted dates so the
+// page can list each role with its "from/to" without splitting strings in the view.
+router.get('/FRPS-D2/UM2/martin', function (req, res) {
+  const d = req.session.data || {}
+  const codes = (d.rsSchemeRoles || 'PMF_READ, PMF_WRITE, BN_TAG_CHECKER').split(', ')
+  const rd = d.rsRoleDates || {}
+  const rsRoleList = codes.filter(function (c) { return c && c !== '—' }).map(function (c) {
+    return { code: c, start: (rd[c] || {}).start || '', end: (rd[c] || {}).end || '' }
+  })
+  res.render('FRPS-D2/UM2/martin', { rsRoleList: rsRoleList })
+})
+
+// Created-user detail — a real per-user page (created users no longer link to the
+// R Singh reference page). Reads the chosen user out of the session by index.
+router.get('/FRPS-D2/UM2/user', function (req, res) {
+  const users = (req.session.data && req.session.data.umUsers) || []
+  const u = users[parseInt(req.query.i, 10)]
+  if (!u) return res.redirect('/FRPS-D2/UM2/users')
+  res.render('FRPS-D2/UM2/user', { u: u })
 })
 
 router.post('/FRPS-D2/UM2/change-lead', function (req, res) {

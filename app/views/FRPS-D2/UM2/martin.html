@@ -71,7 +71,15 @@
 
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Scheme roles</dt>
-            <dd class="govuk-summary-list__value">{{ data.rsSchemeRoles or "PMF_READ, PMF_WRITE, BN_TAG_CHECKER" }}</dd>
+            <dd class="govuk-summary-list__value">
+              {% if rsRoleList and rsRoleList.length %}
+              <ul class="govuk-list govuk-!-margin-bottom-0">
+                {% for r in rsRoleList %}
+                <li>{{ r.code }}{% if r.start or r.end %} <span class="govuk-body-s">({% if r.start %}from {{ r.start }}{% endif %}{% if r.end %} to {{ r.end }}{% endif %})</span>{% endif %}</li>
+                {% endfor %}
+              </ul>
+              {% else %}{{ data.rsSchemeRoles or "PMF_READ, PMF_WRITE, BN_TAG_CHECKER" }}{% endif %}
+            </dd>
             <dd class="govuk-summary-list__actions"><a class="govuk-link" href="change-scheme-roles">Change<span class="govuk-visually-hidden"> scheme roles</span></a></dd>
           </div>
         </dl>

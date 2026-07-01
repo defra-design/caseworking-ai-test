@@ -20,6 +20,7 @@
     {# All assignable roles (the Scheme roles catalogue); which are selected comes
        from the session so it reflects the user detail page. #}
     {% set cur = data.rsSchemeRoles or "PMF_READ, PMF_WRITE, BN_TAG_CHECKER" %}
+    {% set rd = data.rsRoleDates or {} %}
     {% set roles = [
       { code: "PMF_READ", desc: "Pigs Might Fly read only" },
       { code: "PMF_WRITE", desc: "Pigs Might Fly read write" },
@@ -57,8 +58,8 @@
             </td>
             <th scope="row" class="govuk-table__header">{{ r.code }}</th>
             <td class="govuk-table__cell">{{ r.desc }}</td>
-            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="start-{{ r.code }}" name="start-{{ r.code }}" type="date"></div></td>
-            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="end-{{ r.code }}" name="end-{{ r.code }}" type="date"></div></td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="start-{{ r.code }}" name="start-{{ r.code }}" type="date" value="{{ rd[r.code].start if rd[r.code] else '' }}"></div></td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="end-{{ r.code }}" name="end-{{ r.code }}" type="date" value="{{ rd[r.code].end if rd[r.code] else '' }}"></div></td>
           </tr>
           {% endif %}{% endfor %}
         </tbody>
