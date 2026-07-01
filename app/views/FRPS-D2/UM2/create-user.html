@@ -21,7 +21,7 @@
         <form action="users" method="post">
 
           <h1 class="govuk-heading-l">Create user</h1>
-          <p class="govuk-body">Pre-create users so their teams, access role and specialisms are set before first login. Scheme roles are managed separately.</p>
+          <p class="govuk-body">Pre-create users so their teams, access role, specialisms and scheme roles are set before first login.</p>
 
           <div class="govuk-form-group">
             <label class="govuk-label govuk-label--s" for="name">Name</label>
@@ -79,10 +79,19 @@
             </fieldset>
           </div>
 
-          <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Scheme roles (unchanged)</span></summary>
-            <div class="govuk-details__text">Grant-scheme permission codes (PMF_READ, BN_TAG_CHECKER…) are managed on <a class="govuk-link" href="scheme-roles">Scheme roles</a> and the user's detail page — a separate concern from access role and specialisms.</div>
-          </details>
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Scheme roles</legend>
+              <div class="govuk-hint">Grant-scheme permission codes from the IDP / Manage grants. Optional at creation — tick any to grant now; start/end dates can be set later on the user's <a class="govuk-link" href="scheme-roles">Scheme roles</a> screen.</div>
+              <input type="hidden" name="createSchemeRoles" value="_unchecked">
+              <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="cr-pmfr" name="createSchemeRoles" type="checkbox" value="PMF_READ"><label class="govuk-label govuk-checkboxes__label" for="cr-pmfr">PMF_READ <span class="govuk-hint govuk-!-margin-bottom-0">Pigs Might Fly read only</span></label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="cr-pmfw" name="createSchemeRoles" type="checkbox" value="PMF_WRITE"><label class="govuk-label govuk-checkboxes__label" for="cr-pmfw">PMF_WRITE <span class="govuk-hint govuk-!-margin-bottom-0">Pigs Might Fly read write</span></label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="cr-bntc" name="createSchemeRoles" type="checkbox" value="BN_TAG_CHECKER"><label class="govuk-label govuk-checkboxes__label" for="cr-bntc">BN_TAG_CHECKER <span class="govuk-hint govuk-!-margin-bottom-0">Boundary notification tag checker</span></label></div>
+                <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="cr-dca" name="createSchemeRoles" type="checkbox" value="DCA_FRV"><label class="govuk-label govuk-checkboxes__label" for="cr-dca">DCA_FRV <span class="govuk-hint govuk-!-margin-bottom-0">Data change authority — farm record view</span></label></div>
+              </div>
+            </fieldset>
+          </div>
 
           <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button><br>
           <a href="users" class="govuk-link">Cancel</a>

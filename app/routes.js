@@ -4182,7 +4182,8 @@ router.post('/FRPS-D2/UM2/users', function (req, res) {
     teams:       umArr(req.body.teams),
     accessRole:  req.body.accessRole || 'Caseworker',
     mgrScope:    req.body.mgrScope || '',
-    specialisms: umArr(req.body.specialisms)
+    specialisms: umArr(req.body.specialisms),
+    schemeRoles: umArr(req.body.createSchemeRoles)
   })
   res.redirect('/FRPS-D2/UM2/users')
 })
@@ -4231,6 +4232,12 @@ router.post('/FRPS-D2/UM2/change-access-role', function (req, res) {
 router.post('/FRPS-D2/UM2/change-specialisms', function (req, res) {
   const list = umArr(req.body.specialisms)
   req.session.data.rsSpecialisms = list.length ? list.join(', ') : '—'
+  res.redirect('/FRPS-D2/UM2/martin')
+})
+
+router.post('/FRPS-D2/UM2/change-scheme-roles', function (req, res) {
+  const list = umArr(req.body.rsSchemeRoles)
+  req.session.data.rsSchemeRoles = list.length ? list.join(', ') : '—'
   res.redirect('/FRPS-D2/UM2/martin')
 })
 

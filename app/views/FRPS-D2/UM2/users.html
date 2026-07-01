@@ -19,7 +19,7 @@
     <div style="display: flex; justify-content: flex-end;">
       <a href="create-user" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Create user</a>
     </div>
-    <p class="govuk-body">A user can be in more than one team. Access role and specialisms are attributes on the user, set on the user's page.</p>
+    <p class="govuk-body">A user can be in more than one team. Access role, specialisms and scheme roles are attributes on the user, set on the user's page.</p>
 
     <table class="govuk-table" data-module="moj-sortable-table">
       <thead class="govuk-table__head">
@@ -28,6 +28,7 @@
           <th scope="col" class="govuk-table__header">Teams</th>
           <th scope="col" class="govuk-table__header">Access role</th>
           <th scope="col" class="govuk-table__header">Specialisms</th>
+          <th scope="col" class="govuk-table__header">Scheme roles</th>
           <th scope="col" class="govuk-table__header">Status</th>
         </tr>
       </thead>
@@ -38,6 +39,7 @@
           <td class="govuk-table__cell">Team A</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
           <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
@@ -45,12 +47,14 @@
           <td class="govuk-table__cell">Team A</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
           <td class="govuk-table__cell">Finance officer</td>
+          <td class="govuk-table__cell">{{ data.rsSchemeRoles or "PMF_READ, PMF_WRITE, BN_TAG_CHECKER" }}</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">T Okafor</a><br><span class="govuk-body-s">t.okafor@defra.gov.uk</span></th>
           <td class="govuk-table__cell">Team A</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
@@ -59,6 +63,7 @@
           <td class="govuk-table__cell">Team B</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
           <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
@@ -66,6 +71,7 @@
           <td class="govuk-table__cell">Team B, Team C</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
           <td class="govuk-table__cell">Finance officer</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
@@ -73,12 +79,14 @@
           <td class="govuk-table__cell">Team B</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
           <td class="govuk-table__cell">Quality control</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">A Jones</a><br><span class="govuk-body-s">a.jones@defra.gov.uk</span></th>
           <td class="govuk-table__cell">Team C</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong></td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
@@ -87,6 +95,7 @@
           <td class="govuk-table__cell">Team C</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
           <td class="govuk-table__cell">Quality control</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
@@ -94,12 +103,14 @@
           <td class="govuk-table__cell">All teams</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--purple">Manager</strong> <span class="govuk-body-s">(senior)</span></td>
           <td class="govuk-table__cell">—</td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header"><a class="govuk-link" href="martin">S Lyle</a><br><span class="govuk-body-s">s.lyle@defra.gov.uk</span></th>
           <td class="govuk-table__cell">Team B</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--blue">Caseworker</strong></td>
+          <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell">—</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">Leaver</strong></td>
         </tr>
@@ -110,6 +121,7 @@
           <td class="govuk-table__cell">{% if u.teams.length %}{{ u.teams | join(", ") }}{% else %}—{% endif %}</td>
           <td class="govuk-table__cell">{% if u.accessRole == "Manager" %}<strong class="govuk-tag govuk-tag--purple">Manager</strong>{% if u.mgrScope == "senior" %} <span class="govuk-body-s">(senior)</span>{% endif %}{% else %}<strong class="govuk-tag govuk-tag--blue">Caseworker</strong>{% endif %}</td>
           <td class="govuk-table__cell">{% if u.specialisms.length %}{{ u.specialisms | join(", ") }}{% else %}—{% endif %}</td>
+          <td class="govuk-table__cell">{% if u.schemeRoles.length %}{{ u.schemeRoles | join(", ") }}{% else %}—{% endif %}</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Active</strong></td>
         </tr>
         {% endfor %}

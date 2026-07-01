@@ -1,0 +1,105 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <nav class="govuk-breadcrumbs govuk-!-margin-top-0 govuk-!-margin-bottom-5" aria-label="Breadcrumb">
+      <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users-and-roles">User management</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="users">Users</a></li>
+        <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="martin">R Singh</a></li>
+        <li class="govuk-breadcrumbs__list-item">Scheme roles</li>
+      </ol>
+    </nav>
+
+    {# All assignable roles (the Scheme roles catalogue); which are selected comes
+       from the session so it reflects the user detail page. #}
+    {% set cur = data.rsSchemeRoles or "PMF_READ, PMF_WRITE, BN_TAG_CHECKER" %}
+    {% set roles = [
+      { code: "PMF_READ", desc: "Pigs Might Fly read only" },
+      { code: "PMF_WRITE", desc: "Pigs Might Fly read write" },
+      { code: "BN_TAG_CHECKER", desc: "Boundary notification tag checker" },
+      { code: "DCA_FRV", desc: "Data change authority — farm record view" },
+      { code: "PMF_ADMIN", desc: "Pigs Might Fly administrator" },
+      { code: "BN_TAG_ADMIN", desc: "Boundary notification tag administrator" }
+    ] %}
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">R Singh — scheme roles</h1>
+    <p class="govuk-body">Tick a role to give it to this user; untick to remove it. Leave the start date blank for the role to start immediately, and the end date blank for it to run indefinitely. Date format is 12/09/2025.</p>
+
+    <form action="change-scheme-roles" method="post">
+      <input type="hidden" name="rsSchemeRoles" value="_unchecked">
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5 govuk-!-margin-bottom-2">Selected roles</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Selected</span></th>
+            <th scope="col" class="govuk-table__header">Role</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Start date (optional)</th>
+            <th scope="col" class="govuk-table__header">End date (optional)</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for r in roles %}{% if r.code in cur %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="sel-{{ r.code }}" name="rsSchemeRoles" value="{{ r.code }}" checked>
+                <label class="govuk-label govuk-checkboxes__label" for="sel-{{ r.code }}"><span class="govuk-visually-hidden">Keep {{ r.code }}</span></label>
+              </div>
+            </td>
+            <th scope="row" class="govuk-table__header">{{ r.code }}</th>
+            <td class="govuk-table__cell">{{ r.desc }}</td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="start-{{ r.code }}" name="start-{{ r.code }}" type="date"></div></td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="end-{{ r.code }}" name="end-{{ r.code }}" type="date"></div></td>
+          </tr>
+          {% endif %}{% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-5 govuk-!-margin-bottom-2">Unselected roles</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Selected</span></th>
+            <th scope="col" class="govuk-table__header">Role</th>
+            <th scope="col" class="govuk-table__header">Description</th>
+            <th scope="col" class="govuk-table__header">Start date (optional)</th>
+            <th scope="col" class="govuk-table__header">End date (optional)</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for r in roles %}{% if r.code not in cur %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="unsel-{{ r.code }}" name="rsSchemeRoles" value="{{ r.code }}">
+                <label class="govuk-label govuk-checkboxes__label" for="unsel-{{ r.code }}"><span class="govuk-visually-hidden">Add {{ r.code }}</span></label>
+              </div>
+            </td>
+            <th scope="row" class="govuk-table__header">{{ r.code }}</th>
+            <td class="govuk-table__cell">{{ r.desc }}</td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="ustart-{{ r.code }}" name="start-{{ r.code }}" type="date"></div></td>
+            <td class="govuk-table__cell"><div class="govuk-form-group govuk-!-margin-bottom-0"><input class="govuk-input govuk-input--width-10" id="uend-{{ r.code }}" name="end-{{ r.code }}" type="date"></div></td>
+          </tr>
+          {% endif %}{% endfor %}
+        </tbody>
+      </table>
+
+      <div class="govuk-button-group govuk-!-margin-top-3">
+        <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+        <a href="scheme-roles" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">Check, edit or create roles</a>
+      </div>
+      <a href="martin" class="govuk-link">Cancel and return</a>
+    </form>
+
+  </main>
+</div>
+{% endblock %}
