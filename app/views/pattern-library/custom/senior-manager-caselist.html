@@ -1,0 +1,134 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "senior-manager-caselist" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Senior manager caselist" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">
+        Senior manager caselist
+        <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-2">Temporary</strong>
+      </h1>
+      <p class="govuk-body-l">A read-focused, per-scheme variant of the <a class="govuk-link" href="/pattern-library/custom/team-caselist">team caselist</a> aimed at a senior manager rather than a caseworker: one scheme, one "All cases" list, a funds-allocation summary and the money on each case — over the same case data.</p>
+
+      <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+          <span class="govuk-visually-hidden">Warning</span>
+          This is a temporary / trial variant. Two of its changes — the <strong>wider layout</strong> and the <strong>Value (£K) column</strong> — are candidates to be folded into the main <a class="govuk-link" href="/pattern-library/custom/team-caselist">team caselist</a> soon. Documented here so the trial is visible; expect it to move or be absorbed.
+        </strong>
+      </div>
+
+      <p class="govuk-body">Where the team caselist is a caseworker's queue (my work / my team / everyone, active vs completed), this variant re-frames the same list for oversight of a single funding scheme. It keeps the data, search, Status filter, sortable table, multi-assign and pagination of the team caselist, and changes five things:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>a <strong>single "All cases" tab</strong> instead of the three-tab My / context / Completed switcher;</li>
+        <li>a <a class="govuk-link" href="/pattern-library/custom/budget-bar">funds-allocation bar</a> at the top, scoped to the scheme;</li>
+        <li>a <strong>Scheme metadata summary</strong> (four-column label/value table) beneath the bar;</li>
+        <li>a sortable <strong>Value (£K)</strong> column in the table, after Submitted; and</li>
+        <li>a <strong>wider page</strong> (1166px) so the extra column has room.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>An oversight / management view of a single scheme, where the money and the budget position matter as much as the individual cases.</li>
+        <li>When you want the case list and its financial summary on one screen.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use this</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A caseworker's day-to-day queue — use the <a class="govuk-link" href="/pattern-library/custom/team-caselist">team caselist</a> (my work / team / everyone).</li>
+        <li>Anywhere that needs the team/context split or the active-vs-completed tabs — this variant collapses to one tab on purpose.</li>
+        <li>As a settled pattern — it's temporary; don't build new screens on it until the width and Value column decisions land in the main caselist.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Single "All cases" tab</h2>
+      <p class="govuk-body">The three-tab switcher is replaced by one selected "All cases" tab. The permanent SBI search, the Status "filter list" with removable filter tags, the multi-assign checkboxes and the <a class="govuk-link" href="/pattern-library/moj/pagination">pagination</a> all carry over unchanged. Rendered by a single-tab <code class="govuk-body">schemeAllCases</code> macro alongside the team caselist's <code class="govuk-body">tabsAndTable</code> macro, both reading the same Grasslands case data.</p>
+
+      <h2 class="govuk-heading-l">Funds-allocation bar &amp; scheme metadata</h2>
+      <p class="govuk-body">Above the tab sits the scheme's <a class="govuk-link" href="/pattern-library/custom/budget-bar">budget allocation bar</a> (the split / outlined / aligned-key form) and a four-column metadata summary — two label/value pairs per row.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-smc-meta">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-smc-meta-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <table class="govuk-table">
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Maximum Budget Cap</th>
+                  <td class="govuk-table__cell">£2,500,000</td>
+                  <th scope="row" class="govuk-table__header">Max Award Limit per Case</th>
+                  <td class="govuk-table__cell">£150,000</td>
+                </tr>
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">Program Lead Officer</th>
+                  <td class="govuk-table__cell">Evelyn Vance</td>
+                  <th scope="row" class="govuk-table__header">Launch &amp; Sunset Window</th>
+                  <td class="govuk-table__cell">01 Jan 2026 to 31 Dec 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-smc-meta" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-smc-meta-code">&lt;table class="govuk-table"&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="row" class="govuk-table__header"&gt;Maximum Budget Cap&lt;/th&gt;
+      &lt;td class="govuk-table__cell"&gt;£2,500,000&lt;/td&gt;
+      &lt;th scope="row" class="govuk-table__header"&gt;Max Award Limit per Case&lt;/th&gt;
+      &lt;td class="govuk-table__cell"&gt;£150,000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;!-- second row: Program Lead Officer / Launch &amp; Sunset Window --&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Value (£K) column</h2>
+      <p class="govuk-body">A sortable numeric column added after Submitted, holding each case's value in £K. It's a candidate for the main caselist. The header is kept on one line with <code class="govuk-body">app-th-nowrap</code> (short numeric cells would otherwise starve the column and wrap the label), and it sorts numerically via the same server-side <a class="govuk-link" href="/pattern-library/custom/full-list-sort">full-list column sorting</a> as the other columns. Column set: Select · ID · Business · SBI · Submitted · <strong>Value (£K)</strong> · <a class="govuk-link" href="/pattern-library/gds/tag">Status</a> · Assignee.</p>
+
+      <h2 class="govuk-heading-l">Wider layout</h2>
+      <p class="govuk-body">The page is widened from the GOV.UK 960px page width to <strong>1166px</strong> to give the extra column room. The class goes on the <em>layout's</em> width-container (via <code class="govuk-body">containerClasses</code>), not an inner one — an inner container is clamped by the outer 960px wrapper. The header is widened to match (<code class="govuk-body">headerContainerClasses</code>) so its left edge aligns with the table.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example__code-container" style="display:block;">
+          <div class="app-example__code">
+            <pre><code>/* application.scss — two classes beat the GOV.UK media-query rule */
+.govuk-width-container.app-caselist-wide { max-width: 1166px; }
+
+&lt;!-- page template --&gt;
+{% raw %}{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/GTIF-caselist">Green Tech Innovation Fund — scheme caselist</a> (reached from the first scheme on the <a class="govuk-link" href="/grants-overview">grants overview</a>).</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
