@@ -1587,6 +1587,11 @@
 .app-budget-key--aligned .app-budget-key__swatch { margin: 0 0 5px 0; }
 .app-budget-key__label  { font-size: 16px; }
 .app-budget-key__figure { font-size: 16px; font-weight: 700; }
+// Optional third line under the figure — the case count for a segment. Only the
+// GTIF key uses it, so the taller container is scoped to --cases (leaves the
+// grants-overview aligned key at its two-line height).
+.app-budget-key__cases  { font-size: 14px; color: #505a5f; }
+.app-budget-key--cases  { height: 84px; }
 
 .app-num-approved { color: #00703c; font-weight: 700; } // green — matches the Approved figure box / bar
 .app-num-pipeline { color: #1d70b8; font-weight: 700; } // blue — matches the Pipeline figure box / bar
