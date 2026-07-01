@@ -29,13 +29,13 @@
         </div>
       </div>
       <div class="govuk-grid-column-one-third">
-        <div class="app-stat-card app-stat-card--blue">
+        <div class="app-stat-card app-stat-card--green">
           <p class="app-stat-card__label">Total allocated (approved)</p>
           <p class="app-stat-card__value">£380,000</p>
         </div>
       </div>
       <div class="govuk-grid-column-one-third">
-        <div class="app-stat-card app-stat-card--red">
+        <div class="app-stat-card app-stat-card--blue">
           <p class="app-stat-card__label">Total pipeline (risk pot)</p>
           <p class="app-stat-card__value">£460,000</p>
         </div>
@@ -46,17 +46,17 @@
     <div class="govuk-inset-text govuk-!-margin-top-6" style="border-color:#b1b4b6;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <h2 class="govuk-heading-s govuk-!-margin-bottom-0">Aggregated portfolio health</h2>
-        <strong class="govuk-tag govuk-tag--green">Stable</strong>
+        <strong class="govuk-tag govuk-tag--green">Safe</strong>
       </div>
       <div class="app-budget-bar">
-        <span class="app-budget-bar__approved" style="width:9%;">Approved (9%)</span>
-        <span class="app-budget-bar__pipeline" style="width:11%;">Pipeline (11%)</span>
-        <span class="app-budget-bar__remaining">Remaining (80%)</span>
+        <span class="app-budget-bar__approved" style="width:9%;">9%</span>
+        <span class="app-budget-bar__pipeline" style="width:11%;">11%</span>
+        <span class="app-budget-bar__remaining">80%</span>
       </div>
-      <div class="govuk-!-margin-top-2" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-        <span class="govuk-body-s govuk-!-margin-bottom-0">Approved: <strong>£380,000</strong></span>
-        <span class="govuk-body-s govuk-!-margin-bottom-0">Pipeline: <strong>£460,000</strong></span>
-        <span class="govuk-body-s govuk-!-margin-bottom-0">Uncommitted remaining: <strong>£3,360,000</strong></span>
+      <div class="app-budget-key govuk-!-margin-top-2">
+        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span>Approved: <strong class="govuk-!-margin-left-1">£380,000</strong></span>
+        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--pipeline"></span>Pipeline: <strong class="govuk-!-margin-left-1">£460,000</strong></span>
+        <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--remaining"></span>Uncommitted remaining: <strong class="govuk-!-margin-left-1">£3,360,000</strong></span>
       </div>
     </div>
 
@@ -73,18 +73,16 @@
           <th scope="col" class="govuk-table__header govuk-table__header--numeric">Pipeline</th>
           <th scope="col" class="govuk-table__header govuk-table__header--numeric">Commitment ratio</th>
           <th scope="col" class="govuk-table__header">Alert status</th>
-          <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">Green Tech Innovation Fund</a></th>
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/GTIF-caselist">Green Tech Innovation Fund</a></th>
           <td class="govuk-table__cell govuk-table__cell--numeric">£2,500,000</td>
           <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£265,000</span></td>
           <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£375,000</span></td>
           <td class="govuk-table__cell govuk-table__cell--numeric">25.6%</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
-          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">Community Spaces Regeneration</a></th>
@@ -93,7 +91,6 @@
           <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£40,000</span></td>
           <td class="govuk-table__cell govuk-table__cell--numeric">19.0%</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
-          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
         </tr>
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">SME Digital Infrastructure Uplift</a></th>
@@ -102,7 +99,6 @@
           <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£45,000</span></td>
           <td class="govuk-table__cell govuk-table__cell--numeric">8.8%</td>
           <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
-          <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" href="/Grasslands/caselist">Details</a></td>
         </tr>
       </tbody>
     </table>

@@ -1,0 +1,144 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "budget-bar" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Budget allocation bar" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Budget allocation bar</h1>
+      <p class="govuk-body-l">A single horizontal bar that shows how a funding pot is divided — what's approved, what's in the pipeline, and what's still free — with a labelled key beneath it.</p>
+      <p class="govuk-body">Used on the grants dashboards to give an at-a-glance read of a budget's health. The bar is a flex row of coloured segments whose widths are the percentage of the pot each state holds; the last segment flexes to fill whatever is left. Colours reuse the case tag palette — green for approved, blue for pipeline, grey/white for what remains — so the bar reads consistently with the status tags elsewhere in the service.</p>
+
+      <h2 class="govuk-heading-l">Portfolio bar (three segments)</h2>
+      <p class="govuk-body">The base form used on the <a class="govuk-link" href="/grants-overview">grants overview</a>: <code class="govuk-body">app-budget-bar__approved</code> (green), <code class="govuk-body">app-budget-bar__pipeline</code> (blue) and <code class="govuk-body">app-budget-bar__remaining</code> (grey, flexes to fill). Each segment carries its own percentage; the key beneath sits inline, each item led by a colour swatch.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-bar-portfolio">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-bar-portfolio-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="app-budget-bar">
+              <span class="app-budget-bar__approved" style="width:9%;">9%</span>
+              <span class="app-budget-bar__pipeline" style="width:11%;">11%</span>
+              <span class="app-budget-bar__remaining">80%</span>
+            </div>
+            <div class="app-budget-key govuk-!-margin-top-2">
+              <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span>Approved: <strong class="govuk-!-margin-left-1">£380,000</strong></span>
+              <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--pipeline"></span>Pipeline: <strong class="govuk-!-margin-left-1">£460,000</strong></span>
+              <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--remaining"></span>Uncommitted remaining: <strong class="govuk-!-margin-left-1">£3,360,000</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-bar-portfolio" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-bar-portfolio-code">&lt;div class="app-budget-bar"&gt;
+  &lt;span class="app-budget-bar__approved" style="width:9%;"&gt;9%&lt;/span&gt;
+  &lt;span class="app-budget-bar__pipeline" style="width:11%;"&gt;11%&lt;/span&gt;
+  &lt;span class="app-budget-bar__remaining"&gt;80%&lt;/span&gt;   &lt;!-- flexes to fill --&gt;
+&lt;/div&gt;
+&lt;div class="app-budget-key"&gt;
+  &lt;span class="app-budget-key__item"&gt;&lt;span class="app-budget-key__swatch app-budget-key__swatch--approved"&gt;&lt;/span&gt;Approved: &lt;strong&gt;£380,000&lt;/strong&gt;&lt;/span&gt;
+  ...
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Scheme bar (split pipeline, outlined, aligned key)</h2>
+      <p class="govuk-body">The extended form used on a per-scheme caselist (e.g. <a class="govuk-link" href="/GTIF-caselist">Green Tech Innovation Fund</a>). The pipeline is split into <strong>Progressing</strong> (blue), <strong>On hold</strong> (yellow tag colour, black text) and <strong>Not started</strong> (grey tag colour, black text), with <strong>Remaining free</strong> shown as plain white. A black outline is drawn around the whole chart via <code class="govuk-body">app-budget-bar--outlined</code> (not around the white segment). The key uses the <code class="govuk-body">app-budget-key--aligned</code> variant: each item is absolutely positioned at its segment's start (inline <code class="govuk-body">left:%</code>), with the swatch aligned to that start and the figure stacked under the label.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-bar-scheme">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-bar-scheme-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="app-budget-bar app-budget-bar--outlined">
+              <span class="app-budget-bar__approved" style="width:10.6%;">11%</span>
+              <span class="app-budget-bar__progressing" style="width:27.5%;">28%</span>
+              <span class="app-budget-bar__onhold" style="width:11%;">11%</span>
+              <span class="app-budget-bar__notstarted" style="width:16.5%;">16%</span>
+              <span class="app-budget-bar__free">34%</span>
+            </div>
+            <div class="app-budget-key app-budget-key--aligned govuk-!-margin-top-2">
+              <span class="app-budget-key__item" style="left:0%;"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span><span class="app-budget-key__label">Approved</span><strong class="app-budget-key__figure">£265,000</strong></span>
+              <span class="app-budget-key__item" style="left:10.6%;"><span class="app-budget-key__swatch app-budget-key__swatch--progressing"></span><span class="app-budget-key__label">Progressing</span><strong class="app-budget-key__figure">£687,500</strong></span>
+              <span class="app-budget-key__item" style="left:38.1%;"><span class="app-budget-key__swatch app-budget-key__swatch--onhold"></span><span class="app-budget-key__label">On hold</span><strong class="app-budget-key__figure">£275,000</strong></span>
+              <span class="app-budget-key__item" style="left:49.1%;"><span class="app-budget-key__swatch app-budget-key__swatch--notstarted"></span><span class="app-budget-key__label">Not started</span><strong class="app-budget-key__figure">£412,500</strong></span>
+              <span class="app-budget-key__item" style="left:65.6%;"><span class="app-budget-key__swatch app-budget-key__swatch--free"></span><span class="app-budget-key__label">Remaining free</span><strong class="app-budget-key__figure">£860,000</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-bar-scheme" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-bar-scheme-code">&lt;div class="app-budget-bar app-budget-bar--outlined"&gt;
+  &lt;span class="app-budget-bar__approved"    style="width:10.6%;"&gt;11%&lt;/span&gt;
+  &lt;span class="app-budget-bar__progressing" style="width:27.5%;"&gt;28%&lt;/span&gt;
+  &lt;span class="app-budget-bar__onhold"      style="width:11%;"&gt;11%&lt;/span&gt;
+  &lt;span class="app-budget-bar__notstarted"  style="width:16.5%;"&gt;16%&lt;/span&gt;
+  &lt;span class="app-budget-bar__free"&gt;34%&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Aligned key: left:% must match each segment's cumulative start --&gt;
+&lt;div class="app-budget-key app-budget-key--aligned"&gt;
+  &lt;span class="app-budget-key__item" style="left:0%;"&gt;
+    &lt;span class="app-budget-key__swatch app-budget-key__swatch--approved"&gt;&lt;/span&gt;
+    &lt;span class="app-budget-key__label"&gt;Approved&lt;/span&gt;
+    &lt;strong class="app-budget-key__figure"&gt;£265,000&lt;/strong&gt;
+  &lt;/span&gt;
+  ... left:10.6% Progressing · left:38.1% On hold · left:49.1% Not started · left:65.6% Remaining free
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Customisation in this prototype</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The bar is a <code class="govuk-body">display:flex</code> row, fixed 36px tall, with <code class="govuk-body">overflow:hidden</code> and a 2px radius. Segment widths are set inline as percentages; the final segment (<code class="govuk-body">__remaining</code> / <code class="govuk-body">__free</code>) uses <code class="govuk-body">flex:1 1 auto</code> to absorb the balance.</li>
+        <li>Segment colours match the tag palette: approved <code class="govuk-body">#00703c</code>, pipeline/progressing <code class="govuk-body">#1d70b8</code>, on-hold <code class="govuk-body">#fff7bf</code> (yellow tag), not-started <code class="govuk-body">#eeefef</code> (grey tag), remaining <code class="govuk-body">#b1b4b6</code>, free white. Light segments carry black text for contrast.</li>
+        <li><code class="govuk-body">--outlined</code> draws the black border around the whole chart (<code class="govuk-body">box-sizing:border-box</code> so it doesn't grow the bar).</li>
+        <li>The key has two forms: the default inline flex row, and <code class="govuk-body">--aligned</code> — a positioned block the same width as the bar, where each item's <code class="govuk-body">left:%</code> must equal the cumulative start of its bar segment for the swatches to line up.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>To show how one budget or pot is divided across a small set of states (approved / pipeline / remaining, or a scheme's split).</li>
+        <li>At the top of a dashboard or scheme caselist, as a summary the caseworker reads before the detail.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For more than about five segments — narrow slices can't hold their percentage label and the aligned key items start to crowd.</li>
+        <li>For time-series or comparison across many pots — use a proper chart, not a single stacked bar.</li>
+        <li>The <code class="govuk-body">--aligned</code> key is tuned for desktop widths; on very narrow viewports the positioned items can overlap. Prefer the inline key if the bar must work at small sizes.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/grants-overview">Grants overview</a> — the portfolio bar (three segments, inline key) under "Aggregated portfolio health".</li>
+        <li><a class="govuk-link" href="/GTIF-caselist">Green Tech Innovation Fund caselist</a> — the scheme bar (split pipeline, outlined, aligned key) under "Realtime funds allocation".</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

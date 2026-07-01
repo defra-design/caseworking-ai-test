@@ -51,10 +51,13 @@
     font-weight: 400;
   }
   
-  .defra-internal-service-name__link:link, 
+  .defra-internal-service-name__link:link,
   .defra-internal-service-name__link:visited {
     color: $govuk-text-colour
   }
+
+  // Centre the service-name title (used on the widened per-scheme caselist).
+  .defra-internal-service-name--centred { text-align: center; }
   
   @media (min-width: 48.0625em) {
     .defra-internal-service-name__link {
@@ -1473,6 +1476,14 @@
 }
 
 // Segmented coverage bar — flex row of GOV.UK palette colours
+// Per-scheme caselist (e.g. GTIF) — wider than the default 960px page width to
+// accommodate the extra Value column (960 +100px, then +10% → 1166px). Two
+// classes beat the GOV.UK media-query rule, so no !important needed.
+.govuk-width-container.app-caselist-wide { max-width: 1166px; }
+// Keep the "Value (£K)" column header on one line (short numeric cells otherwise
+// starve the column and the header wraps).
+.app-th-nowrap { white-space: nowrap; }
+
 // Grant schemes budget overview — stat cards + portfolio health bar.
 // Colours reuse the existing GOV.UK tag palette (blue / orange / red / green / grey).
 .app-stat-card {
@@ -1482,8 +1493,9 @@
   height: 100%;
   box-sizing: border-box;
 }
-.app-stat-card--blue { background: #eef4fa; border-left-color: #1d70b8; }
-.app-stat-card--red  { background: #fbeae8; border-left-color: #d4351c; }
+.app-stat-card--blue  { background: #eef4fa; border-left-color: #1d70b8; }
+.app-stat-card--green { background: #cce2d8; border-left-color: #00703c; } // light green of the accepted tag; value stays black for contrast
+.app-stat-card--red   { background: #fbeae8; border-left-color: #d4351c; }
 .app-stat-card__label {
   margin: 0 0 5px;
   font-size: 16px;
@@ -1516,12 +1528,68 @@
   white-space: nowrap;
   box-sizing: border-box;
 }
-.app-budget-bar .app-budget-bar__approved { background: #1d70b8; }
-.app-budget-bar .app-budget-bar__pipeline { background: #f47738; }
+.app-budget-bar .app-budget-bar__approved { background: #00703c; }
+.app-budget-bar .app-budget-bar__pipeline { background: #1d70b8; }
 .app-budget-bar .app-budget-bar__remaining { flex: 1 1 auto; background: #b1b4b6; color: #0b0c0c; }
+// GTIF pipeline split — Progressing (pipeline blue), On hold (yellow tag) and
+// Not started (grey tag) both with black writing, then Remaining free as plain
+// white. The black outline is drawn around the whole chart (--outlined) rather
+// than just the white segment.
+.app-budget-bar .app-budget-bar__progressing { background: #1d70b8; }
+.app-budget-bar .app-budget-bar__onhold      { background: #fff7bf; color: #0b0c0c; }
+.app-budget-bar .app-budget-bar__notstarted  { background: #eeefef; color: #0b0c0c; }
+.app-budget-bar .app-budget-bar__free        { flex: 1 1 auto; background: #ffffff; color: #0b0c0c; }
+.app-budget-bar--outlined { border: 2px solid #0b0c0c; box-sizing: border-box; }
 
-.app-num-approved { color: #1d70b8; font-weight: 700; }
-.app-num-pipeline { color: #f47738; font-weight: 700; }
+// Key beneath the bar — a coloured swatch before each label, items left-aligned
+// with a 20px gap (the segments are too narrow to align each item to its start).
+.app-budget-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.app-budget-key__item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+}
+.app-budget-key__swatch {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border-radius: 2px;
+}
+.app-budget-key__swatch--approved  { background: #00703c; }
+.app-budget-key__swatch--pipeline  { background: #1d70b8; }
+.app-budget-key__swatch--remaining { background: #b1b4b6; }
+.app-budget-key__swatch--progressing { background: #1d70b8; }
+.app-budget-key__swatch--onhold      { background: #fff7bf; }
+.app-budget-key__swatch--notstarted  { background: #eeefef; }
+.app-budget-key__swatch--free        { background: #ffffff; box-shadow: inset 0 0 0 1px #0b0c0c; }
+
+// GTIF variant — each item is absolutely positioned at its bar segment's start
+// (inline `left:%`), with the swatch aligned to that start and the figure
+// stacked underneath the label.
+.app-budget-key--aligned {
+  position: relative;
+  display: block;
+  height: 64px;
+}
+.app-budget-key--aligned .app-budget-key__item {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.3;
+}
+.app-budget-key--aligned .app-budget-key__swatch { margin: 0 0 5px 0; }
+.app-budget-key__label  { font-size: 16px; }
+.app-budget-key__figure { font-size: 16px; font-weight: 700; }
+
+.app-num-approved { color: #00703c; font-weight: 700; } // green — matches the Approved figure box / bar
+.app-num-pipeline { color: #1d70b8; font-weight: 700; } // blue — matches the Pipeline figure box / bar
 
 .app-coverage-bar {
   display: flex;

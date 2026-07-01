@@ -259,3 +259,158 @@
   })()
 </script>
 {% endmacro %}
+
+{# --- Single "All cases" tab for a per-scheme caselist (e.g. GTIF). Reuses the
+   Grasslands case data + SBI search + Status filter + sortable table, but renders
+   only ONE tab. GET forms submit to the current page (action=""); shared links
+   (case detail, Assign) point at the Grasslands routes since the data is shared. #}
+{% macro schemeAllCases(view, f) %}
+{% set f = f or { status: [], search: "" } %}
+{% set GRASS_STATUS_OPTS = [
+  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
+  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
+  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
+  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
+] %}
+{% set GRASS_STATUS_NAMES = {
+  "application-received": "Application received", "in-review": "In review",
+  "on-hold": "On hold", "agreement-drafted": "Agreement drafted",
+  "agreement-offered": "Agreement offered", "agreement-accepted": "Agreement accepted",
+  rejected: "Rejected", withdrawn: "Withdrawn"
+} %}
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">All cases</li>
+  </ul>
+
+  <div class="govuk-tabs__panel" id="cases">
+
+    {# Permanent SBI search #}
+    <form method="get" action="" class="govuk-!-margin-bottom-4">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="searchGrass">Search by SBI</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <input class="govuk-input" id="searchGrass" name="searchGrass" type="search" value="{{ f.search }}">
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
+        </div>
+      </div>
+    </form>
+
+    {# Selected filters — removable tags (search + status) #}
+    {% if f.status.length or f.search %}
+    <div class="moj-filter__selected govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags">
+        {% if f.search %}
+        <li><a href="?searchGrass=&amp;filterStatusGrass=_unchecked{% for s in f.status %}&amp;filterStatusGrass={{ s }}{% endfor %}" class="moj-filter__tag govuk-link">SBI: {{ f.search }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endif %}
+        {% for v in f.status %}
+        <li><a href="?searchGrass={{ f.search | urlencode }}&amp;filterStatusGrass=_unchecked{% for s in f.status %}{% if s != v %}&amp;filterStatusGrass={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">{{ GRASS_STATUS_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# Filter list — Status + Apply #}
+    <details class="govuk-details govuk-!-margin-bottom-5">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">filter list</span></summary>
+      <div class="govuk-details__text">
+        <div class="moj-filter">
+          <div class="moj-filter__content">
+            <form method="get" action="">
+              <input type="hidden" name="searchGrass" value="{{ f.search }}">
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                <input type="hidden" name="filterStatusGrass" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in GRASS_STATUS_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusGrass" type="checkbox" value="{{ o.v }}"{% if o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <form method="get" action="/Grasslands/caselist-assign" id="grass-cases-form">
+      <button type="submit" id="grass-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Select</th>
+            {{ sortHeader("id", "ID", view) }}
+            {{ sortHeader("business", "Business", view) }}
+            {{ sortHeader("sbi", "SBI", view) }}
+            {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
+            {{ sortHeader("value", "Value (£K)", view, "govuk-table__header--numeric app-th-nowrap") }}
+            {{ sortHeader("status", "Status", view, "custom-width-130") }}
+            {{ sortHeader("assignee", "Assignee", view) }}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% if view.rows.length == 0 %}
+          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="8">No cases to show.</td></tr>
+          {% endif %}
+          {% for c in view.rows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="gr-cases-{{ c.id }}" name="selectCaseGrass" value="{{ c.id }}">
+                <label class="govuk-label govuk-checkboxes__label" for="gr-cases-{{ c.id }}"><span class="govuk-visually-hidden">Select {{ c.id }}</span></label>
+              </div>
+            </td>
+            <td class="govuk-table__cell"><a class="govuk-link" href="/Grasslands/caseGrass/tasklist-stage">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{{ c.business }}</td>
+            <td class="govuk-table__cell">{{ c.sbi }}</td>
+            <td class="govuk-table__cell">{{ c.submitted }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueK }}</td>
+            <td class="govuk-table__cell">
+              {% if c.status == "live" %}
+                {% if data.caseStageGrass %}<strong class="{{ data.caseStatusTagGrass }}">{{ data.caseStatusGrass }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}
+              {% else %}
+                <strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>
+              {% endif %}
+            </td>
+            <td class="govuk-table__cell">{{ c.assignee }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    {% if view.totalPages > 1 %}
+    <nav class="moj-pagination" aria-label="results">
+      <p class="moj-pagination__results">Showing <b>{{ view.startIdx + 1 }}</b> to <b>{{ view.endIdx }}</b> of <b>{{ view.total }}</b> results</p>
+      <ul class="moj-pagination__list">
+        {% if view.page > 1 %}
+        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+        {% for n in range(1, view.totalPages + 1) %}
+        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">{{ n }}</a></li>
+        {% endfor %}
+        {% if view.page < view.totalPages %}
+        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+<script>
+  (function () {
+    var form = document.getElementById('grass-cases-form')
+    if (!form) return
+    var btn = document.getElementById('grass-assign-btn')
+    var boxes = form.querySelectorAll('input[name="selectCaseGrass"]')
+    function sync () { var any = false; boxes.forEach(function (b) { if (b.checked) any = true }); btn.disabled = !any; btn.setAttribute('aria-disabled', String(!any)) }
+    boxes.forEach(function (b) { b.addEventListener('change', sync) })
+    sync()
+  })()
+</script>
+{% endmacro %}

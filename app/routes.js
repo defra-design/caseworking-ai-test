@@ -2959,7 +2959,7 @@ function grassDateVal (s) {
   if (isNaN(d) || m === -1 || isNaN(y)) return 0
   return new Date(y, m, d).getTime()
 }
-const GRASS_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'status', 'assignee']
+const GRASS_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'value', 'status', 'assignee']
 function grassSortState (req) {
   let sort = req.query.sort
   if (GRASS_SORT_KEYS.indexOf(sort) === -1) sort = 'submitted' // default: by age
@@ -2972,6 +2972,9 @@ function grassSortRows (rows, state, req) {
   return rows.slice().sort(function (a, b) {
     if (key === 'submitted') {
       return (grassDateVal(a.submitted) - grassDateVal(b.submitted)) * factor
+    }
+    if (key === 'value') {
+      return ((a.valueK || 0) - (b.valueK || 0)) * factor
     }
     let av = key === 'status' ? grassEffStatus(a, req) : a[key]
     let bv = key === 'status' ? grassEffStatus(b, req) : b[key]
@@ -3173,6 +3176,16 @@ router.get('/Grasslands/caselist-completed', function (req, res) {
   const base = grassApplyAssign(loadGrassCases(), req)
   const rows = grassFilter(base, req)
   res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
+})
+
+// GTIF caselist — a per-scheme (Green Tech Innovation Fund) view over the SAME
+// Grasslands case data, but a single "All cases" tab with the SBI search + Status
+// filter + sortable table, plus a scheme-specific funds-allocation bar.
+router.get('/GTIF-caselist', function (req, res) {
+  if (grassClearedFilters(req, res)) return
+  const base = grassApplyAssign(loadGrassCases(), req)
+  const rows = grassFilter(base, req)
+  res.render('GTIF-caselist', { grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
 })
 
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker
