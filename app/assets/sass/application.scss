@@ -1480,6 +1480,13 @@
 // accommodate the extra Value column (960 +100px, then +10% → 1166px). Two
 // classes beat the GOV.UK media-query rule, so no !important needed.
 .govuk-width-container.app-caselist-wide { max-width: 1166px; }
+// grants-dashboard-mvp GTIF caselist — one column wider than app-caselist-wide
+// (extra "Stage" column), so give it a little more room.
+.govuk-width-container.app-caselist-wide-stage { max-width: 1280px; }
+// GTIF "Scheme Metadata Summary" — shrink the label columns so each value sits
+// ~20px after its label (GOV.UK cells already carry 20px right padding), instead
+// of the value floating at the far edge of a stretched label column.
+.app-meta-summary th { width: 1%; white-space: nowrap; }
 // Keep the "Value (£K)" column header on one line (short numeric cells otherwise
 // starve the column and the header wraps).
 .app-th-nowrap { white-space: nowrap; }

@@ -34,10 +34,16 @@
    - team: "<team> cases" + a "Change team" autocomplete.
    - all: "All cases" (every case, incl. closed/unassigned) + a permanent SBI
      search and a "filter list" details (Status). `f` = the filter state. --- #}
-{% macro tabsAndTable(active, ctx, view, myAssignee, usersWithCases, f) %}
+{% macro tabsAndTable(active, ctx, view, myAssignee, usersWithCases, f, sf) %}
 {% set myAssignee = myAssignee or "M Walker" %}
 {% set teamName = "All teams" if ctx == "all" else grasslandsTeamNames[ctx] %}
 {% set f = f or { status: [], search: "" } %}
+{% set sf = sf or { stage: [] } %}
+{% set GRASS_STAGE_OPTS = [
+  { v: "application", n: "Application" }, { v: "agreement", n: "Agreement" },
+  { v: "payments", n: "Payments" }
+] %}
+{% set GRASS_STAGE_NAMES = { application: "Application", agreement: "Agreement", payments: "Payments" } %}
 {% set GRASS_STATUS_OPTS = [
   { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
   { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
@@ -79,8 +85,8 @@
       </div>
     </form>
 
-    {# Selected filters — moj-filter__tag removable tags (search + status) #}
-    {% if f.status.length or f.search %}
+    {# Selected filters — moj-filter__tag removable tags (search + status + stage) #}
+    {% if f.status.length or f.search or sf.stage.length %}
     <div class="moj-filter__selected govuk-!-margin-bottom-3">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
       <ul class="moj-filter-tags">
@@ -89,6 +95,9 @@
         {% endif %}
         {% for v in f.status %}
         <li><a href="?searchGrass={{ f.search | urlencode }}&amp;filterStatusGrass=_unchecked{% for s in f.status %}{% if s != v %}&amp;filterStatusGrass={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">{{ GRASS_STATUS_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+        {% for v in sf.stage %}
+        <li><a href="?searchGrass={{ f.search | urlencode }}&amp;filterStageGrass=_unchecked{% for s in sf.stage %}{% if s != v %}&amp;filterStageGrass={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">Stage: {{ GRASS_STAGE_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
         {% endfor %}
       </ul>
     </div>
@@ -102,6 +111,15 @@
           <div class="moj-filter__content">
             <form method="get" action="caselist-completed">
               <input type="hidden" name="searchGrass" value="{{ f.search }}">
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Stage</legend>
+                <input type="hidden" name="filterStageGrass" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in GRASS_STAGE_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStage-{{ loop.index }}" name="filterStageGrass" type="checkbox" value="{{ o.v }}"{% if o.v in sf.stage %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStage-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
               <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
                 <input type="hidden" name="filterStatusGrass" value="_unchecked">
@@ -189,13 +207,15 @@
             {{ sortHeader("business", "Business", view) }}
             {{ sortHeader("sbi", "SBI", view) }}
             {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
+            {{ sortHeader("value", "Value (£K)", view, "app-th-nowrap") }}
+            {{ sortHeader("stage", "Stage", view) }}
             {{ sortHeader("status", "Status", view, "custom-width-130") }}
             {{ sortHeader("assignee", "Assignee", view) }}
           </tr>
         </thead>
         <tbody class="govuk-table__body">
           {% if view.rows.length == 0 %}
-          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
+          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="9">No cases to show.</td></tr>
           {% endif %}
           {% for c in view.rows %}
           <tr class="govuk-table__row">
@@ -209,6 +229,8 @@
             <td class="govuk-table__cell">{{ c.business }}</td>
             <td class="govuk-table__cell">{{ c.sbi }}</td>
             <td class="govuk-table__cell">{{ c.submitted }}</td>
+            <td class="govuk-table__cell">{{ c.valueK }}</td>
+            <td class="govuk-table__cell">{{ c.stage or "—" }}</td>
             <td class="govuk-table__cell">
               {% if c.status == "live" %}
                 {% if data.caseStageGrass %}<strong class="{{ data.caseStatusTagGrass }}">{{ data.caseStatusGrass }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}
@@ -348,7 +370,7 @@
             {{ sortHeader("business", "Business", view) }}
             {{ sortHeader("sbi", "SBI", view) }}
             {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
-            {{ sortHeader("value", "Value (£K)", view, "govuk-table__header--numeric app-th-nowrap") }}
+            {{ sortHeader("value", "Value (£K)", view, "app-th-nowrap") }}
             {{ sortHeader("status", "Status", view, "custom-width-130") }}
             {{ sortHeader("assignee", "Assignee", view) }}
           </tr>
@@ -369,7 +391,7 @@
             <td class="govuk-table__cell">{{ c.business }}</td>
             <td class="govuk-table__cell">{{ c.sbi }}</td>
             <td class="govuk-table__cell">{{ c.submitted }}</td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueK }}</td>
+            <td class="govuk-table__cell">{{ c.valueK }}</td>
             <td class="govuk-table__cell">
               {% if c.status == "live" %}
                 {% if data.caseStageGrass %}<strong class="{{ data.caseStatusTagGrass }}">{{ data.caseStatusGrass }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}

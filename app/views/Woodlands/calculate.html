@@ -1,0 +1,58 @@
+{% extends "layouts/main.html" %}
+
+{% set headerTitleCentred = true %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Woodlands/includes/_wd-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if error %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 class="govuk-error-summary__title">There is a problem</h2>
+            <div class="govuk-error-summary__body">
+              <ul class="govuk-list govuk-error-summary__list">
+                <li><a href="#fcArea">{{ error }}</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Calculate entitlement</h1>
+
+        {# The two pieces of data the caseworker needs before entering a figure. #}
+        <dl class="govuk-summary-list govuk-!-margin-bottom-8">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Applied for area</dt>
+            <dd class="govuk-summary-list__value">{{ appliedArea }} hectares</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Current value per hectare</dt>
+            <dd class="govuk-summary-list__value">{{ rateDisplay }} <span class="govuk-hint govuk-!-display-inline">(Land Grants system lookup — subject to change)</span></dd>
+          </div>
+        </dl>
+
+        <form method="post" action="/Woodlands/calculate" novalidate>
+          <input type="hidden" name="id" value="{{ c.id }}">
+          <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+            <label class="govuk-label govuk-label--s" for="fcArea">Enter FC available area (hectares)</label>
+            <div id="fcArea-hint" class="govuk-hint">Cannot be more than the applied for area ({{ appliedArea }} hectares).</div>
+            {% if error %}<p id="fcArea-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+            <input class="govuk-input govuk-input--width-10{% if error %} govuk-input--error{% endif %}" id="fcArea" name="fcArea" type="text" inputmode="decimal" value="{{ values.fcArea }}" aria-describedby="fcArea-hint{% if error %} fcArea-error{% endif %}">
+          </div>
+          <button type="submit" class="govuk-button" data-module="govuk-button">Calculate</button>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

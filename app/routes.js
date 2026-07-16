@@ -2959,7 +2959,7 @@ function grassDateVal (s) {
   if (isNaN(d) || m === -1 || isNaN(y)) return 0
   return new Date(y, m, d).getTime()
 }
-const GRASS_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'value', 'status', 'assignee']
+const GRASS_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'value', 'status', 'stage', 'assignee']
 function grassSortState (req) {
   let sort = req.query.sort
   if (GRASS_SORT_KEYS.indexOf(sort) === -1) sort = 'submitted' // default: by age
@@ -2975,6 +2975,11 @@ function grassSortRows (rows, state, req) {
     }
     if (key === 'value') {
       return ((a.valueK || 0) - (b.valueK || 0)) * factor
+    }
+    if (key === 'stage') {
+      // Pipeline order (Application < Agreement < Payments), not alphabetical.
+      // Only MVP rows carry `stage`; elsewhere every row ranks equal (no-op).
+      return (grassStageRank(a) - grassStageRank(b)) * factor
     }
     let av = key === 'status' ? grassEffStatus(a, req) : a[key]
     let bv = key === 'status' ? grassEffStatus(b, req) : b[key]
@@ -3121,9 +3126,52 @@ function grassClearedFilters (req, res) {
   if (!req.query.clearGrassFilters) return false
   delete req.session.data.filterAssigneeGrass
   delete req.session.data.filterStatusGrass
+  delete req.session.data.filterStageGrass
   delete req.session.data.searchGrass
   res.redirect(req.path)
   return true
+}
+
+// ----- grants-dashboard-mvp only: Stage facet (derived from status) -----
+// "Stage" is a coarse grouping over the case status, shown/sorted/filtered on the
+// MVP GTIF caselist only. Kept out of the shared grassFilter/grassFilterState so
+// it can never leak into the original grants-dashboard / Grasslands caselists.
+const GRASS_STAGE_OPTS = [
+  { v: 'application', n: 'Application' },
+  { v: 'agreement', n: 'Agreement' },
+  { v: 'payments', n: 'Payments' }
+]
+const GRASS_STAGE_NAMES = { application: 'Application', agreement: 'Agreement', payments: 'Payments' }
+const GRASS_STAGE_RANK = { Application: 1, Agreement: 2, Payments: 3 }
+// Map a case's (effective) status to its stage name. Rejected / Withdrawn are
+// terminal outcomes with no pipeline stage -> '' (rendered as "—").
+function grassStageName (c, req) {
+  const eff = grassEffStatus(c, req)
+  if (eff === 'Agreement accepted') return 'Payments'
+  if (eff === 'Agreement drafted' || eff === 'Agreement offered') return 'Agreement'
+  if (eff === 'Application received' || eff === 'In review' || eff === 'On hold') return 'Application'
+  return ''
+}
+// Attach the derived `stage` to every row so display, sort and filter all agree.
+// Applied to the base set (before filtering) by every caselist route that shows
+// the Stage column.
+function grassWithStage (rows, req) {
+  return rows.map(function (c) { return Object.assign({}, c, { stage: grassStageName(c, req) }) })
+}
+// Sort rank from the stage already attached to the row (pipeline order; blank last).
+function grassStageRank (c) {
+  return GRASS_STAGE_RANK[c.stage] || 4
+}
+// Apply the Stage filter (session filterStageGrass) on top of the shared filters.
+function grassStageFilter (rows, req) {
+  const sel = grassArr((req.session.data || {}).filterStageGrass)
+  if (!sel.length) return rows
+  const names = sel.map(function (v) { return GRASS_STAGE_NAMES[v] }).filter(Boolean)
+  return rows.filter(function (c) { return names.indexOf(c.stage) !== -1 })
+}
+// Selected Stage values, for the filter UI + removable tags.
+function grassStageState (req) {
+  return { stage: grassArr((req.session.data || {}).filterStageGrass) }
 }
 
 // The "My cases" tab can be pointed at any caseworker who has cases. The chosen
@@ -3155,7 +3203,8 @@ router.get('/Grasslands/caselist', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
   const myAssignee = grassMyAssignee(req)
-  const rows = grassActive(grassApplyAssign(loadGrassCases(), req).filter(function (c) { return c.assignee === myAssignee }))
+  const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
+  const rows = grassActive(base.filter(function (c) { return c.assignee === myAssignee }))
   res.render('Grasslands/caselist', { ctx: ctx, myAssignee: myAssignee, usersWithCases: grassUsersWithCases(req), view: grassBuildView(rows, req) })
 })
 
@@ -3164,7 +3213,8 @@ router.get('/Grasslands/caselist', function (req, res) {
 router.get('/Grasslands/caselist-team', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const rows = grassActive(grassCtxFilter(grassApplyAssign(loadGrassCases(), req), ctx))
+  const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
+  const rows = grassActive(grassCtxFilter(base, ctx))
   res.render('Grasslands/caselist-team', { ctx: ctx, myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
 })
 
@@ -3173,19 +3223,202 @@ router.get('/Grasslands/caselist-team', function (req, res) {
 router.get('/Grasslands/caselist-completed', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const ctx = grassCtx(req)
-  const base = grassApplyAssign(loadGrassCases(), req)
-  const rows = grassFilter(base, req)
-  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
+  const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
+  const rows = grassStageFilter(grassFilter(base, req), req)
+  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), stageFilters: grassStageState(req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
 })
 
 // GTIF caselist — a per-scheme (Green Tech Innovation Fund) view over the SAME
 // Grasslands case data, but a single "All cases" tab with the SBI search + Status
 // filter + sortable table, plus a scheme-specific funds-allocation bar.
-router.get('/GTIF-caselist', function (req, res) {
+router.get('/grants-dashboard/GTIF-caselist', function (req, res) {
   if (grassClearedFilters(req, res)) return
   const base = grassApplyAssign(loadGrassCases(), req)
   const rows = grassFilter(base, req)
-  res.render('GTIF-caselist', { grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
+  res.render('grants-dashboard/GTIF-caselist', { grassFilters: grassFilterState(base, req), view: grassBuildView(rows, req) })
+})
+
+// MVP working copy of the GTIF caselist (views/grants-dashboard-mvp/). Same data
+// and helpers as the route above; separate template so it can diverge freely.
+router.get('/grants-dashboard-mvp/GTIF-caselist', function (req, res) {
+  if (grassClearedFilters(req, res)) return
+  const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
+  const rows = grassStageFilter(grassFilter(base, req), req)
+  res.render('grants-dashboard-mvp/GTIF-caselist', {
+    grassFilters: grassFilterState(base, req),
+    stageFilters: grassStageState(req),
+    view: grassBuildView(rows, req)
+  })
+})
+
+// ============================================================
+// Woodlands grant — a standalone functional area (different grant type).
+// A simple caselist (no checkboxes / assign / filters — just an Application-ID
+// search + sortable columns) plus an entitlement-calculation flow:
+//   caselist -> Calculate entitlement -> Confirm entitlement -> caselist.
+// Data + the current £/hectare lookup live in data/woodlands-cases.js (reloaded
+// per request so edits show live and the rate can "change over time"). Confirmed
+// entitlements are held in the session (id -> FC available area) and applied on
+// load, mirroring the Grasslands reassignment pattern.
+// ============================================================
+const woodlandsCasesPath = path.join(__dirname, 'data', 'woodlands-cases.js')
+function wdLoad () {
+  delete require.cache[require.resolve(woodlandsCasesPath)]
+  return require(woodlandsCasesPath)
+}
+function wdRate () { return wdLoad().valuePerHa }
+function wdCases () { return wdLoad().cases }
+function wdFindCase (id) { return wdCases().find(function (c) { return c.id === id }) }
+
+// £ with thousands separators, no decimals.
+function wdGbp (n) {
+  const v = Math.round(Number(n) || 0)
+  return '£' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+// Confirmed FC available area for a case: session override first, then the data
+// file's baseline (advanced cases ship with one), else null (no entitlement yet).
+function wdEntArea (c, req) {
+  const ov = (req.session.data && req.session.data.woodlandsEntitlements) || {}
+  if (ov[c.id] !== undefined && ov[c.id] !== null && ov[c.id] !== '') return Number(ov[c.id])
+  return (c.fcAreaHa === 0 || c.fcAreaHa) ? c.fcAreaHa : null
+}
+
+// Application-ID search term. Query wins; else the session-persisted value (so it
+// survives sort / pagination links that don't carry the param).
+function wdSearchTerm (req) {
+  if (req.query.searchWood !== undefined) return req.query.searchWood
+  return (req.session.data && req.session.data.searchWood) || ''
+}
+
+const WD_SORT_KEYS = ['id', 'appDate', 'stage', 'status', 'value', 'entitlement']
+const WD_STAGE_RANK = { Application: 1, Agreement: 2, Payments: 3 }
+function wdSortState (req) {
+  let sort = req.query.sort
+  if (WD_SORT_KEYS.indexOf(sort) === -1) sort = 'id'
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'
+  return { sort: sort, dir: dir }
+}
+function wdSortRows (rows, st) {
+  const f = st.dir === 'desc' ? -1 : 1
+  const k = st.sort
+  return rows.slice().sort(function (a, b) {
+    if (k === 'appDate') return (grassDateVal(a.appDate) - grassDateVal(b.appDate)) * f
+    if (k === 'value') return (a.value - b.value) * f
+    if (k === 'entitlement') {
+      // Unset entitlements (null) sort to the bottom ascending / top descending.
+      const av = a.entitlement === null ? -1 : a.entitlement
+      const bv = b.entitlement === null ? -1 : b.entitlement
+      return (av - bv) * f
+    }
+    if (k === 'stage') return ((WD_STAGE_RANK[a.stage] || 4) - (WD_STAGE_RANK[b.stage] || 4)) * f
+    const av = String(a[k] || '').toLowerCase()
+    const bv = String(b[k] || '').toLowerCase()
+    if (av < bv) return -1 * f
+    if (av > bv) return 1 * f
+    return 0
+  })
+}
+
+// Build display rows: attach derived £ Value + Entitlement (and flags).
+function wdRows (req) {
+  const rate = wdRate()
+  return wdCases().map(function (c) {
+    const entArea = wdEntArea(c, req)
+    const value = c.appliedAreaHa * rate
+    const entitlement = entArea === null ? null : entArea * rate
+    return Object.assign({}, c, {
+      value: value,
+      valueDisplay: wdGbp(value),
+      entArea: entArea,
+      entitlement: entitlement,
+      entitlementDisplay: entitlement === null ? '' : wdGbp(entitlement),
+      hasEntitlement: entitlement !== null
+    })
+  })
+}
+function wdView (req) {
+  let rows = wdRows(req)
+  const term = (wdSearchTerm(req) || '').toString().trim().toLowerCase()
+  if (term) rows = rows.filter(function (r) { return r.id.toLowerCase().indexOf(term) !== -1 })
+  const st = wdSortState(req)
+  rows = wdSortRows(rows, st)
+  const view = grassPaginate(rows, parseInt(req.query.page, 10))
+  view.sort = st.sort
+  view.dir = st.dir
+  view.search = wdSearchTerm(req)
+  view.rate = wdRate()
+  view.rateDisplay = wdGbp(wdRate())
+  return view
+}
+
+// ----- Woodlands routes -----
+router.get('/Woodlands/caselist', function (req, res) {
+  res.render('Woodlands/caselist', { view: wdView(req) })
+})
+
+// Calculate entitlement — the input screen for a single application.
+router.get('/Woodlands/calculate', function (req, res) {
+  const c = wdFindCase(req.query.id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  res.render('Woodlands/calculate', {
+    c: c, appliedArea: c.appliedAreaHa,
+    rate: wdRate(), rateDisplay: wdGbp(wdRate()),
+    values: {}, error: null
+  })
+})
+
+// Validate the entered FC available area; on success render the Confirm screen.
+router.post('/Woodlands/calculate', function (req, res) {
+  const c = wdFindCase(req.body.id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  const rate = wdRate()
+  const raw = (req.body.fcArea === undefined ? '' : req.body.fcArea).toString().trim()
+  const num = Number(raw)
+  let error = null
+  if (raw === '') error = 'Enter the FC available area in hectares'
+  else if (isNaN(num) || num <= 0) error = 'FC available area must be a number greater than 0'
+  else if (num > c.appliedAreaHa) error = 'FC available area cannot be more than the applied for area (' + c.appliedAreaHa + ' hectares)'
+  if (error) {
+    return res.render('Woodlands/calculate', {
+      c: c, appliedArea: c.appliedAreaHa, rate: rate, rateDisplay: wdGbp(rate),
+      values: { fcArea: raw }, error: error
+    })
+  }
+  const entitlement = num * rate
+  res.render('Woodlands/confirm', {
+    c: c, fcArea: num, rate: rate, rateDisplay: wdGbp(rate),
+    entitlement: entitlement, entitlementDisplay: wdGbp(entitlement)
+  })
+})
+
+// Read-only entitlement view — reached from a caselist ID that already has an
+// entitlement. Same calculation content as Confirm, but no button.
+router.get('/Woodlands/entitlement', function (req, res) {
+  const c = wdFindCase(req.query.id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  const area = wdEntArea(c, req)
+  if (area === null) return res.redirect('/Woodlands/calculate?id=' + encodeURIComponent(c.id))
+  const rate = wdRate()
+  const entitlement = area * rate
+  res.render('Woodlands/confirm', {
+    c: c, fcArea: area, rate: rate, rateDisplay: wdGbp(rate),
+    entitlement: entitlement, entitlementDisplay: wdGbp(entitlement),
+    readonly: true
+  })
+})
+
+// Confirm — persist the entitlement (session) and return to the caselist.
+router.post('/Woodlands/confirm', function (req, res) {
+  const c = wdFindCase(req.body.id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  const num = Number(req.body.fcArea)
+  if (isNaN(num) || num <= 0 || num > c.appliedAreaHa) {
+    return res.redirect('/Woodlands/calculate?id=' + encodeURIComponent(c.id))
+  }
+  if (!req.session.data.woodlandsEntitlements) req.session.data.woodlandsEntitlements = {}
+  req.session.data.woodlandsEntitlements[c.id] = num
+  res.redirect('/Woodlands/caselist')
 })
 
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker

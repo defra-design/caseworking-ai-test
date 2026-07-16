@@ -1,0 +1,15 @@
+{# Case-style metadata header for the Woodlands application pages (calculate /
+   confirm / entitlement), modelled on the Grasslands caseGrass context strip.
+   Reads the `c` case object passed to the page. #}
+<div class="lg-div">
+  <div class="govuk-width-container">
+    <a href="/Woodlands/caselist" class="govuk-back-link govuk-!-margin-top-2">Back to caselist</a>
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ c.business }}</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodlands grant</p></div>
+      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Application ID:</strong> {{ c.id }}</p></div>
+      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">SBI:</strong> {{ c.sbi }}</p></div>
+      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Status:</strong> {{ c.status }}</p></div>
+    </div>
+  </div>
+</div>

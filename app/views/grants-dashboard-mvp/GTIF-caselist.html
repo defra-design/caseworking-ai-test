@@ -1,0 +1,75 @@
+{% extends "layouts/main.html" %}
+{% import "grants-dashboard-mvp/includes/_caselist-macros.html" as caselist with context %}
+
+{# Widen the LAYOUT's own width-container (the page is wrapped by it) — putting
+   the class on an inner container is clamped by this outer 960px one. #}
+{% set containerClasses = "app-caselist-wide-stage" %}
+{# Match the header to the widened content (left edges align) and centre its title. #}
+{% set headerContainerClasses = "app-caselist-wide-stage" %}
+{% set headerTitleCentred = true %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide-stage">
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+
+    <p class="govuk-body govuk-!-margin-bottom-6"><a class="govuk-link" href="/grants-dashboard-mvp/grants-overview">&larr; Back to grants overview</a></p>
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Grasslands SFI 26</h1>
+    <p class="govuk-body">An overview of Grasslands SFI 26 cases.</p>
+
+    {# --- GTIF funds-allocation bar (same component as the grants overview) --- #}
+    <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-6" style="border-color:#b1b4b6;">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Realtime funds allocation</h2>
+      <div class="app-budget-bar app-budget-bar--outlined">
+        <span class="app-budget-bar__approved" style="width:10.6%;">11%</span>
+        <span class="app-budget-bar__progressing" style="width:27.5%;">28%</span>
+        <span class="app-budget-bar__onhold" style="width:11%;">11%</span>
+        <span class="app-budget-bar__notstarted" style="width:16.5%;">16%</span>
+        <span class="app-budget-bar__free">34%</span>
+      </div>
+      <div class="app-budget-key app-budget-key--aligned app-budget-key--cases govuk-!-margin-top-2">
+        <span class="app-budget-key__item" style="left:0%;"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span><span class="app-budget-key__label">Approved</span><strong class="app-budget-key__figure">£265,000</strong><span class="app-budget-key__cases">21 cases</span></span>
+        <span class="app-budget-key__item" style="left:10.6%;"><span class="app-budget-key__swatch app-budget-key__swatch--progressing"></span><span class="app-budget-key__label">Progressing</span><strong class="app-budget-key__figure">£687,500</strong><span class="app-budget-key__cases">35 cases</span></span>
+        <span class="app-budget-key__item" style="left:38.1%;"><span class="app-budget-key__swatch app-budget-key__swatch--onhold"></span><span class="app-budget-key__label">On hold</span><strong class="app-budget-key__figure">£275,000</strong><span class="app-budget-key__cases">4 cases</span></span>
+        <span class="app-budget-key__item" style="left:49.1%;"><span class="app-budget-key__swatch app-budget-key__swatch--notstarted"></span><span class="app-budget-key__label">Not started</span><strong class="app-budget-key__figure">£412,500</strong><span class="app-budget-key__cases">19 cases</span></span>
+        <span class="app-budget-key__item" style="left:65.6%;"><span class="app-budget-key__swatch app-budget-key__swatch--free"></span><span class="app-budget-key__label">Remaining free</span><strong class="app-budget-key__figure">£860,000</strong></span>
+      </div>
+    </div>
+
+    {# --- Scheme metadata summary (four-column: label / value / label / value) --- #}
+    <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Scheme Metadata Summary</h2>
+    <table class="govuk-table govuk-!-margin-bottom-8 app-meta-summary">
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Maximum Budget Cap</th>
+          <td class="govuk-table__cell">£2,500,000</td>
+          <th scope="row" class="govuk-table__header">Max Award Limit per Case</th>
+          <td class="govuk-table__cell">£150,000</td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">Program Lead Officer</th>
+          <td class="govuk-table__cell">Evelyn Vance</td>
+          <th scope="row" class="govuk-table__header">Launch &amp; Sunset Window</th>
+          <td class="govuk-table__cell">01 Jan 2026 to 31 Dec 2026</td>
+        </tr>
+      </tbody>
+    </table>
+
+    {{ caselist.schemeAllCases(view, grassFilters, stageFilters) }}
+
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+{% endblock %}

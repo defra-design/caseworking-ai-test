@@ -1,0 +1,57 @@
+{% extends "layouts/main.html" %}
+
+{% set headerTitleCentred = true %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Woodlands/includes/_wd-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if readonly %}
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Entitlement for {{ c.id }}</h1>
+        {% else %}
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Confirm entitlement</h1>
+        {% endif %}
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Applied for area</dt>
+            <dd class="govuk-summary-list__value">{{ c.appliedAreaHa }} hectares</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">FC available area</dt>
+            <dd class="govuk-summary-list__value">{{ fcArea }} hectares</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Value per hectare</dt>
+            <dd class="govuk-summary-list__value">{{ rateDisplay }}</dd>
+          </div>
+        </dl>
+
+        {# The calculation, stated, then the resulting entitlement figure. #}
+        <div class="govuk-inset-text">
+          <p class="govuk-body govuk-!-margin-bottom-1">Entitlement calculation</p>
+          <p class="govuk-body-l govuk-!-margin-bottom-0">{{ fcArea }} hectares &times; {{ rateDisplay }} per hectare = <strong>{{ entitlementDisplay }}</strong></p>
+        </div>
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Final entitlement: {{ entitlementDisplay }}</h2>
+
+        {% if not readonly %}
+        <form method="post" action="/Woodlands/confirm">
+          <input type="hidden" name="id" value="{{ c.id }}">
+          <input type="hidden" name="fcArea" value="{{ fcArea }}">
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm entitlement</button>
+        </form>
+        {% endif %}
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

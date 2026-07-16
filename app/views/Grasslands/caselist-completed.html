@@ -1,6 +1,11 @@
 {% extends "layouts/main.html" %}
 {% import "Grasslands/includes/_caselist-macros.html" as caselist with context %}
 
+{# Widen the layout + header to fit the Value + Stage columns (matches the GTIF
+   caselist width). See .app-caselist-wide-stage in application.scss. #}
+{% set containerClasses = "app-caselist-wide-stage" %}
+{% set headerContainerClasses = "app-caselist-wide-stage" %}
+
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
 {% endblock %}
@@ -11,12 +16,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-width-container">
+<div class="govuk-width-container app-caselist-wide-stage">
   <main class="govuk-main-wrapper" id="main-content" role="main">
 
     <h1 class="govuk-heading-xl">Grasslands cases</h1>
 
-    {{ caselist.tabsAndTable("all", ctx, view, myAssignee, none, grassFilters) }}
+    {{ caselist.tabsAndTable("all", ctx, view, myAssignee, none, grassFilters, stageFilters) }}
 
   </main>
 </div>
