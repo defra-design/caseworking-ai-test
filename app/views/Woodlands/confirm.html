@@ -20,6 +20,12 @@
         {% endif %}
 
         <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+          {% if readonly and entDate %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Entitlement created</dt>
+            <dd class="govuk-summary-list__value">{{ entDate }}</dd>
+          </div>
+          {% endif %}
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">Applied for area</dt>
             <dd class="govuk-summary-list__value">{{ c.appliedAreaHa }} hectares</dd>

@@ -3283,6 +3283,18 @@ function wdEntArea (c, req) {
   if (ov[c.id] !== undefined && ov[c.id] !== null && ov[c.id] !== '') return Number(ov[c.id])
   return (c.fcAreaHa === 0 || c.fcAreaHa) ? c.fcAreaHa : null
 }
+// Date the entitlement was created: session (set on confirm) first, then the data
+// file's baseline, else null.
+function wdEntDate (c, req) {
+  const ov = (req.session.data && req.session.data.woodlandsEntitlementDates) || {}
+  return ov[c.id] || c.entDate || null
+}
+// Today as "D Mon YYYY" (used when an entitlement is created through the flow).
+function wdToday () {
+  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const d = new Date()
+  return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear()
+}
 
 // Application-ID search term. Query wins; else the session-persisted value (so it
 // survives sort / pagination links that don't carry the param).
@@ -3404,6 +3416,7 @@ router.get('/Woodlands/entitlement', function (req, res) {
   res.render('Woodlands/confirm', {
     c: c, fcArea: area, rate: rate, rateDisplay: wdGbp(rate),
     entitlement: entitlement, entitlementDisplay: wdGbp(entitlement),
+    entDate: wdEntDate(c, req),
     readonly: true
   })
 })
@@ -3417,7 +3430,9 @@ router.post('/Woodlands/confirm', function (req, res) {
     return res.redirect('/Woodlands/calculate?id=' + encodeURIComponent(c.id))
   }
   if (!req.session.data.woodlandsEntitlements) req.session.data.woodlandsEntitlements = {}
+  if (!req.session.data.woodlandsEntitlementDates) req.session.data.woodlandsEntitlementDates = {}
   req.session.data.woodlandsEntitlements[c.id] = num
+  req.session.data.woodlandsEntitlementDates[c.id] = wdToday()
   res.redirect('/Woodlands/caselist')
 })
 
