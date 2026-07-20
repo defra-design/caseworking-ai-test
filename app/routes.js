@@ -3197,6 +3197,24 @@ function grassUsersWithCases (req) {
   return Object.keys(owners).sort()
 }
 
+// Budgeting information on the Grasslands caselist is a server-side toggle:
+// ?budget=yes shows it. Build the opposite-state href, keeping every other query
+// param (tab ctx, sort, page, filters) so toggling never resets the caselist.
+// budgetQs is appended to the tab links in _caselist-macros.html so the open/
+// closed state survives a tab switch.
+function grassBudgetToggle (req) {
+  const showBudget = req.query.budget === 'yes'
+  const params = Object.assign({}, req.query)
+  if (showBudget) delete params.budget
+  else params.budget = 'yes'
+  const qs = new URLSearchParams(params).toString()
+  return {
+    showBudget: showBudget,
+    budgetToggleHref: req.path + (qs ? '?' + qs : ''),
+    budgetQs: showBudget ? '?budget=yes' : ''
+  }
+}
+
 // My cases — a chosen caseworker's active cases. Tab-scoped controls only
 // (Change assignee); the status/search filter lives on the All cases tab.
 router.get('/Grasslands/caselist', function (req, res) {
@@ -3205,7 +3223,15 @@ router.get('/Grasslands/caselist', function (req, res) {
   const myAssignee = grassMyAssignee(req)
   const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
   const rows = grassActive(base.filter(function (c) { return c.assignee === myAssignee }))
-  res.render('Grasslands/caselist', { ctx: ctx, myAssignee: myAssignee, usersWithCases: grassUsersWithCases(req), view: grassBuildView(rows, req) })
+  res.render('Grasslands/caselist', Object.assign({
+    ctx: ctx, myAssignee: myAssignee, usersWithCases: grassUsersWithCases(req), view: grassBuildView(rows, req)
+  }, grassBudgetToggle(req)))
+})
+
+// High-level dashboard above the scheme caselists. Per-scheme budgeting detail
+// now lives on the scheme caselist itself, so this page stays portfolio-level.
+router.get('/grants-dashboard/dashboard', function (req, res) {
+  res.render('grants-dashboard/dashboard')
 })
 
 // Open cases — the selected team's ACTIVE cases (completed excluded). Tab-scoped
@@ -3215,7 +3241,9 @@ router.get('/Grasslands/caselist-team', function (req, res) {
   const ctx = grassCtx(req)
   const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
   const rows = grassActive(grassCtxFilter(base, ctx))
-  res.render('Grasslands/caselist-team', { ctx: ctx, myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
+  res.render('Grasslands/caselist-team', Object.assign({
+    ctx: ctx, myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req)
+  }, grassBudgetToggle(req)))
 })
 
 // All cases — EVERY case (all teams, all statuses, including closed/unassigned).
@@ -3225,7 +3253,9 @@ router.get('/Grasslands/caselist-completed', function (req, res) {
   const ctx = grassCtx(req)
   const base = grassWithStage(grassApplyAssign(loadGrassCases(), req), req)
   const rows = grassStageFilter(grassFilter(base, req), req)
-  res.render('Grasslands/caselist-completed', { ctx: ctx, grassFilters: grassFilterState(base, req), stageFilters: grassStageState(req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req) })
+  res.render('Grasslands/caselist-completed', Object.assign({
+    ctx: ctx, grassFilters: grassFilterState(base, req), stageFilters: grassStageState(req), myAssignee: grassMyAssignee(req), view: grassBuildView(rows, req)
+  }, grassBudgetToggle(req)))
 })
 
 // GTIF caselist — a per-scheme (Green Tech Innovation Fund) view over the SAME

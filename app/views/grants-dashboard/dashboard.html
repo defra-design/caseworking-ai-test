@@ -1,0 +1,76 @@
+{% extends "layouts/main.html" %}
+
+{# High-level dashboard that sits above the scheme caselists. Deliberately lean:
+   the per-scheme budgeting detail (funds-allocation bar + scheme metadata) now
+   lives on the scheme caselist itself, behind the "Show budgeting information"
+   toggle — see Grasslands/caselist.html. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Dashboard</h1>
+    <p class="govuk-body-l">Monitor active allocations and pipeline claims across all public funding initiatives, then open a scheme to work its cases.</p>
+
+    {# --- Active grant schemes --- #}
+    <h2 class="govuk-heading-l govuk-!-margin-top-6">Active grant schemes</h2>
+    <p class="govuk-body">Select a scheme to open its caseworking list. Budgeting detail for a scheme is shown on the scheme's caselist.</p>
+
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Scheme name</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total pot</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Approved</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Pipeline</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Commitment ratio</th>
+          <th scope="col" class="govuk-table__header">Alert status</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">Grasslands SFI 26</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£2,500,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£265,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£375,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">25.6%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Woodlands/caselist">Woodlands creation grant</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£500,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£55,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£40,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">19.0%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a class="govuk-link" href="/Grasslands/caselist">SME Digital Infrastructure Uplift</a></th>
+          <td class="govuk-table__cell govuk-table__cell--numeric">£1,200,000</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-approved">£60,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric"><span class="app-num-pipeline">£45,000</span></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">8.8%</td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Safe</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    {# --- Help --- #}
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Get help with this service</h2>
+    <p class="govuk-body">If you have questions about grant caps, pipeline values, or need support configuring thresholds:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Contact the Grants Advisory Team on <strong>0300 123 4567</strong> (Mon to Fri, 9am to 5pm)</li>
+      <li>Email our delivery desk at <a class="govuk-link" href="#">grants.service@gov.uk</a></li>
+      <li>Read the <a class="govuk-link" href="#">Budget allocation &amp; safeguard policy guide (opens in new tab)</a></li>
+    </ul>
+
+  </main>
+</div>
+{% endblock %}

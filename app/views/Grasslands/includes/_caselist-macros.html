@@ -59,13 +59,13 @@
 <div class="govuk-tabs" data-module="govuk-tabs">
   <ul class="govuk-tabs__list">
     <li class="govuk-tabs__list-item{% if active == 'my' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'my' %}{{ myAssignee }}'s cases{% else %}<a href="caselist">{{ myAssignee }}'s cases</a>{% endif %}
+      {% if active == 'my' %}{{ myAssignee }}'s cases{% else %}<a href="caselist{{ budgetQs }}">{{ myAssignee }}'s cases</a>{% endif %}
     </li>
     <li class="govuk-tabs__list-item{% if active == 'team' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'team' %}{{ teamName }} cases{% else %}<a href="caselist-team">{{ teamName }} cases</a>{% endif %}
+      {% if active == 'team' %}{{ teamName }} cases{% else %}<a href="caselist-team{{ budgetQs }}">{{ teamName }} cases</a>{% endif %}
     </li>
     <li class="govuk-tabs__list-item{% if active == 'all' %} govuk-tabs__list-item--selected{% endif %}">
-      {% if active == 'all' %}All cases{% else %}<a href="caselist-completed">All cases</a>{% endif %}
+      {% if active == 'all' %}All cases{% else %}<a href="caselist-completed{{ budgetQs }}">All cases</a>{% endif %}
     </li>
   </ul>
 

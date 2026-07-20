@@ -1,0 +1,148 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "server-side-disclosure" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Server-side disclosure" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Server-side disclosure</h1>
+      <p class="govuk-body-l">A "Show / Hide &lt;thing&gt;" link that reveals a secondary block of content by reloading the page with a query parameter, rather than by toggling it in the browser.</p>
+      <p class="govuk-body">Used where a caselist carries useful-but-secondary context — budgeting figures, scheme metadata — that would otherwise push the cases themselves below the fold. The content is hidden by default and the caseworker opts in. Because the state lives in the URL rather than in the DOM, it survives a reload, can be linked to or bookmarked, and can be carried across related pages (see <a class="govuk-link" href="#tabs">Keeping state across tabs</a>).</p>
+      <p class="govuk-body">This is deliberately <em>not</em> the GDS <a class="govuk-link" href="/pattern-library/gds/details">details component</a>. Details is a client-side disclosure for content already present in the page; this pattern is for content the server decides whether to render at all, and whose open/closed state needs to persist across navigation.</p>
+
+      <h2 class="govuk-heading-l">The toggle link</h2>
+      <p class="govuk-body">A plain <code class="govuk-body">govuk-link</code> whose text and target both flip with the state. The route computes the opposite-state href; the template only picks the verb. Keep the noun identical in both states ("Show budgeting information" / "Hide budgeting information") so the link doesn't appear to change meaning.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-ssd-link">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-ssd-link-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Grasslands cases</h1>
+            <p class="govuk-body govuk-!-margin-bottom-2">
+              <a class="govuk-link" href="#">Show budgeting information</a>
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-0 govuk-hint">— closed state (default). Selecting the link reloads with <code class="govuk-body">?budget=yes</code> and it becomes:</p>
+            <p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+              <a class="govuk-link" href="#">Hide budgeting information</a>
+            </p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-ssd-link" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-ssd-link-code">&lt;h1 class="govuk-heading-xl govuk-!-margin-bottom-2"&gt;Grasslands cases&lt;/h1&gt;
+
+&lt;p class="govuk-body govuk-!-margin-bottom-6"&gt;
+  &lt;a class="govuk-link" href="{{ "{{ budgetToggleHref }}" }}"&gt;{{ "{% if showBudget %}" }}Hide{{ "{% else %}" }}Show{{ "{% endif %}" }} budgeting information&lt;/a&gt;
+&lt;/p&gt;
+
+{{ "{% if showBudget %}" }}
+  &lt;!-- the disclosed block --&gt;
+{{ "{% endif %}" }}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">The route helper</h2>
+      <p class="govuk-body">The whole pattern is one small helper. It reads the flag, builds the href for the <em>opposite</em> state, and — critically — copies the rest of the query string through, so toggling never resets the caselist's sort, page, search or filters.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">routes.js</span>
+            <button class="app-show-code-button" data-toggle="ex-ssd-route">Show JS</button>
+            <button class="app-copy-button" data-copy-target="ex-ssd-route-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body govuk-!-margin-bottom-0">Returns <code class="govuk-body">showBudget</code>, <code class="govuk-body">budgetToggleHref</code> and <code class="govuk-body">budgetQs</code>, merged into each caselist route's render context.</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-ssd-route" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-ssd-route-code">function grassBudgetToggle (req) {
+  const showBudget = req.query.budget === 'yes'
+  const params = Object.assign({}, req.query)
+  if (showBudget) delete params.budget
+  else params.budget = 'yes'
+  const qs = new URLSearchParams(params).toString()
+  return {
+    showBudget: showBudget,
+    budgetToggleHref: req.path + (qs ? '?' + qs : ''),
+    budgetQs: showBudget ? '?budget=yes' : ''
+  }
+}
+
+// merged into the render context of every tab in the set
+res.render('Grasslands/caselist', Object.assign({
+  ctx: ctx, view: grassBuildView(rows, req)
+}, grassBudgetToggle(req)))</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l" id="tabs">Keeping state across tabs</h2>
+      <p class="govuk-body">Where the disclosure sits above a <a class="govuk-link" href="/pattern-library/gds/tabs">tab set</a>, the open state must be carried on the tab links too — otherwise opening the panel and switching tab silently closes it again, which reads as a bug. The helper exposes <code class="govuk-body">budgetQs</code> (either an empty string or <code class="govuk-body">?budget=yes</code>) for exactly this, appended to each tab's href.</p>
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-ssd-tabs">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-ssd-tabs-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body govuk-!-margin-bottom-0">With the panel open, every tab link becomes <code class="govuk-body">caselist-team?budget=yes</code> rather than <code class="govuk-body">caselist-team</code>.</p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-ssd-tabs" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-ssd-tabs-code">&lt;li class="govuk-tabs__list-item"&gt;
+  &lt;a href="caselist-team{{ "{{ budgetQs }}" }}"&gt;{{ "{{ teamName }}" }} cases&lt;/a&gt;
+&lt;/li&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Keeping the tabs in sync</h2>
+      <p class="govuk-body">When a disclosure sits above a tab set, every tab page must render it identically — a toggle that appears on one tab but not another is worse than no toggle at all. Put the back link, heading, toggle and disclosed block in a single shared include and pull it into each tab template, rather than copying the markup three times. In the Grasslands caselist this is <code class="govuk-body">Grasslands/includes/_caselist-header.html</code>.</p>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Secondary context on a working screen — summary figures, scheme metadata — that most users don't need on every visit but some need often.</li>
+        <li>When the open/closed state should survive a reload, a sort, a filter, or a move between related tabs.</li>
+        <li>When the block is expensive or noisy enough that you'd rather the server didn't render it unless asked.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For content already in the page that just needs showing and hiding — use the GDS <a class="govuk-link" href="/pattern-library/gds/details">details component</a>, which needs no round trip.</li>
+        <li>For anything the user must read to complete the task. A disclosure hidden by default will be missed; if it's essential, show it.</li>
+        <li>For many independent toggles on one page — each adds a query parameter and a full reload. Past two or three, reconsider the page's structure.</li>
+        <li>Inside a form with unsaved input — the reload discards it unless the form state is threaded through the query too.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/Grasslands/caselist">Grasslands caselist — My cases</a>, <a class="govuk-link" href="/Grasslands/caselist-team">Team cases</a> and <a class="govuk-link" href="/Grasslands/caselist-completed">All cases</a> — "Show / Hide budgeting information", revealing the <a class="govuk-link" href="/pattern-library/custom/budget-bar">budget allocation bar</a> and the scheme metadata summary.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

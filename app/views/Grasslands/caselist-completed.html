@@ -17,9 +17,9 @@
 
 {% block content %}
 <div class="govuk-width-container app-caselist-wide-stage">
-  <main class="govuk-main-wrapper" id="main-content" role="main">
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
 
-    <h1 class="govuk-heading-xl">Grasslands cases</h1>
+    {% include "Grasslands/includes/_caselist-header.html" %}
 
     {{ caselist.tabsAndTable("all", ctx, view, myAssignee, none, grassFilters, stageFilters) }}
 
