@@ -23,8 +23,9 @@
 
       <h1 class="govuk-heading-xl">Server-side disclosure</h1>
       <p class="govuk-body-l">A "Show / Hide &lt;thing&gt;" link that reveals a secondary block of content by reloading the page with a query parameter, rather than by toggling it in the browser.</p>
-      <p class="govuk-body">Used where a caselist carries useful-but-secondary context — budgeting figures, scheme metadata — that would otherwise push the cases themselves below the fold. The content is hidden by default and the caseworker opts in. Because the state lives in the URL rather than in the DOM, it survives a reload, can be linked to or bookmarked, and can be carried across related pages (see <a class="govuk-link" href="#tabs">Keeping state across tabs</a>).</p>
+      <p class="govuk-body">Used where a caselist carries useful-but-secondary context — budgeting figures, scheme metadata — that would otherwise push the cases themselves below the fold. The content is hidden by default and the caseworker opts in. A short-lived query parameter flips the state; the server stores it in the session, so it persists on its own across reloads, sorts, filters, pages and related tabs (see <a class="govuk-link" href="#tabs">Keeping state across tabs</a>) until the caseworker hides it again.</p>
       <p class="govuk-body">This is deliberately <em>not</em> the GDS <a class="govuk-link" href="/pattern-library/gds/details">details component</a>. Details is a client-side disclosure for content already present in the page; this pattern is for content the server decides whether to render at all, and whose open/closed state needs to persist across navigation.</p>
+      <p class="govuk-body">Hold the state in the <strong>session</strong>, not in the query string, whenever the disclosure sits above other session-backed controls such as filters. An earlier version rebuilt the toggle link by re-serialising the whole query string (<code class="govuk-body">?budget=yes</code>); above a filter that coupled the two — applying a filter dropped the parameter and closed the panel, and re-serialising the multi-value filter params through <code class="govuk-body">URLSearchParams</code> comma-joined them into one corrupt token that reset the list. A session flag keeps the disclosure and the filters completely independent.</p>
 
       <h2 class="govuk-heading-l">The toggle link</h2>
       <p class="govuk-body">A plain <code class="govuk-body">govuk-link</code> whose text and target both flip with the state. The route computes the opposite-state href; the template only picks the verb. Keep the noun identical in both states ("Show budgeting information" / "Hide budgeting information") so the link doesn't appear to change meaning.</p>
@@ -40,7 +41,7 @@
             <p class="govuk-body govuk-!-margin-bottom-2">
               <a class="govuk-link" href="#">Show budgeting information</a>
             </p>
-            <p class="govuk-body govuk-!-margin-bottom-0 govuk-hint">— closed state (default). Selecting the link reloads with <code class="govuk-body">?budget=yes</code> and it becomes:</p>
+            <p class="govuk-body govuk-!-margin-bottom-0 govuk-hint">— closed state (default). Selecting the link reloads with <code class="govuk-body">?budget=show</code> and it becomes:</p>
             <p class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-0">
               <a class="govuk-link" href="#">Hide budgeting information</a>
             </p>
@@ -62,7 +63,7 @@
       </div>
 
       <h2 class="govuk-heading-l">The route helper</h2>
-      <p class="govuk-body">The whole pattern is one small helper. It reads the flag, builds the href for the <em>opposite</em> state, and — critically — copies the rest of the query string through, so toggling never resets the caselist's sort, page, search or filters.</p>
+      <p class="govuk-body">The whole pattern is one small helper. It reads <code class="govuk-body">?budget=show</code> / <code class="govuk-body">=hide</code>, stores the state on the session, and builds the href for the <em>opposite</em> state. Only the query-based caselist state (sort, dir, page) is carried on the link; the session-backed search and filters persist on their own and are deliberately not re-serialised, so toggling can never corrupt them.</p>
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
@@ -71,21 +72,29 @@
             <button class="app-copy-button" data-copy-target="ex-ssd-route-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <p class="govuk-body govuk-!-margin-bottom-0">Returns <code class="govuk-body">showBudget</code>, <code class="govuk-body">budgetToggleHref</code> and <code class="govuk-body">budgetQs</code>, merged into each caselist route's render context.</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">Returns <code class="govuk-body">showBudget</code> and <code class="govuk-body">budgetToggleHref</code>, merged into each caselist route's render context.</p>
           </div>
         </div>
         <div class="app-example__code-container" id="ex-ssd-route" hidden>
           <div class="app-example__code">
             <pre><code id="ex-ssd-route-code">function grassBudgetToggle (req) {
-  const showBudget = req.query.budget === 'yes'
-  const params = Object.assign({}, req.query)
-  if (showBudget) delete params.budget
-  else params.budget = 'yes'
-  const qs = new URLSearchParams(params).toString()
+  // Persist the open/closed state on the session, independent of the filters.
+  const d = req.session.data || (req.session.data = {})
+  if (req.query.budget === 'show') d.showBudgetGrass = true
+  else if (req.query.budget === 'hide') d.showBudgetGrass = false
+  const showBudget = !!d.showBudgetGrass
+  // Carry only the query-based caselist state across the toggle. Filters/search
+  // live in the session, so they must NOT be re-serialised here (that comma-joins
+  // multi-value params and corrupts them).
+  const keep = new URLSearchParams()
+  ;['sort', 'dir', 'page'].forEach(function (k) {
+    const v = req.query[k]
+    if (v != null && v !== '') keep.set(k, v)
+  })
+  keep.set('budget', showBudget ? 'hide' : 'show')
   return {
     showBudget: showBudget,
-    budgetToggleHref: req.path + (qs ? '?' + qs : ''),
-    budgetQs: showBudget ? '?budget=yes' : ''
+    budgetToggleHref: req.path + '?' + keep.toString()
   }
 }
 
@@ -98,7 +107,7 @@ res.render('Grasslands/caselist', Object.assign({
       </div>
 
       <h2 class="govuk-heading-l" id="tabs">Keeping state across tabs</h2>
-      <p class="govuk-body">Where the disclosure sits above a <a class="govuk-link" href="/pattern-library/gds/tabs">tab set</a>, the open state must be carried on the tab links too — otherwise opening the panel and switching tab silently closes it again, which reads as a bug. The helper exposes <code class="govuk-body">budgetQs</code> (either an empty string or <code class="govuk-body">?budget=yes</code>) for exactly this, appended to each tab's href.</p>
+      <p class="govuk-body">Where the disclosure sits above a <a class="govuk-link" href="/pattern-library/gds/tabs">tab set</a>, the open state must survive switching tab — otherwise opening the panel and moving tab silently closes it again, which reads as a bug. Because the state lives in the session, this comes for free: the tab links stay plain, and every tab reads the same flag.</p>
       <div class="app-example-wrapper">
         <div class="app-example">
           <div class="app-example__toolbar">
@@ -107,13 +116,13 @@ res.render('Grasslands/caselist', Object.assign({
             <button class="app-copy-button" data-copy-target="ex-ssd-tabs-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <p class="govuk-body govuk-!-margin-bottom-0">With the panel open, every tab link becomes <code class="govuk-body">caselist-team?budget=yes</code> rather than <code class="govuk-body">caselist-team</code>.</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">Each tab link is a plain <code class="govuk-body">caselist-team</code> — no state to thread through, because the session already holds it. (An earlier query-string version had to append <code class="govuk-body">?budget=yes</code> to every tab link; the session flag removes that requirement.)</p>
           </div>
         </div>
         <div class="app-example__code-container" id="ex-ssd-tabs" hidden>
           <div class="app-example__code">
             <pre><code id="ex-ssd-tabs-code">&lt;li class="govuk-tabs__list-item"&gt;
-  &lt;a href="caselist-team{{ "{{ budgetQs }}" }}"&gt;{{ "{{ teamName }}" }} cases&lt;/a&gt;
+  &lt;a href="caselist-team"&gt;{{ "{{ teamName }}" }} cases&lt;/a&gt;
 &lt;/li&gt;</code></pre>
           </div>
         </div>

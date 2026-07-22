@@ -3197,21 +3197,35 @@ function grassUsersWithCases (req) {
   return Object.keys(owners).sort()
 }
 
-// Budgeting information on the Grasslands caselist is a server-side toggle:
-// ?budget=yes shows it. Build the opposite-state href, keeping every other query
-// param (tab ctx, sort, page, filters) so toggling never resets the caselist.
-// budgetQs is appended to the tab links in _caselist-macros.html so the open/
-// closed state survives a tab switch.
+// Budgeting information on the Grasslands caselist is a persistent, per-session
+// disclosure that is INDEPENDENT of the caselist filters. ?budget=show / =hide
+// flips a session flag (showBudgetGrass); once shown it stays shown until hidden,
+// surviving every filter, search, sort, page and tab change on its own — and
+// filtering, searching or sorting never touches it.
+//
+// It used to ride in the query string (?budget=yes, re-serialized from req.query
+// on every toggle). That coupled it to the filters two ways: applying a filter
+// dropped budget=yes (so the panel closed), and — worse — rebuilding the href via
+// URLSearchParams(req.query) comma-joined the multi-value filter params
+// (filterStatusGrass=_unchecked,on-hold) into one bad token, which then poisoned
+// the session filter and reset the list to all cases. A session flag removes the
+// coupling entirely. Only sort/dir/page (query-based caselist state) are carried
+// on the toggle link; filters/search live in the session and persist on their own,
+// so they are deliberately NOT reserialized here.
 function grassBudgetToggle (req) {
-  const showBudget = req.query.budget === 'yes'
-  const params = Object.assign({}, req.query)
-  if (showBudget) delete params.budget
-  else params.budget = 'yes'
-  const qs = new URLSearchParams(params).toString()
+  const d = req.session.data || (req.session.data = {})
+  if (req.query.budget === 'show') d.showBudgetGrass = true
+  else if (req.query.budget === 'hide') d.showBudgetGrass = false
+  const showBudget = !!d.showBudgetGrass
+  const keep = new URLSearchParams()
+  ;['sort', 'dir', 'page'].forEach(function (k) {
+    const v = req.query[k]
+    if (v != null && v !== '') keep.set(k, v)
+  })
+  keep.set('budget', showBudget ? 'hide' : 'show')
   return {
     showBudget: showBudget,
-    budgetToggleHref: req.path + (qs ? '?' + qs : ''),
-    budgetQs: showBudget ? '?budget=yes' : ''
+    budgetToggleHref: req.path + '?' + keep.toString()
   }
 }
 

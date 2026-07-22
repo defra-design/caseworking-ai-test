@@ -2,8 +2,10 @@
    budgeting-information toggle. Budgeting is consolidated onto the scheme page
    (it used to live on the separate GTIF caselist), hidden by default so the
    caselist stays the focus. The toggle is a plain server-side reload
-   (?budget=yes) — no JS — and grassBudgetToggle() in routes.js preserves the
-   rest of the query so toggling never resets the tab, sort, page or filters. #}
+   (?budget=show / ?budget=hide) — no JS. grassBudgetToggle() in routes.js stores
+   the open/closed state in the session, so it persists independently of the
+   filters: once shown it stays shown until hidden, across every filter, search,
+   sort, page and tab change, and filtering never closes it. #}
 
 <a href="/grants-dashboard/dashboard" class="govuk-back-link govuk-!-margin-bottom-6">Back to dashboard</a>
 
