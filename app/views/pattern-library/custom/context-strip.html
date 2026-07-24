@@ -23,7 +23,7 @@
 
       <h1 class="govuk-heading-xl">Context strip</h1>
       <p class="govuk-body-l">A light-green strip (<code class="govuk-body">.lg-div</code>) below the Defra header that provides persistent case context on every case detail page.</p>
-      <p class="govuk-body">The strip contains the back link, the applicant name as the page heading, and key case metadata (application ID and status tag). This keeps caseworkers oriented without needing to scroll back to the top of dense task lists.</p>
+      <p class="govuk-body">The strip contains the back link, the applicant name as the page heading, and key case metadata — typically the application ID and a status tag, though the exact fields vary by area (see the Woodlands variant below). This keeps caseworkers oriented without needing to scroll back to the top of dense task lists.</p>
       <p class="govuk-body">Background colour: <code class="govuk-body">#E7F4EB</code>. Do not change this to a GOV.UK colour token — the specific green tint is intentional branding.</p>
 
       <h2 class="govuk-heading-l">Main case context strip</h2>
@@ -116,10 +116,54 @@
         </div>
       </div>
 
+      <h2 class="govuk-heading-l">Woodlands entitlement context strip</h2>
+      <p class="govuk-body">Used across the Woodlands entitlement flow (calculate / confirm / confirmed). This variant carries <strong>several metadata fields</strong> (Scheme, Application ID, SBI) and <strong>no status tag</strong>. The fields sit in a <code class="govuk-body">display:flex; flex-wrap:wrap</code> row so they stay on one line where there's room and wrap cleanly onto a second line — never mid-value — when a long application ID (e.g. <code class="govuk-body">WMP-6A8-DXE</code>) makes them too wide. The scheme label is fixed because Woodlands is a single-scheme area.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-strip-wood">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-strip-wood-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <div class="lg-div govuk-!-padding-top-4 govuk-!-padding-bottom-4">
+              <div class="govuk-width-container">
+                <a href="/Woodlands/caselist" class="govuk-back-link">Back to caselist</a>
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Mellor &amp; Sons</h2>
+                <div style="display:flex; flex-wrap:wrap; column-gap:2.5em;">
+                  <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodland Management Plan (PA3)</p>
+                  <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Application ID:</strong> WMP-6A8-DXE</p>
+                  <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">SBI:</strong> 113593357</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-strip-wood" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-strip-wood-code">&lt;div class="lg-div"&gt;
+  &lt;div class="govuk-width-container"&gt;
+    &lt;a href="/Woodlands/caselist" class="govuk-back-link"&gt;Back to caselist&lt;/a&gt;
+    &lt;h2 class="govuk-heading-m"&gt;{{ "{{ c.business }}" }}&lt;/h2&gt;
+    &lt;div style="display:flex; flex-wrap:wrap; column-gap:2.5em;"&gt;
+      &lt;p class="govuk-body"&gt;&lt;strong&gt;Scheme:&lt;/strong&gt; Woodland Management Plan (PA3)&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;&lt;strong&gt;Application ID:&lt;/strong&gt; {{ "{{ c.id }}" }}&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;&lt;strong&gt;SBI:&lt;/strong&gt; {{ "{{ c.sbi }}" }}&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-          <li><a class="govuk-link" href="/FRPS-D2/agreement">Agreement</a></li>
-        </ul>
+        <li><a class="govuk-link" href="/FRPS-D2/agreement">Agreement</a></li>
+        <li><a class="govuk-link" href="/Woodlands/calculate">Woodlands — calculate entitlement</a></li>
+        <li><a class="govuk-link" href="/Woodlands/confirm">Woodlands — confirm claim amount</a></li>
+        <li><a class="govuk-link" href="/Woodlands/confirmed">Woodlands — claim amount confirmed</a></li>
+      </ul>
 
     </div>
   </div>

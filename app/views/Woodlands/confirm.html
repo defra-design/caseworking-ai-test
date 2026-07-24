@@ -14,48 +14,34 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
 
-        {% if readonly %}
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Entitlement for {{ c.id }}</h1>
-        {% else %}
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Confirm entitlement</h1>
-        {% endif %}
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Amount available to be claimed by the customer</h1>
 
-        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
-          {% if readonly and entDate %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Entitlement created</dt>
-            <dd class="govuk-summary-list__value">{{ entDate }}</dd>
-          </div>
-          {% endif %}
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Applied for area</dt>
-            <dd class="govuk-summary-list__value">{{ c.appliedAreaHa }} hectares</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">FC available area</dt>
-            <dd class="govuk-summary-list__value">{{ fcArea }} hectares</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Value per hectare</dt>
-            <dd class="govuk-summary-list__value">{{ rateDisplay }}</dd>
-          </div>
-        </dl>
+        <p class="govuk-body">Total area of eligible woodland: <strong>{{ fcArea }}</strong> hectares</p>
 
-        {# The calculation, stated, then the resulting entitlement figure. #}
         <div class="govuk-inset-text">
-          <p class="govuk-body govuk-!-margin-bottom-1">Entitlement calculation</p>
-          <p class="govuk-body-l govuk-!-margin-bottom-0">{{ fcArea }} hectares &times; {{ rateDisplay }} per hectare = <strong>{{ entitlementDisplay }}</strong></p>
+          Total amount available to claim: <strong>{{ claimDisplay }}</strong>
         </div>
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Final entitlement: {{ entitlementDisplay }}</h2>
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">How is the claim amount calculated?</span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Threshold payments for eligible land in hectares (ha):</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>0.5 hectares (ha) to 50ha: flat rate of £1,500</li>
+              <li>51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha</li>
+              <li>more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha</li>
+            </ul>
+          </div>
+        </details>
 
-        {% if not readonly %}
         <form method="post" action="/Woodlands/confirm">
           <input type="hidden" name="id" value="{{ c.id }}">
           <input type="hidden" name="fcArea" value="{{ fcArea }}">
-          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm entitlement</button>
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm claim amount</button>
         </form>
-        {% endif %}
+        <a href="/Woodlands/calculate?id={{ c.id }}" class="govuk-back-link">Back to total area of eligible woodland</a>
 
       </div>
     </div>

@@ -1,15 +1,16 @@
 {# Case-style metadata header for the Woodlands application pages (calculate /
-   confirm / entitlement), modelled on the Grasslands caseGrass context strip.
-   Reads the `c` case object passed to the page. #}
+   confirm / confirmed), modelled on the Grasslands caseGrass context strip.
+   Reads the `c` case object passed to the page. Single-scheme area, so the scheme
+   label is fixed. The three metadata items sit on one line and wrap cleanly onto
+   a second line (never mid-value) when the scheme name makes them too wide. #}
 <div class="lg-div">
   <div class="govuk-width-container">
     <a href="/Woodlands/caselist" class="govuk-back-link govuk-!-margin-top-2">Back to caselist</a>
     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ c.business }}</h2>
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodlands grant</p></div>
-      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Application ID:</strong> {{ c.id }}</p></div>
-      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">SBI:</strong> {{ c.sbi }}</p></div>
-      <div><p class="govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Status:</strong> {{ c.status }}</p></div>
+    <div style="display:flex; flex-wrap:wrap; column-gap:2.5em;">
+      <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodland Management Plan (PA3)</p>
+      <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Application ID:</strong> {{ c.id }}</p>
+      <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">SBI:</strong> {{ c.sbi }}</p>
     </div>
   </div>
 </div>

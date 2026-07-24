@@ -3310,7 +3310,6 @@ function wdLoad () {
   delete require.cache[require.resolve(woodlandsCasesPath)]
   return require(woodlandsCasesPath)
 }
-function wdRate () { return wdLoad().valuePerHa }
 function wdCases () { return wdLoad().cases }
 function wdFindCase (id) { return wdCases().find(function (c) { return c.id === id }) }
 
@@ -3318,6 +3317,25 @@ function wdFindCase (id) { return wdCases().find(function (c) { return c.id === 
 function wdGbp (n) {
   const v = Math.round(Number(n) || 0)
   return '£' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+// £ with thousands separators and 2 decimals (e.g. £1,500.00) — used for the
+// claim-amount screens where pence are shown.
+function wdGbp2 (n) {
+  const parts = (Number(n) || 0).toFixed(2).split('.')
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return '£' + parts[0] + '.' + parts[1]
+}
+// Threshold ("banded") claim amount for an eligible woodland area in hectares:
+//   - up to and including 50ha:            flat £1,500
+//   - over 50ha up to and including 100ha: £1,500 + £30 for each hectare above 50
+//   - over 100ha:                          £3,000 + £15 for each hectare above 100
+// Continuous across the bands (100ha = £3,000 either way), so fractional
+// hectares are priced pro-rata within the band.
+function wdClaimAmount (areaHa) {
+  const a = Number(areaHa) || 0
+  if (a <= 50) return 1500
+  if (a <= 100) return 1500 + 30 * (a - 50)
+  return 3000 + 15 * (a - 100)
 }
 
 // Confirmed FC available area for a case: session override first, then the data
@@ -3376,13 +3394,16 @@ function wdSortRows (rows, st) {
   })
 }
 
-// Build display rows: attach derived £ Value + Entitlement (and flags).
+// Build display rows: attach derived £ Value + Entitlement (and flags). Both are
+// priced with the threshold bands (wdClaimAmount) so the caselist agrees with the
+// calculate / confirm / entitlement screens. Value = the most the award could be
+// (threshold of the applied-for area); Entitlement = threshold of the confirmed
+// eligible area.
 function wdRows (req) {
-  const rate = wdRate()
   return wdCases().map(function (c) {
     const entArea = wdEntArea(c, req)
-    const value = c.appliedAreaHa * rate
-    const entitlement = entArea === null ? null : entArea * rate
+    const value = wdClaimAmount(c.appliedAreaHa)
+    const entitlement = entArea === null ? null : wdClaimAmount(entArea)
     return Object.assign({}, c, {
       value: value,
       valueDisplay: wdGbp(value),
@@ -3403,8 +3424,6 @@ function wdView (req) {
   view.sort = st.sort
   view.dir = st.dir
   view.search = wdSearchTerm(req)
-  view.rate = wdRate()
-  view.rateDisplay = wdGbp(wdRate())
   return view
 }
 
@@ -3417,51 +3436,38 @@ router.get('/Woodlands/caselist', function (req, res) {
 router.get('/Woodlands/calculate', function (req, res) {
   const c = wdFindCase(req.query.id)
   if (!c) return res.redirect('/Woodlands/caselist')
-  res.render('Woodlands/calculate', {
-    c: c, appliedArea: c.appliedAreaHa,
-    rate: wdRate(), rateDisplay: wdGbp(wdRate()),
-    values: {}, error: null
-  })
+  res.render('Woodlands/calculate', { c: c, values: {}, error: null })
 })
 
 // Validate the entered FC available area; on success render the Confirm screen.
 router.post('/Woodlands/calculate', function (req, res) {
   const c = wdFindCase(req.body.id)
   if (!c) return res.redirect('/Woodlands/caselist')
-  const rate = wdRate()
   const raw = (req.body.fcArea === undefined ? '' : req.body.fcArea).toString().trim()
   const num = Number(raw)
   let error = null
-  if (raw === '') error = 'Enter the FC available area in hectares'
-  else if (isNaN(num) || num <= 0) error = 'FC available area must be a number greater than 0'
-  else if (num > c.appliedAreaHa) error = 'FC available area cannot be more than the applied for area (' + c.appliedAreaHa + ' hectares)'
+  if (raw === '') error = 'Enter the total area of eligible woodland'
+  else if (isNaN(num) || num <= 0) error = 'Total area of eligible woodland must be a number greater than 0'
+  else if (num > c.appliedAreaHa) error = 'Total area of eligible woodland cannot be more than the applied for area (' + c.appliedAreaHa + ' hectares)'
   if (error) {
-    return res.render('Woodlands/calculate', {
-      c: c, appliedArea: c.appliedAreaHa, rate: rate, rateDisplay: wdGbp(rate),
-      values: { fcArea: raw }, error: error
-    })
+    return res.render('Woodlands/calculate', { c: c, values: { fcArea: raw }, error: error })
   }
-  const entitlement = num * rate
+  const claim = wdClaimAmount(num)
   res.render('Woodlands/confirm', {
-    c: c, fcArea: num, rate: rate, rateDisplay: wdGbp(rate),
-    entitlement: entitlement, entitlementDisplay: wdGbp(entitlement)
+    c: c, fcArea: num, claim: claim, claimDisplay: wdGbp2(claim)
   })
 })
 
-// Read-only entitlement view — reached from a caselist ID that already has an
-// entitlement. Same calculation content as Confirm, but no button.
+// Already-created entitlement view — reached from a caselist ID that already has
+// an entitlement. Uses the same "Claim amount confirmed" screen as the confirm step.
 router.get('/Woodlands/entitlement', function (req, res) {
   const c = wdFindCase(req.query.id)
   if (!c) return res.redirect('/Woodlands/caselist')
   const area = wdEntArea(c, req)
   if (area === null) return res.redirect('/Woodlands/calculate?id=' + encodeURIComponent(c.id))
-  const rate = wdRate()
-  const entitlement = area * rate
-  res.render('Woodlands/confirm', {
-    c: c, fcArea: area, rate: rate, rateDisplay: wdGbp(rate),
-    entitlement: entitlement, entitlementDisplay: wdGbp(entitlement),
-    entDate: wdEntDate(c, req),
-    readonly: true
+  const claim = wdClaimAmount(area)
+  res.render('Woodlands/confirmed', {
+    c: c, claim: claim, claimDisplay: wdGbp2(claim), entDate: wdEntDate(c, req)
   })
 })
 
@@ -3477,7 +3483,10 @@ router.post('/Woodlands/confirm', function (req, res) {
   if (!req.session.data.woodlandsEntitlementDates) req.session.data.woodlandsEntitlementDates = {}
   req.session.data.woodlandsEntitlements[c.id] = num
   req.session.data.woodlandsEntitlementDates[c.id] = wdToday()
-  res.redirect('/Woodlands/caselist')
+  const claim = wdClaimAmount(num)
+  res.render('Woodlands/confirmed', {
+    c: c, claim: claim, claimDisplay: wdGbp2(claim), entDate: wdToday()
+  })
 })
 
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker

@@ -27,29 +27,22 @@
         </div>
         {% endif %}
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Calculate entitlement</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Enter the total eligible area of woodland included in the plan</h1>
 
-        {# The two pieces of data the caseworker needs before entering a figure. #}
-        <dl class="govuk-summary-list govuk-!-margin-bottom-8">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Applied for area</dt>
-            <dd class="govuk-summary-list__value">{{ appliedArea }} hectares</dd>
-          </div>
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">Current value per hectare</dt>
-            <dd class="govuk-summary-list__value">{{ rateDisplay }} <span class="govuk-hint govuk-!-display-inline">(Land Grants system lookup — subject to change)</span></dd>
-          </div>
-        </dl>
+        <p class="govuk-body">You can find this in the confirmation email sent by the FC.</p>
+        <p class="govuk-body govuk-!-margin-bottom-6">The size of woodland approved by the FC will be used to calculate the amount the customer can claim.</p>
 
         <form method="post" action="/Woodlands/calculate" novalidate>
           <input type="hidden" name="id" value="{{ c.id }}">
           <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
-            <label class="govuk-label govuk-label--s" for="fcArea">Enter FC available area (hectares)</label>
-            <div id="fcArea-hint" class="govuk-hint">Cannot be more than the applied for area ({{ appliedArea }} hectares).</div>
+            <label class="govuk-label govuk-label--s" for="fcArea">Total area of eligible woodland</label>
             {% if error %}<p id="fcArea-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
-            <input class="govuk-input govuk-input--width-10{% if error %} govuk-input--error{% endif %}" id="fcArea" name="fcArea" type="text" inputmode="decimal" value="{{ values.fcArea }}" aria-describedby="fcArea-hint{% if error %} fcArea-error{% endif %}">
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-5{% if error %} govuk-input--error{% endif %}" id="fcArea" name="fcArea" type="text" inputmode="decimal" spellcheck="false" value="{{ values.fcArea }}"{% if error %} aria-describedby="fcArea-error"{% endif %}>
+              <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+            </div>
           </div>
-          <button type="submit" class="govuk-button" data-module="govuk-button">Calculate</button>
+          <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
         </form>
 
       </div>

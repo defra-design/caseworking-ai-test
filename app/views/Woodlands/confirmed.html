@@ -1,0 +1,36 @@
+{% extends "layouts/main.html" %}
+
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Entitlement management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Woodlands/includes/_wd-context-strip.html" %}
+{% endblock %}
+
+{# Final "claim amount confirmed" screen. Shown after confirming a new claim
+   amount (POST /Woodlands/confirm) and, in the same style, when re-opening a
+   case whose entitlement has already been created (GET /Woodlands/entitlement).
+   `entDate` is available for the already-created variant if a created date is
+   wanted here later. #}
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Claim amount confirmed</h1>
+
+        <p class="govuk-body">The customer is now able to make a claim for application {{ c.id }}.</p>
+
+        <div class="govuk-inset-text">
+          Total amount available to claim: <strong>{{ claimDisplay }}</strong>
+        </div>
+
+        <p class="govuk-body">You can now return to Caseworking to complete the task and then close this window.</p>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
