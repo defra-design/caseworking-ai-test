@@ -1,0 +1,23 @@
+{# WMP case context strip — the live journey case (Mellor & Sons, WMP-6A8-DXE).
+   Status text is derived from the session stage (caseStageWmp). #}
+{% set wmpStripStatus = "Awaiting Forestry Commission review" %}
+{% if data.caseStageWmp === 'fc-rejected' %}{% set wmpStripStatus = "Rejected by Forestry Commission" %}
+{% elseif data.caseStageWmp === 'agreement' %}{% set wmpStripStatus = "Awaiting claim" %}
+{% elseif data.caseStageWmp %}{% set wmpStripStatus = "Forestry Commission review complete" %}
+{% endif %}
+<div class="lg-div">
+  <div class="govuk-width-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        {{ govukBackLink({ text: "Back to applications", href: "../caselist" }) }}
+        <h2 class="govuk-heading-m">Mellor &amp; Sons</h2>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div><p><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodland Management Plan (PA3)</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong> WMP-6A8-DXE</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">SBI:</strong> 113593357</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Status:</strong> {{ wmpStripStatus }}</p></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+{% extends "layouts/main.html" %}
+{% import "GrassMVP/includes/_caselist-macros.html" as caselist with context %}
+
+{# Widen the layout + header to fit the Value + Stage columns (matches the GTIF
+   caselist width). See .app-caselist-wide-stage in application.scss. #}
+{% set containerClasses = "app-caselist-wide-stage" %}
+{% set headerContainerClasses = "app-caselist-wide-stage" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide-stage">
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+
+    {% include "GrassMVP/includes/_caselist-header.html" %}
+
+    {{ caselist.tabsAndTable("my", ctx, view, myAssignee, usersWithCases) }}
+
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+{% endblock %}

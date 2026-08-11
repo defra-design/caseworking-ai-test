@@ -1,0 +1,24 @@
+{% extends "layouts/main.html" %}
+{% import "WMP/includes/_wmp-caselist-macros.html" as caselist with context %}
+
+{# Widen the layout + header so the Type / Case ID columns don't crush. Matches
+   the Grasslands caselist width (see .app-caselist-wide-stage in application.scss). #}
+{% set containerClasses = "app-caselist-wide-stage" %}
+{% set headerContainerClasses = "app-caselist-wide-stage" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide-stage">
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Woodland Management Plan cases</h1>
+    <p class="govuk-body govuk-!-margin-bottom-6">Woodland Management Plan (PA3) applications, from Forestry Commission review through to claim.</p>
+
+    {{ caselist.allCases(view, wmpFilters) }}
+
+  </main>
+</div>
+{% endblock %}

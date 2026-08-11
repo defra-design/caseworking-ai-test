@@ -1,0 +1,120 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+{% set stage = data.caseStageWmp or 'awaiting-fc' %}
+{% set areaDone = stage == 'area-recorded' or stage == 'notified' or stage == 'not-notified' or stage == 'agreement' %}
+{% set areaNotRecorded = stage == 'area-not-recorded' %}
+{% set notifyDone = stage == 'notified' or stage == 'agreement' %}
+{% set notifyFailed = stage == 'not-notified' %}
+{% set notifyReady = stage == 'area-recorded' %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl govuk-!-margin-top-6">Tasks</h1>
+
+    {% if stage == 'awaiting-fc' %}
+      {# ---- FC review outcome form (Figma WMP-CW-FCR-101-alt) ---- #}
+      <h2 class="govuk-heading-m">Forestry Commission review</h2>
+      <p class="govuk-body">The application is being reviewed by the Forestry Commission (FC).</p>
+      <p class="govuk-body">When the FC notifies you that its review is complete, record the outcome here.</p>
+
+      <form action="/WMP/fc-outcome" method="post">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Outcome</legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fc-1" name="decisionFcWmp" type="radio" value="Accepted">
+                <label class="govuk-label govuk-radios__label" for="fc-1">Accepted</label>
+              </div>
+              <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="fc-2" name="decisionFcWmp" type="radio" value="Rejected" data-aria-controls="fc-reject">
+                <label class="govuk-label govuk-radios__label" for="fc-2">Rejected</label>
+              </div>
+              <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="fc-reject">
+                <label class="govuk-label" for="fcRejectReasonWmp">Why did the FC reject this application?</label>
+                <textarea class="govuk-textarea" id="fcRejectReasonWmp" name="fcRejectReasonWmp" rows="4"></textarea>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+      </form>
+
+    {% elseif stage == 'fc-rejected' %}
+      <h2 class="govuk-heading-m">Application rejected by the Forestry Commission</h2>
+      <p class="govuk-body">There are no tasks to complete.</p>
+      {% if data.fcRejectReasonWmp %}<p class="govuk-body"><strong>Reason recorded:</strong> {{ data.fcRejectReasonWmp }}</p>{% endif %}
+
+    {% else %}
+      {# ---- Task list after FC accepted (Figma WMP-CW-FCR-103a / 106 / 108) ---- #}
+      <h2 class="govuk-heading-m">Forestry Commission review</h2>
+      <ul class="govuk-task-list">
+
+        {# Task 1 — Record eligible area #}
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
+          <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" href="record-eligible-area" aria-describedby="wmp-t1-status">Record eligible area included in the plan</a>
+          </div>
+          <div class="govuk-task-list__status" id="wmp-t1-status">
+            {% if areaDone %}Completed
+            {% elseif areaNotRecorded %}<strong class="govuk-tag govuk-tag--red">Not recorded</strong>
+            {% else %}<strong class="govuk-tag govuk-tag--blue">Incomplete</strong>{% endif %}
+          </div>
+        </li>
+
+        {# Task 2 — Notify customer #}
+        {% if notifyDone or notifyFailed or notifyReady %}
+        <li class="govuk-task-list__item govuk-task-list__item--with-link">
+          <div class="govuk-task-list__name-and-hint">
+            <a class="govuk-link govuk-task-list__link" href="notify-customer" aria-describedby="wmp-t2-status">Tell the customer they can make a claim</a>
+          </div>
+          <div class="govuk-task-list__status" id="wmp-t2-status">
+            {% if notifyDone %}Completed
+            {% elseif notifyFailed %}<strong class="govuk-tag govuk-tag--red">Could not complete</strong>
+            {% else %}<strong class="govuk-tag govuk-tag--blue">Incomplete</strong>{% endif %}
+          </div>
+        </li>
+        {% else %}
+        <li class="govuk-task-list__item">
+          <div class="govuk-task-list__name-and-hint">Tell the customer they can make a claim</div>
+          <div class="govuk-task-list__status govuk-task-list__status--cannot-start-yet" id="wmp-t2-status">Cannot start yet</div>
+        </li>
+        {% endif %}
+
+      </ul>
+
+      {% if stage == 'notified' %}
+      <form action="/WMP/complete-fc-review" method="post">
+        <p class="govuk-body">All tasks are complete. You can now complete the Forestry Commission review.</p>
+        <button type="submit" class="govuk-button" data-module="govuk-button">Complete Forestry Commission review</button>
+      </form>
+      {% elseif stage == 'agreement' %}
+      <p class="govuk-body">The Forestry Commission review is complete. The customer has been notified that they can claim — see the <a class="govuk-link" href="agreement">Agreement</a> tab.</p>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        { href: "/WMP/reset-case", text: "Reset WMP case" },
+        { href: "/manage-prototype/clear-data", text: "Clear data" }
+      ],
+      visuallyHiddenTitle: "Footer links"
+    }
+  }) }}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "application" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Application</h1>
+    <p class="govuk-body">Woodland Management Plan (PA3) application details for Mellor &amp; Sons (WMP-6A8-DXE).</p>
+    <dl class="govuk-summary-list">
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Business</dt><dd class="govuk-summary-list__value">Mellor &amp; Sons</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">SBI</dt><dd class="govuk-summary-list__value">113593357</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Scheme</dt><dd class="govuk-summary-list__value">Woodland Management Plan (PA3)</dd></div>
+      <div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">Submitted</dt><dd class="govuk-summary-list__value">10 March 2026</dd></div>
+    </dl>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Tell the customer they can make a claim</h1>
+
+    <p class="govuk-body">Contact the customer to tell them they can make a WMP claim.</p>
+
+    <form action="/WMP/notify-customer" method="post">
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Confirm you have notified the customer</legend>
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="not-1" name="decisionNotifyWmp" type="radio" value="sent" data-aria-controls="not-sent">
+              <label class="govuk-label govuk-radios__label" for="not-1">Notification sent to customer</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="not-sent">
+              <label class="govuk-label" for="notifyCrmRefWmp">Enter the CRM reference number of the email to confirm the notification has been sent.</label>
+              <input class="govuk-input govuk-input--width-20" id="notifyCrmRefWmp" name="notifyCrmRefWmp" type="text">
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="not-2" name="decisionNotifyWmp" type="radio" value="not-sent" data-aria-controls="not-fail">
+              <label class="govuk-label govuk-radios__label" for="not-2">Could not send notification to customer</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="not-fail">
+              <label class="govuk-label" for="notNotifiedReasonWmp">Explain why the notification could not be sent.</label>
+              <textarea class="govuk-textarea" id="notNotifiedReasonWmp" name="notNotifiedReasonWmp" rows="4"></textarea>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+      <p class="govuk-body"><a class="govuk-link" href="tasks">Cancel and return</a></p>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

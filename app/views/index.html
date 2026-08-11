@@ -28,10 +28,6 @@
   <div class="govuk-grid-column-two-thirds">
 
     <h1 class="govuk-heading-xl">Future RPS case working prototypes</h1>
-    <p class="govuk-body-l">Start at the <a class="govuk-link" href="/grants-dashboard/dashboard">Dashboard</a> — the high-level portfolio page above the scheme caselists, with per-scheme budgeting now on the caselist itself.</p>
-    <p class="govuk-body-l">Start at the <a class="govuk-link" href="/grants-dashboard-mvp/grants-overview">Grant schemes budget overview (MVP)</a> — the current working version.</p>
-    <p class="govuk-body-l">Start at the <a class="govuk-link" href="/grants-dashboard/grants-overview">Grant schemes budget overview</a> — the portfolio dashboard that sits above every scheme caseworking list.</p>
-    <p class="govuk-body-l">Open the new <a class="govuk-link" href="/Woodlands/caselist">Woodlands grant caselist</a> — a woodland-grant application list with entitlement calculation.</p>
   </div>
 
   <div class="govuk-grid-column-full">
@@ -53,15 +49,29 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">
-            <a href="/grants-dashboard/grants-overview">Grant schemes budget overview</a><br>
-            <p class="govuk-body-s">Portfolio dashboard above the scheme caselists</p>
+            <a href="/grassmvpApplication">Grasslands MVP</a><br>
+            <p class="govuk-body-s">Reduced MVP of the Grasslands area</p>
           </th>
           <td class="govuk-table__cell">
             <strong class="govuk-tag govuk-tag--blue">New</strong>
           </td>
-          <td class="govuk-table__cell">29/06/26</td>
+          <td class="govuk-table__cell">05/08/26</td>
           <td class="govuk-table__cell">
-            Cross-scheme budget overview — total portfolio, allocated and pipeline figures, an aggregated portfolio-health bar, and an active-schemes table that links down into each scheme's caseworking list.
+            This is an effort to design a ‘viable’ MVP for Grasslands D1 with realistic data structures and tasks/rules content
+          </td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
+            <a href="/tasklistStage1">FPTT prototype</a><br>
+            <p class="govuk-body-s">D1 prototype (full caseworking)</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue">New</strong>
+          </td>
+          <td class="govuk-table__cell">05/08/26</td>
+          <td class="govuk-table__cell">
+            A reference to the FPTT rollout so that MVP and FPTT can be compared
           </td>
         </tr>
 
@@ -75,7 +85,21 @@
           </td>
           <td class="govuk-table__cell">15/06/26</td>
           <td class="govuk-table__cell">
-            A standalone Grasslands prototype area (its own <code>views/Grasslands/</code> folder, caselist, nav, context strip and routes). Replicates the Golden Grange journey end to end as a blank canvas for prototyping new Grasslands grant-type functionality, independent of FRPS-D2.
+            This is the design concept area where we are exploring the wider design problem before cutting down to MVP
+          </td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
+            <a href="/grants-dashboard/grants-overview">Grant schemes budget overview (initial concept)</a><br>
+            <p class="govuk-body-s">Portfolio dashboard above the scheme caselists</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue">New</strong>
+          </td>
+          <td class="govuk-table__cell">29/06/26</td>
+          <td class="govuk-table__cell">
+            Cross-scheme budget overview: This is thye initial work for dashboard. Some of this design was rolled into the mVP version
           </td>
         </tr>
 
@@ -89,7 +113,54 @@
           </td>
           <td class="govuk-table__cell">19/06/26</td>
           <td class="govuk-table__cell">
-            An iteration of the FRPS-D2 user-management screens (<code>views/FRPS-D2/UM2/</code>) visualising the team-structure design brief: teams, team membership, access role (Caseworker / Manager), specialisms, and the allocate/reassign pattern that the Grasslands team caselist needs.
+            This work is useful for the full grasslands case design but not to be implemented at MVP D1 roll out.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="govuk-section-break govuk-section-break--xl">
+
+    <table class="govuk-table">
+      <caption class="govuk-table__caption govuk-table__caption--l">
+        Woodlands
+      </caption>
+
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header" style="width:250px">Version</th>
+          <th scope="col" class="govuk-table__header" style="width:140px">Status</th>
+          <th scope="col" class="govuk-table__header" style="width:120px">Date</th>
+          <th scope="col" class="govuk-table__header">Description</th>
+        </tr>
+      </thead>
+
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
+            <a href="/WMP/caselist">Woodland Management Plan (PA3)</a><br>
+            <p class="govuk-body-s">FC review &amp; claim-creation journey</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue">New</strong>
+          </td>
+          <td class="govuk-table__cell">29/07/26</td>
+          <td class="govuk-table__cell">
+            A standalone WMP caseworking area (<code>views/WMP/</code>): a single "All cases" caselist (search, Assign, status filter, sortable) and the case journey — Forestry Commission review outcome, record eligible area, notify customer, and agreement. The Record eligible area task links across to the Woodlands entitlements journey (WMP is the master record for shared case metadata).
+          </td>
+        </tr>
+
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
+            <a href="/Woodlands/caselist">Woodlands entitlements</a><br>
+            <p class="govuk-body-s">Entitlement calculation</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--blue">New</strong>
+          </td>
+          <td class="govuk-table__cell">24/07/26</td>
+          <td class="govuk-table__cell">
+            A woodland-grant application list (<code>views/Woodlands/</code>) with the entitlement-calculation flow: enter the FC-approved eligible area, confirm the threshold claim amount, and create the entitlement. Reached on its own or opened from the WMP Record eligible area task.
           </td>
         </tr>
       </tbody>

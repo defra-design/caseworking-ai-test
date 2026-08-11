@@ -58,7 +58,9 @@
         {% for c in view.rows %}
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">
-            {% if c.hasEntitlement %}<a class="govuk-link" href="entitlement?id={{ c.id }}">{{ c.id }}</a>{% else %}<a class="govuk-link" href="calculate?id={{ c.id }}">{{ c.id }}</a>{% endif %}
+            {# The 2nd and 3rd cases (Elmwood, Greenacre) open the new Case admin
+               console (entitlements design): Elmwood empty, Greenacre with a claim. #}
+            {% if c.id == 'WMP-1T9-RXN' or c.id == 'WMP-2F7-LPR' %}<a class="govuk-link" href="case-admin?id={{ c.id }}">{{ c.id }}</a>{% elif c.hasEntitlement %}<a class="govuk-link" href="entitlement?id={{ c.id }}">{{ c.id }}</a>{% else %}<a class="govuk-link" href="calculate?id={{ c.id }}">{{ c.id }}</a>{% endif %}
           </td>
           <td class="govuk-table__cell">{{ c.appDate }}</td>
           <td class="govuk-table__cell">{{ c.stage }}</td>

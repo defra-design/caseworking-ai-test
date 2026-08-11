@@ -1,0 +1,198 @@
+{% extends "layouts/main.html" %}
+
+{# Case admin console — a single, stateful, case-driven page that replaces the
+   multi-screen Woodlands entitlement flow. Shows the full entitlement lifecycle
+   for one applicant: Available entitlements (with an inline create form), Awaiting
+   a claim, and Claimed. The case identity (id / business / SBI / status) is read
+   from the Woodlands data so this header stays in sync with the caselist.
+   Woodlands has exactly one entitlement available per applicant, so once it has
+   been created you cannot create another, and once claimed it is locked.
+   State + data come from the /Woodlands/case-admin routes. #}
+
+{% set serviceName = "Grants admin" %}
+{% set pageName = "Claims — " + c.id %}
+
+{# Standard GOV.UK crown header with the service name in the black bar (no separate
+   service-navigation row), matching the console design. #}
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% block govukHeader %}
+  {{ govukHeader({ homepageUrl: "/", serviceName: serviceName, serviceUrl: "/", containerClasses: "govuk-width-container" }) }}
+{% endblock %}
+{% block govukServiceNavigation %}{% endblock %}
+
+{% block beforeContent %}
+<div class="govuk-width-container">
+  <div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">
+      <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
+      <span class="govuk-phase-banner__text">This is a prototype service – your feedback helps us improve it.</span>
+    </p>
+  </div>
+  <a href="/Woodlands/caselist" class="govuk-back-link">Back to applications</a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    {# Case header — synced with the caselist row. #}
+    <span class="govuk-caption-l">{{ con.scheme }}</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">{{ c.id }}</h1>
+    <p class="govuk-!-margin-bottom-2"><strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong></p>
+    <p class="govuk-body govuk-!-margin-bottom-6">{{ c.business }} · SBI {{ c.sbi }}</p>
+
+    {# Case tabs. Rendered statically (no govuk-tabs JS module) so "Claims" stays
+       the selected, bordered panel. Application data / Payments are placeholders. #}
+    <div class="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#application-data">Application data</a>
+        </li>
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#claims">Claims</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#payments">Payments</a>
+        </li>
+      </ul>
+
+      <div class="govuk-tabs__panel" id="claims">
+
+        {% if justCreated and awaiting.length > 0 %}
+        {# Confirmation shown after the applicant's single entitlement is created. #}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">Entitlement created</h3>
+            <p class="govuk-body">Woodland creation entitlement of {{ awaiting[0].haDisplay }} ha ({{ awaiting[0].valueDisplay }}) created. It is now awaiting a claim.</p>
+          </div>
+        </div>
+        {% endif %}
+
+        {# ---- Available entitlements ---- #}
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-2">Available entitlements</h2>
+        <p class="govuk-body">Entitlements you can create for this applicant. Some can be created more than once. Where you cannot create one, the reason is shown instead of the action.</p>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Entitlement</th>
+              <th scope="col" class="govuk-table__header">Type</th>
+              <th scope="col" class="govuk-table__header">Created</th>
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                Woodland creation
+                <span class="govuk-caption-m govuk-!-margin-top-0">{{ unitPriceDisplay }} per ha</span>
+              </td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Hectares</strong></td>
+              <td class="govuk-table__cell">{{ createdCount }} of {{ con.maxCreatable }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                {% if canCreate %}
+                  {% if not openForm %}<a class="govuk-link" href="?id={{ c.id }}&amp;create=1#create">Create</a>{% endif %}
+                {% elif claim %}
+                  <span class="govuk-hint govuk-!-margin-bottom-0">Claimed — cannot change</span>
+                {% else %}
+                  <span class="govuk-hint govuk-!-margin-bottom-0">Maximum created</span>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {% if openForm %}
+        {# Inline create form (server-side disclosure). #}
+        <div class="app-console-form govuk-!-margin-bottom-6" id="create">
+          <form method="post" action="/Woodlands/case-admin" novalidate>
+            <input type="hidden" name="id" value="{{ c.id }}">
+            <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-4">
+              <h3 class="govuk-heading-m govuk-!-margin-bottom-1">Create entitlement</h3>
+              <p class="govuk-caption-m govuk-!-margin-bottom-4">Template: Woodland creation</p>
+
+              <label class="govuk-label govuk-label--s" for="ha">Number of hectares (ha)</label>
+              <div id="ha-hint" class="govuk-hint">Unit price {{ unitPriceDisplay }} per ha.</div>
+              {% if error %}<p id="ha-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+              <input class="govuk-input govuk-input--width-10{% if error %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" spellcheck="false" inputmode="decimal" value="{{ value }}" aria-describedby="ha-hint{% if error %} ha-error{% endif %}">
+            </div>
+            <div class="govuk-button-group">
+              <button type="submit" class="govuk-button" data-module="govuk-button">Save entitlement</button>
+              <a class="govuk-link" href="/Woodlands/case-admin?id={{ c.id }}">Cancel</a>
+            </div>
+          </form>
+        </div>
+        {% endif %}
+
+        {# ---- Awaiting a claim ---- shown only once something has been created. #}
+        {% if awaiting.length > 0 %}
+        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Awaiting a claim</h2>
+        <p class="govuk-body">Entitlements created for this applicant that no claim has been submitted against yet.</p>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Entitlement</th>
+              <th scope="col" class="govuk-table__header">Type</th>
+              <th scope="col" class="govuk-table__header">Value</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for e in awaiting %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                Woodland creation
+                <span class="govuk-caption-m govuk-!-margin-top-0">{{ e.ref }}</span>
+              </td>
+              <td class="govuk-table__cell">{{ e.haDisplay }} ha</td>
+              <td class="govuk-table__cell">{{ e.valueDisplay }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+        {# ---- Claimed ---- shown only once a claim has been submitted. #}
+        {% if claim %}
+        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Claimed</h2>
+        <p class="govuk-body">Entitlements the applicant has submitted a claim against. The claimed value can differ from the entitlement value.</p>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Entitlement</th>
+              <th scope="col" class="govuk-table__header">Entitled to</th>
+              <th scope="col" class="govuk-table__header">Claimed</th>
+              <th scope="col" class="govuk-table__header">Payment date</th>
+              <th scope="col" class="govuk-table__header">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                Woodland creation
+                <span class="govuk-caption-m govuk-!-margin-top-0">{{ claim.ref }}</span>
+              </td>
+              <td class="govuk-table__cell">{{ claim.entitledDisplay }}</td>
+              <td class="govuk-table__cell">
+                {{ claim.claimedDisplay }}
+                {% if claim.differs %}<span class="govuk-caption-m govuk-!-margin-top-0">Differs from entitlement</span>{% endif %}
+              </td>
+              <td class="govuk-table__cell">{{ claim.paymentDate }}</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ claim.statusTag }}">{{ claim.status }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

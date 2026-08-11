@@ -1,0 +1,56 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Record the total eligible area of woodland included in the plan</h1>
+
+    <p class="govuk-body">Follow these steps to record the WMP claim details:</p>
+    <ol class="govuk-list govuk-list--number">
+      {# Step 1 opens the Woodlands entitlement journey (set the entitlement value)
+         for this case in a NEW TAB. from=wmp makes the entitlement journey treat
+         the WMP case as master and adds a return link back to this task. #}
+      <li><a class="govuk-link" href="/Woodlands/calculate?id=WMP-6A8-DXE&amp;from=wmp" target="_blank" rel="noopener" id="wmp-claims-service-link">Go to the claims service</a> to record the total eligible area (opens in a new tab).</li>
+      <li>Confirm the amount the customer can claim.</li>
+      <li>Come back to this page and confirm that the claim details have been recorded (or explain why you cannot record them).</li>
+    </ol>
+
+    <form action="/WMP/record-eligible-area" method="post">
+      <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Confirm claim details have been recorded</legend>
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="rea-1" name="decisionAreaWmp" type="radio" value="recorded" data-aria-controls="rea-recorded">
+              <label class="govuk-label govuk-radios__label" for="rea-1">Claim details recorded</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="rea-recorded">
+              <label class="govuk-label" for="eligibleAreaRefWmp">What is the reference for the recorded claim details?</label>
+              <input class="govuk-input govuk-input--width-20" id="eligibleAreaRefWmp" name="eligibleAreaRefWmp" type="text">
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="rea-2" name="decisionAreaWmp" type="radio" value="not-recorded" data-aria-controls="rea-not">
+              <label class="govuk-label govuk-radios__label" for="rea-2">Not recorded</label>
+            </div>
+            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="rea-not">
+              <label class="govuk-label" for="areaNotRecordedReasonWmp">Why were the claim details not recorded?</label>
+              <textarea class="govuk-textarea" id="areaNotRecordedReasonWmp" name="areaNotRecordedReasonWmp" rows="4"></textarea>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+      <p class="govuk-body"><a class="govuk-link" href="tasks">Cancel and return</a></p>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

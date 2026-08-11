@@ -225,7 +225,7 @@
                 <label class="govuk-label govuk-checkboxes__label" for="gr-cases-{{ c.id }}"><span class="govuk-visually-hidden">Select {{ c.id }}</span></label>
               </div>
             </td>
-            <td class="govuk-table__cell"><a class="govuk-link" href="caseGrass/tasklist-stage">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{% if active == 'my' and c.id == '100315' %}<a class="govuk-link" href="/grassmvpApplication">{{ c.id }}</a>{% else %}<a class="govuk-link" href="caseGrass/tasklist-stage">{{ c.id }}</a>{% endif %}</td>
             <td class="govuk-table__cell">{{ c.business }}</td>
             <td class="govuk-table__cell">{{ c.sbi }}</td>
             <td class="govuk-table__cell">{{ c.submitted }}</td>

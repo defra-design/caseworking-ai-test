@@ -1,0 +1,405 @@
+{#
+  Shared markup for the GrassMVP caselist (My cases / context tab / Completed).
+  Case data lives in app/data/grassmvp-cases.js; the routes in routes.js filter
+  (by tab + context) and paginate, then pass a `view` object to the template:
+    view = { rows, page, totalPages, total, startIdx, endIdx }
+
+  Context (`ctx`): 'A' | 'B' | 'C' | 'all'. Set by the "Switch team" selector,
+  persisted in the session, and applied to the context tab and the Completed
+  tab (My cases is always the current user, M Walker).
+
+  Import "with context" so macros can read res.locals (grassmvpTeams,
+  grassmvpTeamNames) and session `data` (Golden Grange live status).
+
+  Status filter values mirror the FRPS-D2 set; see grassmvp-cases.js DATA RULES.
+#}
+
+{# (Removed) The global caseFilters bar above the tabs has been replaced by
+   tab-scoped controls: Change assignee (My), Change team (Open), and the
+   permanent search + Status "filter list" on the All cases tab. --- #}
+
+{# --- A sortable column header. Sorting is server-side: the link reloads the
+   tab with ?sort=<key>&dir=<asc|desc>, the route sorts the WHOLE filtered set
+   (every page, not just the visible 20) and re-paginates. aria-sort reflects the
+   active column/direction; clicking the active column toggles direction. --- #}
+{% macro sortHeader(key, label, view, cls) %}
+{%- set active = (view.sort == key) -%}
+{%- set ariaSort = (("ascending" if view.dir == "asc" else "descending") if active else "none") -%}
+{%- set nextDir = ("desc" if (active and view.dir == "asc") else "asc") -%}
+<th scope="col" class="govuk-table__header{% if cls %} {{ cls }}{% endif %}" aria-sort="{{ ariaSort }}"><a class="govuk-link app-sort-link" href="?sort={{ key }}&amp;dir={{ nextDir }}">{{ label }}</a></th>
+{% endmacro %}
+
+{# --- Tabs + the table for the active tab. active = my | team | all.
+   - my:  "<assignee>'s cases" + a "Change assignee" autocomplete.
+   - team: "<team> cases" + a "Change team" autocomplete.
+   - all: "All cases" (every case, incl. closed/unassigned) + a permanent SBI
+     search and a "filter list" details (Status). `f` = the filter state. --- #}
+{% macro tabsAndTable(active, ctx, view, myAssignee, usersWithCases, f, sf) %}
+{% set myAssignee = myAssignee or "M Walker" %}
+{% set teamName = "All teams" if ctx == "all" else grassmvpTeamNames[ctx] %}
+{% set f = f or { status: [], search: "" } %}
+{% set sf = sf or { stage: [] } %}
+{% set MVP_STAGE_OPTS = [
+  { v: "application", n: "Application" }, { v: "agreement", n: "Agreement" },
+  { v: "payments", n: "Payments" }
+] %}
+{% set MVP_STAGE_NAMES = { application: "Application", agreement: "Agreement", payments: "Payments" } %}
+{% set MVP_STATUS_OPTS = [
+  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
+  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
+  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
+  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
+] %}
+{% set MVP_STATUS_NAMES = {
+  "application-received": "Application received", "in-review": "In review",
+  "on-hold": "On hold", "agreement-drafted": "Agreement drafted",
+  "agreement-offered": "Agreement offered", "agreement-accepted": "Agreement accepted",
+  rejected: "Rejected", withdrawn: "Withdrawn"
+} %}
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item{% if active == 'my' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'my' %}{{ myAssignee }}'s cases{% else %}<a href="caselist">{{ myAssignee }}'s cases</a>{% endif %}
+    </li>
+    <li class="govuk-tabs__list-item{% if active == 'all' %} govuk-tabs__list-item--selected{% endif %}">
+      {% if active == 'all' %}All cases{% else %}<a href="caselist-completed">All cases</a>{% endif %}
+    </li>
+  </ul>
+
+  <div class="govuk-tabs__panel" id="cases">
+
+    {% if active == 'all' %}
+    {# Permanent SBI search #}
+    <form method="get" action="caselist-completed" class="govuk-!-margin-bottom-4">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="searchMVP">Search by SBI</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <input class="govuk-input" id="searchMVP" name="searchMVP" type="search" value="{{ f.search }}">
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
+        </div>
+      </div>
+    </form>
+
+    {# Selected filters — moj-filter__tag removable tags (search + status + stage) #}
+    {% if f.status.length or f.search or sf.stage.length %}
+    <div class="moj-filter__selected govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags">
+        {% if f.search %}
+        <li><a href="?searchMVP=&amp;filterStatusMVP=_unchecked{% for s in f.status %}&amp;filterStatusMVP={{ s }}{% endfor %}" class="moj-filter__tag govuk-link">SBI: {{ f.search }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endif %}
+        {% for v in f.status %}
+        <li><a href="?searchMVP={{ f.search | urlencode }}&amp;filterStatusMVP=_unchecked{% for s in f.status %}{% if s != v %}&amp;filterStatusMVP={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">{{ MVP_STATUS_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+        {% for v in sf.stage %}
+        <li><a href="?searchMVP={{ f.search | urlencode }}&amp;filterStageMVP=_unchecked{% for s in sf.stage %}{% if s != v %}&amp;filterStageMVP={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">Stage: {{ MVP_STAGE_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# Filter list — for now just Status + Apply #}
+    <details class="govuk-details govuk-!-margin-bottom-5">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">filter list</span></summary>
+      <div class="govuk-details__text">
+        <div class="moj-filter">
+          <div class="moj-filter__content">
+            <form method="get" action="caselist-completed">
+              <input type="hidden" name="searchMVP" value="{{ f.search }}">
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Stage</legend>
+                <input type="hidden" name="filterStageMVP" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in MVP_STAGE_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStage-{{ loop.index }}" name="filterStageMVP" type="checkbox" value="{{ o.v }}"{% if o.v in sf.stage %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStage-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                <input type="hidden" name="filterStatusMVP" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in MVP_STATUS_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusMVP" type="checkbox" value="{{ o.v }}"{% if o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </details>
+    {% endif %}
+
+    {% if active == 'my' and usersWithCases %}
+    <form method="get" action="caselist" class="govuk-!-margin-bottom-5" id="mvp-myassignee-form">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="myAssignee-input">Change assignee</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <select class="govuk-select" id="myAssignee-input" name="myAssignee">
+              {% for n in usersWithCases %}<option value="{{ n }}"{% if n == myAssignee %} selected{% endif %}>{{ n }}</option>{% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Change</button>
+        </div>
+      </div>
+    </form>
+    <script>
+      // Enhance "Change assignee" into a single-select autocomplete over all users
+      // with cases. Deferred so the accessible-autocomplete lib (pageScripts) is ready.
+      document.addEventListener('DOMContentLoaded', function () {
+        var sel = document.getElementById('myAssignee-input')
+        if (sel && typeof accessibleAutocomplete === 'function') {
+          accessibleAutocomplete.enhanceSelectElement({
+            selectElement: sel, autoselect: false, defaultValue: {{ myAssignee | dump | safe }},
+            minLength: 1, showAllValues: true, confirmOnBlur: true, displayMenu: 'overlay'
+          })
+        }
+      })
+    </script>
+    {% endif %}
+
+    <form method="get" action="caselist-assign" id="mvp-cases-form">
+      <button type="submit" id="mvp-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Select</th>
+            {{ sortHeader("id", "ID", view) }}
+            {{ sortHeader("business", "Business", view) }}
+            {{ sortHeader("sbi", "SBI", view) }}
+            {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
+            {{ sortHeader("value", "Value (£K)", view, "app-th-nowrap") }}
+            {{ sortHeader("stage", "Stage", view) }}
+            {{ sortHeader("status", "Status", view, "custom-width-130") }}
+            {{ sortHeader("assignee", "Assignee", view) }}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% if view.rows.length == 0 %}
+          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="9">No cases to show.</td></tr>
+          {% endif %}
+          {% for c in view.rows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="gr-cases-{{ c.id }}" name="selectCaseMVP" value="{{ c.id }}">
+                <label class="govuk-label govuk-checkboxes__label" for="gr-cases-{{ c.id }}"><span class="govuk-visually-hidden">Select {{ c.id }}</span></label>
+              </div>
+            </td>
+            <td class="govuk-table__cell"><a class="govuk-link" href="caseMVP/tasklist-stage">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{{ c.business }}</td>
+            <td class="govuk-table__cell">{{ c.sbi }}</td>
+            <td class="govuk-table__cell">{{ c.submitted }}</td>
+            <td class="govuk-table__cell">{{ c.valueK }}</td>
+            <td class="govuk-table__cell">{{ c.stage or "—" }}</td>
+            <td class="govuk-table__cell">
+              {% if c.status == "live" %}
+                {% if data.caseStageMVP %}<strong class="{{ data.caseStatusTagMVP }}">{{ data.caseStatusMVP }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}
+              {% else %}
+                <strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>
+              {% endif %}
+            </td>
+            <td class="govuk-table__cell">{{ c.assignee }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    {% if view.totalPages > 1 %}
+    <nav class="moj-pagination" aria-label="results">
+      <p class="moj-pagination__results">Showing <b>{{ view.startIdx + 1 }}</b> to <b>{{ view.endIdx }}</b> of <b>{{ view.total }}</b> results</p>
+      <ul class="moj-pagination__list">
+        {% if view.page > 1 %}
+        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+        {% for n in range(1, view.totalPages + 1) %}
+        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">{{ n }}</a></li>
+        {% endfor %}
+        {% if view.page < view.totalPages %}
+        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+<script>
+  // Enable the "Assign" button only once one or more Select boxes are ticked.
+  (function () {
+    var form = document.getElementById('mvp-cases-form')
+    if (!form) return
+    var btn = document.getElementById('mvp-assign-btn')
+    var boxes = form.querySelectorAll('input[name="selectCaseMVP"]')
+    function sync () {
+      var any = false
+      boxes.forEach(function (b) { if (b.checked) any = true })
+      btn.disabled = !any
+      btn.setAttribute('aria-disabled', String(!any))
+    }
+    boxes.forEach(function (b) { b.addEventListener('change', sync) })
+    sync()
+  })()
+</script>
+{% endmacro %}
+
+{# --- Single "All cases" tab for a per-scheme caselist (e.g. GTIF). Reuses the
+   GrassMVP case data + SBI search + Status filter + sortable table, but renders
+   only ONE tab. GET forms submit to the current page (action=""); shared links
+   (case detail, Assign) point at the GrassMVP routes since the data is shared. #}
+{% macro schemeAllCases(view, f) %}
+{% set f = f or { status: [], search: "" } %}
+{% set MVP_STATUS_OPTS = [
+  { v: "application-received", n: "Application received" }, { v: "in-review", n: "In review" },
+  { v: "on-hold", n: "On hold" }, { v: "agreement-drafted", n: "Agreement drafted" },
+  { v: "agreement-offered", n: "Agreement offered" }, { v: "agreement-accepted", n: "Agreement accepted" },
+  { v: "rejected", n: "Rejected" }, { v: "withdrawn", n: "Withdrawn" }
+] %}
+{% set MVP_STATUS_NAMES = {
+  "application-received": "Application received", "in-review": "In review",
+  "on-hold": "On hold", "agreement-drafted": "Agreement drafted",
+  "agreement-offered": "Agreement offered", "agreement-accepted": "Agreement accepted",
+  rejected: "Rejected", withdrawn: "Withdrawn"
+} %}
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">All cases</li>
+  </ul>
+
+  <div class="govuk-tabs__panel" id="cases">
+
+    {# Permanent SBI search #}
+    <form method="get" action="" class="govuk-!-margin-bottom-4">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <label class="govuk-label govuk-label--s" for="searchMVP">Search by SBI</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+            <input class="govuk-input" id="searchMVP" name="searchMVP" type="search" value="{{ f.search }}">
+          </div>
+          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
+        </div>
+      </div>
+    </form>
+
+    {# Selected filters — removable tags (search + status) #}
+    {% if f.status.length or f.search %}
+    <div class="moj-filter__selected govuk-!-margin-bottom-3">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags">
+        {% if f.search %}
+        <li><a href="?searchMVP=&amp;filterStatusMVP=_unchecked{% for s in f.status %}&amp;filterStatusMVP={{ s }}{% endfor %}" class="moj-filter__tag govuk-link">SBI: {{ f.search }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endif %}
+        {% for v in f.status %}
+        <li><a href="?searchMVP={{ f.search | urlencode }}&amp;filterStatusMVP=_unchecked{% for s in f.status %}{% if s != v %}&amp;filterStatusMVP={{ s }}{% endif %}{% endfor %}" class="moj-filter__tag govuk-link">{{ MVP_STATUS_NAMES[v] or v }} <span class="govuk-visually-hidden">Remove filter</span></a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {# Filter list — Status + Apply #}
+    <details class="govuk-details govuk-!-margin-bottom-5">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">filter list</span></summary>
+      <div class="govuk-details__text">
+        <div class="moj-filter">
+          <div class="moj-filter__content">
+            <form method="get" action="">
+              <input type="hidden" name="searchMVP" value="{{ f.search }}">
+              <fieldset class="govuk-fieldset govuk-!-margin-bottom-4">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Status</legend>
+                <input type="hidden" name="filterStatusMVP" value="_unchecked">
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                  {% for o in MVP_STATUS_OPTS %}
+                  <div class="govuk-checkboxes__item"><input class="govuk-checkboxes__input" id="fStatus-{{ loop.index }}" name="filterStatusMVP" type="checkbox" value="{{ o.v }}"{% if o.v in f.status %} checked{% endif %}><label class="govuk-label govuk-checkboxes__label" for="fStatus-{{ loop.index }}">{{ o.n }}</label></div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              <button type="submit" class="govuk-button" data-module="govuk-button">Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <form method="get" action="/GrassMVP/caselist-assign" id="mvp-cases-form">
+      <button type="submit" id="mvp-assign-btn" disabled aria-disabled="true" class="govuk-button" data-module="govuk-button">Assign</button>
+
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th class="govuk-table__header" scope="col">Select</th>
+            {{ sortHeader("id", "ID", view) }}
+            {{ sortHeader("business", "Business", view) }}
+            {{ sortHeader("sbi", "SBI", view) }}
+            {{ sortHeader("submitted", "Submitted", view, "govuk-table__header--date") }}
+            {{ sortHeader("value", "Value (£K)", view, "app-th-nowrap") }}
+            {{ sortHeader("status", "Status", view, "custom-width-130") }}
+            {{ sortHeader("assignee", "Assignee", view) }}
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% if view.rows.length == 0 %}
+          <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="8">No cases to show.</td></tr>
+          {% endif %}
+          {% for c in view.rows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell govuk-!-padding-left-1 govuk-!-padding-top-0 govuk-!-padding-bottom-0">
+              <div class="govuk-checkboxes__item govuk-checkboxes--small">
+                <input type="checkbox" class="govuk-checkboxes__input" id="gr-cases-{{ c.id }}" name="selectCaseMVP" value="{{ c.id }}">
+                <label class="govuk-label govuk-checkboxes__label" for="gr-cases-{{ c.id }}"><span class="govuk-visually-hidden">Select {{ c.id }}</span></label>
+              </div>
+            </td>
+            <td class="govuk-table__cell"><a class="govuk-link" href="/GrassMVP/caseMVP/tasklist-stage">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{{ c.business }}</td>
+            <td class="govuk-table__cell">{{ c.sbi }}</td>
+            <td class="govuk-table__cell">{{ c.submitted }}</td>
+            <td class="govuk-table__cell">{{ c.valueK }}</td>
+            <td class="govuk-table__cell">
+              {% if c.status == "live" %}
+                {% if data.caseStageMVP %}<strong class="{{ data.caseStatusTagMVP }}">{{ data.caseStatusMVP }}</strong>{% else %}<strong class="govuk-tag govuk-tag--grey">Application received</strong>{% endif %}
+              {% else %}
+                <strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>
+              {% endif %}
+            </td>
+            <td class="govuk-table__cell">{{ c.assignee }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+
+    {% if view.totalPages > 1 %}
+    <nav class="moj-pagination" aria-label="results">
+      <p class="moj-pagination__results">Showing <b>{{ view.startIdx + 1 }}</b> to <b>{{ view.endIdx }}</b> of <b>{{ view.total }}</b> results</p>
+      <ul class="moj-pagination__list">
+        {% if view.page > 1 %}
+        <li class="moj-pagination__item moj-pagination__item--prev"><a class="moj-pagination__link" href="?page={{ view.page - 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Previous<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+        {% for n in range(1, view.totalPages + 1) %}
+        <li class="moj-pagination__item{% if n == view.page %} moj-pagination__item--active{% endif %}"><a class="moj-pagination__link" href="?page={{ n }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">{{ n }}</a></li>
+        {% endfor %}
+        {% if view.page < view.totalPages %}
+        <li class="moj-pagination__item moj-pagination__item--next"><a class="moj-pagination__link" href="?page={{ view.page + 1 }}&amp;sort={{ view.sort }}&amp;dir={{ view.dir }}">Next<span class="govuk-visually-hidden"> set of pages</span></a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+<script>
+  (function () {
+    var form = document.getElementById('mvp-cases-form')
+    if (!form) return
+    var btn = document.getElementById('mvp-assign-btn')
+    var boxes = form.querySelectorAll('input[name="selectCaseMVP"]')
+    function sync () { var any = false; boxes.forEach(function (b) { if (b.checked) any = true }); btn.disabled = !any; btn.setAttribute('aria-disabled', String(!any)) }
+    boxes.forEach(function (b) { b.addEventListener('change', sync) })
+    sync()
+  })()
+</script>
+{% endmacro %}

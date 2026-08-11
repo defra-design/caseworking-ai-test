@@ -35,7 +35,7 @@ module.exports = {
     { id: 'WMP-6A8-DXE', business: 'Blackthorn Woodland Ltd',      sbi: '205110293', appDate: '5 Jan 2026',  stage: 'Application', status: 'Application received', tag: 'grey',   appliedAreaHa: 24, fcAreaHa: null },
     { id: 'WMP-3K1-QWZ', business: 'Fellside Forestry',            sbi: '210442087', appDate: '12 Jan 2026', stage: 'Application', status: 'In review',            tag: 'blue',   appliedAreaHa: 40, fcAreaHa: null },
     { id: 'WMP-9B4-HMT', business: 'Oakridge Estate',              sbi: '208773451', appDate: '19 Jan 2026', stage: 'Application', status: 'On hold',              tag: 'yellow', appliedAreaHa: 15, fcAreaHa: null },
-    { id: 'WMP-2F7-LPR', business: 'Greenacre Land Management',    sbi: '212095668', appDate: '2 Feb 2026',  stage: 'Application', status: 'In review',            tag: 'blue',   appliedAreaHa: 62, fcAreaHa: null },
+    { id: 'WMP-2F7-LPR', business: 'Greenacre Land Management',    sbi: '212095668', appDate: '2 Feb 2026',  stage: 'Payments',    status: 'Approved',             tag: 'green',  appliedAreaHa: 62, fcAreaHa: null },
     { id: 'WMP-8D5-CVN', business: 'Willowbank Farm',              sbi: '206338712', appDate: '9 Feb 2026',  stage: 'Application', status: 'Application received', tag: 'grey',   appliedAreaHa: 8,  fcAreaHa: null },
     { id: 'WMP-4H9-XKB', business: 'Thornwood Forestry Ltd',       sbi: '214870025', appDate: '16 Feb 2026', stage: 'Agreement',   status: 'Agreement drafted',    tag: 'blue',   appliedAreaHa: 33, fcAreaHa: null },
     { id: 'WMP-1G6-JRT', business: 'Hazelcombe Estate',            sbi: '209516640', appDate: '23 Feb 2026', stage: 'Agreement',   status: 'Agreement offered',    tag: 'blue',   appliedAreaHa: 27, fcAreaHa: null },
@@ -47,7 +47,7 @@ module.exports = {
     { id: 'WMP-2N5-KDG', business: 'Beechwood Holdings',           sbi: '208140576', appDate: '6 Apr 2026',  stage: 'Application', status: 'Application received', tag: 'grey',   appliedAreaHa: 12, fcAreaHa: null },
     { id: 'WMP-8L3-WQF', business: 'Cedarvale Forestry',           sbi: '212659013', appDate: '13 Apr 2026', stage: 'Agreement',   status: 'Agreement offered',    tag: 'blue',   appliedAreaHa: 22, fcAreaHa: null },
     { id: 'WMP-4B6-HJV', business: 'Mossgill Farm',                sbi: '210386742', appDate: '20 Apr 2026', stage: 'Payments',    status: 'Agreement accepted',   tag: 'green',  appliedAreaHa: 16, fcAreaHa: 16, entDate: '26 Jun 2026' },
-    { id: 'WMP-1T9-RXN', business: 'Elmwood Land Co',              sbi: '215902461', appDate: '27 Apr 2026', stage: 'Application', status: 'On hold',              tag: 'yellow', appliedAreaHa: 37, fcAreaHa: null },
+    { id: 'WMP-1T9-RXN', business: 'Elmwood Land Co',              sbi: '215902461', appDate: '27 Apr 2026', stage: 'Payments',    status: 'Approved',             tag: 'green',  appliedAreaHa: 37, fcAreaHa: null },
     { id: 'WMP-7P2-CLM', business: 'Foxglen Woodland Ltd',         sbi: '207419835', appDate: '4 May 2026',  stage: 'Application', status: 'In review',            tag: 'blue',   appliedAreaHa: 9,  fcAreaHa: null },
     { id: 'WMP-5K4-DGB', business: 'Highfell Estate',              sbi: '213567190', appDate: '11 May 2026', stage: 'Payments',    status: 'Agreement accepted',   tag: 'green',  appliedAreaHa: 70, fcAreaHa: 64, entDate: '6 Jul 2026' }
   ]

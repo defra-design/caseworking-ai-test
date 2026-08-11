@@ -1,0 +1,24 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "agreement" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if data.caseStageWmp == 'agreement' %}
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">Waiting for the customer to claim</h1>
+      <p class="govuk-body">The customer has been notified that they can claim against their agreement and you don’t need to do anything else.</p>
+    {% else %}
+      <h1 class="govuk-heading-l govuk-!-margin-top-6">Agreement</h1>
+      <p class="govuk-body">There is no agreement to show yet. Complete the Forestry Commission review and notify the customer first — see the <a class="govuk-link" href="tasks">Tasks</a> tab.</p>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

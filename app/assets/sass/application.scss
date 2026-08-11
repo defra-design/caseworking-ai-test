@@ -1742,6 +1742,111 @@
   top: 7px;
 }
 
+// -----------------------------------------------------------------------------
+// Switch (Off/On pill toggle) — modelled on the GOV.UK video-appointment-service
+// toggle (the same two-segment Off/On switch the design-system backlog researched)
+// and the Intelligence Community Design System "Switch". Used on the GrassMVP
+// calculations pages as the "Fails only" filter.
+//
+// Accessibility: it is a real <input type="checkbox" role="switch"> wrapped in a
+// <label> (so its accessible name is "Fails only" and Space toggles it); the
+// Off/On visuals are pure CSS driven by :checked, so no JS is needed to show
+// state. A visible GDS focus ring is drawn on the pill via :focus. JS only
+// auto-submits the form on change; a <noscript> Apply button is the no-JS path.
+// -----------------------------------------------------------------------------
+.app-calc-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.app-switch-form {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+.app-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+.app-switch__label {
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1;
+}
+.app-switch__input {
+  // Kept in the DOM and focusable, but visually replaced by the pill.
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}
+.app-switch__toggle {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 96px;
+  height: 40px;
+  border-radius: 20px;
+  background: #f3f2f1;                 // GOV.UK light grey track
+  box-shadow: inset 0 0 0 2px #929191;
+}
+.app-switch__slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 45px;
+  height: 34px;
+  border-radius: 17px;
+  background: #4c5457;                 // off = dark grey (matches the mock)
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  z-index: 1;
+}
+.app-switch__off,
+.app-switch__on {
+  position: absolute;
+  top: 0;
+  width: 48px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  z-index: 2;
+}
+.app-switch__off { left: 0;  color: #ffffff; }   // active (off) by default
+.app-switch__on  { right: 0; color: #505a5f; }
+.app-switch__input:checked ~ .app-switch__toggle .app-switch__slider {
+  transform: translateX(45px);
+  background: #1d70b8;                 // on = GOV.UK blue
+}
+.app-switch__input:checked ~ .app-switch__toggle .app-switch__off { color: #505a5f; }
+.app-switch__input:checked ~ .app-switch__toggle .app-switch__on  { color: #ffffff; }
+.app-switch__input:focus ~ .app-switch__toggle {
+  outline: 3px solid #ffdd00;          // GDS focus yellow
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 2px #0b0c0c, 0 0 0 3px #ffdd00;
+}
+.app-switch__input:focus:not(:focus-visible) ~ .app-switch__toggle {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #929191;
+}
+
+// Case admin console — inline "Create entitlement" form sits in a bordered box,
+// as in the entitlements design.
+.app-console-form {
+  border: 1px solid $govuk-border-colour;
+  padding: govuk-spacing(4);
+  margin-top: govuk-spacing(2);
+}
+
 
 
 

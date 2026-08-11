@@ -1,0 +1,18 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WMP/includes/_caseWmp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "claims" %}
+{% include "WMP/includes/_caseWmp-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Claims</h1>
+    <p class="govuk-body">The customer has been notified that they can claim against their agreement. Any claim they submit will appear here.</p>
+    <p class="govuk-body"><strong class="govuk-tag govuk-tag--purple">Awaiting claim</strong></p>
+  </div>
+</div>
+{% endblock %}

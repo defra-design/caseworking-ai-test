@@ -1,0 +1,113 @@
+{% extends "layouts/main.html" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{#
+  WMP "Assign" screen. Reached from the caselist Assign button, which submits the
+  ticked Select boxes (selectCaseWmp). The route passes the matching `selected`
+  cases and the `caseworkers`. Submitting records the chosen caseworker in the
+  session and returns to the caselist.
+#}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    <a href="caselist" class="govuk-back-link">Back to cases</a>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% set verb = "Reassign" if anyAssigned else "Assign" %}
+
+        <h1 class="govuk-heading-l govuk-!-margin-top-4">{{ verb }} {{ "cases" if selected.length != 1 else "case" }}</h1>
+
+        {% if selected.length == 0 %}
+          <p class="govuk-body">No cases were selected. <a class="govuk-link" href="caselist">Return to cases</a> and tick one or more, then choose Assign.</p>
+        {% else %}
+
+          <div class="govuk-inset-text">
+            {{ verb }}ing <strong>{{ selected.length }}</strong> selected case{{ "s" if selected.length != 1 }}.
+          </div>
+
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Case ID</th>
+                <th scope="col" class="govuk-table__header">Business</th>
+                <th scope="col" class="govuk-table__header">Current assignee</th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for c in selected %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ c.id }}</td>
+                <td class="govuk-table__cell">{{ c.business }}</td>
+                <td class="govuk-table__cell">{{ c.assignee or "Not assigned" }}</td>
+                <td class="govuk-table__cell">
+                  <a class="govuk-link" href="caselist-assign?{% for id in c.removeIds %}selectCaseWmp={{ id }}{% if not loop.last %}&amp;{% endif %}{% endfor %}">Remove<span class="govuk-visually-hidden"> {{ c.business }} from the list</span></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <form action="assign-confirm" method="get">
+
+            {% for c in selected %}
+            <input type="hidden" name="selectCaseWmp" value="{{ c.id }}">
+            {% endfor %}
+
+            <div class="govuk-form-group govuk-!-width-two-thirds">
+              <label class="govuk-label govuk-label--s" for="wmpAssignee">Caseworker</label>
+              <div class="govuk-hint">Start typing a name, or pick from the list. Any caseworker, across all teams.</div>
+              <select class="govuk-select" id="wmpAssignee" name="wmpAssignee">
+                <option value="">Select a caseworker</option>
+                {% for cw in caseworkers %}
+                <option value="{{ cw }}">{{ cw }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="wmpAssignNote">Notes (optional)</label>
+              <div id="wmpAssignNote-hint" class="govuk-hint">All notes will be saved for auditing purposes.</div>
+              <textarea class="govuk-textarea" id="wmpAssignNote" name="wmpAssignNote" rows="5" aria-describedby="wmpAssignNote-hint"></textarea>
+            </div>
+
+            <button type="submit" class="govuk-button" data-module="govuk-button">{{ verb }}</button><br>
+            <a href="caselist" class="govuk-link">Cancel</a>
+
+          </form>
+
+        {% endif %}
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var select = document.getElementById('wmpAssignee')
+      if (!select || typeof accessibleAutocomplete !== 'function') return
+      accessibleAutocomplete.enhanceSelectElement({
+        selectElement: select, autoselect: false, defaultValue: '',
+        minLength: 1, showAllValues: true, confirmOnBlur: true,
+        displayMenu: 'overlay', placeholder: 'Start typing a caseworker name'
+      })
+    })()
+  </script>
+{% endblock %}

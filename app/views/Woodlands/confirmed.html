@@ -27,7 +27,13 @@
           Total amount available to claim: <strong>{{ claimDisplay }}</strong>
         </div>
 
+        {% if data.wmpEntReturn %}
+        <p class="govuk-body">You can now return to the caseworking task to record the claim details.</p>
+        <a href="{{ data.wmpEntReturn }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">Return to the case task</a>
+        <p class="govuk-body">You can then close this tab.</p>
+        {% else %}
         <p class="govuk-body">You can now return to Caseworking to complete the task and then close this window.</p>
+        {% endif %}
 
       </div>
     </div>

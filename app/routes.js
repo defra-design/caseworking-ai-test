@@ -1343,6 +1343,13 @@ router.get('/agreementStage1', function (req, res) {
   res.redirect('/FRPS-D1_target/caselist');
 });
 
+router.get('/readMoreT1', function (req, res) {
+  // "read full text" on the D1 notes page — expands the truncated note and
+  // returns to the notes tab.
+  req.session.data.readMore = 'Yes';
+  res.redirect('/FRPS-D1_target/notes');
+});
+
 // --- Agreement task routes ---
 
 // Note: original task1AgT1 had a bug — noteActionAgreeTask1 was set from decisionTask1 (wrong key). Fixed here.
@@ -1877,6 +1884,10 @@ const calcPageKeys = {
   '/Grasslands/caseGrass/calculations-new2': 'caseGrassNew2',
   '/Grasslands/caseGrass/calculations-mid':  'caseGrassMid',
   '/Grasslands/caseGrass/calculations-old':  'caseGrassOld',
+  '/GrassMVP/caseMVP/calculations-new':  'caseMVP',
+  '/GrassMVP/caseMVP/calculations-new2': 'caseMVPNew2',
+  '/GrassMVP/caseMVP/calculations-mid':  'caseMVPMid',
+  '/GrassMVP/caseMVP/calculations-old':  'caseMVPOld',
 };
 
 // Before rendering any calc page, swap in that page's own filter state so settings on one page
@@ -1928,6 +1939,10 @@ router.get('/largeCalcFilter', function (req, res) {
     'caseGrassNew2': '/Grasslands/caseGrass/calculations-new2',
     'caseGrassMid':  '/Grasslands/caseGrass/calculations-mid',
     'caseGrassOld':  '/Grasslands/caseGrass/calculations-old',
+    'caseMVP':     '/GrassMVP/caseMVP/calculations-new',
+    'caseMVPNew2': '/GrassMVP/caseMVP/calculations-new2',
+    'caseMVPMid':  '/GrassMVP/caseMVP/calculations-mid',
+    'caseMVPOld':  '/GrassMVP/caseMVP/calculations-old',
   };
   const filter = req.query.filter;
   const dest   = targets[req.query.sort] ? req.query.sort : req.query.from;
@@ -3310,7 +3325,18 @@ function wdLoad () {
   delete require.cache[require.resolve(woodlandsCasesPath)]
   return require(woodlandsCasesPath)
 }
-function wdCases () { return wdLoad().cases }
+// Metadata sync: the WMP caseworking area (data/wmp-cases.js) is the MASTER record
+// for any case it shares an id with. Where a Woodlands case and a WMP case have the
+// same id, overlay the WMP business + SBI so the two areas can never disagree (e.g.
+// WMP-6A8-DXE is "Mellor & Sons" in WMP, and that wins over the Woodlands copy).
+function wdCases () {
+  const wmpById = {}
+  loadWmpCases().forEach(function (m) { wmpById[m.id] = m })
+  return wdLoad().cases.map(function (c) {
+    const m = wmpById[c.id]
+    return m ? Object.assign({}, c, { business: m.business, sbi: m.sbi }) : c
+  })
+}
 function wdFindCase (id) { return wdCases().find(function (c) { return c.id === id }) }
 
 // £ with thousands separators, no decimals.
@@ -3433,9 +3459,18 @@ router.get('/Woodlands/caselist', function (req, res) {
 })
 
 // Calculate entitlement — the input screen for a single application.
+// When reached from the WMP caseworking task (?from=wmp) the journey opens in a new
+// tab, so record where to return to; otherwise clear it so the normal Woodlands
+// journey never shows a WMP return link.
 router.get('/Woodlands/calculate', function (req, res) {
   const c = wdFindCase(req.query.id)
   if (!c) return res.redirect('/Woodlands/caselist')
+  if (req.query.from === 'wmp') req.session.data.wmpEntReturn = '/WMP/caseWmp/record-eligible-area'
+  else delete req.session.data.wmpEntReturn
+  // The kit snapshots session data into the template `data` before this handler
+  // runs, so mirror the change onto res.locals.data for THIS render too (otherwise
+  // the back link only updates from the next page onwards).
+  if (res.locals.data) res.locals.data.wmpEntReturn = req.session.data.wmpEntReturn
   res.render('Woodlands/calculate', { c: c, values: {}, error: null })
 })
 
@@ -3489,6 +3524,105 @@ router.post('/Woodlands/confirm', function (req, res) {
   })
 })
 
+// ----- Case admin console (new entitlements design) -----
+// A single, stateful page (the "Claims" tab) that replaces the multi-screen
+// calculate -> confirm -> confirmed flow. It is case-driven (?id=<caseId>) and
+// reads the case identity (id / business / SBI / status) from the Woodlands data
+// so the console header stays in sync with the caselist row it was opened from.
+//
+// Woodlands has exactly ONE entitlement available per applicant ("Woodland
+// creation"), so the entitlement lifecycle has three positions, shown across the
+// two demo cases wired from the caselist:
+//   - Empty (2nd caselist case): no entitlement, no claim. You can create the one
+//     entitlement; once created it moves to "Awaiting a claim" and you cannot
+//     create another (1 of 1).
+//   - Claimed (3rd caselist case): the entitlement has been created AND a claim
+//     submitted against it. The entitlement is now locked — it cannot be created,
+//     changed or deleted.
+const WD_CONSOLE = {
+  scheme: 'Woodland Creation',
+  unitPrice: 1200,      // £ per hectare
+  maxCreatable: 1       // Woodlands: only one "Woodland creation" entitlement per applicant
+}
+// The 3rd caselist case loads pre-populated with a created entitlement + a claim.
+const WD_CONSOLE_CLAIMED_ID = 'WMP-2F7-LPR'
+const WD_CONSOLE_CLAIM = {
+  entitledHa: 4.5, entitledValue: 5400,
+  claimedHa: 4.2, claimedValue: 5040,
+  paymentDate: '7 August 2026',
+  status: 'Payment scheduled', statusTag: 'blue'
+}
+// The single entitlement created through the console this session, per case id.
+// {} -> { 'WMP-1T9-RXN': { ha, value } }. At most one entry per case (max 1).
+function wdConsoleCreatedFor (req, id) {
+  const map = (req.session.data && req.session.data.wdConsoleCreated) || {}
+  return map[id] || null
+}
+// Render the console for one case with its current state. `opts` carries transient
+// form state (open form, entered value, validation error).
+function wdRenderConsole (req, res, id, opts) {
+  opts = opts || {}
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  const claimed = (id === WD_CONSOLE_CLAIMED_ID)
+  // Session-created entitlement (empty case only — the claimed case is locked).
+  const created = claimed ? null : wdConsoleCreatedFor(req, id)
+  const createdCount = claimed ? 1 : (created ? 1 : 0)
+  const canCreate = createdCount < WD_CONSOLE.maxCreatable && !claimed
+  res.render('Woodlands/case-admin', {
+    con: WD_CONSOLE,
+    c: c,
+    unitPriceDisplay: wdGbp(WD_CONSOLE.unitPrice),
+    createdCount: createdCount,
+    canCreate: canCreate,
+    awaiting: (created ? [{ ref: id + '/C1', haDisplay: created.ha, valueDisplay: wdGbp(created.value) }] : []),
+    claim: claimed ? {
+      ref: id + '/C1',
+      entitledDisplay: WD_CONSOLE_CLAIM.entitledHa + ' ha · ' + wdGbp(WD_CONSOLE_CLAIM.entitledValue),
+      claimedDisplay: WD_CONSOLE_CLAIM.claimedHa + ' ha · ' + wdGbp(WD_CONSOLE_CLAIM.claimedValue),
+      paymentDate: WD_CONSOLE_CLAIM.paymentDate,
+      status: WD_CONSOLE_CLAIM.status,
+      statusTag: WD_CONSOLE_CLAIM.statusTag,
+      differs: WD_CONSOLE_CLAIM.claimedValue !== WD_CONSOLE_CLAIM.entitledValue
+    } : null,
+    // Only open the create form where creating is actually allowed.
+    openForm: opts.openForm === true && canCreate,
+    // Show the "Entitlement created" confirmation after a successful create.
+    justCreated: opts.justCreated === true && created !== null,
+    value: opts.value || '',
+    error: opts.error || null
+  })
+}
+
+router.get('/Woodlands/case-admin', function (req, res) {
+  wdRenderConsole(req, res, req.query.id, {
+    openForm: req.query.create === '1',
+    justCreated: req.query.created === '1'
+  })
+})
+
+// Save the applicant's single entitlement into "Awaiting a claim" (session).
+router.post('/Woodlands/case-admin', function (req, res) {
+  const id = req.body.id
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/Woodlands/caselist')
+  const backToCase = '/Woodlands/case-admin?id=' + encodeURIComponent(id)
+  // A claim has been made — the entitlement is locked; nothing to create.
+  if (id === WD_CONSOLE_CLAIMED_ID) return res.redirect(backToCase)
+  const raw = (req.body.ha === undefined ? '' : req.body.ha).toString().trim()
+  const num = Number(raw)
+  let error = null
+  if (wdConsoleCreatedFor(req, id)) error = 'An entitlement has already been created for this applicant'
+  else if (raw === '') error = 'Enter the number of hectares'
+  else if (isNaN(num) || num <= 0) error = 'Number of hectares must be a number greater than 0'
+  if (error) {
+    return wdRenderConsole(req, res, id, { openForm: true, value: raw, error: error })
+  }
+  if (!req.session.data.wdConsoleCreated) req.session.data.wdConsoleCreated = {}
+  req.session.data.wdConsoleCreated[id] = { ha: num, value: Math.round(num * WD_CONSOLE.unitPrice) }
+  res.redirect(backToCase + '&created=1')
+})
+
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker
 // is every caseworker across all teams (autocomplete-enhanced in the template).
 router.get('/Grasslands/caselist-assign', function (req, res) {
@@ -3525,6 +3659,218 @@ router.get('/Grasslands/assign-confirm', function (req, res) {
 // Back-compat: the old All-cases tab is now the context tab with ctx = all.
 router.get('/Grasslands/caselist-all', function (req, res) {
   res.redirect('/Grasslands/caselist-team?ctx=all')
+})
+
+// ============================================================
+// WMP grant — Woodland Management Plan (PA3): a standalone functional area for
+// the Forestry Commission review + claim-creation journey. A single "All cases"
+// tab caselist (search by Case ID or SBI, Status filter, sortable, Assign) over
+// data/wmp-cases.js, plus the case-detail journey in views/WMP/caseWmp/.
+// Columns: Type · Case ID · Business · SBI · Submitted · Status · Assignee.
+// Reuses the generic Grasslands helpers (grassPaginate / grassArr /
+// grassTeamByCaseworker) where they aren't tied to the Grasslands data shape.
+// ============================================================
+const wmpCasesPath = path.join(__dirname, 'data', 'wmp-cases.js')
+function loadWmpCases () {
+  delete require.cache[require.resolve(wmpCasesPath)]
+  return require(wmpCasesPath).cases
+}
+
+// Status value <-> display-name maps (values match the caselist macro checkboxes).
+const WMP_STATUS_BY_VAL = {
+  'application-received': 'Application received', 'awaiting-fc-review': 'Awaiting FC review',
+  'fc-approved': 'FC approved', 'rejected-by-fc': 'Rejected by FC',
+  'agreement-accepted': 'Agreement accepted', 'awaiting-claim': 'Awaiting claim'
+}
+const WMP_VAL_BY_STATUS = {}
+Object.keys(WMP_STATUS_BY_VAL).forEach(function (v) { WMP_VAL_BY_STATUS[WMP_STATUS_BY_VAL[v]] = v })
+
+// Effective status for a row — the live journey case (Mellor & Sons) renders its
+// status from the session, defaulting to "Awaiting FC review".
+function wmpEffStatus (c, req) {
+  if (c.status === 'live') {
+    const d = req.session.data || {}
+    return d.caseStageWmp ? d.caseStatusWmp : 'Awaiting FC review'
+  }
+  return c.status
+}
+
+// ----- Sorting (server-side, whole filtered set before pagination). Default:
+// submitted ascending (oldest first). Dates are GOV.UK style "D Month YYYY". -----
+const WMP_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+function wmpDateVal (s) {
+  const parts = String(s || '').trim().split(/\s+/)
+  if (parts.length !== 3) return 0
+  const d = parseInt(parts[0], 10)
+  const m = WMP_MONTHS.indexOf(parts[1])
+  const y = parseInt(parts[2], 10)
+  if (isNaN(d) || m === -1 || isNaN(y)) return 0
+  return new Date(y, m, d).getTime()
+}
+const WMP_SORT_KEYS = ['type', 'id', 'business', 'sbi', 'submitted', 'status', 'assignee']
+function wmpSortState (req) {
+  let sort = req.query.sort
+  if (WMP_SORT_KEYS.indexOf(sort) === -1) sort = 'submitted'
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'
+  return { sort: sort, dir: dir }
+}
+function wmpSortRows (rows, state, req) {
+  const factor = state.dir === 'desc' ? -1 : 1
+  const key = state.sort
+  return rows.slice().sort(function (a, b) {
+    if (key === 'submitted') return (wmpDateVal(a.submitted) - wmpDateVal(b.submitted)) * factor
+    let av = key === 'status' ? wmpEffStatus(a, req) : a[key]
+    let bv = key === 'status' ? wmpEffStatus(b, req) : b[key]
+    av = String(av || '').toLowerCase()
+    bv = String(bv || '').toLowerCase()
+    if (av < bv) return -1 * factor
+    if (av > bv) return 1 * factor
+    return 0
+  })
+}
+function wmpBuildView (rows, req) {
+  const sortState = wmpSortState(req)
+  const view = grassPaginate(wmpSortRows(rows, sortState, req), parseInt(req.query.page, 10))
+  view.sort = sortState.sort
+  view.dir = sortState.dir
+  return view
+}
+
+// Reassignment overrides — picking a caseworker on the assign screen stores
+// id -> assignee in the session; applied on load so it carries through without
+// mutating the data file. Assigning also moves the case into that person's team.
+function wmpApplyAssign (cases, req) {
+  const map = (req.session.data && req.session.data.wmpAssign) || {}
+  const teamOf = grassTeamByCaseworker()
+  return cases.map(function (c) {
+    if (!map[c.id]) return c
+    return Object.assign({}, c, { assignee: map[c.id], team: teamOf[map[c.id]] || c.team })
+  })
+}
+// The caselist Select checkboxes submit selectCaseWmp; normalise to an array.
+function wmpSelectedIds (req) {
+  const v = req.query.selectCaseWmp
+  if (v === undefined || v === null || v === '') return []
+  return Array.isArray(v) ? v : [v]
+}
+
+// Search (Case ID or SBI) + Status filter. Values persist in the session (the kit
+// auto-stores GET params) so they survive sort / pagination links.
+function wmpFilter (rows, req) {
+  const d = req.session.data || {}
+  const sNames = grassArr(d.filterStatusWmp).map(function (v) { return WMP_STATUS_BY_VAL[v] }).filter(Boolean)
+  const search = (d.searchWmp || '').toString().trim().toLowerCase()
+  return rows.filter(function (c) {
+    if (sNames.length && sNames.indexOf(wmpEffStatus(c, req)) === -1) return false
+    if (search) {
+      const hitId = String(c.id).toLowerCase().indexOf(search) !== -1
+      const hitSbi = String(c.sbi).toLowerCase().indexOf(search) !== -1
+      if (!hitId && !hitSbi) return false
+    }
+    return true
+  })
+}
+function wmpFilterState (req) {
+  const d = req.session.data || {}
+  return { status: grassArr(d.filterStatusWmp), search: (d.searchWmp || '').toString() }
+}
+
+// Caselist — the single "All cases" tab.
+router.get('/WMP/caselist', function (req, res) {
+  const base = wmpApplyAssign(loadWmpCases(), req)
+  const rows = wmpFilter(base, req)
+  res.render('WMP/caselist', { wmpFilters: wmpFilterState(req), view: wmpBuildView(rows, req) })
+})
+
+// Assign screen — shows the ticked case(s) and a caseworker picker.
+router.get('/WMP/caselist-assign', function (req, res) {
+  const ids = wmpSelectedIds(req)
+  const picked = wmpApplyAssign(loadWmpCases(), req).filter(function (c) { return ids.indexOf(c.id) !== -1 })
+  const anyAssigned = picked.some(function (c) { return c.assignee && c.assignee !== 'Not assigned' })
+  const selected = picked.map(function (c) {
+    return Object.assign({}, c, {
+      removeIds: picked.filter(function (o) { return o.id !== c.id }).map(function (o) { return o.id })
+    })
+  })
+  let caseworkers = []
+  require(grasslandsTeamsPath).teams.forEach(function (t) { caseworkers = caseworkers.concat(t.caseworkers) })
+  res.render('WMP/caselist-assign', { selected: selected, caseworkers: caseworkers, anyAssigned: anyAssigned })
+})
+
+// Confirm — record the chosen caseworker against every selected case, then return
+// to the caselist where the Assignee column reflects the change.
+router.get('/WMP/assign-confirm', function (req, res) {
+  const ids = wmpSelectedIds(req)
+  const assignee = req.query.wmpAssignee
+  if (assignee && ids.length) {
+    const map = req.session.data.wmpAssign || {}
+    ids.forEach(function (id) { map[id] = assignee })
+    req.session.data.wmpAssign = map
+  }
+  res.redirect('/WMP/caselist')
+})
+
+// ----- WMP case-detail journey (views/WMP/caseWmp/) -----
+// The live journey case is Mellor & Sons (WMP-6A8-DXE). Progress is held in the
+// session as caseStageWmp, and the caselist status tag is mirrored into
+// caseStatusWmp / caseStatusTagWmp so it updates as the caseworker advances.
+// Stages: (unset)=awaiting-fc -> fc-accepted -> area-recorded|area-not-recorded
+//         -> notified|not-notified -> agreement (Awaiting claim). fc-rejected ends it.
+// The view pages are auto-rendered by the kit; only the POST actions live here.
+function wmpSetStatus (req, text, tagClass) {
+  req.session.data.caseStatusWmp = text
+  req.session.data.caseStatusTagWmp = tagClass
+}
+const WMP_CASE_KEYS = [
+  'caseStageWmp', 'caseStatusWmp', 'caseStatusTagWmp', 'agreementStageWmp',
+  'decisionFcWmp', 'fcRejectReasonWmp', 'decisionAreaWmp', 'eligibleAreaRefWmp',
+  'areaNotRecordedReasonWmp', 'decisionNotifyWmp', 'notifyCrmRefWmp', 'notNotifiedReasonWmp'
+]
+
+// FC review outcome — Accepted advances to the task list; Rejected ends the case.
+router.post('/WMP/fc-outcome', function (req, res) {
+  const d = req.session.data
+  if (d.decisionFcWmp === 'Rejected') {
+    d.caseStageWmp = 'fc-rejected'
+    wmpSetStatus(req, 'Rejected by FC', 'govuk-tag govuk-tag--red')
+  } else {
+    d.caseStageWmp = 'fc-accepted'
+    wmpSetStatus(req, 'FC approved', 'govuk-tag govuk-tag--green')
+  }
+  res.redirect('/WMP/caseWmp/tasks')
+})
+
+// Record eligible area — "recorded" completes task 1 (unlocks Notify customer);
+// "not-recorded" flags it and leaves Notify customer unable to start.
+router.post('/WMP/record-eligible-area', function (req, res) {
+  const d = req.session.data
+  d.caseStageWmp = (d.decisionAreaWmp === 'not-recorded') ? 'area-not-recorded' : 'area-recorded'
+  wmpSetStatus(req, 'FC approved', 'govuk-tag govuk-tag--green')
+  res.redirect('/WMP/caseWmp/tasks')
+})
+
+// Notify customer — "sent" completes task 2; "not-sent" flags it.
+router.post('/WMP/notify-customer', function (req, res) {
+  const d = req.session.data
+  d.caseStageWmp = (d.decisionNotifyWmp === 'not-sent') ? 'not-notified' : 'notified'
+  wmpSetStatus(req, 'FC approved', 'govuk-tag govuk-tag--green')
+  res.redirect('/WMP/caseWmp/tasks')
+})
+
+// Complete FC review — moves the case to the agreement stage (Awaiting claim),
+// which reveals the Agreement + Claims tabs.
+router.post('/WMP/complete-fc-review', function (req, res) {
+  const d = req.session.data
+  d.caseStageWmp = 'agreement'
+  d.agreementStageWmp = true
+  wmpSetStatus(req, 'Awaiting claim', 'govuk-tag govuk-tag--purple')
+  res.redirect('/WMP/caseWmp/agreement')
+})
+
+// Reset the WMP journey case back to "Awaiting FC review" (prototype convenience).
+router.get('/WMP/reset-case', function (req, res) {
+  WMP_CASE_KEYS.forEach(function (k) { delete req.session.data[k] })
+  res.redirect('/WMP/caselist')
 })
 
 makeStageRoute('/tasklistStageGrass', {
@@ -4618,4 +4964,896 @@ router.get('/endTerminateC3', function (req, res) {
     req.session.data.caseStatusTagC3 = 'govuk-tag govuk-tag--green';
   }
   res.redirect('/FRPS-D2/case3/tasklist-stage');
+});
+
+
+// ============================================================
+// GrassMVP grant type — full independent clone of the Grasslands area
+// (own views/GrassMVP/ folder, data/grassmvp-*.js, MVP scope suffix).
+// Starting point for the Grasslands MVP; isolated from Grasslands.
+// ============================================================
+
+const grassmvpTeamsPath = path.join(__dirname, 'data', 'grassmvp-teams.js')
+router.use(function (req, res, next) {
+  delete require.cache[require.resolve(grassmvpTeamsPath)]
+  const gt = require(grassmvpTeamsPath)
+  res.locals.grassmvpTeams = gt.teams
+  res.locals.grassmvpTeamNames = gt.nameById
+  next()
+})
+
+// ----- Launcher -----
+router.get('/grassmvpApplication', function (req, res) {
+  req.session.data.largeCase = 'mvp';
+  req.session.data.mvpCalcVariant = 'new';
+  res.redirect('/tasklistStageMVP');
+});
+
+// ----- Caselist data + helpers + My cases -----
+// ----- GrassMVP caselist data + routes -----
+// Cases live in data/grassmvp-cases.js (reloaded per request so edits show
+// live). Routes filter (My / team context / Completed) + paginate, then pass a
+// `view` object to the template.
+const grassmvpCasesPath = path.join(__dirname, 'data', 'grassmvp-cases.js')
+function loadMVPCases () {
+  delete require.cache[require.resolve(grassmvpCasesPath)]
+  return require(grassmvpCasesPath).cases
+}
+const MVP_COMPLETED = ['Agreement accepted', 'Rejected', 'Withdrawn']
+
+// Resolve + persist the selected context. The "Switch team" selector posts
+// ?ctx=A|B|C|all; otherwise the session's last choice is used (default Team A).
+function mvpCtx (req) {
+  const valid = ['A', 'B', 'C', 'all']
+  if (valid.indexOf(req.query.ctx) !== -1) req.session.data.mvpCtx = req.query.ctx
+  const stored = req.session.data.mvpCtx
+  return valid.indexOf(stored) !== -1 ? stored : 'A'
+}
+function mvpPaginate (rows, page) {
+  const pageSize = 20
+  const total = rows.length
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  let p = (page && page > 0) ? page : 1
+  if (p > totalPages) p = totalPages
+  const startIdx = (p - 1) * pageSize
+  const endIdx = Math.min(startIdx + pageSize, total)
+  return { rows: rows.slice(startIdx, endIdx), page: p, totalPages: totalPages, total: total, startIdx: startIdx, endIdx: endIdx }
+}
+function mvpCtxFilter (cases, ctx) {
+  return ctx === 'all' ? cases : cases.filter(function (c) { return c.team === ctx })
+}
+
+// ----- Sorting (server-side, applied to the WHOLE filtered set before
+// pagination, so clicking a column header re-sorts every case in the tab, not
+// just the 20 on the current page). Default: submitted ascending — oldest to
+// newest ("by age"). -----
+const MVP_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+function mvpDateVal (s) {
+  const parts = String(s || '').trim().split(/\s+/)
+  if (parts.length !== 3) return 0
+  const d = parseInt(parts[0], 10)
+  const m = MVP_MONTHS.indexOf(parts[1])
+  const y = parseInt(parts[2], 10)
+  if (isNaN(d) || m === -1 || isNaN(y)) return 0
+  return new Date(y, m, d).getTime()
+}
+const MVP_SORT_KEYS = ['id', 'business', 'sbi', 'submitted', 'value', 'status', 'stage', 'assignee']
+function mvpSortState (req) {
+  let sort = req.query.sort
+  if (MVP_SORT_KEYS.indexOf(sort) === -1) sort = 'submitted' // default: by age
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'        // default: oldest first
+  return { sort: sort, dir: dir }
+}
+function mvpSortRows (rows, state, req) {
+  const factor = state.dir === 'desc' ? -1 : 1
+  const key = state.sort
+  return rows.slice().sort(function (a, b) {
+    if (key === 'submitted') {
+      return (mvpDateVal(a.submitted) - mvpDateVal(b.submitted)) * factor
+    }
+    if (key === 'value') {
+      return ((a.valueK || 0) - (b.valueK || 0)) * factor
+    }
+    if (key === 'stage') {
+      // Pipeline order (Application < Agreement < Payments), not alphabetical.
+      // Only MVP rows carry `stage`; elsewhere every row ranks equal (no-op).
+      return (mvpStageRank(a) - mvpStageRank(b)) * factor
+    }
+    let av = key === 'status' ? mvpEffStatus(a, req) : a[key]
+    let bv = key === 'status' ? mvpEffStatus(b, req) : b[key]
+    av = String(av || '').toLowerCase()
+    bv = String(bv || '').toLowerCase()
+    if (av < bv) return -1 * factor
+    if (av > bv) return 1 * factor
+    return 0
+  })
+}
+// Sort the full filtered set, paginate, and attach the active sort state so the
+// template can render header links + aria-sort and keep sort across page links.
+function mvpBuildView (rows, req) {
+  const sortState = mvpSortState(req)
+  const view = mvpPaginate(mvpSortRows(rows, sortState, req), parseInt(req.query.page, 10))
+  view.sort = sortState.sort
+  view.dir = sortState.dir
+  return view
+}
+
+// Completed cases (Agreement accepted / Rejected / Withdrawn) are shown only on
+// the Completed tab — they are excluded from My and the context tab.
+function mvpActive (cases) {
+  return cases.filter(function (c) { return MVP_COMPLETED.indexOf(c.status) === -1 })
+}
+
+// caseworker name -> team id (e.g. "M Walker" -> "A"), from grassmvp-teams.js.
+function mvpTeamByCaseworker () {
+  const map = {}
+  require(grassmvpTeamsPath).teams.forEach(function (t) {
+    t.caseworkers.forEach(function (cw) { map[cw] = t.id })
+  })
+  return map
+}
+// Reassignment overrides — picking a caseworker on the assign screen stores
+// id -> assignee in the session; applied on load so a reassignment carries
+// through every tab without mutating the data file. Assigning a case to a
+// person also moves it into that person's team context (every case has a team).
+function mvpApplyAssign (cases, req) {
+  const map = (req.session.data && req.session.data.mvpAssign) || {}
+  const teamOf = mvpTeamByCaseworker()
+  return cases.map(function (c) {
+    if (!map[c.id]) return c
+    const assignee = map[c.id]
+    return Object.assign({}, c, { assignee: assignee, team: teamOf[assignee] || c.team })
+  })
+}
+// The caselist Select checkboxes submit selectCaseMVP; normalise to an array
+// (one ticked box arrives as a string, several as an array).
+function mvpSelectedIds (req) {
+  const v = req.query.selectCaseMVP
+  if (v === undefined || v === null || v === '') return []
+  return Array.isArray(v) ? v : [v]
+}
+
+// ----- Filters (Assignee / Status / search) -----
+// The "Find an application" panel checkbox values map to the data's assignee
+// names and status strings. Selections persist in the session so they carry
+// across tabs (like the context selector).
+const MVP_ASSIGNEE_BY_VAL = {
+  walker: 'M Walker', rsingh: 'R Singh', tokafor: 'T Okafor',
+  carter: 'E Carter', jjones: 'J Jones', pshah: 'P Shah',
+  ajones: 'A Jones', lowusu: 'L Owusu', kreed: 'K Reed',
+  unassigned: 'Not assigned'
+}
+const MVP_STATUS_BY_VAL = {
+  'application-received': 'Application received', 'in-review': 'In review',
+  'on-hold': 'On hold', 'agreement-drafted': 'Agreement drafted',
+  'agreement-offered': 'Agreement offered', 'agreement-accepted': 'Agreement accepted',
+  rejected: 'Rejected', withdrawn: 'Withdrawn'
+}
+const MVP_VAL_BY_ASSIGNEE = {}
+Object.keys(MVP_ASSIGNEE_BY_VAL).forEach(function (v) { MVP_VAL_BY_ASSIGNEE[MVP_ASSIGNEE_BY_VAL[v]] = v })
+const MVP_VAL_BY_STATUS = {}
+Object.keys(MVP_STATUS_BY_VAL).forEach(function (v) { MVP_VAL_BY_STATUS[MVP_STATUS_BY_VAL[v]] = v })
+
+// Normalise a checkbox field to an array of real values (the kit appends a
+// "_unchecked" sentinel; a single tick arrives as a string).
+function mvpArr (v) {
+  if (v === undefined || v === null || v === '') return []
+  return (Array.isArray(v) ? v : [v]).filter(function (x) { return x && x !== '_unchecked' })
+}
+// Effective status for a row — the live case (Golden Grange) renders its status
+// from the session, defaulting to "Application received".
+function mvpEffStatus (c, req) {
+  if (c.status === 'live') return req.session.data.caseStageMVP ? req.session.data.caseStatusMVP : 'Application received'
+  return c.status
+}
+// Apply the active Assignee / Status / search filters. An empty facet imposes
+// no constraint (every box ticked === all shown).
+function mvpFilter (rows, req) {
+  const d = req.session.data || {}
+  const aNames = mvpArr(d.filterAssigneeMVP).map(function (v) { return MVP_ASSIGNEE_BY_VAL[v] }).filter(Boolean)
+  const sNames = mvpArr(d.filterStatusMVP).map(function (v) { return MVP_STATUS_BY_VAL[v] }).filter(Boolean)
+  const search = (d.searchMVP || '').toString().trim().toLowerCase()
+  return rows.filter(function (c) {
+    if (aNames.length && aNames.indexOf(c.assignee) === -1) return false
+    if (sNames.length && sNames.indexOf(mvpEffStatus(c, req)) === -1) return false
+    if (search) {
+      // Search is SBI-only for now.
+      if (String(c.sbi).toLowerCase().indexOf(search) === -1) return false
+    }
+    return true
+  })
+}
+
+// Assignee options for the filter, scoped to the context. For a single team:
+// that team's caseworkers (+ "Not assigned"). For All teams: `team` is null and
+// the filter uses the autocomplete over `all` (every caseworker + "Not assigned").
+function mvpAssigneeContext (ctx) {
+  const teams = require(grassmvpTeamsPath).teams
+  const optFor = function (name) { return { v: MVP_VAL_BY_ASSIGNEE[name] || 'unassigned', n: name } }
+  const all = []
+  teams.forEach(function (t) { t.caseworkers.forEach(function (n) { all.push(optFor(n)) }) })
+  all.push({ v: 'unassigned', n: 'Not assigned' })
+  let team = null
+  if (ctx !== 'all') {
+    const t = teams.find(function (x) { return x.id === ctx })
+    team = (t ? t.caseworkers.map(optFor) : [])
+    team.push({ v: 'unassigned', n: 'Not assigned' })
+  }
+  return { team: team, all: all }
+}
+// Per-facet counts for the current tab/context base (pre-facet), plus the active
+// selections + search, handed to the template so the panel reflects reality.
+function mvpFilterState (baseRows, req) {
+  const d = req.session.data || {}
+  const assignee = {}; const status = {}
+  Object.keys(MVP_ASSIGNEE_BY_VAL).forEach(function (v) { assignee[v] = 0 })
+  Object.keys(MVP_STATUS_BY_VAL).forEach(function (v) { status[v] = 0 })
+  baseRows.forEach(function (c) {
+    const av = MVP_VAL_BY_ASSIGNEE[c.assignee]; if (av) assignee[av]++
+    const sv = MVP_VAL_BY_STATUS[mvpEffStatus(c, req)]; if (sv) status[sv]++
+  })
+  return {
+    assignee: mvpArr(d.filterAssigneeMVP),
+    status: mvpArr(d.filterStatusMVP),
+    search: (d.searchMVP || '').toString(),
+    counts: { assignee: assignee, status: status }
+  }
+}
+// "Clear filters" link — wipe the filter keys and reload the bare path.
+function mvpClearedFilters (req, res) {
+  if (!req.query.clearMVPFilters) return false
+  delete req.session.data.filterAssigneeMVP
+  delete req.session.data.filterStatusMVP
+  delete req.session.data.filterStageMVP
+  delete req.session.data.searchMVP
+  res.redirect(req.path)
+  return true
+}
+
+// ----- grants-dashboard-mvp only: Stage facet (derived from status) -----
+// "Stage" is a coarse grouping over the case status, shown/sorted/filtered on the
+// MVP GTIF caselist only. Kept out of the shared mvpFilter/mvpFilterState so
+// it can never leak into the original grants-dashboard / GrassMVP caselists.
+const MVP_STAGE_OPTS = [
+  { v: 'application', n: 'Application' },
+  { v: 'agreement', n: 'Agreement' },
+  { v: 'payments', n: 'Payments' }
+]
+const MVP_STAGE_NAMES = { application: 'Application', agreement: 'Agreement', payments: 'Payments' }
+const MVP_STAGE_RANK = { Application: 1, Agreement: 2, Payments: 3 }
+// Map a case's (effective) status to its stage name. Rejected / Withdrawn are
+// terminal outcomes with no pipeline stage -> '' (rendered as "—").
+function mvpStageName (c, req) {
+  const eff = mvpEffStatus(c, req)
+  if (eff === 'Agreement accepted') return 'Payments'
+  if (eff === 'Agreement drafted' || eff === 'Agreement offered') return 'Agreement'
+  if (eff === 'Application received' || eff === 'In review' || eff === 'On hold') return 'Application'
+  return ''
+}
+// Attach the derived `stage` to every row so display, sort and filter all agree.
+// Applied to the base set (before filtering) by every caselist route that shows
+// the Stage column.
+function mvpWithStage (rows, req) {
+  return rows.map(function (c) { return Object.assign({}, c, { stage: mvpStageName(c, req) }) })
+}
+// Sort rank from the stage already attached to the row (pipeline order; blank last).
+function mvpStageRank (c) {
+  return MVP_STAGE_RANK[c.stage] || 4
+}
+// Apply the Stage filter (session filterStageMVP) on top of the shared filters.
+function mvpStageFilter (rows, req) {
+  const sel = mvpArr((req.session.data || {}).filterStageMVP)
+  if (!sel.length) return rows
+  const names = sel.map(function (v) { return MVP_STAGE_NAMES[v] }).filter(Boolean)
+  return rows.filter(function (c) { return names.indexOf(c.stage) !== -1 })
+}
+// Selected Stage values, for the filter UI + removable tags.
+function mvpStageState (req) {
+  return { stage: mvpArr((req.session.data || {}).filterStageMVP) }
+}
+
+// The "My cases" tab can be pointed at any caseworker who has cases. The chosen
+// person (default M Walker) drives both the tab label ("<name>'s cases") and the
+// filter. The autocomplete range is every user that currently owns at least one
+// case (mvpUsersWithCases).
+function mvpAllCaseworkers () {
+  let names = []
+  require(grassmvpTeamsPath).teams.forEach(function (t) { names = names.concat(t.caseworkers) })
+  return names
+}
+function mvpMyAssignee (req) {
+  const valid = mvpAllCaseworkers()
+  if (req.query.myAssignee && valid.indexOf(req.query.myAssignee) !== -1) req.session.data.mvpMyAssignee = req.query.myAssignee
+  const stored = req.session.data && req.session.data.mvpMyAssignee
+  return valid.indexOf(stored) !== -1 ? stored : 'M Walker'
+}
+function mvpUsersWithCases (req) {
+  const owners = {}
+  mvpApplyAssign(loadMVPCases(), req).forEach(function (c) {
+    if (c.assignee && c.assignee !== 'Not assigned') owners[c.assignee] = true
+  })
+  return Object.keys(owners).sort()
+}
+
+// Budgeting information on the GrassMVP caselist is a persistent, per-session
+// disclosure that is INDEPENDENT of the caselist filters. ?budget=show / =hide
+// flips a session flag (showBudgetMVP); once shown it stays shown until hidden,
+// surviving every filter, search, sort, page and tab change on its own — and
+// filtering, searching or sorting never touches it.
+//
+// It used to ride in the query string (?budget=yes, re-serialized from req.query
+// on every toggle). That coupled it to the filters two ways: applying a filter
+// dropped budget=yes (so the panel closed), and — worse — rebuilding the href via
+// URLSearchParams(req.query) comma-joined the multi-value filter params
+// (filterStatusMVP=_unchecked,on-hold) into one bad token, which then poisoned
+// the session filter and reset the list to all cases. A session flag removes the
+// coupling entirely. Only sort/dir/page (query-based caselist state) are carried
+// on the toggle link; filters/search live in the session and persist on their own,
+// so they are deliberately NOT reserialized here.
+function mvpBudgetToggle (req) {
+  const d = req.session.data || (req.session.data = {})
+  if (req.query.budget === 'show') d.showBudgetMVP = true
+  else if (req.query.budget === 'hide') d.showBudgetMVP = false
+  const showBudget = !!d.showBudgetMVP
+  const keep = new URLSearchParams()
+  ;['sort', 'dir', 'page'].forEach(function (k) {
+    const v = req.query[k]
+    if (v != null && v !== '') keep.set(k, v)
+  })
+  keep.set('budget', showBudget ? 'hide' : 'show')
+  return {
+    showBudget: showBudget,
+    budgetToggleHref: req.path + '?' + keep.toString()
+  }
+}
+
+// My cases — a chosen caseworker's active cases. Tab-scoped controls only
+// (Change assignee); the status/search filter lives on the All cases tab.
+router.get('/GrassMVP/caselist', function (req, res) {
+  if (mvpClearedFilters(req, res)) return
+  const ctx = mvpCtx(req)
+  const myAssignee = mvpMyAssignee(req)
+  const base = mvpWithStage(mvpApplyAssign(loadMVPCases(), req), req)
+  const rows = mvpActive(base.filter(function (c) { return c.assignee === myAssignee }))
+  res.render('GrassMVP/caselist', Object.assign({
+    ctx: ctx, myAssignee: myAssignee, usersWithCases: mvpUsersWithCases(req), view: mvpBuildView(rows, req)
+  }, mvpBudgetToggle(req)))
+})
+
+// ----- Caselist: all (completed) -----
+// (The Team tab was removed from GrassMVP — My cases + All cases only.)
+// All cases — EVERY case (all teams, all statuses, including closed/unassigned).
+// This tab carries the permanent SBI search + the Status filter.
+router.get('/GrassMVP/caselist-completed', function (req, res) {
+  if (mvpClearedFilters(req, res)) return
+  const ctx = mvpCtx(req)
+  const base = mvpWithStage(mvpApplyAssign(loadMVPCases(), req), req)
+  const rows = mvpStageFilter(mvpFilter(base, req), req)
+  res.render('GrassMVP/caselist-completed', Object.assign({
+    ctx: ctx, mvpFilters: mvpFilterState(base, req), stageFilters: mvpStageState(req), myAssignee: mvpMyAssignee(req), view: mvpBuildView(rows, req)
+  }, mvpBudgetToggle(req)))
+})
+
+// ----- Assign screens -----
+// Assign screen — shows the ticked case(s) and a caseworker picker. The picker
+// is every caseworker across all teams (autocomplete-enhanced in the template).
+router.get('/GrassMVP/caselist-assign', function (req, res) {
+  const ctx = mvpCtx(req)
+  const ids = mvpSelectedIds(req)
+  const picked = mvpApplyAssign(loadMVPCases(), req).filter(function (c) { return ids.indexOf(c.id) !== -1 })
+  // Reassign if ANY picked case already has a caseworker; otherwise Assign.
+  const anyAssigned = picked.some(function (c) { return c.assignee && c.assignee !== 'Not assigned' })
+  // Give each row the id list MINUS itself, so the "Remove" link can reload the
+  // page with that case dropped from the selection.
+  const selected = picked.map(function (c) {
+    return Object.assign({}, c, {
+      removeIds: picked.filter(function (o) { return o.id !== c.id }).map(function (o) { return o.id })
+    })
+  })
+  let caseworkers = []
+  require(grassmvpTeamsPath).teams.forEach(function (t) { caseworkers = caseworkers.concat(t.caseworkers) })
+  res.render('GrassMVP/caselist-assign', { ctx: ctx, selected: selected, caseworkers: caseworkers, anyAssigned: anyAssigned })
+})
+
+// Confirm — record the chosen caseworker against every selected case, then
+// return to the All cases tab where the Assignee column reflects the change.
+router.get('/GrassMVP/assign-confirm', function (req, res) {
+  const ids = mvpSelectedIds(req)
+  const assignee = req.query.mvpAssignee
+  if (assignee && ids.length) {
+    const map = req.session.data.mvpAssign || {}
+    ids.forEach(function (id) { map[id] = assignee })
+    req.session.data.mvpAssign = map
+  }
+  res.redirect('/GrassMVP/caselist-completed')
+})
+
+// ----- Case journey (cloned from caseReal) -----
+makeStageRoute('/tasklistStageMVP', {
+  stageCountKey:    'stageCountMVP',
+  stageKey:         'caseStageMVP',
+  statusKey:        'caseStatusMVP',
+  tagKey:           'caseStatusTagMVP',
+  firstRedirect:    '/GrassMVP/caselist',
+  tasklistRedirect: '/GrassMVP/caseMVP/tasklist-stage',
+});
+
+// ============================================================
+// GrassMVP/caseMVP routes (Golden Grange journey — cloned from caseReal)
+// ============================================================
+
+// --- Approval/rejection ---
+
+makeApproveRoute('/app-approve2MVP', {
+  decisionKey:           'decision1MVP',
+  approvedKey:           'caseApprovedMVP',
+  agreementStageKey:     'agreementStageMVP',
+  reviewNoteKey:         'reviewNoteMVP',
+  filteredReviewNoteKey: 'filteredReviewNoteMVP',
+  stageKey:              'caseStageMVP',
+  statusKey:             'caseStatusMVP',
+  tagKey:                'caseStatusTagMVP',
+  onApproveRedirect:     '/tasklistStageMVP',
+  amendRedirect:         '/GrassMVP/caseMVP/amend-confirm',
+  returnRedirect:        '/GrassMVP/caseMVP/return-confirm',
+  defaultRedirect:       '/GrassMVP/caseMVP/tasklist-stage',
+});
+
+// --- State resets ---
+
+router.get('/resume2MVP', function (req, res) {
+  // Returns MVP case (Golden Grange) to 'In review' after a pause or rejection reopen
+  req.session.data.caseStageMVP     = 'review';
+  req.session.data.caseStatusMVP    = 'In review';
+  req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--blue';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+router.get('/amendReturn1MVP', function (req, res) {
+  // Cancels amend/return flow and restores MVP case (Golden Grange) to 'In review'
+  req.session.data.caseStageMVP     = 'review';
+  req.session.data.caseStatusMVP    = 'In review';
+  req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--blue';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+// --- Confirmation gates ---
+
+router.get('/returnConf1MVP', function (req, res) {
+  // Proceeds with return if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.rConfMVP === 'yes') {
+    res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1MVP');
+  }
+});
+
+router.get('/terminateConf1MVP', function (req, res) {
+  // Finalises termination if confirmed, otherwise leaves MVP case (Golden Grange) stage unchanged
+  if (req.session.data.tConfMVP === 'yes') {
+    req.session.data.caseStageMVP     = 'terminate';
+    req.session.data.caseStatusMVP    = 'Terminated';
+    req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--red';
+  }
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+router.get('/amendConf1MVP', function (req, res) {
+  // Proceeds with amendment if confirmed, otherwise cancels back to tasklist
+  if (req.session.data.aConfMVP === 'yes') {
+    res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+  } else {
+    res.redirect('/amendReturn1MVP');
+  }
+});
+
+// --- Amendment flow ---
+
+makeAmendRoute('/amend1MVP', {
+  decisionKey: 'decisionAmMVP',
+  stageKey:    'caseStageMVP',
+  statusKey:   'caseStatusMVP',
+  tagKey:      'caseStatusTagMVP',
+  redirectTo:  '/GrassMVP/caseMVP/tasklist-stage',
+});
+
+router.get('/amend2MVP', function (req, res) {
+  // Closes MVP case (Golden Grange) via amendment submission
+  req.session.data.caseStageMVP     = 'amendment_submitted';
+  req.session.data.caseStatusMVP    = 'Case close by amendment';
+  req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--orange';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+// --- Agreement sent ---
+
+makeAgreementSentRoute('/aggSent2MVP', {
+  decisionKey:     'decisionAgMVP',
+  rawNoteKey:      'agreeNoteMVP',
+  filteredNoteKey: 'filteredAggNoteMVP',
+  stageKey:        'caseStageMVP',
+  statusKey:       'caseStatusMVP',
+  tagKey:          'caseStatusTagMVP',
+  onSentRedirect:  '/tasklistStageMVP',
+  defaultRedirect: '/GrassMVP/caseMVP/tasklist-stage',
+});
+
+// --- Termination flow ---
+
+router.get('/terminate1MVP', function (req, res) {
+  // Begins termination process for MVP case (Golden Grange)
+  req.session.data.caseStageMVP     = 'pending-termination';
+  req.session.data.caseStatusMVP    = 'Preparing to terminate';
+  req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--orange';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+router.get('/terminatePrepMVP', function (req, res) {
+  // Routes termination preparation outcome: confirm page, end process, or default
+  const d = req.session.data;
+  switch (d.decisionTrMVP) {
+  case 'Terminate agreement':
+    d.filteredTrNoteMVP = stripEmptyAndNulls(d.terminateNoteMVP);
+    return res.redirect('/GrassMVP/caseMVP/terminate-confirm');
+  case 'End termination process':
+    d.caseStageMVP     = 'pay';
+    d.caseStatusMVP    = 'Agreement accepted';
+    d.caseStatusTagMVP = 'govuk-tag govuk-tag--green';
+    return res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+  }
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+// --- Termination task routes ---
+
+const D2MVPT = '/GrassMVP/caseMVP/tasklist-stage';
+
+// Note: original task1TrT2MVP default branch used wrong keys (terminateTagMVP/terminateStatusMVP). Fixed to terminate1TagMVP/terminate1StatusMVP.
+makeTaskRoute('/task1TrT2MVP', {
+  checkedKey:        'terminateCheckedMVP',
+  decisionKey:       'decisionTerminateTask1MVP',
+  noteActionKey:     'noteActionTerminateTask1MVP',
+  tagKey:            'terminate1TagMVP',
+  statusKey:         'terminate1StatusMVP',
+  rawNoteKey:        'task1TrNoteMVP',
+  filteredNoteKey:   'filteredNote1TrMVP',
+  rawNoteKey2:       'task1TrNote2MVP',
+  filteredNoteKey2:  'filteredNote1Tr_2MVP',
+  outcomes:          TERMINATE_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task2TrT2MVP', {
+  decisionKey:       'decisionTerminateTask2MVP',
+  noteActionKey:     'noteActionTerminateTask2MVP',
+  tagKey:            'terminate2TagMVP',
+  statusKey:         'terminate2StatusMVP',
+  rawNoteKey:        'task2TrNoteMVP',
+  filteredNoteKey:   'filteredNote2TrMVP',
+  rawNoteKey2:       'task2TrNote2MVP',
+  filteredNoteKey2:  'filteredNote2Tr_2MVP',
+  outcomes:          TERMINATE_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// --- Task review routes ---
+
+// Note: task5T2MVP and task6T2MVP use 'detailsChecked' (not detailsCheckedMVP) — preserved from original.
+makeTaskRoute('/task1T2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTask1MVP',
+  noteActionKey:     'noteActionTask1MVP',
+  tagKey:            'detailsTagMVP',
+  statusKey:         'detailsStatusMVP',
+  rawNoteKey:        'task1NoteMVP',
+  filteredNoteKey:   'filteredNote1MVP',
+  rawNoteKey2:       'task1Note2MVP',
+  filteredNoteKey2:  'filteredNote1_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task2T2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTask2MVP',
+  noteActionKey:     'noteActionTask2MVP',
+  tagKey:            'calcsTagMVP',
+  statusKey:         'calcsStatusMVP',
+  rawNoteKey:        'task2NoteMVP',
+  filteredNoteKey:   'filteredNote2MVP',
+  rawNoteKey2:       'task2Note2MVP',
+  filteredNoteKey2:  'filteredNote2_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task3T2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTask3MVP',
+  noteActionKey:     'noteActionTask3MVP',
+  tagKey:            'sssiTagMVP',
+  statusKey:         'sssiStatusMVP',
+  rawNoteKey:        'task3NoteMVP',
+  filteredNoteKey:   'filteredNote3MVP',
+  rawNoteKey2:       'task3Note2MVP',
+  filteredNoteKey2:  'filteredNote3_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5T2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTask5MVP',
+  noteActionKey:     'noteActionTask5MVP',
+  tagKey:            'paymentTagMVP',
+  statusKey:         'paymentStatusMVP',
+  rawNoteKey:        'task5NoteMVP',
+  filteredNoteKey:   'filteredNote5MVP',
+  rawNoteKey2:       'task5Note2MVP',
+  filteredNoteKey2:  'filteredNote5_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task6T2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTask6MVP',
+  noteActionKey:     'noteActionTask6MVP',
+  tagKey:            'budgetTagMVP',
+  statusKey:         'budgetStatusMVP',
+  rawNoteKey:        'task6NoteMVP',
+  filteredNoteKey:   'filteredNote6MVP',
+  rawNoteKey2:       'task6Note2MVP',
+  filteredNoteKey2:  'filteredNote6_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// --- Case assignment ---
+
+router.get('/caselistTeam2MVP', function (req, res) {
+  // Marks MVP case (Golden Grange) as assigned and returns to caselist
+  req.session.data.caseAssignedMVP = 'yes';
+  res.redirect('/GrassMVP/caselist');
+});
+
+router.get('/setUserFo2MVP', function (req, res) {
+  // Assigns finance officer role for MVP case (Golden Grange)
+  req.session.data.financeOfficerMVP = 'yes';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+// --- Amendment task routes ---
+
+makeTaskRoute('/task1T2AmMVP', {
+  decisionKey:       'decisionTaskAm1MVP',
+  noteActionKey:     'noteActionTaskAm1MVP',
+  tagKey:            'amend1TagMVP',
+  statusKey:         'amend1StatusMVP',
+  rawNoteKey:        'task1AmNoteMVP',
+  filteredNoteKey:   'filteredNoteAm1MVP',
+  rawNoteKey2:       'task1_2AmNoteMVP',
+  filteredNoteKey2:  'filteredNoteAm1_2MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task2T2AmMVP', {
+  decisionKey:       'decisionTaskAm2MVP',
+  noteActionKey:     'noteActionTaskAm2MVP',
+  tagKey:            'amend2TagMVP',
+  statusKey:         'amend2StatusMVP',
+  rawNoteKey:        'task2AmNoteMVP',
+  filteredNoteKey:   'filteredNoteAm2MVP',
+  rawNoteKey2:       'task2_2AmNoteMVP',
+  filteredNoteKey2:  'filteredNoteAm2_2MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task3T2AmMVP', {
+  decisionKey:       'decisionTaskAm3MVP',
+  noteActionKey:     'noteActionTaskAm3MVP',
+  tagKey:            'amend3TagMVP',
+  statusKey:         'amend3StatusMVP',
+  rawNoteKey:        'task3AmNoteMVP',
+  filteredNoteKey:   'filteredNoteAm3MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task4T2AmMVP', {
+  decisionKey:       'decisionTaskAm4MVP',
+  noteActionKey:     'noteActionTaskAm4MVP',
+  tagKey:            'amend4TagMVP',
+  statusKey:         'amend4StatusMVP',
+  rawNoteKey:        'task4NoteMVP',
+  filteredNoteKey:   'filteredNoteAm4MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// --- Agreement progression ---
+
+router.get('/agreementStage2MVP', function (req, res) {
+  // Unlocks the agreement tab in the MVP case (Golden Grange) navigation
+  req.session.data.agreementStageMVP = 'yes';
+  res.redirect('/GrassMVP/caselist');
+});
+
+// --- Agreement task routes ---
+
+makeTaskRoute('/task1AgT2MVP', {
+  checkedKey:        'AgreeCheckedMVP',
+  decisionKey:       'decisionAgreeTask1MVP',
+  noteActionKey:     'noteActionAgreeTask1MVP',
+  tagKey:            'agreeTagMVP',
+  statusKey:         'agreeStatusMVP',
+  rawNoteKey:        'task1ANoteMVP',
+  filteredNoteKey:   'filteredNote1AMVP',
+  rawNoteKey2:       'task1ANote2MVP',
+  filteredNoteKey2:  'filteredNote1A_2MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task2AgT2MVP', {
+  decisionKey:       'decisionAgreeTask2MVP',
+  noteActionKey:     'noteActionAgreeTask2MVP',
+  tagKey:            'agreeSTagMVP',
+  statusKey:         'agreeSStatusMVP',
+  rawNoteKey:        'task2ANoteMVP',
+  filteredNoteKey:   'filteredNoteA2MVP',
+  rawNoteKey2:       'task2ANote2MVP',
+  filteredNoteKey2:  'filteredNote2A_2MVP',
+  outcomes:          AGREEMENT_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// --- Agreement signing ---
+
+router.get('/setAgreeSign2MVP', function (req, res) {
+  // Records customer signature and advances MVP case (Golden Grange) status
+  req.session.data.caseStatusMVP = 'Agreement accepted';
+  res.redirect('/tasklistStageMVP');
+});
+
+// --- Stage progression ---
+
+router.get('/startMVP', function (req, res) {
+  // Resets MVP case (Golden Grange) to the start stage (used when re-entering a completed case)
+  req.session.data.caseStageMVP     = 'start';
+  req.session.data.caseStatusMVP    = 'Application received';
+  req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--grey';
+  req.session.data.stageCountMVP    = 1;
+  res.redirect('/GrassMVP/caselist');
+});
+
+
+// MVP case (Golden Grange) — same lifecycle pattern as MVP case (Golden Grange) so the first hit
+// after clearing data lands on the caselist (with the case row showing 'Application
+// received') and subsequent hits walk the case through its stages.
+makeStageRoute('/tasklistStageMVP', {
+  stageCountKey:    'stageCountMVP',
+  stageKey:         'caseStageMVP',
+  statusKey:        'caseStatusMVP',
+  tagKey:           'caseStatusTagMVP',
+  firstRedirect:    '/GrassMVP/caselist',
+  tasklistRedirect: '/GrassMVP/caseMVP/tasklist-stage',
+});
+
+// --- 5-month checks ---
+
+router.get('/6month1MVP', function (req, res) {
+  // Transitions MVP case (Golden Grange) into the simple single-task 6-month phase
+  req.session.data.caseStatusMVP = '6 month checks';
+  req.session.data.caseStageMVP  = '6month';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+router.get('/month5_1MVP', function (req, res) {
+  // 6-month-check completion step within the MVP case. The base /month5_1
+  // it was cloned from has no handler; this keeps the action inside GrassMVP
+  // (form fields are now MVP-scoped) and returns to the case tasklist.
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+router.get('/6month1FullMVP', function (req, res) {
+  // Transitions MVP case (Golden Grange) into the FULL 6-month phase
+  // (5 tasks: AAC re-run, AAC review, management control, Siti Tenure, LPIS)
+  // Per draft content for FGP-1109.
+  req.session.data.caseStatusMVP = '6 month checks (full)';
+  req.session.data.caseStageMVP  = '6month-full';
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
+});
+
+makeTaskRoute('/task6m1MVP', {
+  decisionKey:       'decisionTask1mMVP',
+  noteActionKey:     'noteActionTask1mMVP',
+  tagKey:            'month5_1TagMVP',
+  statusKey:         'month5_1StatusMVP',
+  rawNoteKey:        'task1mNoteMVP',
+  filteredNoteKey:   'filteredNote1mMVP',
+  rawNoteKey2:       'task1mNote2MVP',
+  filteredNoteKey2:  'filteredNote1m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5m2MVP', {
+  decisionKey:       'decisionTask2mMVP',
+  noteActionKey:     'noteActionTask2mMVP',
+  tagKey:            'month5_2TagMVP',
+  statusKey:         'month5_2StatusMVP',
+  rawNoteKey:        'task2mNoteMVP',
+  filteredNoteKey:   'filteredNote2mMVP',
+  rawNoteKey2:       'task2mNote2MVP',
+  filteredNoteKey2:  'filteredNote2m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5m3MVP', {
+  decisionKey:       'decisionTask3mMVP',
+  noteActionKey:     'noteActionTask3mMVP',
+  tagKey:            'month5_3TagMVP',
+  statusKey:         'month5_3StatusMVP',
+  rawNoteKey:        'task3mNoteMVP',
+  filteredNoteKey:   'filteredNote3mMVP',
+  rawNoteKey2:       'task3mNote2MVP',
+  filteredNoteKey2:  'filteredNote3m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5m4MVP', {
+  decisionKey:       'decisionTask4mMVP',
+  noteActionKey:     'noteActionTask4mMVP',
+  tagKey:            'month5_4TagMVP',
+  statusKey:         'month5_4StatusMVP',
+  rawNoteKey:        'task4mNoteMVP',
+  filteredNoteKey:   'filteredNote4mMVP',
+  rawNoteKey2:       'task4mNote2MVP',
+  filteredNoteKey2:  'filteredNote4m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5m5MVP', {
+  decisionKey:       'decisionTask5mMVP',
+  noteActionKey:     'noteActionTask5mMVP',
+  tagKey:            'month5_5TagMVP',
+  statusKey:         'month5_5StatusMVP',
+  rawNoteKey:        'task5mNoteMVP',
+  filteredNoteKey:   'filteredNote5mMVP',
+  rawNoteKey2:       'task5mNote2MVP',
+  filteredNoteKey2:  'filteredNote5m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/task5m6MVP', {
+  decisionKey:       'decisionTask6mMVP',
+  noteActionKey:     'noteActionTask6mMVP',
+  tagKey:            'month5_6TagMVP',
+  statusKey:         'month5_6StatusMVP',
+  rawNoteKey:        'task6mNoteMVP',
+  filteredNoteKey:   'filteredNote6mMVP',
+  rawNoteKey2:       'task6mNote2MVP',
+  filteredNoteKey2:  'filteredNote6m_2MVP',
+  outcomes:          MONTH5_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// --- Utility routes ---
+
+
+router.get('/endTerminateMVP', function (req, res) {
+  // Ends termination process and restores MVP case (Golden Grange) to 'Agreement accepted' if confirmed
+  if (req.session.data.terminateDecisionMVP === 'yes') {
+    req.session.data.caseStageMVP     = 'pay';
+    req.session.data.caseStatusMVP    = 'Agreement accepted';
+    req.session.data.caseStatusTagMVP = 'govuk-tag govuk-tag--green';
+  }
+  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
 });
