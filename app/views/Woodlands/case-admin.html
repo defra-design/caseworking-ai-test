@@ -12,35 +12,22 @@
 {% set serviceName = "Grants admin" %}
 {% set pageName = "Claims — " + c.id %}
 
-{# Standard GOV.UK crown header with the service name in the black bar (no separate
-   service-navigation row), matching the console design. #}
-{% from "govuk/components/header/macro.njk" import govukHeader %}
-{% block govukHeader %}
-  {{ govukHeader({ homepageUrl: "/", serviceName: serviceName, serviceUrl: "/", containerClasses: "govuk-width-container" }) }}
-{% endblock %}
-{% block govukServiceNavigation %}{% endblock %}
+{# Header follows the V1 Woodlands entitlement-flow design: the Defra internal
+   header + the shared context strip. The strip carries the case metadata
+   (business, scheme, application ID, SBI); `contextScheme` syncs its scheme label
+   to this console's scheme (Woodland Creation) rather than the V1 default. #}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Entitlement management" %}
+{% set contextScheme = con.scheme %}
 
-{% block beforeContent %}
-<div class="govuk-width-container">
-  <div class="govuk-phase-banner">
-    <p class="govuk-phase-banner__content">
-      <strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
-      <span class="govuk-phase-banner__text">This is a prototype service – your feedback helps us improve it.</span>
-    </p>
-  </div>
-  <a href="/Woodlands/caselist" class="govuk-back-link">Back to applications</a>
-</div>
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Woodlands/includes/_wd-context-strip.html" %}
 {% endblock %}
 
 {% block content %}
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
-
-    {# Case header — synced with the caselist row. #}
-    <span class="govuk-caption-l">{{ con.scheme }}</span>
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">{{ c.id }}</h1>
-    <p class="govuk-!-margin-bottom-2"><strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong></p>
-    <p class="govuk-body govuk-!-margin-bottom-6">{{ c.business }} · SBI {{ c.sbi }}</p>
 
     {# Case tabs. Rendered statically (no govuk-tabs JS module) so "Claims" stays
        the selected, bordered panel. Application data / Payments are placeholders. #}
@@ -73,14 +60,13 @@
         </div>
         {% endif %}
 
-        {# ---- Available entitlements ---- #}
-        <h2 class="govuk-heading-l govuk-!-margin-bottom-2">Available entitlements</h2>
-        <p class="govuk-body">Entitlements you can create for this applicant. Some can be created more than once. Where you cannot create one, the reason is shown instead of the action.</p>
+        {# ---- Add a claimable item ---- #}
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-2">Claimable items</h2>
 
         <table class="govuk-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Entitlement</th>
+              <th scope="col" class="govuk-table__header">Claimable item</th>
               <th scope="col" class="govuk-table__header">Type</th>
               <th scope="col" class="govuk-table__header">Created</th>
               <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
@@ -88,11 +74,8 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                Woodland creation
-                <span class="govuk-caption-m govuk-!-margin-top-0">{{ unitPriceDisplay }} per ha</span>
-              </td>
-              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--grey">Hectares</strong></td>
+              <td class="govuk-table__cell">Area of new woodland</td>
+              <td class="govuk-table__cell">Hectares</td>
               <td class="govuk-table__cell">{{ createdCount }} of {{ con.maxCreatable }}</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">
                 {% if canCreate %}
@@ -112,17 +95,36 @@
         <div class="app-console-form govuk-!-margin-bottom-6" id="create">
           <form method="post" action="/Woodlands/case-admin" novalidate>
             <input type="hidden" name="id" value="{{ c.id }}">
-            <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %} govuk-!-margin-bottom-4">
-              <h3 class="govuk-heading-m govuk-!-margin-bottom-1">Create entitlement</h3>
-              <p class="govuk-caption-m govuk-!-margin-bottom-4">Template: Woodland creation</p>
 
-              <label class="govuk-label govuk-label--s" for="ha">Number of hectares (ha)</label>
-              <div id="ha-hint" class="govuk-hint">Unit price {{ unitPriceDisplay }} per ha.</div>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Add claimable item</h3>
+
+            <p class="govuk-body">Enter the size of woodland approved by the FC. This will later be used to calculate the amount the customer can claim.</p>
+
+            <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+              <label class="govuk-label govuk-label--s" for="ha">Total area of eligible woodland</label>
               {% if error %}<p id="ha-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
-              <input class="govuk-input govuk-input--width-10{% if error %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" spellcheck="false" inputmode="decimal" value="{{ value }}" aria-describedby="ha-hint{% if error %} ha-error{% endif %}">
+              <div class="govuk-input__wrapper">
+                <input class="govuk-input govuk-input--width-5{% if error %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" inputmode="decimal" spellcheck="false" value="{{ value }}"{% if error %} aria-describedby="ha-error"{% endif %}>
+                <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+              </div>
             </div>
+
+            <details class="govuk-details" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">How is the claim amount calculated?</span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">Threshold payments for eligible land in hectares (ha):</p>
+                <ul class="govuk-list govuk-list--bullet">
+                  <li>0.5 hectares (ha) to 50ha: flat rate of £1,500</li>
+                  <li>51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha</li>
+                  <li>more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha</li>
+                </ul>
+              </div>
+            </details>
+
             <div class="govuk-button-group">
-              <button type="submit" class="govuk-button" data-module="govuk-button">Save entitlement</button>
+              <button type="submit" class="govuk-button" data-module="govuk-button">Save item</button>
               <a class="govuk-link" href="/Woodlands/case-admin?id={{ c.id }}">Cancel</a>
             </div>
           </form>
@@ -160,7 +162,6 @@
         {# ---- Claimed ---- shown only once a claim has been submitted. #}
         {% if claim %}
         <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Claimed</h2>
-        <p class="govuk-body">Entitlements the applicant has submitted a claim against. The claimed value can differ from the entitlement value.</p>
 
         <table class="govuk-table">
           <thead class="govuk-table__head">

@@ -14,7 +14,7 @@
     {% endif %}
     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">{{ c.business }}</h2>
     <div style="display:flex; flex-wrap:wrap; column-gap:2.5em;">
-      <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> Woodland Management Plan (PA3)</p>
+      <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Scheme:</strong> {{ contextScheme or "Woodland Management Plan (PA3)" }}</p>
       <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">Application ID:</strong> {{ c.id }}</p>
       <p class="govuk-body govuk-!-margin-bottom-2"><strong class="govuk-!-margin-right-1">SBI:</strong> {{ c.sbi }}</p>
     </div>

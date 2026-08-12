@@ -3578,7 +3578,7 @@ function wdRenderConsole (req, res, id, opts) {
     awaiting: (created ? [{ ref: id + '/C1', haDisplay: created.ha, valueDisplay: wdGbp(created.value) }] : []),
     claim: claimed ? {
       ref: id + '/C1',
-      entitledDisplay: WD_CONSOLE_CLAIM.entitledHa + ' ha · ' + wdGbp(WD_CONSOLE_CLAIM.entitledValue),
+      entitledDisplay: WD_CONSOLE_CLAIM.entitledHa + ' ha',
       claimedDisplay: WD_CONSOLE_CLAIM.claimedHa + ' ha · ' + wdGbp(WD_CONSOLE_CLAIM.claimedValue),
       paymentDate: WD_CONSOLE_CLAIM.paymentDate,
       status: WD_CONSOLE_CLAIM.status,
