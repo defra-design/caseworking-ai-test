@@ -1899,10 +1899,13 @@ router.use((req, res, next) => {
   if (key) {
     req.session.data.calcFilters = req.session.data.calcFilters || {};
     const f = req.session.data.calcFilters[key] || {};
-    const fails   = f.fails   || false;
-    const changes = f.changes || false;
-    const sssi    = f.sssi    || false;
-    const hefer   = f.hefer   || false;
+    // caseMVP's calculations-new filters client-side (checkbox panel), so it must
+    // always render the full list — never let a stale server-side filter hide checks.
+    const clientFiltered = (key === 'caseMVP');
+    const fails   = clientFiltered ? false : (f.fails   || false);
+    const changes = clientFiltered ? false : (f.changes || false);
+    const sssi    = clientFiltered ? false : (f.sssi    || false);
+    const hefer   = clientFiltered ? false : (f.hefer   || false);
     req.session.data.showFailsOnly   = fails;
     req.session.data.showChangesOnly = changes;
     req.session.data.showSssiOnly    = sssi;

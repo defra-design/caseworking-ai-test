@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-two-thirds">
 
 
     {% if (data.recalc) %}
@@ -44,92 +44,92 @@
 
     {% endif %}
 
-  <div class="app-calc-controls">
-  <details class="govuk-details govuk-!-margin-bottom-0">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Show version history
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <table class="govuk-table">
-      <caption class="govuk-table__caption govuk-table__caption--m">Dates and amounts</caption>
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Date/time</th>
-          <th scope="col" class="govuk-table__header">Result</th>
-                <th scope="col" class="govuk-table__header"></th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">10:30am 19 May 2026</th>
-          <td class="govuk-table__cell">Fail</td>
-          <td class="govuk-table__cell">Currently showing</td>
-        </tr>
-        <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">3:14pm 18 May 2026</th>
-          <td class="govuk-table__cell">Fail</td>
-          <td class="govuk-table__cell"><a href="calculations-mid" class="govuk-link">View this version</a></td>
-        </tr>
-        <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">9:08am 13 May 2026</th>
-          <td class="govuk-table__cell">Pass</td>
-          <td class="govuk-table__cell"><a href="calculations-old" class="govuk-link">View this version</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</details>
-    <form method="get" action="/largeCalcFilter" class="app-switch-form">
-      <input type="hidden" name="from" value="caseMVP">
-      <label class="app-switch">
-        <span class="app-switch__label">Fails only</span>
-        <input class="app-switch__input" id="calc-fails-switch" type="checkbox" role="switch" aria-label="Fails only" name="filter" value="fails"{% if data.showFailsOnly %} checked aria-checked="true"{% else %} aria-checked="false"{% endif %} data-auto-submit>
-        <span class="app-switch__toggle" aria-hidden="true">
-          <span class="app-switch__slider"></span>
-          <span class="app-switch__off">Off</span>
-          <span class="app-switch__on">On</span>
-        </span>
-      </label>
-      <noscript><button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0 govuk-!-margin-left-3">Apply</button></noscript>
-    </form>
-    <script>
-      (function () {
-        var el = document.getElementById('calc-fails-switch')
-        if (!el) return
-        el.addEventListener('change', function () {
-          el.setAttribute('aria-checked', el.checked ? 'true' : 'false')
-          if (el.form) el.form.submit()
-        })
-      })()
-    </script>
+  {# Calculations filter panel. The parcel search sits above the filter details
+     (which is collapsed once filters are applied); active filters are summarised
+     above it. Filtering is done client-side over the fully-rendered list — see the
+     pageScripts block at the foot of this template. #}
+  <style>
+    .calcflt-runs { margin-bottom: 20px; }
+    .calcflt-run--current { color: #0b0c0c; font-weight: 700; }
+    .calcflt-form__label { display: block; margin-bottom: 10px; }
+    .calcflt-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+    .calcflt-check { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
+    .calcflt-check input { width: 20px; height: 20px; }
+    .calcflt-active { margin-bottom: 15px; }
+    .calcflt-active .govuk-tag { margin-right: 5px; }
+  </style>
+
+  <div class="calcflt-controls govuk-!-margin-bottom-4">
+
+    {# Search always sits above the filter details. #}
+    <div class="parcel-search govuk-!-margin-bottom-4">
+      <form id="parcel-search-form" onsubmit="return false;">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="parcel-search-input">
+            Find a specific land parcel
+          </label>
+          <div class="parcel-search__row">
+            <div id="parcel-search-container"></div>
+            <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" id="parcel-find-btn">
+              Find
+            </button>
+          </div>
+          <p id="parcel-search-status" class="govuk-body-s govuk-!-margin-top-2" hidden>
+            Showing only <span id="parcel-search-status-id"></span>.
+            <a href="#" class="govuk-link" id="parcel-search-clear">Show all land parcels</a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    {# Active filters summary — populated by JS, shown above the (closed) details. #}
+    <div id="calc-active-filters" class="calcflt-active" hidden>
+      <span class="govuk-body govuk-!-font-weight-bold govuk-!-margin-right-2">Active filters:</span>
+      <span id="calc-active-filters-list"></span>
+      <a href="#" class="govuk-link govuk-!-margin-left-2" id="calc-active-filters-clear">Clear filters</a>
+    </div>
+
+    <details class="govuk-details govuk-!-margin-bottom-0" id="calc-filter-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">Filter calculations</span>
+      </summary>
+      <div class="govuk-details__text">
+
+        {# Run history — the active run (this page) is a bold, non-link state; the
+           others are text links. Each is tagged (pass) / (fail). #}
+        <p class="govuk-body calcflt-runs">
+          <strong class="calcflt-run--current">10:30am 19 May 2026</strong> (fail) |
+          <a class="govuk-link" href="calculations-mid">3:14pm 18 May 2026</a> (fail) |
+          <a class="govuk-link" href="calculations-old">9:08am 13 May 2026</a> (pass)
+        </p>
+
+        {# Category filter — multi-select, applied on "Filter". Enclosed in a
+           moj-filter box (matching the caselist "filter list" panel). #}
+        <form id="calc-filter-form" onsubmit="return false;">
+          <div class="moj-filter">
+            <div class="moj-filter__content">
+              <span class="govuk-body govuk-!-font-weight-bold calcflt-form__label">Show only:</span>
+              <div class="calcflt-row">
+                <label class="calcflt-check"><input type="checkbox" value="fails"> Fails</label>
+                <label class="calcflt-check"><input type="checkbox" value="changes"> Non-fail changes</label>
+                <label class="calcflt-check"><input type="checkbox" value="caveats"> All caveats</label>
+                <label class="calcflt-check"><input type="checkbox" value="sssi"> SSSI</label>
+                <label class="calcflt-check"><input type="checkbox" value="hefer"> HEFER</label>
+                <label class="calcflt-check"><input type="checkbox" value="ponds"> Ponds</label>
+                <button type="submit" class="govuk-button govuk-!-margin-bottom-0" id="calc-filter-apply">Filter</button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </details>
   </div>
   </div>
 </div>
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds govuk-!-padding-left-4">
-
-  <div class="parcel-search govuk-!-margin-bottom-6">
-    <form id="parcel-search-form" onsubmit="return false;">
-      <div class="govuk-form-group">
-        <label class="govuk-label govuk-label--s" for="parcel-search-input">
-          Find a specific land parcel
-        </label>
-        <div class="parcel-search__row">
-          <div id="parcel-search-container"></div>
-          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" id="parcel-find-btn">
-            Find
-          </button>
-        </div>
-        <p id="parcel-search-status" class="govuk-body-s govuk-!-margin-top-2" hidden>
-          Showing only <span id="parcel-search-status-id"></span>.
-          <a href="#" class="govuk-link" id="parcel-search-clear">Show all land parcels</a>
-        </p>
-      </div>
-    </form>
-  </div>
 
 <form action="test4" method="post">
 <div class="govuk-form-group">
@@ -4177,11 +4177,13 @@ Latest land parcel update: 18 May 2026 </p>
   <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
   <script>
     (function () {
+      var form = document.querySelector('form[action="test4"]');
+      if (!form) return;
+
+      // --- Build parcel sections: each "Parcel ID: X checks" h2 plus its following siblings. ---
       var parcelIds = [];
       var sectionsById = {};
-      var allParcelElements = [];
-      var headers = document.querySelectorAll('h2.govuk-heading-m');
-      headers.forEach(function (h) {
+      form.querySelectorAll('h2.govuk-heading-m').forEach(function (h) {
         var m = h.textContent.match(/Parcel ID:\s*([A-Z]+\d+\s+\d+)\s*checks/);
         if (!m) return;
         var id = m[1].replace(/\s+/g, ' ').trim();
@@ -4193,58 +4195,122 @@ Latest land parcel update: 18 May 2026 </p>
           n = n.nextElementSibling;
         }
         sectionsById[id] = run;
-        allParcelElements = allParcelElements.concat(run);
+      });
+      function parcelOf(el) {
+        for (var i = 0; i < parcelIds.length; i++) {
+          if (sectionsById[parcelIds[i]].indexOf(el) !== -1) return parcelIds[i];
+        }
+        return null;
+      }
+
+      // --- Categorise every check (details) once. ---
+      var detailEls = Array.prototype.slice.call(form.querySelectorAll('details.govuk-details'));
+      var detailCats = detailEls.map(function (d) {
+        var sum = d.querySelector('.govuk-details__summary-text');
+        var sumTxt = (sum ? sum.textContent : '').toLowerCase();
+        var txt = d.textContent.toLowerCase();
+        var isFail = !!d.querySelector('.govuk-tag--red-new') || sumTxt.indexOf('failed') !== -1;
+        var hasChange = !!d.querySelector('.value-changed');
+        var sssi = txt.indexOf('special scientific interest') !== -1;
+        var hefer = txt.indexOf('hefer') !== -1;
+        var ponds = txt.indexOf('pond') !== -1;
+        return {
+          fails: isFail,
+          changes: hasChange && !isFail,
+          sssi: sssi, hefer: hefer, ponds: ponds,
+          caveats: sssi || hefer || ponds
+        };
       });
 
-      var container = document.getElementById('parcel-search-container');
-      if (!container || typeof accessibleAutocomplete !== 'function') return;
+      var activeParcel = null;   // from the parcel search
+      var activeCats = [];       // from the "Show only" checkboxes
 
-      var selected = '';
-      accessibleAutocomplete({
-        element: container,
-        id: 'parcel-search-input',
-        source: parcelIds,
-        minLength: 1,
-        showAllValues: false,
-        confirmOnBlur: false,
-        displayMenu: 'overlay',
-        placeholder: 'e.g. SD5848 9205',
-        onConfirm: function (value) { selected = value || ''; }
-      });
-
-      var status   = document.getElementById('parcel-search-status');
-      var statusId = document.getElementById('parcel-search-status-id');
-
-      function showOnly(parcelId) {
-        var keep = sectionsById[parcelId] || [];
-        var keepSet = new Set(keep);
-        allParcelElements.forEach(function (el) {
-          if (keepSet.has(el)) el.style.display = '';
-          else el.style.display = 'none';
+      // --- Re-render the list for the current parcel + category selection. ---
+      function apply() {
+        detailEls.forEach(function (d, i) {
+          var okCat = !activeCats.length || activeCats.some(function (c) { return detailCats[i][c]; });
+          var okParcel = !activeParcel || parcelOf(d) === activeParcel;
+          d.style.display = (okCat && okParcel) ? '' : 'none';
         });
-        statusId.textContent = parcelId;
-        status.hidden = false;
+        // Funded-action sub-headings: only show if they still have a visible check under them.
+        form.querySelectorAll('h3.govuk-heading-s').forEach(function (h) {
+          if (!/^\s*Funded action:/.test(h.textContent)) return;
+          var any = false, n = h.nextElementSibling;
+          while (n && n.tagName !== 'H2' && n.tagName !== 'H3') {
+            if (n.tagName === 'DETAILS' && n.style.display !== 'none') any = true;
+            n = n.nextElementSibling;
+          }
+          var okParcel = !activeParcel || parcelOf(h) === activeParcel;
+          h.style.display = (any && okParcel) ? '' : 'none';
+        });
+        // Parcel headings: only show if the section still has a visible check.
+        parcelIds.forEach(function (id) {
+          var run = sectionsById[id];
+          var any = run.some(function (el) { return el.tagName === 'DETAILS' && el.style.display !== 'none'; });
+          var okParcel = !activeParcel || id === activeParcel;
+          run[0].style.display = (any && okParcel) ? '' : 'none';
+        });
+        renderActive();
       }
-      function showAll() {
-        allParcelElements.forEach(function (el) { el.style.display = ''; });
-        status.hidden = true;
+
+      // --- Active filters summary above the (closed) details. ---
+      var LABELS = { fails: 'Fails', changes: 'Non-fail changes', caveats: 'All caveats', sssi: 'SSSI', hefer: 'HEFER', ponds: 'Ponds' };
+      var activeWrap = document.getElementById('calc-active-filters');
+      var activeList = document.getElementById('calc-active-filters-list');
+      function renderActive() {
+        var tags = activeCats.map(function (c) { return '<strong class="govuk-tag govuk-tag--grey">' + LABELS[c] + '</strong>'; });
+        if (tags.length) { activeList.innerHTML = tags.join(' '); activeWrap.hidden = false; }
+        else { activeList.innerHTML = ''; activeWrap.hidden = true; }
       }
-      function applyFind(value) {
+
+      // --- "Show only" checkboxes + Filter button. ---
+      var filterForm = document.getElementById('calc-filter-form');
+      var filterDetails = document.getElementById('calc-filter-details');
+      document.getElementById('calc-filter-apply').addEventListener('click', function () {
+        activeCats = Array.prototype.slice
+          .call(filterForm.querySelectorAll('input[type=checkbox]:checked'))
+          .map(function (cb) { return cb.value; });
+        apply();
+        if (filterDetails) filterDetails.open = false;   // collapse so the summary shows
+      });
+      document.getElementById('calc-active-filters-clear').addEventListener('click', function (e) {
+        e.preventDefault();
+        activeCats = [];
+        filterForm.querySelectorAll('input[type=checkbox]').forEach(function (cb) { cb.checked = false; });
+        apply();
+      });
+
+      // --- Parcel search (accessible-autocomplete). ---
+      var container = document.getElementById('parcel-search-container');
+      var selected = '';
+      if (container && typeof accessibleAutocomplete === 'function') {
+        accessibleAutocomplete({
+          element: container, id: 'parcel-search-input', source: parcelIds,
+          minLength: 1, showAllValues: false, confirmOnBlur: false, displayMenu: 'overlay',
+          placeholder: 'e.g. SD5848 9205', onConfirm: function (v) { selected = v || ''; }
+        });
+      }
+      var status = document.getElementById('parcel-search-status');
+      var statusId = document.getElementById('parcel-search-status-id');
+      document.getElementById('parcel-find-btn').addEventListener('click', function () {
+        var input = document.getElementById('parcel-search-input');
+        var value = selected || (input && input.value);
         if (!value) return;
         var match = parcelIds.find(function (p) { return p.toLowerCase() === value.toLowerCase().trim(); });
         if (!match) return;
-        showOnly(match);
-      }
-      document.getElementById('parcel-find-btn').addEventListener('click', function () {
-        var input = document.getElementById('parcel-search-input');
-        applyFind(selected || (input && input.value));
+        activeParcel = match;
+        statusId.textContent = match;
+        status.hidden = false;
+        apply();
       });
       document.getElementById('parcel-search-clear').addEventListener('click', function (e) {
         e.preventDefault();
         selected = '';
         var input = document.getElementById('parcel-search-input');
         if (input) input.value = '';
-        showAll();
+        activeParcel = null;
+        status.hidden = true;
+        apply();
       });
     })();
   </script>
