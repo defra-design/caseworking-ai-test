@@ -803,6 +803,19 @@
   padding: 15px;
 }
 
+// --- Task list: keep the status column on one line ---
+// Each govuk-task-list item is its own `display: table`, so a long task name
+// squeezes that row's status cell until the tag wraps ("Ready to / start").
+// Holding the status (and its tag) to a single line reclaims the space from
+// the name column instead.
+.govuk-task-list__status {
+  white-space: nowrap;
+
+  .govuk-tag {
+    white-space: nowrap;
+  }
+}
+
 .moj-filter__selected-heading {
   display: flex;
   align-items: center;

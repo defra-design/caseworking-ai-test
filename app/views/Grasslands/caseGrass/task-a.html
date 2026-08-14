@@ -1,0 +1,28 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">Check SSSI and Historic feature conditions</h1>
+
+    <p>Ref LPs: SD5848 9205, SD5649 9215</p>
+
+    <p>Perform the following checks:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Are there restrictions on nutrient input and weed control, necessary to maintain the outstanding interest?</li>
+      <li>That scrub encroachment is unlikely to affect Historic features</li>
+    </ul>
+
+    <a href="tasklist-stage" class="govuk-link">Return to task list</a>
+
+  </div>
+</div>
+{% endblock %}

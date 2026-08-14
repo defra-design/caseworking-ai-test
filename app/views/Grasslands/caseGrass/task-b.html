@@ -1,0 +1,28 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">Check a ditch is not within a SSSI or Severely Disadvantaged Area</h1>
+
+    <p>Ref LPs: NY2105 1006</p>
+
+    <p>Perform the following checks:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>The ditch does not fall within an SSSI</li>
+      <li>The ditch is not located within a Severely Disadvantaged Area (SDA)</li>
+    </ul>
+
+    <a href="tasklist-stage" class="govuk-link">Return to task list</a>
+
+  </div>
+</div>
+{% endblock %}

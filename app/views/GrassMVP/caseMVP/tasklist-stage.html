@@ -86,6 +86,83 @@
       {% endif %}
       </div>
   </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-a" aria-describedby="company-details-1-status">
+        Check SSSI and Historic feature conditions
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskAMVP) %}
+      {% if (data.decisionTaskAMVP === 'Accepted') %} {{ data['taskAStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskATagMVP'] }}">{{ data['taskAStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+        Check a ditch is not within a SSSI or Severely Disadvantaged Area
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskBMVP) %}
+      {% if (data.decisionTaskBMVP === 'Accepted') %} {{ data['taskBStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskBTagMVP'] }}">{{ data['taskBStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-c" aria-describedby="company-details-1-status">
+        Check stacking with Less Favoured Area (LFA)
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskCMVP) %}
+      {% if (data.decisionTaskCMVP === 'Accepted') %} {{ data['taskCStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskCTagMVP'] }}">{{ data['taskCStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+        Check ponds size and location
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskDMVP) %}
+      {% if (data.decisionTaskDMVP === 'Accepted') %} {{ data['taskDStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskDTagMVP'] }}">{{ data['taskDStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
       <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
@@ -194,6 +271,82 @@
         </strong>
       {% endif %}
       </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-a" aria-describedby="company-details-1-status">
+        Check SSSI and Historic feature conditions
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskAMVP) %}
+      {% if (data.decisionTaskAMVP === 'Accepted') %} {{ data['taskAStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskATagMVP'] }}">{{ data['taskAStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+        Check a ditch is not within a SSSI or Severely Disadvantaged Area
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskBMVP) %}
+      {% if (data.decisionTaskBMVP === 'Accepted') %} {{ data['taskBStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskBTagMVP'] }}">{{ data['taskBStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-c" aria-describedby="company-details-1-status">
+        Check stacking with Less Favoured Area (LFA)
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskCMVP) %}
+      {% if (data.decisionTaskCMVP === 'Accepted') %} {{ data['taskCStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskCTagMVP'] }}">{{ data['taskCStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+        Check ponds size and location
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskDMVP) %}
+      {% if (data.decisionTaskDMVP === 'Accepted') %} {{ data['taskDStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskDTagMVP'] }}">{{ data['taskDStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
   </li>
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
@@ -381,6 +534,82 @@
         </strong>
       {% endif %}
       </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-a" aria-describedby="company-details-1-status">
+        Check SSSI and Historic feature conditions
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskAMVP) %}
+      {% if (data.decisionTaskAMVP === 'Accepted') %} {{ data['taskAStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskATagMVP'] }}">{{ data['taskAStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+        Check a ditch is not within a SSSI or Severely Disadvantaged Area
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskBMVP) %}
+      {% if (data.decisionTaskBMVP === 'Accepted') %} {{ data['taskBStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskBTagMVP'] }}">{{ data['taskBStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-c" aria-describedby="company-details-1-status">
+        Check stacking with Less Favoured Area (LFA)
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskCMVP) %}
+      {% if (data.decisionTaskCMVP === 'Accepted') %} {{ data['taskCStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskCTagMVP'] }}">{{ data['taskCStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+        Check ponds size and location
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskDMVP) %}
+      {% if (data.decisionTaskDMVP === 'Accepted') %} {{ data['taskDStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskDTagMVP'] }}">{{ data['taskDStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
   </li>
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">

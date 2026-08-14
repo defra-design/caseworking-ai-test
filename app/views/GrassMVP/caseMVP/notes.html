@@ -35,7 +35,7 @@
     
 <div class="govuk-form-group">
 
-  {% if not data.decision1MVP and not data.noteActionTask6MVP and not data.noteActionTask5MVP and not data.noteActionTask4MVP and not data.noteActionTask3MVP and not data.noteActionTask2MVP and not data.noteActionTask1MVP %} 
+  {% if not data.decision1MVP and not data.noteActionTask6MVP and not data.noteActionTask5MVP and not data.noteActionTask4MVP and not data.noteActionTaskDMVP and not data.noteActionTaskCMVP and not data.noteActionTaskBMVP and not data.noteActionTaskAMVP and not data.noteActionTask3MVP and not data.noteActionTask2MVP and not data.noteActionTask1MVP %}
 
   <H3 class="govuk-heading-s">There are no notes to display yet</H3>
 
@@ -136,7 +136,103 @@
 
     </tr>
     {% endif %}
-    {% if (data.task3Note2MVP ) %} 
+    {% if (data.taskDNote2MVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:41am</td>
+      <td class="govuk-table__cell">
+        Ponds: {{ data['decisionTaskDMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteD_2MVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTaskDMVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:40am</td>
+      <td class="govuk-table__cell">
+        Ponds: {{ data['noteActionTaskDMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteDMVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.taskCNote2MVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:39am</td>
+      <td class="govuk-table__cell">
+        LFA stacking: {{ data['decisionTaskCMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteC_2MVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTaskCMVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:38am</td>
+      <td class="govuk-table__cell">
+        LFA stacking: {{ data['noteActionTaskCMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteCMVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.taskBNote2MVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:37am</td>
+      <td class="govuk-table__cell">
+        Ditch SSSI/SDA: {{ data['decisionTaskBMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteB_2MVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTaskBMVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:37am</td>
+      <td class="govuk-table__cell">
+        Ditch SSSI/SDA: {{ data['noteActionTaskBMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteBMVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.taskANote2MVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:37am</td>
+      <td class="govuk-table__cell">
+        SSSI &amp; historic features: {{ data['decisionTaskAMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteA_2MVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTaskAMVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:37am</td>
+      <td class="govuk-table__cell">
+        SSSI &amp; historic features: {{ data['noteActionTaskAMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteAMVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.task3Note2MVP ) %}
     <tr class="govuk-table__row">
       <td class="govuk-table__cell">13 Feb 2026 at 10:38am</td>
       <td class="govuk-table__cell">

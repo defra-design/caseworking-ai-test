@@ -1007,10 +1007,13 @@ function stripEmptyAndNulls(input) {
   if (Array.isArray(input)) {
     return input.filter(value => value !== null && value !== '');
   }
-  if (input === null || input === '') {
+  if (input === null || input === undefined || input === '') {
     return '';
   }
-  throw new Error("Input must be an array or an empty/null value.");
+  // A single textarea submits its note as a string — pass it through so the
+  // note text is saved (previously this threw, which 500'd the task handler
+  // before the status was set whenever a caseworker actually typed a note).
+  return input;
 }
 
 // Outcome lookup tables — map decision strings to tag CSS class + display status
@@ -5580,6 +5583,64 @@ makeTaskRoute('/task3T2MVP', {
   filteredNoteKey:   'filteredNote3MVP',
   rawNoteKey2:       'task3Note2MVP',
   filteredNoteKey2:  'filteredNote3_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// Additional review tasks a–d (SSSI/historic, ditch, LFA, ponds). Same review
+// outcome + notes + status pattern as task 1–3.
+makeTaskRoute('/taskAT2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTaskAMVP',
+  noteActionKey:     'noteActionTaskAMVP',
+  tagKey:            'taskATagMVP',
+  statusKey:         'taskAStatusMVP',
+  rawNoteKey:        'taskANoteMVP',
+  filteredNoteKey:   'filteredNoteAMVP',
+  rawNoteKey2:       'taskANote2MVP',
+  filteredNoteKey2:  'filteredNoteA_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/taskBT2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTaskBMVP',
+  noteActionKey:     'noteActionTaskBMVP',
+  tagKey:            'taskBTagMVP',
+  statusKey:         'taskBStatusMVP',
+  rawNoteKey:        'taskBNoteMVP',
+  filteredNoteKey:   'filteredNoteBMVP',
+  rawNoteKey2:       'taskBNote2MVP',
+  filteredNoteKey2:  'filteredNoteB_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/taskCT2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTaskCMVP',
+  noteActionKey:     'noteActionTaskCMVP',
+  tagKey:            'taskCTagMVP',
+  statusKey:         'taskCStatusMVP',
+  rawNoteKey:        'taskCNoteMVP',
+  filteredNoteKey:   'filteredNoteCMVP',
+  rawNoteKey2:       'taskCNote2MVP',
+  filteredNoteKey2:  'filteredNoteC_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+makeTaskRoute('/taskDT2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTaskDMVP',
+  noteActionKey:     'noteActionTaskDMVP',
+  tagKey:            'taskDTagMVP',
+  statusKey:         'taskDStatusMVP',
+  rawNoteKey:        'taskDNoteMVP',
+  filteredNoteKey:   'filteredNoteDMVP',
+  rawNoteKey2:       'taskDNote2MVP',
+  filteredNoteKey2:  'filteredNoteD_2MVP',
   outcomes:          REVIEW_OUTCOMES,
   redirectTo:        D2MVPT,
 });

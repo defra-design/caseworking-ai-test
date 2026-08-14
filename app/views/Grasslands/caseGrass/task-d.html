@@ -1,0 +1,24 @@
+{% extends "layouts/main.html" %}
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "Grasslands/includes/_caseGrass-context-strip.html" %}
+{% endblock %}
+
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "Grasslands/includes/_caseGrass-nav.html" %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">Check ponds size and location</h1>
+
+    <p>Ref LPs: NU0021 1026, NT9009 1023</p>
+
+    <p>Check the ponds being claimed for are outside any SSSI boundary and are of an allowable size.</p>
+
+    <a href="tasklist-stage" class="govuk-link">Return to task list</a>
+
+  </div>
+</div>
+{% endblock %}

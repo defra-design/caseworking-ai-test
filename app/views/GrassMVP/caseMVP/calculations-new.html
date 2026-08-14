@@ -19,7 +19,7 @@
   </div>
 </div>
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-full">
 
 
     {% if (data.recalc) %}
@@ -51,12 +51,13 @@
   <style>
     .calcflt-runs { margin-bottom: 20px; }
     .calcflt-run--current { color: #0b0c0c; font-weight: 700; }
+    /* Filter panel + calculations run full-width; only the search is held to 2/3. */
+    .parcel-search { max-width: 66.6667%; }
+    @media (max-width: 640px) { .parcel-search { max-width: none; } }
     .calcflt-form__label { display: block; margin-bottom: 10px; }
     .calcflt-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
     .calcflt-check { display: inline-flex; align-items: center; gap: 6px; margin: 0; }
     .calcflt-check input { width: 20px; height: 20px; }
-    .calcflt-active { margin-bottom: 15px; }
-    .calcflt-active .govuk-tag { margin-right: 5px; }
   </style>
 
   <div class="calcflt-controls govuk-!-margin-bottom-4">
@@ -82,11 +83,12 @@
       </form>
     </div>
 
-    {# Active filters summary — populated by JS, shown above the (closed) details. #}
-    <div id="calc-active-filters" class="calcflt-active" hidden>
-      <span class="govuk-body govuk-!-font-weight-bold govuk-!-margin-right-2">Active filters:</span>
-      <span id="calc-active-filters-list"></span>
-      <a href="#" class="govuk-link govuk-!-margin-left-2" id="calc-active-filters-clear">Clear filters</a>
+    {# Selected filters — populated by JS, shown above the (closed) details.
+       Mirrors the caselist "Selected filters" moj-filter__selected panel:
+       removable moj-filter__tag chips, one per active filter. #}
+    <div id="calc-active-filters" class="moj-filter__selected govuk-!-margin-bottom-3" hidden>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags" id="calc-active-filters-list"></ul>
     </div>
 
     <details class="govuk-details govuk-!-margin-bottom-0" id="calc-filter-details">
@@ -105,17 +107,15 @@
 
         {# Category filter — multi-select, applied on "Filter". Enclosed in a
            moj-filter box (matching the caselist "filter list" panel). #}
-        <form id="calc-filter-form" onsubmit="return false;">
+        <form id="calc-filter-form" onsubmit="return false;" autocomplete="off">
           <div class="moj-filter">
             <div class="moj-filter__content">
               <span class="govuk-body govuk-!-font-weight-bold calcflt-form__label">Show only:</span>
               <div class="calcflt-row">
+                <label class="calcflt-check"><input type="checkbox" value="all" checked> All calculations</label>
                 <label class="calcflt-check"><input type="checkbox" value="fails"> Fails</label>
-                <label class="calcflt-check"><input type="checkbox" value="changes"> Non-fail changes</label>
-                <label class="calcflt-check"><input type="checkbox" value="caveats"> All caveats</label>
-                <label class="calcflt-check"><input type="checkbox" value="sssi"> SSSI</label>
-                <label class="calcflt-check"><input type="checkbox" value="hefer"> HEFER</label>
-                <label class="calcflt-check"><input type="checkbox" value="ponds"> Ponds</label>
+                <label class="calcflt-check"><input type="checkbox" value="changed"> Changed from original</label>
+                <label class="calcflt-check"><input type="checkbox" value="manual"> Manual checks</label>
                 <button type="submit" class="govuk-button govuk-!-margin-bottom-0" id="calc-filter-apply">Filter</button>
               </div>
             </div>
@@ -129,7 +129,7 @@
 </div>
 
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds govuk-!-padding-left-4">
+  <div class="govuk-grid-column-two-thirds">
 
 <form action="test4" method="post">
 <div class="govuk-form-group">
@@ -4213,12 +4213,12 @@ Latest land parcel update: 18 May 2026 </p>
         var hasChange = !!d.querySelector('.value-changed');
         var sssi = txt.indexOf('special scientific interest') !== -1;
         var hefer = txt.indexOf('hefer') !== -1;
-        var ponds = txt.indexOf('pond') !== -1;
+        // "Manual checks" currently covers SSSI + HEFER (to be expanded later).
         return {
+          all: true,
           fails: isFail,
-          changes: hasChange && !isFail,
-          sssi: sssi, hefer: hefer, ponds: ponds,
-          caveats: sssi || hefer || ponds
+          changed: hasChange,
+          manual: sssi || hefer
         };
       });
 
@@ -4254,29 +4254,58 @@ Latest land parcel update: 18 May 2026 </p>
       }
 
       // --- Active filters summary above the (closed) details. ---
-      var LABELS = { fails: 'Fails', changes: 'Non-fail changes', caveats: 'All caveats', sssi: 'SSSI', hefer: 'HEFER', ponds: 'Ponds' };
+      var LABELS = { all: 'All calculations', fails: 'Fails', changed: 'Changed from original', manual: 'Manual checks' };
       var activeWrap = document.getElementById('calc-active-filters');
       var activeList = document.getElementById('calc-active-filters-list');
       function renderActive() {
-        var tags = activeCats.map(function (c) { return '<strong class="govuk-tag govuk-tag--grey">' + LABELS[c] + '</strong>'; });
-        if (tags.length) { activeList.innerHTML = tags.join(' '); activeWrap.hidden = false; }
-        else { activeList.innerHTML = ''; activeWrap.hidden = true; }
+        activeList.innerHTML = activeCats.map(function (c) {
+          return '<li><a href="#" class="moj-filter__tag govuk-link" data-cat="' + c + '">' +
+                 LABELS[c] + ' <span class="govuk-visually-hidden">Remove filter</span></a></li>';
+        }).join('');
+        activeWrap.hidden = activeCats.length === 0;
       }
 
       // --- "Show only" checkboxes + Filter button. ---
       var filterForm = document.getElementById('calc-filter-form');
       var filterDetails = document.getElementById('calc-filter-details');
+      var allBox = filterForm.querySelector('input[value="all"]');
+      var otherBoxes = Array.prototype.slice.call(filterForm.querySelectorAll('input[type=checkbox]'))
+        .filter(function (b) { return b !== allBox; });
+
+      // "All calculations" is mutually exclusive with the specific filters and is the
+      // default. Ticking it clears the others; ticking any other clears it; unticking
+      // the last specific filter falls back to "All calculations".
+      allBox.addEventListener('change', function () {
+        if (allBox.checked) otherBoxes.forEach(function (b) { b.checked = false; });
+        else if (!otherBoxes.some(function (b) { return b.checked; })) allBox.checked = true;
+      });
+      otherBoxes.forEach(function (b) {
+        b.addEventListener('change', function () {
+          if (b.checked) allBox.checked = false;
+          else if (!otherBoxes.some(function (x) { return x.checked; })) allBox.checked = true;
+        });
+      });
+
+      function selectedCats () {
+        // "all" (or nothing) means no filtering — show every calculation.
+        if (allBox.checked) return [];
+        return otherBoxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
+      }
       document.getElementById('calc-filter-apply').addEventListener('click', function () {
-        activeCats = Array.prototype.slice
-          .call(filterForm.querySelectorAll('input[type=checkbox]:checked'))
-          .map(function (cb) { return cb.value; });
+        activeCats = selectedCats();
         apply();
         if (filterDetails) filterDetails.open = false;   // collapse so the summary shows
       });
-      document.getElementById('calc-active-filters-clear').addEventListener('click', function (e) {
+      // Removable "Selected filters" chips — clicking a chip drops that filter and
+      // re-renders, falling back to "All calculations" when the last one is removed.
+      activeList.addEventListener('click', function (e) {
+        var tag = e.target.closest('a.moj-filter__tag');
+        if (!tag) return;
         e.preventDefault();
-        activeCats = [];
-        filterForm.querySelectorAll('input[type=checkbox]').forEach(function (cb) { cb.checked = false; });
+        var cat = tag.getAttribute('data-cat');
+        otherBoxes.forEach(function (b) { if (b.value === cat) b.checked = false; });
+        if (!otherBoxes.some(function (b) { return b.checked; })) allBox.checked = true;
+        activeCats = selectedCats();
         apply();
       });
 
