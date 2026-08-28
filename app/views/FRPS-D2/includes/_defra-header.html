@@ -6,7 +6,9 @@
           </a>
       </div>
 
-      <div class="defra-internal-service-name{% if headerTitleCentred %} defra-internal-service-name--centred{% endif %}">
+      {# headerTitleFullCentred centres the title on the whole header bar rather
+         than within the space left beside the logo. #}
+      <div class="defra-internal-service-name{% if headerTitleCentred %} defra-internal-service-name--centred{% endif %}{% if headerTitleFullCentred %} defra-internal-service-name--centred-full{% endif %}">
           <a href="/" title="Go to the homepage" class="defra-internal-service-name__link">
             {{ headerServiceName or "Manage rural grant applications" }}
           </a>

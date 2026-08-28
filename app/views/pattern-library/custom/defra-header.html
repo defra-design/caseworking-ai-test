@@ -73,6 +73,85 @@
         </div>
       </div>
 
+      <h2 class="govuk-heading-l">Title alignment</h2>
+      <p class="govuk-body">By default the service name sits immediately to the right of the logo. Two modifiers move it, both set from the page rather than hard-coded into the include:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><code class="govuk-body">--centred</code> (<code class="govuk-body">{% raw %}{% set headerTitleCentred = true %}{% endraw %}</code>) centres the title inside the space left over beside the logo. Because the logo takes the first third of the bar, the title lands right of the true middle.</li>
+        <li><code class="govuk-body">--centred-full</code> (<code class="govuk-body">{% raw %}{% set headerTitleFullCentred = true %}{% endraw %}</code>) centres it on the whole bar. It lifts the title out of the header's table row and stretches it across the container, so it stays centred whatever width the logo cell ends up. Set it alongside <code class="govuk-body">headerTitleCentred</code>, which stays as the narrow-screen behaviour.</li>
+      </ul>
+
+      <h3 class="govuk-heading-m">Centred beside the logo</h3>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-defra-header-centred">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-defra-header-centred-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <header class="defra-internal-header" role="banner">
+              <div class="govuk-width-container">
+                <div class="defra-logo">
+                  <a href="/" class="defra-logo__link" title="Go to the Defra Design Library homepage">
+                    <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+                  </a>
+                </div>
+                <div class="defra-internal-service-name defra-internal-service-name--centred">
+                  <a href="/" class="defra-internal-service-name__link">Entitlement management</a>
+                </div>
+              </div>
+            </header>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-defra-header-centred" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-defra-header-centred-code">&lt;div class="defra-internal-service-name defra-internal-service-name--centred"&gt;
+  &lt;a href="/" class="defra-internal-service-name__link"&gt;
+    Entitlement management
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="govuk-heading-m">Centred on the whole bar</h3>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-defra-header-centred-full">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-defra-header-centred-full-code">Copy code</button>
+          </div>
+          <div class="app-example__content" style="padding: 0;">
+            <header class="defra-internal-header" role="banner">
+              <div class="govuk-width-container">
+                <div class="defra-logo">
+                  <a href="/" class="defra-logo__link" title="Go to the Defra Design Library homepage">
+                    <span class="c-defra-logo__title govuk-visually-hidden">Department for Environment Food &amp; Rural Affairs</span>
+                  </a>
+                </div>
+                <div class="defra-internal-service-name defra-internal-service-name--centred defra-internal-service-name--centred-full">
+                  <a href="/" class="defra-internal-service-name__link">Grant management</a>
+                </div>
+              </div>
+            </header>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-defra-header-centred-full" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-defra-header-centred-full-code">&lt;div class="defra-internal-service-name
+            defra-internal-service-name--centred
+            defra-internal-service-name--centred-full"&gt;
+  &lt;a href="/" class="defra-internal-service-name__link"&gt;
+    Grant management
+  &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </div>
+
       <h2 class="govuk-heading-l">Key classes</h2>
       <table class="govuk-table">
         <thead class="govuk-table__head">
@@ -99,16 +178,45 @@
             <td class="govuk-table__cell">Service name container — vertically centred alongside the logo</td>
           </tr>
           <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-internal-service-name--centred</code></td>
+            <td class="govuk-table__cell">Centres the title in the space beside the logo — set with <code>headerTitleCentred</code></td>
+          </tr>
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><code>.defra-internal-service-name--centred-full</code></td>
+            <td class="govuk-table__cell">Centres the title on the whole bar (absolute, wide layout only) — set with <code>headerTitleFullCentred</code></td>
+          </tr>
+          <tr class="govuk-table__row">
             <td class="govuk-table__cell"><code>.defra-internal-service-name__link</code></td>
             <td class="govuk-table__cell">Service name link — 21px / 24px font, no underline, black text</td>
           </tr>
         </tbody>
       </table>
 
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Use the default (no modifier) wherever the header reads as a service banner and the title belongs next to the logo.</li>
+        <li>Use <code class="govuk-body">--centred-full</code> on a scheme-specific area whose header carries a short name — it reads as the title of the whole page rather than a label hanging off the logo.</li>
+        <li>Set both modifiers together: <code class="govuk-body">--centred</code> carries the narrow-screen layout, where the logo stacks above and the title centres normally.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Don't use <code class="govuk-body">--centred-full</code> with a long service name — the title is taken out of the flow, so a wide one can run under the logo instead of wrapping beside it.</li>
+        <li>Don't add either modifier to a header that carries anything else in the bar (navigation, a sign-out link) — the absolute title would sit over it.</li>
+        <li>Don't reach for it to nudge alignment on one page. It is an area-wide decision, so every page in that area should set the same flag.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Customisation in this prototype</h2>
+      <p class="govuk-body">The header is a table at wide widths: the logo takes a 33.33% cell and the service name fills the rest, which is why plain centring sits right of the middle. <code class="govuk-body">--centred-full</code> gives <code class="govuk-body">.defra-internal-header .govuk-width-container</code> a positioning context and absolutely positions the title across it, vertically centred with <code class="govuk-body">translateY(-50%)</code>. It is scoped to <code class="govuk-body">min-width: 48.0625em</code> so the stacked narrow layout is untouched.</p>
+
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-          <li><a class="govuk-link" href="/FRPS-D2/agreement">Agreement</a></li>
-        </ul>
+        <li><a class="govuk-link" href="/FRPS-D2/agreement">Agreement</a> — default alignment</li>
+        <li><a class="govuk-link" href="/Woodlands/caselist">Woodlands entitlements</a> — <code>--centred</code></li>
+        <li><a class="govuk-link" href="/grants-dashboard-mvp/GTIF-caselist">GTIF caselist</a> — <code>--centred</code></li>
+        <li><a class="govuk-link" href="/WoodlandsMVP/caselist">Woodland grant applications (v2)</a> — <code>--centred-full</code></li>
+        <li><a class="govuk-link" href="/WoodlandsMVP/case-admin?id=WMP-1G6-JRT">Woodland v2 case console</a> — <code>--centred-full</code></li>
+      </ul>
 
     </div>
   </div>

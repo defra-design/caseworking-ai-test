@@ -1,0 +1,43 @@
+{% extends "layouts/main.html" %}
+
+{% set headerTitleCentred = true %}
+{% set headerTitleFullCentred = true %}
+{% set headerServiceName = "Grant management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
+{% endblock %}
+
+{# Final "claim settlement" screen. Shown after confirming a new settlement value
+   (POST /WoodlandsMVP/confirm) and, in the same style, when re-opening a case
+   whose settlement value has already been set (GET /WoodlandsMVP/settlement).
+   `entDate` is available for the already-created variant if a created date is
+   wanted here later. #}
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Claim settlement</h1>
+
+        <p class="govuk-body">The customer can now claim for application {{ c.id }}.</p>
+
+        <div class="govuk-inset-text">
+          Claim settlement value: <strong>{{ claimDisplay }}</strong>
+        </div>
+
+        {% if data.wmpEntReturn %}
+        <p class="govuk-body">You can now return to the caseworking task to record the claim details.</p>
+        <a href="{{ data.wmpEntReturn }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">Return to the case task</a>
+        <p class="govuk-body">You can then close this tab.</p>
+        {% else %}
+        <p class="govuk-body">You can now return to Caseworking to complete the task and then close this window.</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

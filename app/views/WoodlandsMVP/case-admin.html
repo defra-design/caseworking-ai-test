@@ -1,0 +1,201 @@
+{% extends "layouts/main.html" %}
+
+{# Case admin console (v2 content) — a single, stateful, case-driven page for one
+   applicant's claims: the claim types that can be created, anything awaiting a
+   claim, and the settled claim. Same behaviour as the V1 Woodlands console with
+   the reviewed content applied: "entitlement" language dropped in favour of claim
+   type / area type / settlement value. The case identity (id / business / SBI) is
+   read from the Woodlands data so this header stays in sync with the caselist.
+   Woodlands has exactly one claim type per applicant, so once it has been created
+   you cannot create another, and once claimed it is locked.
+   State + data come from the /WoodlandsMVP/case-admin routes. #}
+
+{% set serviceName = "Grants admin" %}
+{% set pageName = "Claims — " + c.id %}
+
+{% set headerTitleCentred = true %}
+{% set headerTitleFullCentred = true %}
+{% set headerServiceName = "Grant management" %}
+{% set contextScheme = con.scheme %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+
+    {# Case tabs. Rendered statically (no govuk-tabs JS module) so "Claims" stays
+       the selected, bordered panel. Application data / Payments are placeholders. #}
+    <div class="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#application-data">Application data</a>
+        </li>
+        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+          <a class="govuk-tabs__tab" href="#claims">Claims</a>
+        </li>
+        <li class="govuk-tabs__list-item">
+          <a class="govuk-tabs__tab" href="#payments">Payments</a>
+        </li>
+      </ul>
+
+      <div class="govuk-tabs__panel" id="claims">
+
+        {% if banner %}
+        {# Confirmation shown after the applicant's single claim type is created,
+           changed or deleted. #}
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">{{ banner }}</h3>
+          </div>
+        </div>
+        {% endif %}
+
+        {# ---- Claim types that can be created. The "Claimable items" heading was
+           removed in the content review, so the table opens the panel. ---- #}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Claim type</th>
+              <th scope="col" class="govuk-table__header">Area type</th>
+              <th scope="col" class="govuk-table__header">Created</th>
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Woodland creation</td>
+              <td class="govuk-table__cell">Hectares</td>
+              <td class="govuk-table__cell">{{ createdCount }} of {{ con.maxCreatable }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                {% if canCreate %}
+                  {% if not openForm %}<a class="govuk-link" href="?id={{ c.id }}&amp;create=1#create">Create</a>{% endif %}
+                {% elif not claim %}
+                  <span class="govuk-hint govuk-!-margin-bottom-0">Maximum created</span>
+                {% endif %}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {% if openForm %}
+        {# Inline create form (server-side disclosure). #}
+        <div class="app-console-form govuk-!-margin-bottom-6" id="create">
+          <form method="post" action="/WoodlandsMVP/case-admin" novalidate>
+            <input type="hidden" name="id" value="{{ c.id }}">
+            {# "change" re-opens this same form on the existing item and overwrites
+               it; without it the form only creates the first item. #}
+            <input type="hidden" name="mode" value="{{ formMode }}">
+
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">{% if formMode == 'change' %}Change claim type{% else %}Add claim type{% endif %}</h3>
+
+            <p class="govuk-body">Enter the total area of woodland approved by the Forestry Commission (FC). This will be used to calculate the amount the customer can claim.</p>
+
+            <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+              <label class="govuk-label govuk-label--s" for="ha">Total area of approved woodland</label>
+              {% if error %}<p id="ha-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+              <div class="govuk-input__wrapper">
+                <input class="govuk-input govuk-input--width-5{% if error %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" inputmode="decimal" spellcheck="false" value="{{ value }}"{% if error %} aria-describedby="ha-error"{% endif %}>
+                <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+              </div>
+            </div>
+
+            <details class="govuk-details" data-module="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">How is the claim amount calculated?</span>
+              </summary>
+              <div class="govuk-details__text">
+                <p class="govuk-body">Threshold payments for approved land in hectares (ha):</p>
+                <ul class="govuk-list govuk-list--bullet">
+                  <li>0.5 hectares (ha) to 50ha: flat rate of £1,500</li>
+                  <li>51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha</li>
+                  <li>more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha</li>
+                </ul>
+              </div>
+            </details>
+
+            <div class="govuk-button-group">
+              <button type="submit" class="govuk-button" data-module="govuk-button">{% if formMode == 'change' %}Save changes{% else %}Save item{% endif %}</button>
+              <a class="govuk-link" href="/WoodlandsMVP/case-admin?id={{ c.id }}">Cancel</a>
+            </div>
+          </form>
+        </div>
+        {% endif %}
+
+        {# ---- Awaiting a claim ---- shown only once something has been created. #}
+        {% if awaiting.length > 0 %}
+        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Awaiting a claim</h2>
+        <p class="govuk-body">The applicant has not made a claim yet against this item.</p>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Claim type</th>
+              <th scope="col" class="govuk-table__header">Area</th>
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for e in awaiting %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                Woodland creation
+                <span class="govuk-caption-m govuk-!-margin-top-0">{{ e.ref }}</span>
+              </td>
+              <td class="govuk-table__cell">{{ e.haDisplay }} ha</td>
+              {# Nothing has been claimed against this item yet, so the area can
+                 still be changed or the item removed altogether. #}
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                <a class="govuk-link govuk-!-margin-right-3" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for {{ e.ref }}</span></a>
+                <a class="govuk-link" href="/WoodlandsMVP/case-admin/delete?id={{ c.id }}">Delete<span class="govuk-visually-hidden"> claim type {{ e.ref }}</span></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+        {# ---- Claim ---- shown only once a claim has been submitted. The first
+           column heading was struck through in the content review, so it is
+           visually hidden rather than removed outright. #}
+        {% if claim %}
+        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Claim</h2>
+
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Claim type</span></th>
+              <th scope="col" class="govuk-table__header">Area</th>
+              <th scope="col" class="govuk-table__header">Settlement value</th>
+              <th scope="col" class="govuk-table__header">Payment date</th>
+              <th scope="col" class="govuk-table__header">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                Woodland creation
+                <span class="govuk-caption-m govuk-!-margin-top-0">{{ claim.ref }}</span>
+              </td>
+              <td class="govuk-table__cell">{{ claim.entitledDisplay }}</td>
+              <td class="govuk-table__cell">{{ claim.claimedDisplay }}</td>
+              <td class="govuk-table__cell">{{ claim.paymentDate }}</td>
+              <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ claim.statusTag }}">{{ claim.status }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

@@ -58,7 +58,25 @@
 
   // Centre the service-name title (used on the widened per-scheme caselist).
   .defra-internal-service-name--centred { text-align: center; }
-  
+
+  // Centre the service-name title on the WHOLE header bar rather than within the
+  // cell left over beside the logo (which reads as too far right). Taking the
+  // title out of the header's table row and stretching it across the container
+  // centres it on the bar whatever width the logo cell ends up. Wide layout only
+  // — on narrow screens the logo stacks above and plain centring is correct.
+  .defra-internal-header .govuk-width-container { position: relative; }
+
+  @media (min-width: 48.0625em) {
+    .defra-internal-service-name--centred-full {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      padding-left: 0;
+    }
+  }
+
   @media (min-width: 48.0625em) {
     .defra-internal-service-name__link {
       font-size: 24px;

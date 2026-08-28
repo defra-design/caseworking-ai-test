@@ -1,0 +1,59 @@
+{% extends "layouts/main.html" %}
+
+{# Delete confirmation for the one claim type awaiting a claim. Reached from the
+   Delete link on the case console; Confirm removes the item and returns to the
+   console, Cancel returns without changing anything. Only reachable while the
+   item exists and nothing has been claimed against it — the route redirects back
+   to the console otherwise. #}
+
+{% set serviceName = "Grants admin" %}
+{% set pageName = "Delete claim type — " + c.id %}
+
+{% set headerTitleCentred = true %}
+{% set headerTitleFullCentred = true %}
+{% set headerServiceName = "Grant management" %}
+{% set contextScheme = con.scheme %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Are you sure you want to delete this claim type?</h1>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Claim type</dt>
+            <dd class="govuk-summary-list__value">Woodland creation</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Reference</dt>
+            <dd class="govuk-summary-list__value">{{ item.ref }}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Area</dt>
+            <dd class="govuk-summary-list__value">{{ item.haDisplay }} ha</dd>
+          </div>
+        </dl>
+
+        <p class="govuk-body">The customer will no longer be able to claim against it. You can create it again afterwards.</p>
+
+        <form method="post" action="/WoodlandsMVP/case-admin/delete">
+          <input type="hidden" name="id" value="{{ c.id }}">
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+            <a class="govuk-link" href="/WoodlandsMVP/case-admin?id={{ c.id }}">Cancel</a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

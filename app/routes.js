@@ -3629,6 +3629,229 @@ router.post('/Woodlands/case-admin', function (req, res) {
   res.redirect(backToCase + '&created=1')
 })
 
+// ============================================================
+// WoodlandsMVP — v2 of the Woodlands entitlement journey with the reviewed
+// content applied ("entitlement" replaced by "claim type" / "settlement value",
+// service name "Grant management"). Same cases and the same threshold pricing as
+// V1 (data/woodlands-cases.js via the wd* helpers above), but its own caselist,
+// journey templates and console state so the two versions can be demoed side by
+// side without one overwriting the other.
+//   caselist -> Calculate settlement value -> Confirm -> Claim settlement
+// The top two caselist rows open the v2 case console instead:
+//   WMP-1G6-JRT (Hazelcombe Estate)  — claim type created and a claim settled
+//   WMP-1T9-RXN (Elmwood Land Co)    — nothing created yet
+// ============================================================
+const WMVP_CONSOLE_CLAIMED_ID = 'WMP-1G6-JRT'
+const WMVP_CONSOLE_EMPTY_ID = 'WMP-1T9-RXN'
+const WMVP_CLAIM = {
+  entitledHa: 4.5,
+  claimedHa: 4.2, claimedValue: 5040,
+  paymentDate: '7 August 2026',
+  status: 'Payment scheduled', statusTag: 'blue'
+}
+
+// Application-ID search term, held under its own session key so the v2 caselist
+// search is independent of the V1 one.
+function wmvpSearchTerm (req) {
+  if (req.query.searchWood !== undefined) return req.query.searchWood
+  return (req.session.data && req.session.data.searchWoodMvp) || ''
+}
+function wmvpView (req) {
+  if (req.query.searchWood !== undefined && req.session.data) req.session.data.searchWoodMvp = req.query.searchWood
+  let rows = wdRows(req)
+  const term = (wmvpSearchTerm(req) || '').toString().trim().toLowerCase()
+  if (term) rows = rows.filter(function (r) { return r.id.toLowerCase().indexOf(term) !== -1 })
+  const st = wdSortState(req)
+  rows = wdSortRows(rows, st)
+  const view = grassPaginate(rows, parseInt(req.query.page, 10))
+  view.sort = st.sort
+  view.dir = st.dir
+  view.search = wmvpSearchTerm(req)
+  return view
+}
+
+// ----- WoodlandsMVP routes -----
+router.get('/WoodlandsMVP/caselist', function (req, res) {
+  res.render('WoodlandsMVP/caselist', {
+    view: wmvpView(req),
+    consoleClaimedId: WMVP_CONSOLE_CLAIMED_ID,
+    consoleEmptyId: WMVP_CONSOLE_EMPTY_ID
+  })
+})
+
+// Enter the FC-approved area for a single application.
+router.get('/WoodlandsMVP/calculate', function (req, res) {
+  const c = wdFindCase(req.query.id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  if (req.query.from === 'wmp') req.session.data.wmpEntReturn = '/WMP/caseWmp/record-eligible-area'
+  else delete req.session.data.wmpEntReturn
+  // The kit snapshots session data into the template `data` before this handler
+  // runs, so mirror the change onto res.locals.data for THIS render too.
+  if (res.locals.data) res.locals.data.wmpEntReturn = req.session.data.wmpEntReturn
+  res.render('WoodlandsMVP/calculate', { c: c, values: {}, error: null })
+})
+
+// Validate the entered approved area; on success render the Confirm screen.
+router.post('/WoodlandsMVP/calculate', function (req, res) {
+  const c = wdFindCase(req.body.id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const raw = (req.body.fcArea === undefined ? '' : req.body.fcArea).toString().trim()
+  const num = Number(raw)
+  let error = null
+  if (raw === '') error = 'Enter the total area of approved woodland'
+  else if (isNaN(num) || num <= 0) error = 'Total area of approved woodland must be a number greater than 0'
+  else if (num > c.appliedAreaHa) error = 'Total area of approved woodland cannot be more than the applied for area (' + c.appliedAreaHa + ' hectares)'
+  if (error) {
+    return res.render('WoodlandsMVP/calculate', { c: c, values: { fcArea: raw }, error: error })
+  }
+  const claim = wdClaimAmount(num)
+  res.render('WoodlandsMVP/confirm', {
+    c: c, fcArea: num, claim: claim, claimDisplay: wdGbp2(claim)
+  })
+})
+
+// Already-set settlement value — reached from a caselist ID that already has one.
+router.get('/WoodlandsMVP/settlement', function (req, res) {
+  const c = wdFindCase(req.query.id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const area = wdEntArea(c, req)
+  if (area === null) return res.redirect('/WoodlandsMVP/calculate?id=' + encodeURIComponent(c.id))
+  const claim = wdClaimAmount(area)
+  res.render('WoodlandsMVP/confirmed', {
+    c: c, claim: claim, claimDisplay: wdGbp2(claim), entDate: wdEntDate(c, req)
+  })
+})
+
+// Confirm — persist the settlement value (session, shared with V1 so a case that
+// has been settled in either version reads back the same) and show the result.
+router.post('/WoodlandsMVP/confirm', function (req, res) {
+  const c = wdFindCase(req.body.id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const num = Number(req.body.fcArea)
+  if (isNaN(num) || num <= 0 || num > c.appliedAreaHa) {
+    return res.redirect('/WoodlandsMVP/calculate?id=' + encodeURIComponent(c.id))
+  }
+  if (!req.session.data.woodlandsEntitlements) req.session.data.woodlandsEntitlements = {}
+  if (!req.session.data.woodlandsEntitlementDates) req.session.data.woodlandsEntitlementDates = {}
+  req.session.data.woodlandsEntitlements[c.id] = num
+  req.session.data.woodlandsEntitlementDates[c.id] = wdToday()
+  const claim = wdClaimAmount(num)
+  res.render('WoodlandsMVP/confirmed', {
+    c: c, claim: claim, claimDisplay: wdGbp2(claim), entDate: wdToday()
+  })
+})
+
+// ----- v2 case admin console -----
+// Same three lifecycle positions as V1, wired to the top two caselist rows: the
+// claimed case is locked; the empty case can create its one claim type.
+function wmvpCreatedFor (req, id) {
+  const map = (req.session.data && req.session.data.wmvpConsoleCreated) || {}
+  return map[id] || null
+}
+function wmvpRenderConsole (req, res, id, opts) {
+  opts = opts || {}
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const claimed = (id === WMVP_CONSOLE_CLAIMED_ID)
+  const created = claimed ? null : wmvpCreatedFor(req, id)
+  const createdCount = claimed ? 1 : (created ? 1 : 0)
+  const canCreate = createdCount < WD_CONSOLE.maxCreatable && !claimed
+  const mode = opts.mode === 'change' ? 'change' : 'create'
+  // Drop a success banner that no longer matches the state (e.g. a bookmarked
+  // ?created=1 after the item has been deleted).
+  let banner = opts.banner || null
+  if (banner === 'Claim type deleted') { if (created !== null || claimed) banner = null }
+  else if (banner && created === null) banner = null
+  res.render('WoodlandsMVP/case-admin', {
+    con: WD_CONSOLE,
+    c: c,
+    createdCount: createdCount,
+    canCreate: canCreate,
+    awaiting: (created ? [{ ref: id + '/C1', haDisplay: created.ha }] : []),
+    claim: claimed ? {
+      ref: id + '/C1',
+      entitledDisplay: WMVP_CLAIM.entitledHa + ' ha',
+      claimedDisplay: WMVP_CLAIM.claimedHa + ' ha · ' + wdGbp(WMVP_CLAIM.claimedValue),
+      paymentDate: WMVP_CLAIM.paymentDate,
+      status: WMVP_CLAIM.status,
+      statusTag: WMVP_CLAIM.statusTag
+    } : null,
+    // One form does both jobs: "create" while nothing exists, "change" to
+    // overwrite the area on the item already awaiting a claim.
+    openForm: opts.openForm === true && (mode === 'change' ? created !== null : canCreate),
+    formMode: mode,
+    banner: banner,
+    // Changing pre-fills the current area; a validation re-render keeps whatever
+    // was typed (including an empty box).
+    value: opts.value !== undefined ? opts.value : (mode === 'change' && created ? created.ha : ''),
+    error: opts.error || null
+  })
+}
+
+router.get('/WoodlandsMVP/case-admin', function (req, res) {
+  wmvpRenderConsole(req, res, req.query.id, {
+    openForm: req.query.create === '1' || req.query.change === '1',
+    mode: req.query.change === '1' ? 'change' : 'create',
+    banner: (req.query.created === '1' ? 'Claim type created'
+      : (req.query.changed === '1' ? 'Claim type changed'
+        : (req.query.deleted === '1' ? 'Claim type deleted' : null)))
+  })
+})
+
+// Save the applicant's single claim type into "Awaiting a claim" (session).
+// mode=change overwrites the area on the item that is already there.
+router.post('/WoodlandsMVP/case-admin', function (req, res) {
+  const id = req.body.id
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
+  // A claim has been made — the claim type is locked; nothing to create.
+  if (id === WMVP_CONSOLE_CLAIMED_ID) return res.redirect(backToCase)
+  const mode = req.body.mode === 'change' ? 'change' : 'create'
+  const existing = wmvpCreatedFor(req, id)
+  // Nothing to change (already deleted, or a stale form) — start again.
+  if (mode === 'change' && !existing) return res.redirect(backToCase)
+  const raw = (req.body.ha === undefined ? '' : req.body.ha).toString().trim()
+  const num = Number(raw)
+  let error = null
+  if (mode === 'create' && existing) error = 'A claim type has already been created for this applicant'
+  else if (raw === '') error = 'Enter the number of hectares'
+  else if (isNaN(num) || num <= 0) error = 'Number of hectares must be a number greater than 0'
+  if (error) {
+    return wmvpRenderConsole(req, res, id, { openForm: true, mode: mode, value: raw, error: error })
+  }
+  if (!req.session.data.wmvpConsoleCreated) req.session.data.wmvpConsoleCreated = {}
+  req.session.data.wmvpConsoleCreated[id] = { ha: num, value: wdClaimAmount(num) }
+  res.redirect(backToCase + (mode === 'change' ? '&changed=1' : '&created=1'))
+})
+
+// Delete the claim type awaiting a claim — confirmation screen, then removal.
+// Only reachable while the item exists and nothing has been claimed against it.
+router.get('/WoodlandsMVP/case-admin/delete', function (req, res) {
+  const id = req.query.id
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
+  const created = (id === WMVP_CONSOLE_CLAIMED_ID) ? null : wmvpCreatedFor(req, id)
+  if (!created) return res.redirect(backToCase)
+  res.render('WoodlandsMVP/case-admin-delete', {
+    con: WD_CONSOLE,
+    c: c,
+    item: { ref: id + '/C1', haDisplay: created.ha }
+  })
+})
+
+router.post('/WoodlandsMVP/case-admin/delete', function (req, res) {
+  const id = req.body.id
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
+  if (id === WMVP_CONSOLE_CLAIMED_ID) return res.redirect(backToCase)
+  const map = (req.session.data && req.session.data.wmvpConsoleCreated) || null
+  if (!map || !map[id]) return res.redirect(backToCase)
+  delete map[id]
+  res.redirect(backToCase + '&deleted=1')
+})
 // Assign screen — shows the ticked case(s) and a caseworker picker. The picker
 // is every caseworker across all teams (autocomplete-enhanced in the template).
 router.get('/Grasslands/caselist-assign', function (req, res) {

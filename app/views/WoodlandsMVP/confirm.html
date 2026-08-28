@@ -1,0 +1,51 @@
+{% extends "layouts/main.html" %}
+
+{% set headerTitleCentred = true %}
+{% set headerTitleFullCentred = true %}
+{% set headerServiceName = "Grant management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">Claim settlement value for the customer</h1>
+
+        <p class="govuk-body">Total area of approved woodland: <strong>{{ fcArea }}</strong> hectares</p>
+
+        <div class="govuk-inset-text">
+          Claim settlement value: <strong>{{ claimDisplay }}</strong>
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">How is the claim amount calculated?</span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Threshold payments for approved land in hectares (ha):</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>0.5 hectares (ha) to 50ha: flat rate of £1,500</li>
+              <li>51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha</li>
+              <li>more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha</li>
+            </ul>
+          </div>
+        </details>
+
+        <form method="post" action="/WoodlandsMVP/confirm">
+          <input type="hidden" name="id" value="{{ c.id }}">
+          <input type="hidden" name="fcArea" value="{{ fcArea }}">
+          <button type="submit" class="govuk-button" data-module="govuk-button">Confirm claim settlement value</button>
+        </form>
+        <a href="/WoodlandsMVP/calculate?id={{ c.id }}" class="govuk-back-link">Back to total approved area of woodland</a>
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
