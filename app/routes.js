@@ -3788,6 +3788,19 @@ function wmvpRenderConsole (req, res, id, opts) {
   })
 }
 
+// Direct entry to the Elmwood Land Co console from the index page, on a clean
+// slate: drop anything created against the case in a previous run, clear the
+// "opened from the WMP task" return link so the back link points at the v2
+// caselist, and clear the caselist search so that list comes back unfiltered.
+const WMVP_DIRECT_ID = 'WMP-1T9-RXN'
+router.get('/WoodlandsMVP/start-case', function (req, res) {
+  const d = req.session.data || (req.session.data = {})
+  if (d.wmvpConsoleCreated) delete d.wmvpConsoleCreated[WMVP_DIRECT_ID]
+  delete d.wmpEntReturn
+  delete d.searchWoodMvp
+  res.redirect('/WoodlandsMVP/case-admin?id=' + encodeURIComponent(WMVP_DIRECT_ID))
+})
+
 router.get('/WoodlandsMVP/case-admin', function (req, res) {
   wmvpRenderConsole(req, res, req.query.id, {
     openForm: req.query.create === '1' || req.query.change === '1',
