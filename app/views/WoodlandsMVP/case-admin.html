@@ -24,6 +24,40 @@
   {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
 {% endblock %}
 
+{# Inline claim form (server-side disclosure). Rendered in one of two places so
+   it always opens directly under the link that opened it: under the claim types
+   table for "Create", and under the awaiting-a-claim table for "Change". Only
+   one of the two ever renders, so #create stays a unique anchor. Macros do not
+   see the page context, so everything it needs is passed in. #}
+{% macro claimForm(cid, mode, err, val) %}
+        <div class="app-console-form govuk-!-margin-bottom-6" id="create">
+          <form method="post" action="/WoodlandsMVP/case-admin" novalidate>
+            <input type="hidden" name="id" value="{{ cid }}">
+            {# "change" re-opens this same form on the existing item and overwrites
+               it; without it the form only creates the first item. #}
+            <input type="hidden" name="mode" value="{{ mode }}">
+
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">{% if mode == 'change' %}Change claim{% else %}Create claim{% endif %}</h3>
+
+            <p class="govuk-body">Enter the total area of woodland approved by the Forestry Commission. This will be used to calculate the amount the customer can claim.</p>
+
+            <div class="govuk-form-group{% if err %} govuk-form-group--error{% endif %}">
+              <label class="govuk-label govuk-label--s" for="ha">Total area of approved woodland</label>
+              {% if err %}<p id="ha-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ err }}</p>{% endif %}
+              <div class="govuk-input__wrapper">
+                <input class="govuk-input govuk-input--width-5{% if err %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" inputmode="decimal" spellcheck="false" value="{{ val }}"{% if err %} aria-describedby="ha-error"{% endif %}>
+                <div class="govuk-input__suffix" aria-hidden="true">ha</div>
+              </div>
+            </div>
+
+            <div class="govuk-button-group">
+              <button type="submit" class="govuk-button" data-module="govuk-button">{% if mode == 'change' %}Save changes{% else %}Save item{% endif %}</button>
+              <a class="govuk-link" href="/WoodlandsMVP/case-admin?id={{ cid }}">Cancel</a>
+            </div>
+          </form>
+        </div>
+{% endmacro %}
+
 {% block content %}
 <div class="govuk-width-container">
   <main class="govuk-main-wrapper" id="main-content" role="main">
@@ -65,7 +99,7 @@
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Claim type</th>
-              <th scope="col" class="govuk-table__header">Type</th>
+              <th scope="col" class="govuk-table__header">Description</th>
               <th scope="col" class="govuk-table__header">Created</th>
               <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
@@ -86,48 +120,8 @@
           </tbody>
         </table>
 
-        {% if openForm %}
-        {# Inline create form (server-side disclosure). #}
-        <div class="app-console-form govuk-!-margin-bottom-6" id="create">
-          <form method="post" action="/WoodlandsMVP/case-admin" novalidate>
-            <input type="hidden" name="id" value="{{ c.id }}">
-            {# "change" re-opens this same form on the existing item and overwrites
-               it; without it the form only creates the first item. #}
-            <input type="hidden" name="mode" value="{{ formMode }}">
-
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">{% if formMode == 'change' %}Change claim type{% else %}Add claim type{% endif %}</h3>
-
-            <p class="govuk-body">Enter the total area of woodland approved by the Forestry Commission (FC). This will be used to calculate the amount the customer can claim.</p>
-
-            <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
-              <label class="govuk-label govuk-label--s" for="ha">Total area of approved woodland</label>
-              {% if error %}<p id="ha-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
-              <div class="govuk-input__wrapper">
-                <input class="govuk-input govuk-input--width-5{% if error %} govuk-input--error{% endif %}" id="ha" name="ha" type="text" inputmode="decimal" spellcheck="false" value="{{ value }}"{% if error %} aria-describedby="ha-error"{% endif %}>
-                <div class="govuk-input__suffix" aria-hidden="true">ha</div>
-              </div>
-            </div>
-
-            <details class="govuk-details" data-module="govuk-details">
-              <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">How is the claim amount calculated?</span>
-              </summary>
-              <div class="govuk-details__text">
-                <p class="govuk-body">Threshold payments for approved land in hectares (ha):</p>
-                <ul class="govuk-list govuk-list--bullet">
-                  <li>0.5 hectares (ha) to 50ha: flat rate of £1,500</li>
-                  <li>51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha</li>
-                  <li>more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha</li>
-                </ul>
-              </div>
-            </details>
-
-            <div class="govuk-button-group">
-              <button type="submit" class="govuk-button" data-module="govuk-button">{% if formMode == 'change' %}Save changes{% else %}Save item{% endif %}</button>
-              <a class="govuk-link" href="/WoodlandsMVP/case-admin?id={{ c.id }}">Cancel</a>
-            </div>
-          </form>
-        </div>
+        {% if openForm and formMode != 'change' %}
+{{ claimForm(c.id, formMode, error, value) }}
         {% endif %}
 
         {# ---- Awaiting a claim ---- shown only once something has been created. #}
@@ -161,6 +155,10 @@
             {% endfor %}
           </tbody>
         </table>
+
+        {% if openForm and formMode == 'change' %}
+{{ claimForm(c.id, formMode, error, value) }}
+        {% endif %}
         {% endif %}
 
         {# ---- Claim ---- shown only once a claim has been submitted. #}

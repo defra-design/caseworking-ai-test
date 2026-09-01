@@ -3792,8 +3792,8 @@ router.get('/WoodlandsMVP/case-admin', function (req, res) {
   wmvpRenderConsole(req, res, req.query.id, {
     openForm: req.query.create === '1' || req.query.change === '1',
     mode: req.query.change === '1' ? 'change' : 'create',
-    banner: (req.query.created === '1' ? 'Claim type created'
-      : (req.query.changed === '1' ? 'Claim type changed'
+    banner: (req.query.created === '1' ? 'Claim created'
+      : (req.query.changed === '1' ? 'Claim changed'
         : (req.query.deleted === '1' ? 'Claim type deleted' : null)))
   })
 })
