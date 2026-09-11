@@ -4,7 +4,7 @@
    applicant's claims: the claim types that can be created, anything awaiting a
    claim, and the settled claim. Same behaviour as the V1 Woodlands console with
    the reviewed content applied: "entitlement" language dropped in favour of claim
-   type / settlement value, and the claim type itself is just "Woodland". The case
+   type / settlement value, and the claim type itself is "Woodland management plan". The case
    identity (id / business / SBI) is read from the Woodlands data so this header
    stays in sync with the caselist, and the scheme label comes from the context
    strip default ("Woodland Management Plan (PA3)").
@@ -106,7 +106,7 @@
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">Woodland</td>
+              <td class="govuk-table__cell">Woodland management plan</td>
               <td class="govuk-table__cell">Hectares</td>
               {% if canCreate %}
               <td class="govuk-table__cell">{{ createdCount }} of {{ con.maxCreatable }}</td>
@@ -146,17 +146,14 @@
           <tbody class="govuk-table__body">
             {% for e in awaiting %}
             <tr class="govuk-table__row">
-              <td class="govuk-table__cell">
-                Woodland
-                <span class="govuk-caption-m govuk-!-margin-top-0">{{ e.ref }}</span>
-              </td>
+              <td class="govuk-table__cell">Woodland management plan</td>
               <td class="govuk-table__cell">{{ e.haDisplay }} ha</td>
               {# Nothing has been claimed against this item yet, so the area can
                  still be changed or the item removed altogether. Left-aligned so
                  the links start under Created in the table above. #}
               <td class="govuk-table__cell">
-                <a class="govuk-link govuk-!-margin-right-3" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for {{ e.ref }}</span></a>
-                <a class="govuk-link" href="/WoodlandsMVP/case-admin/delete?id={{ c.id }}">Delete<span class="govuk-visually-hidden"> claim type {{ e.ref }}</span></a>
+                <a class="govuk-link govuk-!-margin-right-3" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for the woodland management plan</span></a>
+                <a class="govuk-link" href="/WoodlandsMVP/case-admin/delete?id={{ c.id }}">Delete<span class="govuk-visually-hidden"> the woodland management plan claim type</span></a>
               </td>
             </tr>
             {% endfor %}
@@ -168,9 +165,9 @@
         {% endif %}
         {% endif %}
 
-        {# ---- Claim ---- shown only once a claim has been submitted. #}
+        {# ---- Submitted claim ---- shown only once a claim has been submitted. #}
         {% if claim %}
-        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Claim</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Submitted claim</h2>
 
         <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
@@ -185,7 +182,7 @@
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">
-                Woodland
+                Woodland management plan
                 <span class="govuk-caption-m govuk-!-margin-top-0">{{ claim.ref }}</span>
               </td>
               <td class="govuk-table__cell">{{ claim.entitledDisplay }}</td>
