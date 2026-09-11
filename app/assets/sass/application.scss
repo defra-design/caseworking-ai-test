@@ -1878,6 +1878,29 @@
   margin-top: govuk-spacing(2);
 }
 
+// Case admin console — the claim-types, awaiting and claim tables share one
+// column grid so their columns line up down the page: Description sits over
+// Area, Created (and the awaiting table's Change / Delete) over Payment date.
+.app-console-table {
+  table-layout: fixed;
+
+  // Border-box so each cell's right padding counts inside its % width;
+  // otherwise tables with different column counts drift out of line.
+  .govuk-table__header,
+  .govuk-table__cell {
+    box-sizing: border-box;
+  }
+}
+.app-console-table__col--type    { width: 25%; }
+.app-console-table__col--area    { width: 15%; }
+.app-console-table__col--value   { width: 22%; }
+.app-console-table__col--date    { width: 18%; }
+.app-console-table__col--status  { width: 20%; }
+.app-console-table__col--desc    { width: 37%; } // area + value
+.app-console-table__col--created { width: 18%; } // = date
+.app-console-table__col--action  { width: 20%; } // = status
+.app-console-table__col--rest    { width: 38%; } // date + status
+
 
 
 

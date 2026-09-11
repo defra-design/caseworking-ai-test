@@ -95,27 +95,33 @@
 
         {# ---- Claim types that can be created. The "Claimable items" heading was
            removed in the content review, so the table opens the panel. ---- #}
-        <table class="govuk-table">
+        <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Claim type</th>
-              <th scope="col" class="govuk-table__header">Description</th>
-              <th scope="col" class="govuk-table__header">Created</th>
-              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--desc">Description</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--created">Created</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--action"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
               <td class="govuk-table__cell">Woodland</td>
               <td class="govuk-table__cell">Hectares</td>
+              {% if canCreate %}
               <td class="govuk-table__cell">{{ createdCount }} of {{ con.maxCreatable }}</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">
-                {% if canCreate %}
-                  {% if not openForm %}<a class="govuk-link" href="?id={{ c.id }}&amp;create=1#create">Create</a>{% endif %}
-                {% elif not claim %}
-                  <span class="govuk-hint govuk-!-margin-bottom-0">Maximum created</span>
-                {% endif %}
+                {% if not openForm %}<a class="govuk-link" href="?id={{ c.id }}&amp;create=1#create">Create</a>{% endif %}
               </td>
+              {% else %}
+              {# At the maximum (whether awaiting a claim or claimed) there is no
+                 Create link, so the cell takes the action column too and
+                 "Maximum created" fits on the same line as the count. #}
+              <td class="govuk-table__cell" colspan="2">
+                {{ createdCount }} of {{ con.maxCreatable }}
+                <span class="govuk-hint govuk-!-display-inline govuk-!-margin-bottom-0 govuk-!-margin-left-2">Maximum created</span>
+              </td>
+              {% endif %}
             </tr>
           </tbody>
         </table>
@@ -129,12 +135,12 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Awaiting a claim</h2>
         <p class="govuk-body">The applicant has not made a claim yet against this item.</p>
 
-        <table class="govuk-table">
+        <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Claim type</th>
-              <th scope="col" class="govuk-table__header">Area</th>
-              <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--desc">Area</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--rest"><span class="govuk-visually-hidden">Actions</span></th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
@@ -146,8 +152,9 @@
               </td>
               <td class="govuk-table__cell">{{ e.haDisplay }} ha</td>
               {# Nothing has been claimed against this item yet, so the area can
-                 still be changed or the item removed altogether. #}
-              <td class="govuk-table__cell govuk-table__cell--numeric">
+                 still be changed or the item removed altogether. Left-aligned so
+                 the links start under Created in the table above. #}
+              <td class="govuk-table__cell">
                 <a class="govuk-link govuk-!-margin-right-3" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for {{ e.ref }}</span></a>
                 <a class="govuk-link" href="/WoodlandsMVP/case-admin/delete?id={{ c.id }}">Delete<span class="govuk-visually-hidden"> claim type {{ e.ref }}</span></a>
               </td>
@@ -165,14 +172,14 @@
         {% if claim %}
         <h2 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-2">Claim</h2>
 
-        <table class="govuk-table">
+        <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Claim type</th>
-              <th scope="col" class="govuk-table__header">Area</th>
-              <th scope="col" class="govuk-table__header">Settlement value</th>
-              <th scope="col" class="govuk-table__header">Payment date</th>
-              <th scope="col" class="govuk-table__header">Status</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--area">Area</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--value">Settlement value</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--date">Payment date</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--status">Status</th>
             </tr>
           </thead>
           <tbody class="govuk-table__body">
