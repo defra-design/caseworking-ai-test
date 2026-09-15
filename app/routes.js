@@ -5231,6 +5231,14 @@ router.get('/grassmvpApplication', function (req, res) {
   res.redirect('/tasklistStageMVP');
 });
 
+// Same case, but the nav's Application / Calculations links point at the
+// all-Grasslands-actions example (application-actions / calculations-actions).
+router.get('/grassmvpActionsApplication', function (req, res) {
+  req.session.data.largeCase = 'mvp';
+  req.session.data.mvpCalcVariant = 'actions';
+  res.redirect('/tasklistStageMVP');
+});
+
 // ----- Caselist data + helpers + My cases -----
 // ----- GrassMVP caselist data + routes -----
 // Cases live in data/grassmvp-cases.js (reloaded per request so edits show

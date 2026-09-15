@@ -1,0 +1,212 @@
+{% extends "layouts/main.html" %}
+
+{# Application — 'all actions' version, tying up with calculations-actions: one
+   land parcel, SD7146 5820, carrying one example of every Grasslands action.
+   Grasslands has no moorland actions (CMOR1 / UPL* out of scope; PA3 is
+   woodland), so: CLIG3, CNUM2, CSAM3, HEF1, SCR2, WBD1. Same accordion
+   structure as application.html. Reached via /grassmvpActionsApplication, which
+   sets data.mvpCalcVariant = 'actions' so the case nav points here.
+
+   Parcel figures match calculations-actions: 12.4500 ha (Permanent grassland
+   12.4085 ha, Pond 0.0415 ha), 0% moorland, 12% SSSI, 4% historic features,
+   3 ponds, one 180 sqm building. Yearly payments = quantity × rate, rounded to
+   the penny. #}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
+{% endblock %}
+
+{% set parcelId = "SD7146 5820" %}
+
+{# One entry per action: available = total available area for the action (area
+   actions only), qty = quantity applied for, unit = the rate's unit. #}
+{% set actions = [
+  { code: "CLIG3", name: "Manage grassland with very low nutrient inputs", available: "12.4085 ha", qtyLabel: "Quantity (ha)", qty: "12.4085 ha", rate: "£151.00 per ha", yearly: "£1,873.68", calc: "12.4085 ha x £151 per ha", sssi: true, hefer: true },
+  { code: "CNUM2", name: "Legumes on improved grassland", available: "12.4085 ha", qtyLabel: "Quantity (ha)", qty: "3.0000 ha", rate: "£102.00 per ha", yearly: "£306.00", calc: "3.0000 ha x £102 per ha", sssi: true, hefer: false },
+  { code: "CSAM3", name: "Herbal leys", available: "12.4085 ha", qtyLabel: "Quantity (ha)", qty: "2.5000 ha", rate: "£224.00 per ha", yearly: "£560.00", calc: "2.5000 ha x £224 per ha", sssi: false, hefer: false },
+  { code: "HEF1", name: "Maintain weatherproof traditional farm or forestry buildings", available: false, qtyLabel: "Quantity (sqm)", qty: "180 sqm", rate: "£5.00 per sqm", yearly: "£900.00", calc: "180 sqm x £5 per sqm", sssi: false, hefer: true },
+  { code: "SCR2", name: "Manage scrub and open habitat mosaics", available: "12.4085 ha", qtyLabel: "Quantity (ha)", qty: "1.2000 ha", rate: "£350.00 per ha", yearly: "£420.00", calc: "1.2000 ha x £350 per ha", sssi: false, hefer: false },
+  { code: "WBD1", name: "Manage ponds", available: false, qtyLabel: "Quantity (ponds)", qty: "3 ponds", rate: "£257.00 per pond", yearly: "£771.00", calc: "3 ponds x £257 per pond", sssi: false, hefer: true }
+] %}
+
+{% macro row(key, value) %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ key }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ value | safe }}
+        </dd>
+      </div>
+{% endmacro %}
+
+{% macro consentEntry(code, parcel, overlapPct, overlapArea) %}
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-6">Land parcel: {{ parcel }}</h3>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Action code", code) }}
+{{ row("Land parcel", parcel) }}
+{{ row("Overlap %", overlapPct) }}
+{{ row("Overlap area", overlapArea) }}
+    </dl>
+{% endmacro %}
+
+{% block content %}
+{% set activeNavItem = "application" %}
+{% include "GrassMVP/includes/_caseMVP-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+    <p>Application submitted: <strong>1 September 2026</strong></p>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-1">
+          Statutory Consent Requirements
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-1" class="govuk-accordion__section-content">
+
+         <h2 class="govuk-heading-m">SSSI consent</h2>
+
+          <p>A SSSI consent is required from Natural England</p>
+{% for a in actions %}{% if a.sssi %}
+{{ consentEntry(a.code, parcelId, "12", "1.4940 Ha") }}
+{% endif %}{% endfor %}
+
+         <h2 class="govuk-heading-m govuk-!-margin-top-8">Historic England consent</h2>
+
+          <p>A hefer is needed from Historic England</p>
+{% for a in actions %}{% if a.hefer %}
+{{ consentEntry(a.code, parcelId, "4", "0.4980 Ha") }}
+{% endif %}{% endfor %}
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-cust">
+          Customer details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-cust" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Name", "Mr Yasmine Rose Reed") }}
+{{ row("Business name", "Golden Grange") }}
+{{ row("Address", "101 High Street<br>Barns<br>Manchester<br>Lancashire<br>SN51 5CB") }}
+{{ row("SBI number", "300000100") }}
+{{ row("Contact details", "contact+300000100@example.test<br>07300000100") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-elig">
+          Confirm eligibility
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-elig" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Confirm you will be eligible", "Yes") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-land">
+          Land details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-land" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Digital maps show correct land details", "Yes") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-p1">
+         Land parcel selected: {{ parcelId }}
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-p1" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Land parcel", parcelId) }}
+{% for a in actions %}
+{{ row("Action", a.name + " (" + a.code + ")") }}
+{% if a.available %}{{ row("Total available area for action", a.available) }}{% endif %}
+{{ row(a.qtyLabel, a.qty) }}
+{{ row("Payment rate per year", a.rate) }}
+{{ row("Yearly payment", a.yearly) }}
+{% endfor %}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-agr">
+          Agreement level actions
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-agr" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Duration", "3 years") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-pay">
+          Payment
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-pay" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Agreement total payment", "£14,492.04 over 3 years") }}
+{{ row("Total yearly payment", "£4,830.68") }}
+    </dl>
+        <h2 class="govuk-heading-m">Funded action payment detail</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{% for a in actions %}
+{{ row(a.code + " annual payment", a.yearly + "<br>(" + a.calc + ")") }}
+{% endfor %}
+    </dl>
+    </div>
+  </div>
+
+</div>
+  </fieldset>
+</div>
+</form>
+
+  </div>
+</div>
+{% endblock %}

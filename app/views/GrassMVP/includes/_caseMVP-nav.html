@@ -14,16 +14,18 @@
           </li>
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="application">
+            {# The all-actions example (/grassmvpActionsApplication) has its own application. #}
+            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% else %}application{% endif %}">
               {% if activeNavItem === 'application' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Application{% if activeNavItem === 'application' %}</strong>{% endif %}
             </a>
           </li>
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'calculations' %} govuk-service-navigation__item--active{% endif %}">
             {# Calculations link points at the parcel-level SSSI/HEFER variant (new2)
-               when the caseworker entered the case via the dedicated index link;
-               otherwise the original per-action variant (new). #}
-            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'new2' %}calculations-new2{% else %}calculations-new{% endif %}">
+               or the all-Grasslands-actions example (actions) when the caseworker
+               entered the case via one of those index links; otherwise the
+               original per-action variant (new). #}
+            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'new2' %}calculations-new2{% elif data.mvpCalcVariant === 'actions' %}calculations-actions{% else %}calculations-new{% endif %}">
               {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
             </a>
           </li>
