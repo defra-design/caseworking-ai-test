@@ -616,7 +616,7 @@
   <div class="moj-timeline__item">
 
     <div class="moj-timeline__header">
-      <h2 class="moj-timeline__title">Task - Check ponds size and location - {{ data['decisionTaskDMVP']}}</h2>
+      <h2 class="moj-timeline__title">Task - Check number and location of ponds - {{ data['decisionTaskDMVP']}}</h2>
 
       <p class="moj-timeline__byline">by A Jones </p>
 
@@ -640,7 +640,55 @@
   <div class="moj-timeline__item">
 
     <div class="moj-timeline__header">
-      <h2 class="moj-timeline__title">Task - Check ponds size and location - {{ data['noteActionTaskDMVP']}}</h2>
+      <h2 class="moj-timeline__title">Task - Check number and location of ponds - {{ data['noteActionTaskDMVP']}}</h2>
+
+      <p class="moj-timeline__byline">by A Jones </p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-14T14:01:00.000Z">13 Feb 2026 at 10:40am</time>
+    </p>
+
+    <div class="moj-timeline__description">
+      <a class="govuk-link" href="notes#review">View note</a>
+
+    </div>
+
+  </div>
+
+{% endif %}
+
+{% if (data.taskENote2MVP ) %}
+
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Task - Check that buildings on the land meet the action criteria - {{ data['decisionTaskEMVP']}}</h2>
+
+      <p class="moj-timeline__byline">by A Jones </p>
+
+    </div>
+
+    <p class="moj-timeline__date">
+      <time datetime="2019-06-14T14:01:00.000Z">13 Feb 2026 at 10:41am</time>
+    </p>
+
+    <div class="moj-timeline__description">
+      <a class="govuk-link" href="notes#review">View note</a>
+
+    </div>
+
+  </div>
+
+{% endif %}
+
+{% if (data.noteActionTaskEMVP ) %}
+
+  <div class="moj-timeline__item">
+
+    <div class="moj-timeline__header">
+      <h2 class="moj-timeline__title">Task - Check that buildings on the land meet the action criteria - {{ data['noteActionTaskEMVP']}}</h2>
 
       <p class="moj-timeline__byline">by A Jones </p>
 

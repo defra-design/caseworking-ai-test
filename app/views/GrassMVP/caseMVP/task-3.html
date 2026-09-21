@@ -27,7 +27,7 @@
 
 <p>You must:
 <ol class="govuk-list govuk-list--number"> 
-  <li>View which land parcels are affected in the <a href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% else %}application{% endif %}" class="govuk-link">application</a>.</p></li>
+  <li>View which land parcels are affected in the <a href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% elif data.mvpCalcVariant === 'large' %}application-large{% else %}application{% endif %}" class="govuk-link">application</a>.</p></li>
   <li>Check if a notice of planned activity has been submitted to Natural England's <a href="" class="govuk-link">SSSI request spreadsheet</a></p></li>
 </ol>
 

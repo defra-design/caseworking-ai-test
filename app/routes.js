@@ -5239,6 +5239,15 @@ router.get('/grassmvpActionsApplication', function (req, res) {
   res.redirect('/tasklistStageMVP');
 });
 
+// Same case, but the nav's Application / Calculations links point at the
+// 10-parcel large-case example (application-large / calculations-large).
+router.get('/grassmvpLargeApplication', function (req, res) {
+  req.session.data.largeCase = 'mvp';
+  req.session.data.mvpCalcVariant = 'large';
+  res.redirect('/tasklistStageMVP');
+});
+
+
 // ----- Caselist data + helpers + My cases -----
 // ----- GrassMVP caselist data + routes -----
 // Cases live in data/grassmvp-cases.js (reloaded per request so edits show
@@ -5885,6 +5894,21 @@ makeTaskRoute('/taskDT2MVP', {
   filteredNoteKey:   'filteredNoteDMVP',
   rawNoteKey2:       'taskDNote2MVP',
   filteredNoteKey2:  'filteredNoteD_2MVP',
+  outcomes:          REVIEW_OUTCOMES,
+  redirectTo:        D2MVPT,
+});
+
+// Task E — buildings manual check (HEF1). Listed before the ponds task (D).
+makeTaskRoute('/taskET2MVP', {
+  checkedKey:        'detailsCheckedMVP',
+  decisionKey:       'decisionTaskEMVP',
+  noteActionKey:     'noteActionTaskEMVP',
+  tagKey:            'taskETagMVP',
+  statusKey:         'taskEStatusMVP',
+  rawNoteKey:        'taskENoteMVP',
+  filteredNoteKey:   'filteredNoteEMVP',
+  rawNoteKey2:       'taskENote2MVP',
+  filteredNoteKey2:  'filteredNoteE_2MVP',
   outcomes:          REVIEW_OUTCOMES,
   redirectTo:        D2MVPT,
 });

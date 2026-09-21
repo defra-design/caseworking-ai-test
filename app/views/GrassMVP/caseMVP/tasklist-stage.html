@@ -146,8 +146,27 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-e" aria-describedby="company-details-1-status">
+        Check that buildings on the land meet the action criteria
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskEMVP) %}
+      {% if (data.decisionTaskEMVP === 'Accepted') %} {{ data['taskEStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskETagMVP'] }}">{{ data['taskEStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+      <strong class="govuk-tag govuk-tag--grey">
+        Ready to start
+      </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
       <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
-        Check ponds size and location
+        Check number and location of ponds
       </a>
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
@@ -161,25 +180,6 @@
       </strong>
     {% endif %}
     </div>
-  </li>
-
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
-    <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
-        Check payment amount
-      </a>
-    </div>
-      <div class="govuk-task-list__status" id="company-details-1-status">
-      {% if (data.decisionTask5MVP) %}  
-        {% if (data.decisionTask5MVP === 'Accepted') %} {{ data['paymentStatusMVP'] }} 
-        {% else %}<strong class="{{ data['paymentTagMVP'] }}">{{ data['paymentStatusMVP'] }}</strong>
-        {% endif %}
-      {% else %}
-      <strong class="govuk-tag govuk-tag--grey">
-        Ready to start
-      </strong>
-      {% endif %}
-      </div>
   </li>
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
@@ -332,8 +332,27 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-e" aria-describedby="company-details-1-status">
+        Check that buildings on the land meet the action criteria
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskEMVP) %}
+      {% if (data.decisionTaskEMVP === 'Accepted') %} {{ data['taskEStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskETagMVP'] }}">{{ data['taskEStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
       <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
-        Check ponds size and location
+        Check number and location of ponds
       </a>
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
@@ -347,25 +366,6 @@
         </strong>
     {% endif %}
     </div>
-  </li>
-
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
-    <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
-        Check payment amount
-      </a>
-    </div>
-      <div class="govuk-task-list__status" id="company-details-1-status">
-      {% if (data.decisionTask5MVP) %}  
-        {% if (data.decisionTask5MVP === 'Accepted') %} {{ data['paymentStatusMVP'] }} 
-        {% else %}<strong class="{{ data['paymentTagMVP'] }}">{{ data['paymentStatusMVP'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
   </li>
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
@@ -396,7 +396,7 @@
          Decision
         </legend>
         <div class="govuk-radios" data-module="govuk-radios">
-          {% if (data.decisionTask1MVP === 'Accepted' and data.decisionTask2MVP === 'Accepted'  and data.decisionTask3MVP === 'Accepted'  and data.decisionTask5MVP === 'Accepted' and data.decisionTask6MVP === 'Accepted' ) %}
+          {% if (data.decisionTask1MVP === 'Accepted' and data.decisionTask2MVP === 'Accepted' and data.decisionTask3MVP === 'Accepted' and data.decisionTaskAMVP === 'Accepted' and data.decisionTaskBMVP === 'Accepted' and data.decisionTaskCMVP === 'Accepted' and data.decisionTaskEMVP === 'Accepted' and data.decisionTaskDMVP === 'Accepted' and data.decisionTask6MVP === 'Accepted') %}
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="contact" name="decision1MVP" type="radio" value="Approve" data-aria-controls="conditional-decision1" {{ checked("decision1MVP", "Approve") }}>
             <label class="govuk-label govuk-radios__label" for="contact">
@@ -595,8 +595,27 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
+      <a class="govuk-link govuk-task-list__link" href="task-e" aria-describedby="company-details-1-status">
+        Check that buildings on the land meet the action criteria
+      </a>
+    </div>
+    <div class="govuk-task-list__status" id="company-details-1-status">
+    {% if (data.decisionTaskEMVP) %}
+      {% if (data.decisionTaskEMVP === 'Accepted') %} {{ data['taskEStatusMVP'] }}
+      {% else %}<strong class="{{ data['taskETagMVP'] }}">{{ data['taskEStatusMVP'] }}</strong>
+      {% endif %}
+    {% else %}
+        <strong class="govuk-tag govuk-tag--blue">
+          Incomplete
+        </strong>
+    {% endif %}
+    </div>
+  </li>
+
+  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+    <div class="govuk-task-list__name-and-hint">
       <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
-        Check ponds size and location
+        Check number and location of ponds
       </a>
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
@@ -610,25 +629,6 @@
         </strong>
     {% endif %}
     </div>
-  </li>
-
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
-    <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-5" aria-describedby="company-details-1-status">
-        Check payment amount
-      </a>
-    </div>
-      <div class="govuk-task-list__status" id="company-details-1-status">
-      {% if (data.decisionTask5MVP) %}  
-        {% if (data.decisionTask5MVP === 'Accepted') %} {{ data['paymentStatusMVP'] }} 
-        {% else %}<strong class="{{ data['paymentTagMVP'] }}">{{ data['paymentStatusMVP'] }}</strong>
-        {% endif %}
-      {% else %}
-        <strong class="govuk-tag govuk-tag--blue">
-          Incomplete
-        </strong>
-      {% endif %}
-      </div>
   </li>
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">

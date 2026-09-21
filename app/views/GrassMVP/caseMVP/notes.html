@@ -35,7 +35,7 @@
     
 <div class="govuk-form-group">
 
-  {% if not data.decision1MVP and not data.noteActionTask6MVP and not data.noteActionTask5MVP and not data.noteActionTask4MVP and not data.noteActionTaskDMVP and not data.noteActionTaskCMVP and not data.noteActionTaskBMVP and not data.noteActionTaskAMVP and not data.noteActionTask3MVP and not data.noteActionTask2MVP and not data.noteActionTask1MVP %}
+  {% if not data.decision1MVP and not data.noteActionTask6MVP and not data.noteActionTask5MVP and not data.noteActionTask4MVP and not data.noteActionTaskEMVP and not data.noteActionTaskDMVP and not data.noteActionTaskCMVP and not data.noteActionTaskBMVP and not data.noteActionTaskAMVP and not data.noteActionTask3MVP and not data.noteActionTask2MVP and not data.noteActionTask1MVP %}
 
   <H3 class="govuk-heading-s">There are no notes to display yet</H3>
 
@@ -156,6 +156,30 @@
       </td>
       <td class="govuk-table__cell">
         {{ data['filteredNoteDMVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.taskENote2MVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:41am</td>
+      <td class="govuk-table__cell">
+        Buildings: {{ data['decisionTaskEMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteE_2MVP']}}
+      </td>
+      <td class="govuk-table__cell"> A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTaskEMVP ) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">13 Feb 2026 at 10:40am</td>
+      <td class="govuk-table__cell">
+        Buildings: {{ data['noteActionTaskEMVP']}}
+      </td>
+      <td class="govuk-table__cell">
+        {{ data['filteredNoteEMVP']}}
       </td>
       <td class="govuk-table__cell"> A Jones</td>
     </tr>

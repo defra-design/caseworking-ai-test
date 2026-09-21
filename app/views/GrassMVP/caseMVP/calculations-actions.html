@@ -11,8 +11,10 @@
 
    Invented parcel figures, chosen so every action passes: 12.4500 ha (Permanent
    grassland 12.4085 ha, Pond 0.0415 ha), 0% moorland, 12% SSSI, 4% historic
-   features, 3 ponds all outside the SSSI, one 180 sqm building. SSSI / HEFER /
-   manual checks are "Action" (caveats), not fails. No stacking yet — every
+   features, 3 ponds all outside the SSSI, one 180 sqm building. SSSI and manual
+   checks are caveats, not fails: they carry a stateless "Task" tag (no "!",
+   not linked to task outcomes). The historic feature (HEFER) check
+   is not returned on this page. No stacking yet — every
    action shows "0 ha used by existing actions". Ties up with application-actions. #}
 
 {% block header %}
@@ -26,7 +28,8 @@
         </svg>
         Passed
         </strong>{% endmacro %}
-{% macro actionTag() %}<strong class="govuk-tag govuk-tag--action">Action</strong>{% endmacro %}
+{# Manual checks: stateless blue "Task" tag. #}
+{% macro taskTag() %}<strong class="govuk-tag govuk-tag--blue">Task</strong>{% endmacro %}
 
 {# ---- Shared checks ---- #}
 {% macro areaCheck(code, reason) %}
@@ -99,24 +102,11 @@
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {{ actionTag() }}
+      Is the site of special scientific interest? {{ taskTag() }}
     </span>
   </summary>
   <div class="govuk-details__text">
     <p>This land parcel is situated within a Site of Special Scientific Interest. Check if a notice of planned activity has been submitted to Natural England.</p>
-  </div>
-</details>
-{% endmacro %}
-
-{% macro hefer() %}
-<details class="govuk-details">
-  <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      Does the site require a HEFER? {{ actionTag() }}
-    </span>
-  </summary>
-  <div class="govuk-details__text">
-    <p>This parcel has a 4% intersection with the historic_features layer. The tolerance is 0%.</p>
   </div>
 </details>
 {% endmacro %}
@@ -147,7 +137,6 @@
 {{ areaCheck("CLIG3", "The available area was (12.4085 ha) the applicant applied for (12.4085 ha).") }}
 {{ notOnMoorland() }}
 {{ sssi() }}
-{{ hefer() }}
 
 <h3 class="govuk-heading-s">Funded action: Legumes on improved grassland (CNUM2)</h3>
 {{ areaCheck("CNUM2", "The applied figure (3.0000 ha) is within the allowed range (greater than 0 ha and up to 12.4085 ha).") }}
@@ -159,11 +148,10 @@
 {{ notOnMoorland() }}
 
 <h3 class="govuk-heading-s">Funded action: Maintain weatherproof traditional farm or forestry buildings (HEF1)</h3>
-{{ hefer() }}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Check that buildings on the land meet the action criteria {{ actionTag() }}
+      Check that buildings on the land meet the action criteria {{ taskTag() }}
     </span>
   </summary>
   <div class="govuk-details__text">
@@ -177,11 +165,10 @@
 {{ notOnMoorland() }}
 
 <h3 class="govuk-heading-s">Funded action: Manage ponds (WBD1)</h3>
-{{ hefer() }}
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Check that ponds on the land meet the action criteria {{ actionTag() }}
+      Check that ponds on the land meet the action criteria {{ taskTag() }}
     </span>
   </summary>
   <div class="govuk-details__text">
