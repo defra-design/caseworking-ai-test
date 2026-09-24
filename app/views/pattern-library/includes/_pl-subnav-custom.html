@@ -2,8 +2,16 @@
   <h2 class="app-subnav__theme">Patterns</h2>
   <ul class="app-subnav__section">
 
+    <li class="app-subnav__section-item{% if activePage == 'affected-parcels' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/custom/affected-parcels">Affected land parcels</a>
+    </li>
+
     <li class="app-subnav__section-item{% if activePage == 'budget-bar' %} app-subnav__section-item--current{% endif %}">
       <a class="app-subnav__link" href="/pattern-library/custom/budget-bar">Budget allocation bar</a>
+    </li>
+
+    <li class="app-subnav__section-item{% if activePage == 'calculation-runs' %} app-subnav__section-item--current{% endif %}">
+      <a class="app-subnav__link" href="/pattern-library/custom/calculation-runs">Calculation runs</a>
     </li>
 
     <li class="app-subnav__section-item{% if activePage == 'calculations-filter' %} app-subnav__section-item--current{% endif %}">

@@ -1,0 +1,164 @@
+{% extends "layouts/main.html" %}
+
+{# Application — 'Medium case MVP Grasslands' version, tying up with
+   calculations-medium: 5 land parcels (IDs from the real Grasslands / Golden
+   Grange case), Grasslands actions only. Parcel and action data come from
+   GrassMVP/includes/_medium-case-data.html, shared with calculations-medium so the
+   two pages always agree. Same accordion structure as application-large: one
+   "Land parcel selected" section per parcel.
+   Reached via /grassmvpMediumApplication (data.mvpCalcVariant = 'medium'). #}
+
+{% import "GrassMVP/includes/_medium-case-data.html" as lc %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
+{% endblock %}
+
+{% macro row(key, value) %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ key }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {{ value | safe }}
+        </dd>
+      </div>
+{% endmacro %}
+
+{% block content %}
+{% set activeNavItem = "application" %}
+{% include "GrassMVP/includes/_caseMVP-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+<form action="test4" method="post">
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
+    Application
+      </h1>
+    </legend>
+    <p>Application submitted: <strong>1 September 2026</strong></p>
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-cust">
+          Customer details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-cust" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Name", "Mr Yasmine Rose Reed") }}
+{{ row("Business name", "Golden Grange") }}
+{{ row("Address", "101 High Street<br>Barns<br>Manchester<br>Lancashire<br>SN51 5CB") }}
+{{ row("SBI number", "300000100") }}
+{{ row("Contact details", "contact+300000100@example.test<br>07300000100") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-elig">
+          Confirm eligibility
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-elig" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Confirm you will be eligible", "Yes") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-land">
+          Land details
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-land" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Digital maps show correct land details", "Yes") }}
+    </dl>
+    </div>
+  </div>
+
+{% for p in lc.parcels %}
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-p{{ loop.index }}">
+         Land parcel selected: {{ p.id }}
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-p{{ loop.index }}" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Land parcel", p.id) }}
+{% for a in p.actions %}
+{{ row("Action", a.name + " (" + a.code + ")") }}
+{% if a.available %}{{ row("Total available area for action", a.available) }}{% endif %}
+{{ row(a.qtyLabel, a.qty) }}
+{{ row("Payment rate per year", a.rate) }}
+{{ row("Yearly payment", a.yearly) }}
+{% endfor %}
+    </dl>
+    </div>
+  </div>
+{% endfor %}
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-agr">
+          Agreement level actions
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-agr" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Duration", "3 years") }}
+    </dl>
+    </div>
+  </div>
+
+  <div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+      <h2 class="govuk-accordion__section-heading">
+        <span class="govuk-accordion__section-button" id="accordion-default-heading-pay">
+          Payment
+        </span>
+      </h2>
+    </div>
+    <div id="accordion-default-content-pay" class="govuk-accordion__section-content">
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Agreement total payment", lc.totalAgreement + " over 3 years") }}
+{{ row("Total yearly payment", lc.totalYearly) }}
+    </dl>
+        <h2 class="govuk-heading-m">Funded action payment detail</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{% for p in lc.parcels %}{% for a in p.actions %}
+{{ row(a.code + " annual payment (" + p.id + ")", a.yearly + "<br>(" + a.calc + ")") }}
+{% endfor %}{% endfor %}
+    </dl>
+    </div>
+  </div>
+
+</div>
+  </fieldset>
+</div>
+</form>
+
+  </div>
+</div>
+{% endblock %}

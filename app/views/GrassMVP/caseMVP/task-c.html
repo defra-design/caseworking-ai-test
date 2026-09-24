@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
@@ -23,7 +24,10 @@
     </legend>
 
 
-<p>Ref LPs: NY2119 1042, NY1118 1031</p>
+{% set lps = (tp.refLPs("any", data.mvpCalcVariant) | trim) if data.mvpCalcVariant === "actions" else "" %}
+{% if lps | length %}<p>Ref LPs: {{ lps }}</p>
+{% else %}<p>Ref LPs: NY2119 1042, NY1118 1031</p>
+{% endif %}
 
 <p>Verify that the parcel sits completely within a designated Less Favoured Area (LFA)</p>
 

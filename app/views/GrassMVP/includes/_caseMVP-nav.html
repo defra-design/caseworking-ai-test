@@ -14,8 +14,9 @@
           </li>
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'application' %} govuk-service-navigation__item--active{% endif %}">
-            {# The all-actions (/grassmvpActionsApplication) and large-case (/grassmvpLargeApplication) examples have their own application. #}
-            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% elif data.mvpCalcVariant === 'large' %}application-large{% else %}application{% endif %}">
+            {# The all-actions (/grassmvpActionsApplication), large-case (/grassmvpLargeApplication)
+               and medium-case (/grassmvpMediumApplication) examples have their own application. #}
+            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% elif data.mvpCalcVariant === 'large' %}application-large{% elif data.mvpCalcVariant === 'medium' %}application-medium{% else %}application{% endif %}">
               {% if activeNavItem === 'application' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Application{% if activeNavItem === 'application' %}</strong>{% endif %}
             </a>
           </li>
@@ -25,7 +26,7 @@
                or the all-Grasslands-actions example (actions) when the caseworker
                entered the case via one of those index links; otherwise the
                original per-action variant (new). #}
-            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'new2' %}calculations-new2{% elif data.mvpCalcVariant === 'actions' %}calculations-actions{% elif data.mvpCalcVariant === 'large' %}calculations-large{% else %}calculations-new{% endif %}">
+            <a class="govuk-service-navigation__link" href="{% if data.mvpCalcVariant === 'new2' %}calculations-new2{% elif data.mvpCalcVariant === 'actions' %}calculations-actions{% elif data.mvpCalcVariant === 'large' %}calculations-large{% elif data.mvpCalcVariant === 'medium' %}calculations-medium{% else %}calculations-new{% endif %}">
               {% if activeNavItem === 'calculations' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Calculations{% if activeNavItem === 'calculations' %}</strong>{% endif %}
             </a>
           </li>

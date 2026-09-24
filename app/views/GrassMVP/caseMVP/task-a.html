@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
@@ -23,7 +24,10 @@
     </legend>
 
 
-<p>Ref LPs: SD5848 9205, SD5649 9215</p>
+{% set lps = tp.refLPs("sssiHistoric", data.mvpCalcVariant) | trim %}
+{% if lps | length %}<p>Ref LPs: {{ lps }}</p>
+{% else %}<p>Ref LPs: SD5848 9205, SD5649 9215</p>
+{% endif %}
 
 <p>Perform the following checks:</p>
 <ul class="govuk-list govuk-list--bullet">

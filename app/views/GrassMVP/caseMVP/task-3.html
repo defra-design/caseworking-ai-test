@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
@@ -23,11 +24,14 @@
     </legend>
 
 
-<p>Land parcels within this application intersect  with at least one SSSI.</p>  
+<p>Land parcels within this application intersect  with at least one SSSI.</p>
+
+{% set lps = tp.refLPs("sssi", data.mvpCalcVariant) | trim %}
+{% if lps | length %}<p>Ref LPs: {{ lps }}</p>{% endif %}  
 
 <p>You must:
 <ol class="govuk-list govuk-list--number"> 
-  <li>View which land parcels are affected in the <a href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% elif data.mvpCalcVariant === 'large' %}application-large{% else %}application{% endif %}" class="govuk-link">application</a>.</p></li>
+  <li>View which land parcels are affected in the <a href="{% if data.mvpCalcVariant === 'actions' %}application-actions{% elif data.mvpCalcVariant === 'large' %}application-large{% elif data.mvpCalcVariant === 'medium' %}application-medium{% else %}application{% endif %}" class="govuk-link">application</a>.</p></li>
   <li>Check if a notice of planned activity has been submitted to Natural England's <a href="" class="govuk-link">SSSI request spreadsheet</a></p></li>
 </ol>
 

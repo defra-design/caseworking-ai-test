@@ -1,0 +1,97 @@
+{% extends "layouts/main.html" %}
+{% set plSection = "custom" %}
+{% set activePage = "calculation-runs" %}
+
+{% block header %}
+  {% include "pattern-library/includes/_pl-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+
+  {{ govukBreadcrumbs({ items: [
+    { text: "Pattern library", href: "/pattern-library" },
+    { text: "Custom patterns", href: "/pattern-library/custom/status-tags" },
+    { text: "Calculation runs" }
+  ]}) }}
+
+  <div class="app-split-pane">
+    <div class="app-split-pane__nav">
+      {% include "pattern-library/includes/_pl-subnav-custom.html" %}
+    </div>
+    <div class="app-split-pane__content">
+
+      <h1 class="govuk-heading-xl">Calculation runs</h1>
+      <p class="govuk-body-l">A line above the checks naming every time the rules have been run on a case, so a caseworker can see the current results and compare them with an earlier run.</p>
+      <p class="govuk-body">The rules are re-run whenever something behind the application changes — most often when a land parcel's data is updated after the customer applied. A check that passed at submission can fail on a later run, so the caseworker needs to see both: what the rules say now, and what they said when the application came in.</p>
+      <p class="govuk-body">Each run is listed with its date and time and whether it passed or failed overall. The run being shown is bold and not a link; the others are links. This is the same run history used inside the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a> panel — use this standalone line on pages that have no filter panel.</p>
+
+      <h2 class="govuk-heading-l">Switching run</h2>
+      <p class="govuk-body">Each link sets a <code class="govuk-body">calcRun</code> query parameter, which the Prototype Kit stores in session data, so the page can render either run from one template. The page heading, the "last run" line and every check follow the selected run.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-calc-runs">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-runs-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <p class="govuk-body">Rules check runs:
+              <strong>9:15am 14 September 2026</strong> (fail) |
+              <a class="govuk-link" href="#">3:14pm 2 September 2026</a> (pass)
+            </p>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-calc-runs" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-calc-runs-code">{% raw %}{% set run = "1" if data.calcRun === "1" else "2" %}
+{% set runTime = "3:14pm 2 September 2026" if run === "1" else "9:15am 14 September 2026" %}
+
+&lt;p class="govuk-body"&gt;Rules check runs:
+  {% if run === "2" %}&lt;strong&gt;9:15am 14 September 2026&lt;/strong&gt; (fail)
+  {% else %}&lt;a class="govuk-link" href="?calcRun=2"&gt;9:15am 14 September 2026&lt;/a&gt; (fail){% endif %} |
+  {% if run === "1" %}&lt;strong&gt;3:14pm 2 September 2026&lt;/strong&gt; (pass)
+  {% else %}&lt;a class="govuk-link" href="?calcRun=1"&gt;3:14pm 2 September 2026&lt;/a&gt; (pass){% endif %}
+&lt;/p&gt;{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">What changes between runs</h2>
+      <p class="govuk-body">A check holds the figures for both runs, so the template picks the right set rather than the case needing two copies of every page:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>The earlier run shows the figures as at submission. Every check passes and nothing is highlighted.</li>
+        <li>The latest run shows the current figures. Where a figure has changed it carries the <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a>, and a check whose applied area now exceeds the available area shows a <a class="govuk-link" href="/pattern-library/custom/check-result-tags">Failed tag</a> with a "What to do" section.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Two forms</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Standalone line</strong> — directly under the "Rules check last run" line, on pages with no filter panel.</li>
+        <li><strong>Inside the filter panel</strong> — as the first row of the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a>, where one exists, so the controls stay together.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>When a case's rules have been run more than once and the caseworker may need to see what an earlier run said.</li>
+        <li>When results have changed because land data was updated after submission, so the caseworker can tell a new failure from a long-standing one.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">When not to use</h2>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>For a case with a single run — show the run date on its own, with no links.</li>
+        <li>As a general audit history. It lists rules runs only; case events belong on the Timeline.</li>
+        <li>For filtering what's on screen (use the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a>).</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Where does this occur</h2>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/GrassMVP/caseMVP/calculations-large">Large case calculations (40 parcels)</a> — inside the filter panel; two runs, 5 fails in the latest.</li>
+        <li><a class="govuk-link" href="/GrassMVP/caseMVP/calculations-medium">Medium case calculations (5 parcels)</a> — standalone line; two runs, 2 fails in the latest.</li>
+        <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a> — earlier form, where each run is its own page.</li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

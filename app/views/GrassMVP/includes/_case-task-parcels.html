@@ -1,0 +1,39 @@
+{# Land parcel references for the conditional review tasks, taken from the same
+   data as the Calculations page so a task lists exactly the parcels whose checks
+   carry a "Task" tag:
+
+     {% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
+     {% set lps = tp.refLPs("ponds", data.mvpCalcVariant) %}
+
+   kind: "sssi" (parcels with an SSSI Task check), "sssiHistoric" (in an SSSI or
+   with historic features — task A), "buildings" (HEF1), "ponds" (WBD1), "any"
+   (every parcel in the case).
+
+   Variants: 'large' → the 40-parcel data, 'medium' → the 5-parcel data,
+   'actions' → the single all-actions parcel. Any other variant returns nothing,
+   so the task keeps its own hard-coded "Ref LPs" line. #}
+
+{% macro refLPs(kind, variant) %}
+{%- import "GrassMVP/includes/_large-case-data.html" as lcLarge -%}
+{%- import "GrassMVP/includes/_medium-case-data.html" as lcMedium -%}
+{%- if variant === "large" %}{% set parcels = lcLarge.parcels %}
+{%- elif variant === "medium" %}{% set parcels = lcMedium.parcels %}
+{%- elif variant === "actions" %}{# the all-actions example is one parcel carrying every action #}
+{%- set parcels = [{ id: "SD7146 5820", sssi: 12, historic: 4, building: "1 stone barn, 180 sqm", ponds: ["0.0120", "0.0085", "0.0210"],
+                     actions: [{ code: "CLIG3", sssiCheck: true }, { code: "CNUM2", sssiCheck: true }] }] %}
+{%- else %}{% set parcels = [] %}{% endif -%}
+{%- set ids = [] -%}
+{%- for p in parcels -%}
+  {# collected in an array: a {% set %} inside a for loop doesn't survive the loop #}
+  {%- set sssiChecks = [] -%}
+  {%- for a in p.actions %}{% if a.sssiCheck %}{% set _ = sssiChecks.push(a.code) %}{% endif %}{% endfor -%}
+  {%- if (kind === "sssi" and sssiChecks | length)
+       or (kind === "sssiHistoric" and (p.sssi or p.historic))
+       or (kind === "buildings" and p.building)
+       or (kind === "ponds" and p.ponds)
+       or (kind === "any") -%}
+    {%- set _ = ids.push(p.id) -%}
+  {%- endif -%}
+{%- endfor -%}
+{{- ids | join(", ") -}}
+{% endmacro %}

@@ -5247,6 +5247,14 @@ router.get('/grassmvpLargeApplication', function (req, res) {
   res.redirect('/tasklistStageMVP');
 });
 
+// Same case again, with the nav pointing at the 5-parcel medium-case example
+// (application-medium / calculations-medium — no parcel search or filters).
+router.get('/grassmvpMediumApplication', function (req, res) {
+  req.session.data.largeCase = 'mvp';
+  req.session.data.mvpCalcVariant = 'medium';
+  res.redirect('/tasklistStageMVP');
+});
+
 
 // ----- Caselist data + helpers + My cases -----
 // ----- GrassMVP caselist data + routes -----
