@@ -22,12 +22,11 @@
     <div class="app-split-pane__content">
 
       <h1 class="govuk-heading-xl">Calculation runs</h1>
-      <p class="govuk-body-l">A line above the checks naming every time the rules have been run on a case, so a caseworker can see the current results and compare them with an earlier run.</p>
+      <p class="govuk-body-l">A small table under the page heading listing every time the rules have been run on a case, so a caseworker can see which run they are looking at and switch to another.</p>
       <p class="govuk-body">The rules are re-run whenever something behind the application changes — most often when a land parcel's data is updated after the customer applied. A check that passed at submission can fail on a later run, so the caseworker needs to see both: what the rules say now, and what they said when the application came in.</p>
-      <p class="govuk-body">Each run is listed with its date and time and whether it passed or failed overall. The run being shown is bold and not a link; the others are links. This is the same run history used inside the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a> panel — use this standalone line on pages that have no filter panel.</p>
+      <p class="govuk-body">Switching run is a bigger decision than filtering, so the runs sit in their own always-visible table rather than inside the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a> panel. Each row gives the run's date and time, a note (latest, or original at submission) and a result tag. The run being shown is shaded with a blue left edge and says <strong>Showing</strong>; every other run has a <strong>View this run</strong> link.</p>
 
-      <h2 class="govuk-heading-l">Switching run</h2>
-      <p class="govuk-body">Each link sets a <code class="govuk-body">calcRun</code> query parameter, which the Prototype Kit stores in session data, so the page can render either run from one template. The page heading, the "last run" line and every check follow the selected run.</p>
+      <h2 class="govuk-heading-l">Runs table</h2>
 
       <div class="app-example-wrapper">
         <div class="app-example">
@@ -37,38 +36,127 @@
             <button class="app-copy-button" data-copy-target="ex-calc-runs-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <p class="govuk-body">Rules check runs:
-              <strong>9:15am 14 September 2026</strong> (fail) |
-              <a class="govuk-link" href="#">3:14pm 2 September 2026</a> (pass)
-            </p>
+            <style>
+              .calcrun--current .govuk-table__cell { background: #f3f2f1; }
+              .calcrun--current .govuk-table__cell:first-child { box-shadow: inset 5px 0 0 #1d70b8; }
+              .calcrun .govuk-table__cell:first-child { padding-left: 15px; }
+              .calcrun__note { color: #505a5f; }
+            </style>
+            <table class="govuk-table govuk-!-margin-bottom-0">
+              <caption class="govuk-table__caption govuk-table__caption--s">Rules check runs</caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Run</th>
+                  <th scope="col" class="govuk-table__header">Result</th>
+                  <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                <tr class="govuk-table__row calcrun calcrun--current">
+                  <td class="govuk-table__cell"><strong>9:15am 14 September 2026</strong> <span class="govuk-body-s calcrun__note">latest</span></td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">2 fails</strong></td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric"><strong>Showing</strong></td>
+                </tr>
+                <tr class="govuk-table__row calcrun">
+                  <td class="govuk-table__cell">3:14pm 2 September 2026 <span class="govuk-body-s calcrun__note">original, at submission</span></td>
+                  <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Passed</strong></td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric"><a class="govuk-link" href="#">View this run</a></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
         <div class="app-example__code-container" id="ex-calc-runs" hidden>
           <div class="app-example__code">
             <pre><code id="ex-calc-runs-code">{% raw %}{% set run = "1" if data.calcRun === "1" else "2" %}
-{% set runTime = "3:14pm 2 September 2026" if run === "1" else "9:15am 14 September 2026" %}
+{# Failed checks in the latest run, for its result tag. #}
+{% set latestFails = [] %}
+{% for p in lc.parcels %}{% for a in p.actions %}{% if a.fail %}{% set _ = latestFails.push(p.id) %}{% endif %}{% endfor %}{% endfor %}
 
-&lt;p class="govuk-body"&gt;Rules check runs:
-  {% if run === "2" %}&lt;strong&gt;9:15am 14 September 2026&lt;/strong&gt; (fail)
-  {% else %}&lt;a class="govuk-link" href="?calcRun=2"&gt;9:15am 14 September 2026&lt;/a&gt; (fail){% endif %} |
-  {% if run === "1" %}&lt;strong&gt;3:14pm 2 September 2026&lt;/strong&gt; (pass)
-  {% else %}&lt;a class="govuk-link" href="?calcRun=1"&gt;3:14pm 2 September 2026&lt;/a&gt; (pass){% endif %}
-&lt;/p&gt;{% endraw %}</code></pre>
+&lt;table class="govuk-table"&gt;
+  &lt;caption class="govuk-table__caption govuk-table__caption--s"&gt;Rules check runs&lt;/caption&gt;
+  &lt;thead class="govuk-table__head"&gt;
+    &lt;tr class="govuk-table__row"&gt;
+      &lt;th scope="col" class="govuk-table__header"&gt;Run&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header"&gt;Result&lt;/th&gt;
+      &lt;th scope="col" class="govuk-table__header"&gt;&lt;span class="govuk-visually-hidden"&gt;Action&lt;/span&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody class="govuk-table__body"&gt;
+    &lt;tr class="govuk-table__row calcrun{% if run === '2' %} calcrun--current{% endif %}"&gt;
+      &lt;td class="govuk-table__cell"&gt;{% if run === "2" %}&lt;strong&gt;9:15am 14 September 2026&lt;/strong&gt;{% else %}9:15am 14 September 2026{% endif %}
+        &lt;span class="govuk-body-s calcrun__note"&gt;latest&lt;/span&gt;&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;&lt;strong class="govuk-tag govuk-tag--red"&gt;{{ latestFails | length }} fail{% if latestFails | length != 1 %}s{% endif %}&lt;/strong&gt;&lt;/td&gt;
+      &lt;td class="govuk-table__cell govuk-table__cell--numeric"&gt;{% if run === "2" %}&lt;strong&gt;Showing&lt;/strong&gt;{% else %}&lt;a class="govuk-link" href="?calcRun=2"&gt;View this run&lt;/a&gt;{% endif %}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class="govuk-table__row calcrun{% if run === '1' %} calcrun--current{% endif %}"&gt;
+      &lt;td class="govuk-table__cell"&gt;{% if run === "1" %}&lt;strong&gt;3:14pm 2 September 2026&lt;/strong&gt;{% else %}3:14pm 2 September 2026{% endif %}
+        &lt;span class="govuk-body-s calcrun__note"&gt;original, at submission&lt;/span&gt;&lt;/td&gt;
+      &lt;td class="govuk-table__cell"&gt;&lt;strong class="govuk-tag govuk-tag--green"&gt;Passed&lt;/strong&gt;&lt;/td&gt;
+      &lt;td class="govuk-table__cell govuk-table__cell--numeric"&gt;{% if run === "1" %}&lt;strong&gt;Showing&lt;/strong&gt;{% else %}&lt;a class="govuk-link" href="?calcRun=1"&gt;View this run&lt;/a&gt;{% endif %}&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;style&gt;
+  .calcrun--current .govuk-table__cell { background: #f3f2f1; }
+  .calcrun--current .govuk-table__cell:first-child { box-shadow: inset 5px 0 0 #1d70b8; }
+  .calcrun .govuk-table__cell:first-child { padding-left: 15px; }
+  .calcrun__note { color: #505a5f; }
+&lt;/style&gt;{% endraw %}</code></pre>
           </div>
         </div>
       </div>
 
+      <h2 class="govuk-heading-l">Viewing an earlier run</h2>
+      <p class="govuk-body">When the caseworker is not on the latest run, a <a class="govuk-link" href="/pattern-library/gds/notification-banner">notification banner</a> sits above the page heading saying so, with a link straight back to the latest run. The heading's date changes too, so the page never looks like the current picture when it isn't.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-calc-runs-banner">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-runs-banner-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <div class="govuk-notification-banner govuk-!-margin-bottom-0" role="region" aria-labelledby="pl-calcrun-banner-title" data-module="govuk-notification-banner">
+              <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="pl-calcrun-banner-title">Important</h2>
+              </div>
+              <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">You are viewing an earlier rules check run</p>
+                <p class="govuk-body">The latest run is 9:15am 14 September 2026. <a class="govuk-notification-banner__link" href="#">View the latest run</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-calc-runs-banner" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-calc-runs-banner-code">{% raw %}{% if run === "1" %}
+&lt;div class="govuk-notification-banner" role="region" aria-labelledby="calcrun-banner-title" data-module="govuk-notification-banner"&gt;
+  &lt;div class="govuk-notification-banner__header"&gt;
+    &lt;h2 class="govuk-notification-banner__title" id="calcrun-banner-title"&gt;Important&lt;/h2&gt;
+  &lt;/div&gt;
+  &lt;div class="govuk-notification-banner__content"&gt;
+    &lt;p class="govuk-notification-banner__heading"&gt;You are viewing an earlier rules check run&lt;/p&gt;
+    &lt;p class="govuk-body"&gt;The latest run is 9:15am 14 September 2026.
+      &lt;a class="govuk-notification-banner__link" href="?calcRun=2"&gt;View the latest run&lt;/a&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+{% endif %}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="govuk-heading-l">Switching run</h2>
+      <p class="govuk-body">Each <strong>View this run</strong> link sets a <code class="govuk-body">calcRun</code> query parameter, which the Prototype Kit stores in session data, so the page can render either run from one template. The heading, the banner, the table's shaded row and every check follow the selected run.</p>
+
       <h2 class="govuk-heading-l">What changes between runs</h2>
       <p class="govuk-body">A check holds the figures for both runs, so the template picks the right set rather than the case needing two copies of every page:</p>
       <ul class="govuk-list govuk-list--bullet">
-        <li>The earlier run shows the figures as at submission. Every check passes and nothing is highlighted.</li>
+        <li>The earlier run shows the figures as at submission. Every check passes and nothing is highlighted, so the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">failed-checks filter</a> is not offered.</li>
         <li>The latest run shows the current figures. Where a figure has changed it carries the <a class="govuk-link" href="/pattern-library/custom/changed-value-highlight">changed-value highlight</a>, and a check whose applied area now exceeds the available area shows a <a class="govuk-link" href="/pattern-library/custom/check-result-tags">Failed tag</a> with a "What to do" section.</li>
-      </ul>
-
-      <h2 class="govuk-heading-l">Two forms</h2>
-      <ul class="govuk-list govuk-list--bullet">
-        <li><strong>Standalone line</strong> — directly under the "Rules check last run" line, on pages with no filter panel.</li>
-        <li><strong>Inside the filter panel</strong> — as the first row of the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a>, where one exists, so the controls stay together.</li>
+        <li>The latest run's result tag counts its failed checks from the case data, so it stays right when the case is regenerated.</li>
       </ul>
 
       <h2 class="govuk-heading-l">When to use</h2>
@@ -79,15 +167,15 @@
 
       <h2 class="govuk-heading-l">When not to use</h2>
       <ul class="govuk-list govuk-list--bullet">
-        <li>For a case with a single run — show the run date on its own, with no links.</li>
+        <li>For a case with a single run — show the run date on its own, with no table.</li>
         <li>As a general audit history. It lists rules runs only; case events belong on the Timeline.</li>
         <li>For filtering what's on screen (use the <a class="govuk-link" href="/pattern-library/custom/calculations-filter">Calculations filter</a>).</li>
       </ul>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
-        <li><a class="govuk-link" href="/GrassMVP/caseMVP/calculations-large">Large case calculations (40 parcels)</a> — inside the filter panel; two runs, 5 fails in the latest.</li>
-        <li><a class="govuk-link" href="/GrassMVP/caseMVP/calculations-medium">Medium case calculations (5 parcels)</a> — standalone line; two runs, 2 fails in the latest.</li>
+        <li><a class="govuk-link" href="/grassmvpLargeApplication">Large case calculations (40 parcels)</a> — two runs, 5 fails in the latest.</li>
+        <li><a class="govuk-link" href="/grassmvpMediumApplication">Medium case calculations (5 parcels)</a> — two runs, 2 fails in the latest.</li>
         <li><a class="govuk-link" href="/FRPS-D2/caseReal/calculations-new">Real-case calculations (Golden Grange)</a> — earlier form, where each run is its own page.</li>
       </ul>
 

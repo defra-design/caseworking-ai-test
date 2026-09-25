@@ -5,9 +5,8 @@
      {% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
      {% set lps = tp.refLPs("ponds", data.mvpCalcVariant) %}
 
-   kind: "sssi" (parcels with an SSSI Task check), "sssiHistoric" (in an SSSI or
-   with historic features — task A), "buildings" (HEF1), "ponds" (WBD1), "any"
-   (every parcel in the case).
+   kind: "sssi" (parcels with an SSSI check), "buildings" (HEF1), "ponds" (WBD1),
+   "any" (every parcel in the case).
 
    Variants: 'large' → the 40-parcel data, 'medium' → the 5-parcel data,
    'actions' → the single all-actions parcel. Any other variant returns nothing,
@@ -28,7 +27,6 @@
   {%- set sssiChecks = [] -%}
   {%- for a in p.actions %}{% if a.sssiCheck %}{% set _ = sssiChecks.push(a.code) %}{% endif %}{% endfor -%}
   {%- if (kind === "sssi" and sssiChecks | length)
-       or (kind === "sssiHistoric" and (p.sssi or p.historic))
        or (kind === "buildings" and p.building)
        or (kind === "ponds" and p.ponds)
        or (kind === "any") -%}
@@ -36,4 +34,23 @@
   {%- endif -%}
 {%- endfor -%}
 {{- ids | join(", ") -}}
+{% endmacro %}
+
+{# Render a task's land parcel references. Medium and large cases: a "Relevant land parcels"
+   subhead over a list laid out as a borderless grid, inside a dark grey box
+   (.app-lp-box / .app-lp-list in application.scss) — up to 4 columns, dropping to 3, 2, then 1 as space runs out.
+   Other variants keep the original single "Ref LPs: …" line.
+
+     {{ tp.lpList(lps, data.mvpCalcVariant) }}   — lps is a ", "-separated string #}
+{% macro lpList(lps, variant) %}
+{%- if variant === "medium" or variant === "large" %}
+<div class="app-lp-box">
+  <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="relevant-lps-heading">Relevant land parcels</h2>
+  <ul class="govuk-list app-lp-list" aria-labelledby="relevant-lps-heading">
+{%- for id in lps.split(", ") %}
+    <li>{{ id }}</li>
+{%- endfor %}
+  </ul>
+</div>
+{%- else %}<p>Ref LPs: {{ lps }}</p>{% endif -%}
 {% endmacro %}

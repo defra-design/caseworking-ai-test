@@ -27,7 +27,7 @@
 <p>Land parcels within this application intersect  with at least one SSSI.</p>
 
 {% set lps = tp.refLPs("sssi", data.mvpCalcVariant) | trim %}
-{% if lps | length %}<p>Ref LPs: {{ lps }}</p>{% endif %}  
+{% if lps | length %}{{ tp.lpList(lps, data.mvpCalcVariant) }}{% endif %}  
 
 <p>You must:
 <ol class="govuk-list govuk-list--number"> 

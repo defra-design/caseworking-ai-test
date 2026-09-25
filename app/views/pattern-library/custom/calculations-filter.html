@@ -22,10 +22,82 @@
     <div class="app-split-pane__content">
 
       <h1 class="govuk-heading-xl">Calculations filter</h1>
-      <p class="govuk-body-l">A custom variant of the MOJ filter component used on every calculations page in this prototype to swap between rule-check views and switch between rules-check runs.</p>
-      <p class="govuk-body">It departs from the canonical <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a> in two ways: there is no <em>Selected filters</em> tag list (the user can only have one filter active at a time), and the criteria are <strong>radio buttons</strong> rather than checkboxes. Selecting a radio and clicking <strong>Apply filters</strong> swaps the rendered list of checks in place; switching the <strong>Run date</strong> dropdown reloads the page at the corresponding historical run with the selected filter carried through.</p>
+      <p class="govuk-body-l">A custom variant of the MOJ filter component used on the calculations pages in this prototype to narrow a long list of rule checks.</p>
+      <p class="govuk-body">It comes in two forms. The GrassMVP cases use a <strong>failed-checks filter</strong>: one checkbox under a parcel search, with the run switching moved out to the <a class="govuk-link" href="/pattern-library/custom/calculation-runs">Calculation runs</a> table. The FRPS-D2 cases use the earlier <strong>radio filter panel</strong>, which also switches runs.</p>
 
-      <h2 class="govuk-heading-l">Filter panel</h2>
+      <h2 class="govuk-heading-l">Failed-checks filter (GrassMVP cases)</h2>
+      <p class="govuk-body">A parcel search, then a collapsed <strong>Filter calculations</strong> <a class="govuk-link" href="/pattern-library/gds/details">details</a> holding one full-size GOV.UK checkbox with a count and a hint, and an <strong>Apply filter</strong> button underneath. A single option on its own row with a hint reads as a deliberate choice rather than a lone box beside a button. Once applied, the panel collapses and a removable <em>Failed checks</em> tag shows under <em>Selected filters</em>, as in the <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a>.</p>
+
+      <div class="app-example-wrapper">
+        <div class="app-example">
+          <div class="app-example__toolbar">
+            <span class="app-example__toolbar-title">Example</span>
+            <button class="app-show-code-button" data-toggle="ex-calc-fails">Show HTML</button>
+            <button class="app-copy-button" data-copy-target="ex-calc-fails-code">Copy code</button>
+          </div>
+          <div class="app-example__content">
+            <details class="govuk-details govuk-!-margin-bottom-0" open>
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">Filter calculations</span>
+              </summary>
+              <div class="govuk-details__text">
+                <div class="govuk-form-group">
+                  <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="pl-calc-filter-fails" type="checkbox" value="fails" aria-describedby="pl-calc-filter-fails-hint">
+                      <label class="govuk-label govuk-checkboxes__label" for="pl-calc-filter-fails">Show only failed checks (2)</label>
+                      <div id="pl-calc-filter-fails-hint" class="govuk-hint govuk-checkboxes__hint">Hide every check that passed in this run</div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="govuk-button govuk-!-margin-bottom-0">Apply filter</button>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="app-example__code-container" id="ex-calc-fails" hidden>
+          <div class="app-example__code">
+            <pre><code id="ex-calc-fails-code">{% raw %}{% if failCount %}
+&lt;div id="calc-active-filters" class="moj-filter__selected" hidden&gt;
+  &lt;h3 class="govuk-heading-s govuk-!-margin-bottom-1"&gt;Selected filters&lt;/h3&gt;
+  &lt;ul class="moj-filter-tags" id="calc-active-filters-list"&gt;&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;details class="govuk-details" id="calc-filter-details"&gt;
+  &lt;summary class="govuk-details__summary"&gt;
+    &lt;span class="govuk-details__summary-text"&gt;Filter calculations&lt;/span&gt;
+  &lt;/summary&gt;
+  &lt;div class="govuk-details__text"&gt;
+    &lt;form id="calc-filter-form" onsubmit="return false;" autocomplete="off"&gt;
+      &lt;div class="govuk-form-group"&gt;
+        &lt;div class="govuk-checkboxes" data-module="govuk-checkboxes"&gt;
+          &lt;div class="govuk-checkboxes__item"&gt;
+            &lt;input class="govuk-checkboxes__input" id="calc-filter-fails" type="checkbox"
+                   value="fails" aria-describedby="calc-filter-fails-hint"&gt;
+            &lt;label class="govuk-label govuk-checkboxes__label" for="calc-filter-fails"&gt;Show only failed checks ({{ failCount }})&lt;/label&gt;
+            &lt;div id="calc-filter-fails-hint" class="govuk-hint govuk-checkboxes__hint"&gt;Hide every check that passed in this run&lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;button type="submit" class="govuk-button" id="calc-filter-apply"&gt;Apply filter&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/div&gt;
+&lt;/details&gt;
+{% else %}
+&lt;p class="govuk-body"&gt;No checks failed in this run, so there is nothing to filter.&lt;/p&gt;
+{% endif %}{% endraw %}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li><strong>Only offered when there is something to filter.</strong> The count comes from the case data for the run being shown. A run with no failed checks shows a one-line note instead of the panel.</li>
+        <li><strong>Works with the parcel search.</strong> The <a class="govuk-link" href="/pattern-library/gds/accessible-autocomplete">parcel search</a> and the checkbox combine: search for a parcel, tick the box, and only that parcel's failed checks remain.</li>
+        <li><strong>Client-side.</strong> The whole list is rendered once; the script hides checks, then any funded-action or parcel heading left with nothing under it. The headings inside each check are never touched.</li>
+      </ul>
+
+      <h2 class="govuk-heading-l">Radio filter panel (FRPS-D2 cases)</h2>
+      <p class="govuk-body">The earlier form departs from the canonical <a class="govuk-link" href="/pattern-library/moj/filter">MOJ filter</a> in two ways: there is no <em>Selected filters</em> tag list (the user can only have one filter active at a time), and the criteria are <strong>radio buttons</strong> rather than checkboxes. Selecting a radio and clicking <strong>Apply filters</strong> swaps the rendered list of checks in place; switching the <strong>Run date</strong> dropdown reloads the page at the corresponding historical run with the selected filter carried through.</p>
 
       <div class="app-example-wrapper">
         <div class="app-example">
@@ -161,7 +233,7 @@
         </div>
       </div>
 
-      <h2 class="govuk-heading-l">Filter families</h2>
+      <h2 class="govuk-heading-l">Radio panel: filter families</h2>
       <p class="govuk-body">All five radio options share one fieldset (mutually exclusive — one filter at a time) but fall into two conceptual groups:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li><strong>Check-status filters</strong> — <em>All checks</em>, <em>Calculations with changes</em>, <em>Only fails</em>. These hide individual <code class="govuk-body">&lt;details&gt;</code> blocks based on each check's pass/fail/changed state via <code class="govuk-body">data.showChangesOnly</code> / <code class="govuk-body">data.showFailsOnly</code>.</li>
@@ -169,7 +241,7 @@
       </ul>
       <p class="govuk-body">Parcel-attribute filters apply at the <em>parcel</em> level — they don't change which individual checks render inside a parcel, just whether the parcel itself is shown. So <em>LPs on SSSIs</em> hides 8 of the 15 caseReal parcels and shows every check on the remaining 7; the visible parcels still show all their CMOR1 / UPL2 / UPL10 checks (Available area, Moorland, SSSI, HEFER on the kept parcel) regardless of pass/fail/change state.</p>
 
-      <h2 class="govuk-heading-l">Differences from the standard MOJ filter</h2>
+      <h2 class="govuk-heading-l">Radio panel: differences from the standard MOJ filter</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li><strong>Radios instead of checkboxes.</strong> The Listing section is mutually exclusive — a check is either visible to the caseworker or not — so radios match the semantics better than checkboxes and remove the "no selection" ambiguity.</li>
         <li><strong>No selected-filters tag list.</strong> With only one active filter at a time and three obvious options, the tag list adds noise without helping. The currently-selected radio is the indicator of state.</li>
@@ -180,6 +252,7 @@
       <h2 class="govuk-heading-l">When to use</h2>
       <ul class="govuk-list govuk-list--bullet">
         <li>A long, scannable list of items where the caseworker needs to focus on a subset (here: fails or just changes).</li>
+        <li>Use the failed-checks filter when failing is the only subset worth isolating; use the radio panel when there are several mutually exclusive views.</li>
         <li>The filtering is mutually exclusive and the subset is small (two or three options).</li>
         <li>The page also represents one of several versions or runs of the same data set, and the user should be able to swap version while staying inside their current filter view.</li>
       </ul>
@@ -190,11 +263,16 @@
         <li>The list of options is short enough to render without filtering — no filter panel is needed at all.</li>
       </ul>
 
-      <h2 class="govuk-heading-l">Per-page filter state</h2>
+      <h2 class="govuk-heading-l">Radio panel: per-page filter state</h2>
       <p class="govuk-body">Filter state is scoped to each calc page independently (kept in <code class="govuk-body">req.session.data.calcFilters[&lt;page-key&gt;]</code> by the <code class="govuk-body">/largeCalcFilter</code> route handler). Visiting a sibling calc page renders that page's own filter state — there is no leakage between pages. The handler writes through to both <code class="govuk-body">req.session.data</code> and <code class="govuk-body">res.locals.data</code> so the upcoming Nunjucks render sees the swapped state.</p>
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
-      <p class="govuk-body">Every large or versioned calculations page in this prototype:</p>
+      <p class="govuk-body">Failed-checks filter:</p>
+      <ul class="govuk-list">
+        <li><a class="govuk-link" href="/grassmvpLargeApplication">Large case calculations (40 parcels)</a> — 5 failed checks in the latest run.</li>
+        <li><a class="govuk-link" href="/grassmvpMediumApplication">Medium case calculations (5 parcels)</a> — 2 failed checks in the latest run.</li>
+      </ul>
+      <p class="govuk-body">Radio filter panel:</p>
       <ul class="govuk-list">
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-new2">Large calculations (101 parcels)</a></li>
         <li><a class="govuk-link" href="/FRPS-D2/case2/calculations-mid2">Large calculations — middle run</a></li>

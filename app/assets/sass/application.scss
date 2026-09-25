@@ -1910,3 +1910,32 @@
 
 
 
+
+// Task pages (GrassMVP medium and large cases): "Relevant land parcels" heading and list in
+// a full-width 2px dark grey box. The list is a grid of fixed, ID-sized columns
+// 20px apart — at most 4 (the list's max-width), dropping to 3, 2, then 1 as space
+// runs out (6.4em fits the widest IDs, like "SD5763 9223", on one line).
+.app-lp-box {
+  margin-bottom: 30px;
+  padding: 7.5px 20px;
+  border: 2px solid #505a5f;
+}
+
+.app-lp-box .app-lp-list {
+  margin-bottom: 0;
+}
+
+.app-lp-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 6.4em);
+  gap: 10px 20px;
+  max-width: calc(4 * 6.4em + 3 * 20px);
+  margin-top: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-lp-list > li {
+  margin: 0;
+  white-space: nowrap;
+}

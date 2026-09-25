@@ -22,7 +22,7 @@
     <div class="app-split-pane__content">
 
       <h1 class="govuk-heading-xl">Affected land parcels</h1>
-      <p class="govuk-body-l">A line at the top of a review task naming the land parcels that task covers, taken from the same data as the calculations, so the list is always the real one.</p>
+      <p class="govuk-body-l">A boxed list at the top of a review task naming the land parcels that task covers, taken from the same data as the calculations, so the list is always the real one.</p>
       <p class="govuk-body">Several review tasks only exist because of something found on specific land parcels — ponds to count, buildings to check, a Site of Special Scientific Interest to look up. The caseworker needs to know which parcels before they start, and the list has to match the checks on the Calculations page exactly. Naming the parcels in the task saves the caseworker cross-referencing, and stops the two screens disagreeing.</p>
 
       <div class="app-example-wrapper">
@@ -33,18 +33,38 @@
             <button class="app-copy-button" data-copy-target="ex-aff-lps-code">Copy code</button>
           </div>
           <div class="app-example__content">
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-2">Check number and location of ponds</h2>
-            <p class="govuk-body">Ref LPs: SD5848 9205, SD5649 9215, SD5763 9223</p>
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-4">Check that buildings on the land meet the action criteria</h2>
+            <div class="app-lp-box govuk-!-margin-bottom-0">
+              <h3 class="govuk-heading-s govuk-!-margin-bottom-2" id="pl-relevant-lps-heading">Relevant land parcels</h3>
+              <ul class="govuk-list app-lp-list" aria-labelledby="pl-relevant-lps-heading">
+                <li>SD5763 9223</li>
+                <li>SD7560 9193</li>
+                <li>NY2105 1006</li>
+                <li>NY2119 1042</li>
+                <li>NY1118 1031</li>
+                <li>NY1914 1032</li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class="app-example__code-container" id="ex-aff-lps" hidden>
           <div class="app-example__code">
             <pre><code id="ex-aff-lps-code">{% raw %}{% import "GrassMVP/includes/_case-task-parcels.html" as tp %}
 
-{% set lps = tp.refLPs("ponds", data.mvpCalcVariant) | trim %}
-{% if lps | length %}&lt;p&gt;Ref LPs: {{ lps }}&lt;/p&gt;
-{% else %}&lt;p&gt;Ref LPs: NU0021 1026, NT9009 1023&lt;/p&gt;
-{% endif %}{% endraw %}</code></pre>
+{% set lps = tp.refLPs("buildings", data.mvpCalcVariant) | trim %}
+{% if lps | length %}{{ tp.lpList(lps, data.mvpCalcVariant) }}
+{% else %}{{ tp.lpList("SD7146 5820", data.mvpCalcVariant) }}
+{% endif %}
+
+{# tp.lpList renders, for the medium and large cases: #}
+&lt;div class="app-lp-box"&gt;
+  &lt;h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="relevant-lps-heading"&gt;Relevant land parcels&lt;/h2&gt;
+  &lt;ul class="govuk-list app-lp-list" aria-labelledby="relevant-lps-heading"&gt;
+    &lt;li&gt;SD5763 9223&lt;/li&gt;
+    &lt;li&gt;SD7560 9193&lt;/li&gt;
+    …
+  &lt;/ul&gt;
+&lt;/div&gt;{% endraw %}</code></pre>
           </div>
         </div>
       </div>
@@ -54,11 +74,19 @@
       <ul class="govuk-list govuk-list--bullet">
         <li><code class="govuk-body">ponds</code> — parcels claiming a ponds action.</li>
         <li><code class="govuk-body">buildings</code> — parcels claiming a buildings action.</li>
-        <li><code class="govuk-body">sssi</code> — parcels whose checks raise an SSSI <a class="govuk-link" href="/pattern-library/custom/check-result-tags">Task tag</a>.</li>
-        <li><code class="govuk-body">sssiHistoric</code> — parcels in an SSSI or carrying historic features.</li>
+        <li><code class="govuk-body">sssi</code> — parcels with an SSSI check.</li>
         <li><code class="govuk-body">any</code> — every parcel in the case.</li>
       </ul>
       <p class="govuk-body">Because it reads the data rather than a hard-coded line, regenerating a case updates every task at once. A case with no data for that kind returns nothing, and the task falls back to its own line — so this can be added to a task without breaking the cases that don't have the data yet.</p>
+
+      <h2 class="govuk-heading-l">How the list is laid out</h2>
+      <p class="govuk-body">The IDs are a real list (<code class="govuk-body">&lt;ul&gt;</code>) named by the heading, so a screen reader announces "Relevant land parcels, list, 6 items" rather than a table. The <code class="govuk-body">.app-lp-box</code> and <code class="govuk-body">.app-lp-list</code> rules in <code class="govuk-body">application.scss</code> lay it out:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>A full-width box with a 2px dark grey (<code class="govuk-body">#505a5f</code>) border, 7.5px padding top and bottom, and 30px below it before the task's text.</li>
+        <li>A grid of ID-sized columns (<code class="govuk-body">6.4em</code>) 20px apart, so the columns line up like a table. IDs never wrap.</li>
+        <li>At most 4 IDs a row, dropping to 3, 2 then 1 as the space narrows — no breakpoints, so it adapts wherever it sits.</li>
+      </ul>
+      <p class="govuk-body">Only the medium and large cases use the box. The other versions keep the one-line "Ref LPs: …" form.</p>
 
       <h2 class="govuk-heading-l">When to use</h2>
       <ul class="govuk-list govuk-list--bullet">
@@ -75,10 +103,10 @@
 
       <h2 class="govuk-heading-l">Where does this occur</h2>
       <ul class="govuk-list">
+        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-e">Check that buildings on the land meet the action criteria</a> — 28 parcels in the large case, 3 in the medium.</li>
         <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-d">Check number and location of ponds</a> — 12 parcels in the large case, 3 in the medium.</li>
-        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-e">Check that buildings meet the action criteria</a></li>
-        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-3">Check notice of planned activity for an SSSI</a></li>
-        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-a">Check SSSI and Historic feature conditions</a></li>
+        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-3">Check notice of planned activity for an SSSI</a> — 6 parcels in the large case, 1 in the medium.</li>
+        <li><a class="govuk-link" href="/GrassMVP/caseMVP/task-b">Check a ditch is not within a SSSI</a></li>
       </ul>
 
     </div>

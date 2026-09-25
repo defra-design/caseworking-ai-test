@@ -6,10 +6,11 @@
    per check). Parcel and action data come from GrassMVP/includes/_medium-case-data.html,
    shared with application-medium so the two pages always agree.
 
-   Same as calculations-large but without the parcel search and the "Filter
-   calculations" panel — the case is small enough to read straight through, and
-   this set has no failed or changed checks. Manual checks carry the stateless
-   blue "Task" tag. Reached via /grassmvpMediumApplication
+   Rules check runs sit in an always-visible table under the heading (with a
+   banner when the earlier run is shown); then the parcel search, then a
+   "Filter calculations" panel holding one "Show only failed checks" checkbox,
+   offered only when the run has failures. Manual checks carry no tag.
+   Reached via /grassmvpMediumApplication
    (data.mvpCalcVariant = 'medium'). #}
 
 {% import "GrassMVP/includes/_medium-case-data.html" as lc %}
@@ -17,6 +18,11 @@
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "GrassMVP/includes/_caseMVP-context-strip.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
 {% endblock %}
 
 {% macro passTag() %}<strong class="govuk-tag govuk-tag--green">
@@ -27,8 +33,6 @@
         </strong>{% endmacro %}
 {% macro failTag() %}<strong class="govuk-tag govuk-tag--red-new">Failed
       </strong>{% endmacro %}
-{# Manual checks: stateless blue "Task" tag. #}
-{% macro taskTag() %}<strong class="govuk-tag govuk-tag--blue">Task</strong>{% endmacro %}
 {# Wrap a figure in the changed-value highlight when the land data changed. #}
 {% macro val(v, changed) %}{% if changed %}<span class="value-changed">{{ v }}</span>{% else %}{{ v }}{% endif %}{% endmacro %}
 
@@ -123,7 +127,7 @@ Latest land parcel update: 10 September 2026</p>
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Is the site of special scientific interest? {{ taskTag() }}
+      Is the site of special scientific interest?
     </span>
   </summary>
   <div class="govuk-details__text">
@@ -136,7 +140,7 @@ Latest land parcel update: 10 September 2026</p>
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Check that buildings on the land meet the action criteria {{ taskTag() }}
+      Check that buildings on the land meet the action criteria
     </span>
   </summary>
   <div class="govuk-details__text">
@@ -150,7 +154,7 @@ Latest land parcel update: 10 September 2026</p>
 <details class="govuk-details">
   <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      Check that ponds on the land meet the action criteria {{ taskTag() }}
+      Check that ponds on the land meet the action criteria
     </span>
   </summary>
   <div class="govuk-details__text">
@@ -174,20 +178,121 @@ Latest land parcel update: 10 September 2026</p>
 {% set runTime = "3:14pm 2 September 2026" if run === "1" else "9:15am 14 September 2026" %}
 {% set activeNavItem = "calculations" %}
 {% include "GrassMVP/includes/_caseMVP-nav.html" %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-1">Land parcel calculations ({{ runTime }})</h1>
-  </div>
-</div>
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-full">
-    <p>Rules check last run: {{ runTime }}</p>
-    {# Run history: the run being shown is bold, the other is a link. #}
-    <p class="govuk-body govuk-!-margin-bottom-6">Rules check runs:
-      {% if run === "2" %}<strong class="calcflt-run--current">9:15am 14 September 2026</strong> (fail){% else %}<a class="govuk-link" href="?calcRun=2">9:15am 14 September 2026</a> (fail){% endif %} |
-      {% if run === "1" %}<strong class="calcflt-run--current">3:14pm 2 September 2026</strong> (pass){% else %}<a class="govuk-link" href="?calcRun=1">3:14pm 2 September 2026</a> (pass){% endif %}
-    </p>
+{# Failed checks in the run being shown — sets the filter's count, and whether it is offered. #}
+{% set failList = [] %}
+{% for p in lc.parcels %}{% for a in p.actions %}{% if a.fail and run === "2" %}{% set _ = failList.push(p.id) %}{% endif %}{% endfor %}{% endfor %}
+{% set failCount = failList | length %}
+{# Failed checks in the latest run (run 2), for its tag in the runs table. #}
+{% set latestFails = [] %}
+{% for p in lc.parcels %}{% for a in p.actions %}{% if a.fail %}{% set _ = latestFails.push(p.id) %}{% endif %}{% endfor %}{% endfor %}
 
+<style>
+  /* Run being shown: shaded row with a blue edge. */
+  .calcrun--current .govuk-table__cell { background: #f3f2f1; }
+  .calcrun--current .govuk-table__cell:first-child { box-shadow: inset 5px 0 0 #1d70b8; }
+  .calcrun .govuk-table__cell:first-child { padding-left: 15px; }
+  .calcrun__note { color: #505a5f; }
+  /* Only the search is held to 2/3. */
+  .parcel-search { max-width: 66.6667%; }
+  @media (max-width: 640px) { .parcel-search { max-width: none; } }
+</style>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+
+  {% if run === "1" %}
+    <div class="govuk-notification-banner govuk-!-margin-top-8 govuk-!-margin-bottom-0" role="region" aria-labelledby="calcrun-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="calcrun-banner-title">Important</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">You are viewing an earlier rules check run</p>
+        <p class="govuk-body">The latest run is 9:15am 14 September 2026. <a class="govuk-notification-banner__link" href="?calcRun=2">View the latest run</a></p>
+      </div>
+    </div>
+  {% endif %}
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8 govuk-!-margin-bottom-6">Land parcel calculations ({{ runTime }})</h1>
+
+    {# Rules check runs — always visible, so switching run is never hidden in the filter panel. #}
+    <table class="govuk-table govuk-!-margin-bottom-6">
+      <caption class="govuk-table__caption govuk-table__caption--s">Rules check runs</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Run</th>
+          <th scope="col" class="govuk-table__header">Result</th>
+          <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        <tr class="govuk-table__row calcrun{% if run === '2' %} calcrun--current{% endif %}">
+          <td class="govuk-table__cell">{% if run === "2" %}<strong>9:15am 14 September 2026</strong>{% else %}9:15am 14 September 2026{% endif %} <span class="govuk-body-s calcrun__note">latest</span></td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--red">{{ latestFails | length }} fail{% if latestFails | length != 1 %}s{% endif %}</strong></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{% if run === "2" %}<strong>Showing</strong>{% else %}<a class="govuk-link" href="?calcRun=2">View this run</a>{% endif %}</td>
+        </tr>
+        <tr class="govuk-table__row calcrun{% if run === '1' %} calcrun--current{% endif %}">
+          <td class="govuk-table__cell">{% if run === "1" %}<strong>3:14pm 2 September 2026</strong>{% else %}3:14pm 2 September 2026{% endif %} <span class="govuk-body-s calcrun__note">original, at submission</span></td>
+          <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--green">Passed</strong></td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{% if run === "1" %}<strong>Showing</strong>{% else %}<a class="govuk-link" href="?calcRun=1">View this run</a>{% endif %}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  {# Parcel search (as calculations-large) then the filter panel, which holds a
+     single "failed checks" checkbox (unticked = show every check). The active
+     filter is summarised above the panel; filtering is client-side — see
+     pageScripts. The panel is only offered when the run has failed checks. #}
+  <div class="calcflt-controls govuk-!-margin-bottom-4">
+
+    <div class="parcel-search govuk-!-margin-bottom-4">
+      <form id="parcel-search-form" onsubmit="return false;">
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-label--s" for="parcel-search-input">
+            Find a specific land parcel
+          </label>
+          <div class="parcel-search__row">
+            <div id="parcel-search-container"></div>
+            <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" id="parcel-find-btn">
+              Find
+            </button>
+          </div>
+          <p id="parcel-search-status" class="govuk-body-s govuk-!-margin-top-2" hidden>
+            Showing only <span id="parcel-search-status-id"></span>.
+            <a href="#" class="govuk-link" id="parcel-search-clear">Show all land parcels</a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+  {% if failCount %}
+    <div id="calc-active-filters" class="moj-filter__selected govuk-!-margin-bottom-3" hidden>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Selected filters</h3>
+      <ul class="moj-filter-tags" id="calc-active-filters-list"></ul>
+    </div>
+
+    <details class="govuk-details govuk-!-margin-bottom-0" id="calc-filter-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">Filter calculations</span>
+      </summary>
+      <div class="govuk-details__text">
+        <form id="calc-filter-form" onsubmit="return false;" autocomplete="off">
+          <div class="govuk-form-group">
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+              <div class="govuk-checkboxes__item">
+                <input class="govuk-checkboxes__input" id="calc-filter-fails" type="checkbox" value="fails" aria-describedby="calc-filter-fails-hint">
+                <label class="govuk-label govuk-checkboxes__label" for="calc-filter-fails">Show only failed checks ({{ failCount }})</label>
+                <div id="calc-filter-fails-hint" class="govuk-hint govuk-checkboxes__hint">Hide every check that passed in this run</div>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" id="calc-filter-apply">Apply filter</button>
+        </form>
+      </div>
+    </details>
+  {% else %}
+    <p class="govuk-body calcrun__note">No checks failed in this run, so there is nothing to filter.</p>
+  {% endif %}
+  </div>
   </div>
 </div>
 
@@ -220,4 +325,109 @@ Latest land parcel update: 10 September 2026</p>
 
   </div>
 </div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var form = document.querySelector('form[action="test4"]');
+      if (!form) return;
+      var fieldset = form.querySelector('fieldset');
+
+      // Parcel sections: each "Parcel ID: X checks" h2 plus the siblings after it.
+      var parcelIds = [];
+      var parcelOfEl = new Map();
+      var id = null;
+      Array.prototype.forEach.call(fieldset.children, function (el) {
+        var m = el.tagName === 'H2' && el.textContent.match(/Parcel ID:\s*([A-Z]+\d+\s+\d+)\s*checks/);
+        if (m) { id = m[1].replace(/\s+/g, ' ').trim(); parcelIds.push(id); }
+        if (id) parcelOfEl.set(el, id);
+      });
+
+      var detailEls = Array.prototype.slice.call(fieldset.querySelectorAll(':scope > details'));
+      var isFail = detailEls.map(function (d) { return !!d.querySelector('.govuk-tag--red-new'); });
+      var failsOnly = false;     // from the "Fails" checkbox
+      var activeParcel = null;   // from the parcel search
+
+      // Show/hide checks, then hide any heading left with no visible check under it.
+      function apply() {
+        detailEls.forEach(function (d, i) {
+          var okParcel = !activeParcel || parcelOfEl.get(d) === activeParcel;
+          d.style.display = ((!failsOnly || isFail[i]) && okParcel) ? '' : 'none';
+        });
+        var headings = Array.prototype.slice.call(fieldset.querySelectorAll(':scope > h2, :scope > h3'));
+        headings.forEach(function (h) {
+          var any = false, n = h.nextElementSibling;
+          while (n && n.tagName !== 'H2' && !(h.tagName === 'H3' && n.tagName === 'H3')) {
+            if (n.tagName === 'DETAILS' && n.style.display !== 'none') any = true;
+            n = n.nextElementSibling;
+          }
+          h.style.display = any ? '' : 'none';
+        });
+        renderActive();
+      }
+
+      var activeWrap = document.getElementById('calc-active-filters');
+      var activeList = document.getElementById('calc-active-filters-list');
+      function renderActive() {
+        if (!activeWrap) return;
+        activeList.innerHTML = failsOnly
+          ? '<li><a href="#" class="moj-filter__tag govuk-link">Failed checks <span class="govuk-visually-hidden">Remove filter</span></a></li>'
+          : '';
+        activeWrap.hidden = !failsOnly;
+      }
+
+      // --- "Fails" checkbox + Filter button. ---
+      var failsBox = document.getElementById('calc-filter-fails');
+      var filterDetails = document.getElementById('calc-filter-details');
+      if (failsBox) {
+        document.getElementById('calc-filter-apply').addEventListener('click', function () {
+          failsOnly = failsBox.checked;
+          apply();
+          if (filterDetails) filterDetails.open = false;   // collapse so the summary shows
+        });
+        activeList.addEventListener('click', function (e) {
+          if (!e.target.closest('a.moj-filter__tag')) return;
+          e.preventDefault();
+          failsBox.checked = false;
+          failsOnly = false;
+          apply();
+        });
+      }
+
+      // --- Parcel search (accessible-autocomplete). ---
+      var container = document.getElementById('parcel-search-container');
+      var selected = '';
+      if (container && typeof accessibleAutocomplete === 'function') {
+        accessibleAutocomplete({
+          element: container, id: 'parcel-search-input', source: parcelIds,
+          minLength: 1, showAllValues: false, confirmOnBlur: false, displayMenu: 'overlay',
+          placeholder: 'e.g. SD5848 9205', onConfirm: function (v) { selected = v || ''; }
+        });
+      }
+      var status = document.getElementById('parcel-search-status');
+      var statusId = document.getElementById('parcel-search-status-id');
+      document.getElementById('parcel-find-btn').addEventListener('click', function () {
+        var input = document.getElementById('parcel-search-input');
+        var value = selected || (input && input.value);
+        if (!value) return;
+        var match = parcelIds.find(function (p) { return p.toLowerCase() === value.toLowerCase().trim(); });
+        if (!match) return;
+        activeParcel = match;
+        statusId.textContent = match;
+        status.hidden = false;
+        apply();
+      });
+      document.getElementById('parcel-search-clear').addEventListener('click', function (e) {
+        e.preventDefault();
+        selected = '';
+        var input = document.getElementById('parcel-search-input');
+        if (input) input.value = '';
+        activeParcel = null;
+        status.hidden = true;
+        apply();
+      });
+    })();
+  </script>
 {% endblock %}

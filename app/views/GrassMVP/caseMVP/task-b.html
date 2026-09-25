@@ -19,20 +19,20 @@
   <fieldset class="govuk-fieldset">
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
       <h1 class="govuk-fieldset__heading govuk-!-margin-top-8">
-        Check a ditch is not within a SSSI or Severely Disadvantaged Area
+        Check a ditch is not within a SSSI{% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %} or Severely Disadvantaged Area{% endif %}
       </h1>
     </legend>
 
 
 {% set lps = (tp.refLPs("any", data.mvpCalcVariant) | trim) if data.mvpCalcVariant === "actions" else "" %}
-{% if lps | length %}<p>Ref LPs: {{ lps }}</p>
-{% else %}<p>Ref LPs: NY2105 1006</p>
+{% if lps | length %}{{ tp.lpList(lps, data.mvpCalcVariant) }}
+{% else %}{{ tp.lpList("NY2105 1006", data.mvpCalcVariant) }}
 {% endif %}
 
 <p>Perform the following checks:</p>
 <ul class="govuk-list govuk-list--bullet">
   <li>The ditch does not fall within an SSSI</li>
-  <li>The ditch is not located within a Severely Disadvantaged Area (SDA)</li>
+  {% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %}<li>The ditch is not located within a Severely Disadvantaged Area (SDA)</li>{% endif %}
 </ul>
 
 

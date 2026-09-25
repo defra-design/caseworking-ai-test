@@ -25,8 +25,8 @@
 
 
 {% set lps = tp.refLPs("ponds", data.mvpCalcVariant) | trim %}
-{% if lps | length %}<p>Ref LPs: {{ lps }}</p>
-{% else %}<p>Ref LPs: NU0021 1026, NT9009 1023</p>
+{% if lps | length %}{{ tp.lpList(lps, data.mvpCalcVariant) }}
+{% else %}{{ tp.lpList("NU0021 1026, NT9009 1023", data.mvpCalcVariant) }}
 {% endif %}
 
 <p>Check that:</p>

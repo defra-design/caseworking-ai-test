@@ -5805,7 +5805,6 @@ makeTaskRoute('/task2TrT2MVP', {
 
 // --- Task review routes ---
 
-// Note: task5T2MVP and task6T2MVP use 'detailsChecked' (not detailsCheckedMVP) — preserved from original.
 makeTaskRoute('/task1T2MVP', {
   checkedKey:        'detailsCheckedMVP',
   decisionKey:       'decisionTask1MVP',
@@ -5848,22 +5847,8 @@ makeTaskRoute('/task3T2MVP', {
   redirectTo:        D2MVPT,
 });
 
-// Additional review tasks a–d (SSSI/historic, ditch, LFA, ponds). Same review
-// outcome + notes + status pattern as task 1–3.
-makeTaskRoute('/taskAT2MVP', {
-  checkedKey:        'detailsCheckedMVP',
-  decisionKey:       'decisionTaskAMVP',
-  noteActionKey:     'noteActionTaskAMVP',
-  tagKey:            'taskATagMVP',
-  statusKey:         'taskAStatusMVP',
-  rawNoteKey:        'taskANoteMVP',
-  filteredNoteKey:   'filteredNoteAMVP',
-  rawNoteKey2:       'taskANote2MVP',
-  filteredNoteKey2:  'filteredNoteA_2MVP',
-  outcomes:          REVIEW_OUTCOMES,
-  redirectTo:        D2MVPT,
-});
-
+// Additional review tasks b and d (ditch, ponds). Same review outcome + notes +
+// status pattern as task 1–3.
 makeTaskRoute('/taskBT2MVP', {
   checkedKey:        'detailsCheckedMVP',
   decisionKey:       'decisionTaskBMVP',
@@ -5874,20 +5859,6 @@ makeTaskRoute('/taskBT2MVP', {
   filteredNoteKey:   'filteredNoteBMVP',
   rawNoteKey2:       'taskBNote2MVP',
   filteredNoteKey2:  'filteredNoteB_2MVP',
-  outcomes:          REVIEW_OUTCOMES,
-  redirectTo:        D2MVPT,
-});
-
-makeTaskRoute('/taskCT2MVP', {
-  checkedKey:        'detailsCheckedMVP',
-  decisionKey:       'decisionTaskCMVP',
-  noteActionKey:     'noteActionTaskCMVP',
-  tagKey:            'taskCTagMVP',
-  statusKey:         'taskCStatusMVP',
-  rawNoteKey:        'taskCNoteMVP',
-  filteredNoteKey:   'filteredNoteCMVP',
-  rawNoteKey2:       'taskCNote2MVP',
-  filteredNoteKey2:  'filteredNoteC_2MVP',
   outcomes:          REVIEW_OUTCOMES,
   redirectTo:        D2MVPT,
 });
@@ -5935,32 +5906,12 @@ makeTaskRoute('/task5T2MVP', {
   redirectTo:        D2MVPT,
 });
 
-makeTaskRoute('/task6T2MVP', {
-  checkedKey:        'detailsCheckedMVP',
-  decisionKey:       'decisionTask6MVP',
-  noteActionKey:     'noteActionTask6MVP',
-  tagKey:            'budgetTagMVP',
-  statusKey:         'budgetStatusMVP',
-  rawNoteKey:        'task6NoteMVP',
-  filteredNoteKey:   'filteredNote6MVP',
-  rawNoteKey2:       'task6Note2MVP',
-  filteredNoteKey2:  'filteredNote6_2MVP',
-  outcomes:          REVIEW_OUTCOMES,
-  redirectTo:        D2MVPT,
-});
-
 // --- Case assignment ---
 
 router.get('/caselistTeam2MVP', function (req, res) {
   // Marks MVP case (Golden Grange) as assigned and returns to caselist
   req.session.data.caseAssignedMVP = 'yes';
   res.redirect('/GrassMVP/caselist');
-});
-
-router.get('/setUserFo2MVP', function (req, res) {
-  // Assigns finance officer role for MVP case (Golden Grange)
-  req.session.data.financeOfficerMVP = 'yes';
-  res.redirect('/GrassMVP/caseMVP/tasklist-stage');
 });
 
 // --- Amendment task routes ---
