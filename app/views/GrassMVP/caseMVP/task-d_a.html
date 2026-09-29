@@ -87,10 +87,6 @@
     </div>
 {% endif %}{% endfor %}
 
-    <button type="submit" form="ponds-form" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-8" data-module="govuk-button">
-      Save and return
-    </button>
-
     <h2 class="govuk-heading-m" id="outcome-heading">
          Outcome
       </h2>
@@ -174,10 +170,16 @@
       </fieldset>
     </div>
 
-<button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
- Confirm
-</button><br>
-<a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+<div class="govuk-button-group">
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Confirm
+  </button>
+  {# Submits the separate ponds form (form="ponds-form"), not the outcome. #}
+  <button type="submit" form="ponds-form" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+    Save and return
+  </button>
+  <a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+</div>
 {% endif %}
 
 {% if (data.taskDNoteMVP) %}
