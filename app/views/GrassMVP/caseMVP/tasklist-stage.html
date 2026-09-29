@@ -131,7 +131,7 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="{% if data.mvpCalcVariant === 'medium' %}task-d_a{% else %}task-d{% endif %}" aria-describedby="company-details-1-status">
         Check number and location of ponds
       </a>
     </div>
@@ -266,7 +266,7 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="{% if data.mvpCalcVariant === 'medium' %}task-d_a{% else %}task-d{% endif %}" aria-describedby="company-details-1-status">
         Check number and location of ponds
       </a>
     </div>
@@ -478,7 +478,7 @@
 
   <li class="govuk-task-list__item govuk-task-list__item--with-link">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-d" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="{% if data.mvpCalcVariant === 'medium' %}task-d_a{% else %}task-d{% endif %}" aria-describedby="company-details-1-status">
         Check number and location of ponds
       </a>
     </div>

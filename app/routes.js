@@ -5877,6 +5877,20 @@ makeTaskRoute('/taskDT2MVP', {
   redirectTo:        D2MVPT,
 });
 
+// Ponds task variant A (task-d_a, medium case): "Save and return" posts only the
+// per-parcel answers (pondsMeetMVP_<id> / pondsReasonMVP_<id>), which the kit
+// has already stored in session data. A parcel answered Yes drops any reason
+// left over from an earlier No.
+router.all('/pondsSaveMVP', function (req, res) {
+  const d = req.session.data;
+  Object.keys(d).forEach(function (k) {
+    if (k.indexOf('pondsMeetMVP_') === 0 && d[k] === 'Yes') {
+      delete d['pondsReasonMVP_' + k.slice('pondsMeetMVP_'.length)];
+    }
+  });
+  res.redirect(D2MVPT);
+});
+
 // Task E — buildings manual check (HEF1). Listed before the ponds task (D).
 makeTaskRoute('/taskET2MVP', {
   checkedKey:        'detailsCheckedMVP',
