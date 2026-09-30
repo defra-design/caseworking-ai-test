@@ -2040,14 +2040,18 @@
 // answered), red with the knob left (No), green with the knob right (Yes).
 // The track is a little wider than iOS (60 v 52px) so the centre reads clearly.
 .app-yn--pill {
-  // No colour on the switch: a light grey track and white knob in every state;
-  // only the knob's position changes. The answer's colour lives in the tag.
-  .app-yn__track { width: 60px; height: 32px; border: 1px solid $govuk-border-colour; border-radius: 16px; background: #f3f2f1; }
+  // No colour on the switch: a white track in every state. Unanswered: thin
+  // grey border, white knob centred. Answered: 2px black border and a solid
+  // black knob at that side — a definite "this is answered" signal; the
+  // answer's colour lives in the tag, and the other word fades to grey.
+  .app-yn__track { width: 60px; height: 32px; border: 1px solid $govuk-border-colour; border-radius: 16px; background: #ffffff; }
   .app-yn__knob { top: 1px; left: 15px; width: 28px; height: 28px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .04); transition: left .2s ease; }
   &.app-yn:has(.app-yn__input[value="No"]:checked) .app-yn__track,
-  &.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__track { background: #f3f2f1; }
-  &:has(.app-yn__input[value="No"]:checked) .app-yn__knob { left: 1px; }
-  &:has(.app-yn__input[value="Yes"]:checked) .app-yn__knob { left: 29px; }
+  &.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__track { background: #ffffff; border: 2px solid $govuk-text-colour; }
+  &:has(.app-yn__input:checked) .app-yn__knob { top: 0; background: $govuk-text-colour; box-shadow: none; }
+  &:has(.app-yn__input[value="No"]:checked) .app-yn__knob { left: 0; }
+  &:has(.app-yn__input[value="Yes"]:checked) .app-yn__knob { left: 28px; }
+  &:has(.app-yn__input:checked) .app-yn__word { color: #505a5f; }
   &:has(.app-yn__input:focus-visible) .app-yn__track { outline: 3px solid #ffdd00; outline-offset: 2px; }
 
   // The land parcel sits in a fixed column (wide enough for an ID like

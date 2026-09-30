@@ -41,9 +41,8 @@
     </legend>
 
 
-{% if data.caseStageMVP !== 'review' %}
+{# Shown at every stage, review included, even though the checks below repeat the list. #}
 {{ tp.lpList(tp.refLPs("ponds", "medium") | trim, "medium") }}
-{% endif %}
 
 <p>Check that:</p>
 <ul class="govuk-list govuk-list--bullet">
