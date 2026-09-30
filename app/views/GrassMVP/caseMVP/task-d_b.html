@@ -1,9 +1,10 @@
 {% extends "layouts/main.html" %}
-{# Ponds task — variant A (medium case, rounded slider). Same task as task-d, but during review
+{# Ponds task — variant B (medium case, square slider). Identical to task-d_a
+   apart from the slider shape; reached directly at /GrassMVP/caseMVP/task-d_b. Same task as task-d, but during review
    the caseworker records, for each land parcel with ponds, whether its ponds
-   pass the pond checks, on a compact Fail / Pass slider switch (.app-yn in
-   application.scss; this variant uses the rounded --pill shape, task-d_b the
-   --square one). Underneath it is two radios, so keyboard and screen readers
+   meet the criteria, on a compact Yes / No slider switch (.app-yn in
+   application.scss; this variant uses the --square shape, task-d_a the
+   rounded --pill one). Underneath it is two radios, so keyboard and screen readers
    treat it as a Yes / No question. Choosing No reveals a dropdown of
    prewritten reasons (Reason 1, Reason 2… until the wording is agreed). Answers are kept
    in session data as pondsMeetMVP_<id> / pondsReasonMVP_<id> (id without its
@@ -54,28 +55,27 @@
 
 {% if (data.caseStageMVP === 'review') %}
 
-    <h2 class="govuk-heading-m govuk-!-margin-top-6">Land parcel pond checks</h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Land parcel checks</h2>
 {% set pondReasons = ["Reason 1", "Reason 2", "Reason 3", "Reason 4", "Reason 5"] %}
 {% for p in lc.parcels %}{% if p.ponds %}
 {% set key = p.id | replace(" ", "") %}
 {% set meet = data["pondsMeetMVP_" + key] %}
 {% set reason = data["pondsReasonMVP_" + key] %}
-    <div class="govuk-form-group app-yn app-yn--pill" data-ponds-question data-key="{{ key }}" data-label="{{ p.ponds | length }} pond{% if p.ponds | length != 1 %}s{% endif %} on {{ p.id }}">
+    <div class="govuk-form-group app-yn app-yn--square" data-ponds-question data-key="{{ key }}" data-label="{{ p.ponds | length }} pond{% if p.ponds | length != 1 %}s{% endif %} on {{ p.id }}">
       <fieldset class="govuk-fieldset app-yn__fieldset">
-        {# Shows just the land parcel; the rest of the question is for screen readers. #}
-        <legend class="govuk-fieldset__legend app-yn__legend">
-          <span class="govuk-visually-hidden">Do the {{ p.ponds | length }} pond{% if p.ponds | length != 1 %}s{% endif %} on</span> {{ p.id }} <span class="govuk-visually-hidden">pass the pond checks?</span>
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s app-yn__legend">
+          Do the {{ p.ponds | length }} pond{% if p.ponds | length != 1 %}s{% endif %} on {{ p.id }} meet the criteria?
         </legend>
         <div class="app-yn__control">
           <input class="app-yn__input" id="ponds-{{ key }}-no" name="pondsMeetMVP_{{ key }}" form="ponds-form" type="radio" value="No"{% if meet === "No" %} checked{% endif %}>
           <input class="app-yn__input" id="ponds-{{ key }}-yes" name="pondsMeetMVP_{{ key }}" form="ponds-form" type="radio" value="Yes"{% if meet === "Yes" %} checked{% endif %}>
-          <label class="app-yn__word app-yn__word--no" for="ponds-{{ key }}-no"><span class="app-yn__tag">Fail</span></label>
+          <label class="app-yn__word app-yn__word--no" for="ponds-{{ key }}-no">No</label>
           <span class="app-yn__track" aria-hidden="true">
             <label class="app-yn__half app-yn__half--no" for="ponds-{{ key }}-no"></label>
             <label class="app-yn__half app-yn__half--yes" for="ponds-{{ key }}-yes"></label>
             <span class="app-yn__knob"></span>
           </span>
-          <label class="app-yn__word app-yn__word--yes" for="ponds-{{ key }}-yes"><span class="app-yn__tag">Pass</span></label>
+          <label class="app-yn__word app-yn__word--yes" for="ponds-{{ key }}-yes">Yes</label>
         </div>
         <div class="app-yn__reason" id="ponds-{{ key }}-reason-wrap">
           <div class="govuk-form-group">
@@ -331,13 +331,13 @@
           var meet = document.querySelector('input[name="pondsMeetMVP_' + key + '"]:checked');
           var legend = g.querySelector('legend');
           if (!meet) {
-            var msg = 'Select pass or fail for the ' + label;
+            var msg = 'Select yes if the ' + label + ' meet the criteria';
             errors.push({ text: msg, target: 'ponds-' + key + '-yes' });
             inlineError(g, legend, 'ponds-' + key + '-error', msg);
           } else if (meet.value === 'No') {
             var sel = document.getElementById('ponds-' + key + '-reason');
             if (!sel.value) {
-              var rmsg = 'Choose a reason why the ' + label + ' fail';
+              var rmsg = 'Choose a reason why the ' + label + ' do not meet the criteria';
               errors.push({ text: rmsg, target: sel.id });
               var rg = sel.closest('.govuk-form-group');
               inlineError(rg, rg.querySelector('label'), 'ponds-' + key + '-reason-error', rmsg);
