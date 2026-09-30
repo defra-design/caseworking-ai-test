@@ -66,12 +66,10 @@
           <span class="govuk-visually-hidden">Do the {{ p.ponds | length }} pond{% if p.ponds | length != 1 %}s{% endif %} on</span> {{ p.id }} <span class="govuk-visually-hidden">pass the pond checks?</span>
         </legend>
         <div class="app-yn__control">
-          <input class="app-yn__input" id="ponds-{{ key }}-no" name="pondsMeetMVP_{{ key }}" form="ponds-form" type="radio" value="No"{% if meet === "No" %} checked{% endif %}>
+          <input class="app-yn__input" id="ponds-{{ key }}-no" name="pondsMeetMVP_{{ key }}" form="ponds-form" type="radio" value="No" aria-controls="ponds-{{ key }}-reason-wrap"{% if meet === "No" %} checked{% endif %}>
           <input class="app-yn__input" id="ponds-{{ key }}-yes" name="pondsMeetMVP_{{ key }}" form="ponds-form" type="radio" value="Yes"{% if meet === "Yes" %} checked{% endif %}>
           <label class="app-yn__word app-yn__word--no" for="ponds-{{ key }}-no"><span class="app-yn__tag">Fail</span></label>
           <span class="app-yn__track" aria-hidden="true">
-            <label class="app-yn__half app-yn__half--no" for="ponds-{{ key }}-no"></label>
-            <label class="app-yn__half app-yn__half--yes" for="ponds-{{ key }}-yes"></label>
             <span class="app-yn__knob"></span>
           </span>
           <label class="app-yn__word app-yn__word--yes" for="ponds-{{ key }}-yes"><span class="app-yn__tag">Pass</span></label>
@@ -266,6 +264,10 @@
       document.querySelectorAll('.govuk-form-group--error').forEach(function (g) { g.classList.remove('govuk-form-group--error'); });
       document.querySelectorAll('.app-js-error').forEach(function (e) { e.remove(); });
       document.querySelectorAll('.govuk-select--error').forEach(function (e) { e.classList.remove('govuk-select--error'); });
+      document.querySelectorAll('[data-app-error-described]').forEach(function (e) {
+        e.removeAttribute('aria-describedby');
+        e.removeAttribute('data-app-error-described');
+      });
       document.title = pageTitle;
     }
 
@@ -281,6 +283,13 @@
       p.appendChild(hidden);
       p.appendChild(document.createTextNode(text));
       afterEl.insertAdjacentElement('afterend', p);
+    }
+
+    // Point the question (fieldset) or field at its error message, so screen
+    // readers read the error when the user lands on it.
+    function describeBy(el, id) {
+      el.setAttribute('aria-describedby', id);
+      el.setAttribute('data-app-error-described', '');
     }
 
     function showSummary(errors) {
@@ -321,6 +330,7 @@
         var first = og.querySelector('input[name="decisionTaskDMVP"]');
         errors.push({ text: 'Select an outcome', target: first.id });
         inlineError(og, document.getElementById('outcome-heading'), 'outcome-error', 'Select an outcome');
+        describeBy(og.querySelector('fieldset'), 'outcome-error');
         // The heading sits outside the group, so put the message at the top of the group instead.
         og.insertBefore(document.getElementById('outcome-error'), og.firstChild);
       } else if (outcome.value === 'Accepted') {
@@ -331,8 +341,9 @@
           var legend = g.querySelector('legend');
           if (!meet) {
             var msg = 'Select pass or fail for the ' + label;
-            errors.push({ text: msg, target: 'ponds-' + key + '-yes' });
+            errors.push({ text: msg, target: 'ponds-' + key + '-no' });
             inlineError(g, legend, 'ponds-' + key + '-error', msg);
+            describeBy(g.querySelector('fieldset'), 'ponds-' + key + '-error');
           } else if (meet.value === 'No') {
             var sel = document.getElementById('ponds-' + key + '-reason');
             if (!sel.value) {
@@ -340,6 +351,7 @@
               errors.push({ text: rmsg, target: sel.id });
               var rg = sel.closest('.govuk-form-group');
               inlineError(rg, rg.querySelector('label'), 'ponds-' + key + '-reason-error', rmsg);
+              describeBy(sel, 'ponds-' + key + '-reason-error');
               sel.classList.add('govuk-select--error');
             }
           }

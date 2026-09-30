@@ -2010,22 +2010,33 @@
 .app-yn__track {
   position: relative;
   display: inline-block;
+  pointer-events: none; // clicks fall through to the word labels' stretched areas
   box-sizing: border-box;
   border: 2px solid $govuk-text-colour;
   background: #ffffff;
   transition: background-color .15s ease;
 }
 
-.app-yn__half {
-  position: absolute;
-  top: 0;
-  width: 50%;
-  height: 100%;
-  cursor: pointer;
+// Each radio has ONE label (the word). Its clickable area stretches over the
+// neighbouring half of the track with an ::after, so clicking either half of
+// the switch still chooses that side, without a second (empty) label.
+.app-yn__control {
+  position: relative;
+  --yn-no-w: 3em;      // width of the "No"/"Fail" word box
+  --yn-track-w: 80px;  // width of the track
 }
 
-.app-yn__half--no { left: 0; }
-.app-yn__half--yes { right: 0; }
+.app-yn__word--no::after,
+.app-yn__word--yes::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--yn-track-w) / 2);
+}
+
+.app-yn__word--no::after { left: calc(var(--yn-no-w) + 8px); }
+.app-yn__word--yes::after { left: calc(var(--yn-no-w) + 8px + var(--yn-track-w) / 2); }
 
 .app-yn__knob {
   position: absolute;
@@ -2044,7 +2055,9 @@
   // grey border, white knob centred. Answered: 2px black border and a solid
   // black knob at that side — a definite "this is answered" signal; the
   // answer's colour lives in the tag, and the other word fades to grey.
-  .app-yn__track { width: 60px; height: 32px; border: 1px solid $govuk-border-colour; border-radius: 16px; background: #ffffff; }
+  // #505a5f (GOV.UK secondary text grey) so the unanswered outline has at
+  // least 3:1 contrast against white (WCAG 1.4.11).
+  .app-yn__track { width: 60px; height: 32px; border: 1px solid #505a5f; border-radius: 16px; background: #ffffff; }
   .app-yn__knob { top: 1px; left: 15px; width: 28px; height: 28px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .04); transition: left .2s ease; }
   &.app-yn:has(.app-yn__input[value="No"]:checked) .app-yn__track,
   &.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__track { background: #ffffff; border: 2px solid $govuk-text-colour; }
@@ -2067,6 +2080,7 @@
   .app-yn__word { font-weight: 400; min-width: 0; gap: 0; }
   .app-yn__word::before { content: none; }
   .app-yn__word--no { width: 3.9em; justify-content: flex-end; } // room for the whole Fail tag
+  .app-yn__control { --yn-no-w: 3.9em; --yn-track-w: 60px; }
   .app-yn__word--yes { width: 3.5em; justify-content: flex-start; }
   .app-yn__tag { display: inline-flex; align-items: center; flex: 0 0 auto; white-space: nowrap; padding: 2px 8px 3px; border-radius: 1px; }
   &:has(.app-yn__input[value="No"]:checked) .app-yn__word--no .app-yn__tag { color: #2a0b06; background: #f4ccc6; }
@@ -2107,4 +2121,22 @@
 }
 
 .app-yn:has(.app-yn__input[value="No"]:checked) .app-yn__reason { display: block; }
+
+// Accessibility extras for both shapes.
+// Reduced motion: no sliding or colour animation.
+@media (prefers-reduced-motion: reduce) {
+  .app-yn__track,
+  .app-yn__knob { transition: none; }
+}
+
+// Windows high contrast / forced colours strips backgrounds, which would hide
+// the solid "answered" knob and the tag fills. Draw them with system colours.
+@media (forced-colors: active) {
+  .app-yn__track { border-color: CanvasText; }
+  .app-yn__knob { border: 2px solid CanvasText; }
+  .app-yn.app-yn:has(.app-yn__input:checked) .app-yn__knob { forced-color-adjust: none; background: CanvasText; }
+  .app-yn__tag { border: 1px solid transparent; }
+  .app-yn.app-yn:has(.app-yn__input[value="No"]:checked) .app-yn__word--no .app-yn__tag,
+  .app-yn.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__word--yes .app-yn__tag { border-color: CanvasText; }
+}
 
