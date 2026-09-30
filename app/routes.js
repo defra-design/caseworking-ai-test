@@ -5255,6 +5255,20 @@ router.get('/grassmvpMediumApplication', function (req, res) {
   res.redirect('/tasklistStageMVP');
 });
 
+// TEMPORARY (index shortcut): the medium case already started ('In review',
+// as if Start had been pressed), opened straight on the ponds task variant A.
+// stageCountMVP = 2 keeps /tasklistStageMVP stepping on from review as normal.
+router.get('/grassmvpMediumPonds', function (req, res) {
+  const d = req.session.data;
+  d.largeCase = 'mvp';
+  d.mvpCalcVariant = 'medium';
+  d.stageCountMVP = 2;
+  d.caseStageMVP = 'review';
+  d.caseStatusMVP = 'In review';
+  d.caseStatusTagMVP = 'govuk-tag govuk-tag--blue';
+  res.redirect('/GrassMVP/caseMVP/task-d_a');
+});
+
 
 // ----- Caselist data + helpers + My cases -----
 // ----- GrassMVP caselist data + routes -----
