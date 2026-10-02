@@ -2140,3 +2140,32 @@
   .app-yn.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__word--yes .app-yn__tag { border-color: CanvasText; }
 }
 
+// Task list: a task that depends on the task above it, indented under it
+// (GrassMVP medium case: the ditch / SSSI task under the SSSI planned-activity
+// task). Its status shows "Dependent" in a grey tag until it is decided.
+// Only the name is indented, so the status tags stay in one column. An
+// L-shaped elbow sits in the indent to show the task is a child of the one
+// above; it is drawn with borders (no text), so screen readers ignore it —
+// the hint text and status say the task is dependent.
+.app-task-list__item--dependent .govuk-task-list__name-and-hint {
+  position: relative;
+  padding-left: 30px;
+}
+
+.app-task-list__item--dependent .govuk-task-list__name-and-hint::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 8px;
+  width: 12px;
+  height: .75em;
+  border-left: 2px solid #505a5f;
+  border-bottom: 2px solid #505a5f;
+}
+
+@media (forced-colors: active) {
+  .app-task-list__item--dependent .govuk-task-list__name-and-hint::before {
+    border-color: CanvasText;
+  }
+}
+

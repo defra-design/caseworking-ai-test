@@ -7,6 +7,10 @@
 
 
 {% block content %}
+{# Medium case: this task depends on the SSSI planned-activity task (task-3).
+   Until that is accepted the page opens read-only: a warning, the outcome
+   options shown but disabled, and no Confirm button. #}
+{% set dependent = data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}
 {% set activeNavItem = "tasks" %}
 {% include "GrassMVP/includes/_caseMVP-nav.html" %}
 <form action="/taskBT2MVP" method="post">
@@ -22,6 +26,17 @@
         Check a ditch is not within a SSSI{% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %} or Severely Disadvantaged Area{% endif %}
       </h1>
     </legend>
+
+{% if dependent %}
+<div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+    <span class="govuk-visually-hidden">Warning</span>
+    You cannot complete this task until the SSSI planned activity check has been accepted.
+    <a class="govuk-link" href="task-3">Go to the SSSI planned activity check</a>
+  </strong>
+</div>
+{% endif %}
 
 
 {% set lps = (tp.refLPs("any", data.mvpCalcVariant) | trim) if data.mvpCalcVariant === "actions" else "" %}
@@ -46,7 +61,7 @@
 
 
     <div class="govuk-form-group">
-      <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+      <fieldset class="govuk-fieldset" aria-describedby="waste-hint"{% if dependent %} disabled{% endif %}>
         <div class="govuk-radios" data-module="govuk-radios">
 
           <div class="govuk-radios__item">
@@ -123,10 +138,14 @@
       </fieldset>
     </div>
 
+{% if dependent %}
+<a href="tasklist-stage" class="govuk-link">Return to tasks</a>
+{% else %}
 <button type="submit" class="govuk-button govuk-!-margin-top-0 govuk-button govuk-!-margin-bottom-3" data-module="govuk-button">
  Confirm
 </button><br>
 <a href="tasklist-stage" class="govuk-link">Cancel and return</a>
+{% endif %}
 {% endif %}
 
 {% if (data.taskBNoteMVP) %}

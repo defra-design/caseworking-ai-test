@@ -89,11 +89,13 @@
 
   
 
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+  {# Medium case: the ditch / SSSI task depends on the SSSI planned-activity task above, so it is indented under it with a triangle marker. Until that task is accepted it shows a hint and a grey "Dependent" tag; its page opens read-only. #}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link{% if data.mvpCalcVariant === 'medium' %} app-task-list__item--dependent{% endif %}">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="{% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}task-b-dependent-hint {% endif %}company-details-1-status">
         Check a ditch is not within a SSSI{% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %} or Severely Disadvantaged Area{% endif %}
       </a>
+      {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}<div class="govuk-task-list__hint" id="task-b-dependent-hint">Complete the SSSI planned activity check first</div>{% endif %}
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
     {% if (data.decisionTaskBMVP) %}
@@ -102,7 +104,7 @@
       {% endif %}
     {% else %}
       <strong class="govuk-tag govuk-tag--grey">
-        Ready to start
+        {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}Dependent{% else %}Ready to start{% endif %}
       </strong>
     {% endif %}
     </div>
@@ -224,11 +226,13 @@
 
   
 
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+  {# Medium case: the ditch / SSSI task depends on the SSSI planned-activity task above, so it is indented under it with a triangle marker. Until that task is accepted it shows a hint and a grey "Dependent" tag; its page opens read-only. #}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link{% if data.mvpCalcVariant === 'medium' %} app-task-list__item--dependent{% endif %}">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="{% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}task-b-dependent-hint {% endif %}company-details-1-status">
         Check a ditch is not within a SSSI{% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %} or Severely Disadvantaged Area{% endif %}
       </a>
+      {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}<div class="govuk-task-list__hint" id="task-b-dependent-hint">Complete the SSSI planned activity check first</div>{% endif %}
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
     {% if (data.decisionTaskBMVP) %}
@@ -236,9 +240,15 @@
       {% else %}<strong class="{{ data['taskBTagMVP'] }}">{{ data['taskBStatusMVP'] }}</strong>
       {% endif %}
     {% else %}
+      {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}
+        <strong class="govuk-tag govuk-tag--grey">
+          Dependent
+        </strong>
+      {% else %}
         <strong class="govuk-tag govuk-tag--blue">
           Incomplete
         </strong>
+      {% endif %}
     {% endif %}
     </div>
   </li>
@@ -436,11 +446,13 @@
 
   
 
-  <li class="govuk-task-list__item govuk-task-list__item--with-link">
+  {# Medium case: the ditch / SSSI task depends on the SSSI planned-activity task above, so it is indented under it with a triangle marker. Until that task is accepted it shows a hint and a grey "Dependent" tag; its page opens read-only. #}
+  <li class="govuk-task-list__item govuk-task-list__item--with-link{% if data.mvpCalcVariant === 'medium' %} app-task-list__item--dependent{% endif %}">
     <div class="govuk-task-list__name-and-hint">
-      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="company-details-1-status">
+      <a class="govuk-link govuk-task-list__link" href="task-b" aria-describedby="{% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}task-b-dependent-hint {% endif %}company-details-1-status">
         Check a ditch is not within a SSSI{% if data.mvpCalcVariant !== 'medium' and data.mvpCalcVariant !== 'large' %} or Severely Disadvantaged Area{% endif %}
       </a>
+      {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}<div class="govuk-task-list__hint" id="task-b-dependent-hint">Complete the SSSI planned activity check first</div>{% endif %}
     </div>
     <div class="govuk-task-list__status" id="company-details-1-status">
     {% if (data.decisionTaskBMVP) %}
@@ -448,9 +460,15 @@
       {% else %}<strong class="{{ data['taskBTagMVP'] }}">{{ data['taskBStatusMVP'] }}</strong>
       {% endif %}
     {% else %}
+      {% if data.mvpCalcVariant === 'medium' and data.decisionTask3MVP !== 'Accepted' %}
+        <strong class="govuk-tag govuk-tag--grey">
+          Dependent
+        </strong>
+      {% else %}
         <strong class="govuk-tag govuk-tag--blue">
           Incomplete
         </strong>
+      {% endif %}
     {% endif %}
     </div>
   </li>
