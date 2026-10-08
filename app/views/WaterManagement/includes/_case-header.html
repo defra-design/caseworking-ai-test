@@ -1,0 +1,17 @@
+{# Case context strip (same lg-div strip as the Grasslands case pages). Needs c, profile, caseStatus. #}
+<div class="lg-div">
+  <div class="govuk-width-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <a href="/WaterManagement/caselist" class="govuk-back-link">Back to scoring and ranking</a>
+        <h2 class="govuk-heading-m">{{ profile.name }}</h2>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div><p><strong class="govuk-!-margin-right-1">Scheme :</strong> Water management</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Application ID:</strong>{{ c.id }}</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">SBI: </strong>{{ c.sbi }}</p></div>
+      <div><p><strong class="govuk-!-margin-right-1">Status:</strong>{{ caseStatus }}</p></div>
+    </div>
+  </div>
+</div>

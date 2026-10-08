@@ -1,0 +1,343 @@
+{# The accordion of application sections (sections 1-12), shared by the standalone
+   application page (/WaterManagement/application) and the case's Application tab
+   (/WaterManagement/case/application). Needs the waterApplication(c) values in
+   context: c, profile, sector, loc, businesses, bizScore, consents, consentScore,
+   orgType, waterSources, workStart, items, scores. #}
+{% macro row(key, value) %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">{{ key }}</dt>
+        <dd class="govuk-summary-list__value">{{ value | safe }}</dd>
+      </div>
+{% endmacro %}
+
+<div class="govuk-accordion" data-module="govuk-accordion" id="accordion-application">
+
+  {# --- Section 1: Confirm your details --- #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-1">Confirm your details</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-1" class="govuk-accordion__section-content">
+
+              <h3 class="govuk-heading-m">Business contact details</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Business name", profile.name) }}
+{{ row("Business address", profile.address | join("<br>")) }}
+{{ row("Business phone numbers", profile.phones | join("<br>")) }}
+{{ row("Business email address", profile.email) }}
+              </dl>
+
+              <h3 class="govuk-heading-m">Business details</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Legal status", profile.legal) }}
+{{ row("Company number", profile.companyNumber) }}
+              </dl>
+
+              <h3 class="govuk-heading-m">Reference numbers</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Single business identifier (SBI)", c.sbi) }}
+{{ row("VAT registration number", profile.vat) }}
+              </dl>
+
+              <h3 class="govuk-heading-m">Personal details</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Full name", profile.person) }}
+{{ row("Customer reference number", profile.customerRef) }}
+{{ row("Personal address", profile.personAddress | join("<br>")) }}
+{{ row("Personal phone numbers", profile.personPhones | join("<br>")) }}
+{{ row("Personal email address", profile.personEmail) }}
+              </dl>
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Are these details correct?", "<strong>Yes</strong>") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 2: Sector (scored) ---
+             Self-declared crops irrigated by the project. The section score is
+             the highest-scoring crop selected. "Something else" is a kick-out in
+             the applicant journey, so those applications never reach caseworking
+             and it never appears here. #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-2">Sector</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-2" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("What crops will be irrigated using the water from this project?", sector.crops | join("<br>")) }}
+{{ row("Section score", "<strong>" + sector.best.score + "%</strong><br><span class=\"govuk-hint govuk-!-margin-bottom-0\">Highest scoring crop selected: " + sector.best.crop + "</span>") }}
+              </dl>
+
+            </div>
+          </div>
+
+
+          {# --- Section 3: Project location (not scored) ---
+             Easting / Northing (British National Grid) of the project's centre
+             point, with the point shown on a map. Made-up per case (see
+             waterLocation in routes.js). #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-3">Project location</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-3" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Where is the project located?", "Centre point of the project") }}
+{{ row("Easting", loc.easting) }}
+{{ row("Northing", loc.northing) }}
+              </dl>
+              <div id="projectMap" role="img" aria-label="Map showing the centre point of the project at easting {{ loc.easting }}, northing {{ loc.northing }}" style="height:320px; border:1px solid #b1b4b6; margin-bottom:20px;"></div>
+
+            </div>
+          </div>
+
+          {# --- Section 4: Water scarcity (scored) ---
+             Not asked of the applicant: worked out from the project's Easting /
+             Northing against the water scarcity priority-area map (map data TBC
+             with Geospatial, so the area is made up per case for now).
+             Red = level 1, 60%; Amber = level 2, 40%; Green = level 3, 20%. #}
+          {% set scarcityTag = { Red: "govuk-tag--red", Amber: "govuk-tag--orange", Green: "govuk-tag--green" } %}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-4">Water scarcity</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-4" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Easting", loc.easting) }}
+{{ row("Northing", loc.northing) }}
+{{ row("Priority area", '<strong class="govuk-tag ' + scarcityTag[loc.colour] + '">' + loc.colour + '</strong><br><span class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0">Score level ' + loc.level + ' &middot; ' + loc.area + '</span>') }}
+{{ row("Section score", "<strong>" + loc.score + "%</strong>") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 5: Work already started (not scored) ---
+             Options in the journey: "Yes, preparatory work" / "Yes, we have begun
+             project work" (kick-out) / "No, we have not done any work on this
+             project yet". Applications reaching caseworking only ever carry the
+             No answer. #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-5">Work already started</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-5" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Have you already started work on the project?", "No, we have not done any work on this project yet") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 6: Public body (not scored) --- #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-6">Public body</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-6" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Are you a National Parks authority or a government department, executive agency or non-departmental public body?", "No") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 7: Type of organisation (not scored) ---
+             Options: Landowner/landlord, Landowner/owner occupier, Tenant, Water
+             Management Company. The Tenant route is out of scope for now, so it
+             is never recorded; the answer varies per case (see routes.js). #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-7">Type of organisation</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-7" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("What type of organisation are you applying on behalf of?", orgType) }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 8: Businesses using the water (scored) ---
+             One = 0%, Two to four = 5%, Five or more = 10%. Answer made up per case
+             (see routes.js). The scoring table marks "Two to four" with an
+             asterisk whose footnote hasn't been supplied. #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-8">Businesses using the water</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-8" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("How many businesses will use the water from this project for irrigation?", businesses) }}
+{{ row("Section score", "<strong>" + bizScore + "%</strong>") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 9: Water source (not scored) ---
+             Select all that apply: Surface water abstraction for storage,
+             Rainwater harvesting, Borehole / aquifer, Something else. "Something
+             else" is a kick-out so it never appears here; the mix is made up per
+             case (see routes.js). #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-9">Water source</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-9" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Where will the water come from to fill your reservoir or transfer via the distribution main?", waterSources | join("<br>")) }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 10: Planning permission and abstraction licence (scored) ---
+             Two linked journeys, each Yes / No / Not needed with follow-ons:
+               Planning: Yes -> reference number; No -> info page only ("you will need
+               planning permission before construction", evidence at the next stage);
+               Not needed -> reasons (+ free-text detail if "Something else").
+               EA licence ("Does the project need an abstraction licence or a
+               variation of one?"): secured (Yes) -> licence consent number; needed
+               but not yet secured (No) -> info page only; not needed (NN) -> reasons
+               (+ detail if "Something else").
+             Score (EA consent x Planning). Yes/Yes 5, No/No 0, Yes/No 0, No/Yes 0,
+             Yes/NN 5, NN/Yes 5, NN/NN 5. The table doesn't list No/NN or NN/No; both
+             are scored 0 on the rule "any No scores 0" that fits every listed row. #}
+          {% set eaLabel = { "Yes": "Licence already secured", "No": "Licence needed but not yet secured", "Not needed": "Licence not needed" } %}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-10">Planning permission and abstraction licence</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-10" class="govuk-accordion__section-content">
+
+              <h3 class="govuk-heading-m">Planning permission</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Do you already have planning permission for this project confirmed by your Local Planning Authority?", consents.planning.answer) }}
+{% if consents.planning.answer == "Yes" %}
+{{ row("Planning permission reference number", consents.planning.ref) }}
+{% elif consents.planning.answer == "No" %}
+{{ row("Next stage", "Told planning permission must be received from the Local Planning Authority before construction starts. Evidence is needed at the next stage of the application.") }}
+{% else %}
+{{ row("Why is planning permission not needed for this project?", consents.planning.reasons | join("<br>")) }}
+{% if consents.planning.detail %}
+{{ row("More detail on why planning permission is not needed", consents.planning.detail) }}
+{% endif %}
+{% endif %}
+              </dl>
+
+              <h3 class="govuk-heading-m">Abstraction licence (Environment Agency)</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("Does the project need an abstraction licence or a variation of one?", eaLabel[consents.licence.answer]) }}
+{% if consents.licence.answer == "Yes" %}
+{{ row("Licence consent number", consents.licence.number) }}
+{% elif consents.licence.answer == "No" %}
+{{ row("Next stage", "Told an abstraction licence must be received from the Environment Agency before construction starts. Evidence is needed at the next stage of the application.") }}
+{% else %}
+{{ row("Why is an abstraction licence not needed for this project?", consents.licence.reasons | join("<br>")) }}
+{% if consents.licence.detail %}
+{{ row("More detail on why an abstraction licence is not needed", consents.licence.detail) }}
+{% endif %}
+{% endif %}
+              </dl>
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Section score", "<strong>" + consentScore + "%</strong><br><span class=\"govuk-hint govuk-!-margin-bottom-0\">EA consent: " + consents.licence.answer + " &middot; Planning: " + consents.planning.answer + "</span>") }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 11: Expected start (not scored) ---
+             Month and year the work is expected to start (digging, signing
+             contracts or placing orders). Made up per case: 3-12 months after the
+             application date (see waterWorkStart in routes.js). #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-11">Expected start</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-11" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("When do you expect the project work to start?", workStart.month + " " + workStart.year) }}
+              </dl>
+
+            </div>
+          </div>
+
+          {# --- Section 12: Items to install and estimated cost (not scored) ---
+             "What type of items are you planning to install?" (select all that
+             apply): Clay lined reservoir, Synthetic lined reservoir, Water storage
+             tank(s) above ground, Underground water distribution main. Each item
+             has one follow-up quantity (reservoir volume m3, tank capacity m3,
+             distribution main length m); the total estimated cost is quantity x
+             rate per item and the grant is up to 40% of it, capped at the scheme
+             maximum award of £300,000. Made up per case; see
+             waterItems in routes.js for the rates. #}
+          <div class="govuk-accordion__section">
+            <div class="govuk-accordion__section-header">
+              <h2 class="govuk-accordion__section-heading">
+                <span class="govuk-accordion__section-button" id="accordion-application-heading-12">Items and estimated cost</span>
+              </h2>
+            </div>
+            <div id="accordion-application-content-12" class="govuk-accordion__section-content">
+
+              <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+{{ row("What type of items are you planning to install?", items.chosen | join("<br>")) }}
+{% if items.reservoir %}
+{{ row("How much water will your reservoir hold when full, in metres cubed (m³)?", items.reservoir) }}
+{% endif %}
+{% if items.tank %}
+{{ row("What will the total storage capacity of the water storage tanks be, in metres cubed (m³)?", items.tank) }}
+{% endif %}
+{% if items.main %}
+{{ row("How long will the water distribution network be, in metres?", items.main) }}
+{% endif %}
+              </dl>
+
+              <h3 class="govuk-heading-m">Total estimated cost</h3>
+              <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+{{ row("Estimated costs", items.lines | join("<br>")) }}
+{{ row("Total estimated cost", "<strong>" + items.total + "</strong>") }}
+{% if items.grantCapped %}
+{{ row("Grant available (up to 40%, maximum £300,000)", "<strong>" + items.maxGrant + "</strong><br><span class=\"govuk-hint govuk-!-margin-bottom-0\">40% of the estimated cost is " + items.fortyPercent + ", capped at the scheme maximum award of £300,000</span>") }}
+{% else %}
+{{ row("Grant available (up to 40%, maximum £300,000)", items.maxGrant) }}
+{% endif %}
+              </dl>
+
+            </div>
+          </div>
+        </div>

@@ -1,0 +1,43 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — Timeline (newest first). "Application received" is always
+   there; removal and added notes appear as they happen. #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "timeline" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">Timeline</h1>
+
+    <div class="moj-timeline">
+      {% for e in events %}
+      <div class="moj-timeline__item">
+        <div class="moj-timeline__header">
+          <h2 class="moj-timeline__title">{{ e.title }}</h2>
+          <p class="moj-timeline__byline">by {{ e.by }}</p>
+        </div>
+        <p class="moj-timeline__date">
+          <time datetime="{{ e.iso }}">{{ e.display }}</time>
+        </p>
+        {% if e.noteId %}
+        <div class="moj-timeline__description">
+          <a class="govuk-link" href="/WaterManagement/case/notes?id={{ c.id }}#note-{{ e.noteId }}">View note</a>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

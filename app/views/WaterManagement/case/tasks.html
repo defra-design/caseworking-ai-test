@@ -1,0 +1,90 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — Tasks. Before removal: "Check for duplication" with the
+   other applications on the same SBI and the Remove application button. After
+   removal the page reloads as "Case removed" (with a success banner straight after
+   the removal). #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if removed and justRemoved %}
+    <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-6" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">Application {{ c.id }} has been removed</p>
+        <p class="govuk-body">Its score is now 0% and it no longer counts in scoring and ranking. Your note has been saved.</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">{% if removed %}Case removed{% else %}Tasks{% endif %}</h1>
+
+    {% if removed %}
+
+    <p class="govuk-body">This application was removed as a duplicate. The case is closed and cannot be reopened.</p>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Removed on</dt>
+        <dd class="govuk-summary-list__value">{{ removed.display }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Removed by</dt>
+        <dd class="govuk-summary-list__value">{{ removed.by }}</dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">Note</dt>
+        <dd class="govuk-summary-list__value">{{ removed.note }}</dd>
+      </div>
+    </dl>
+
+    {% else %}
+
+    <h2 class="govuk-heading-m">Check for duplication</h2>
+    <p class="govuk-body">There may be duplicate applications in the system for this business. Applications for SBI {{ c.sbi }} are listed below.</p>
+    <p class="govuk-body">Look in the <a class="govuk-link" href="/WaterManagement/case/application?id={{ c.id }}">Application</a> section of each application and check that they really are duplicates. If they are, remove one of them.</p>
+
+    <table class="govuk-table govuk-!-margin-bottom-6">
+      <caption class="govuk-table__caption govuk-table__caption--s">Applications for SBI {{ c.sbi }}</caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Application</th>
+          <th scope="col" class="govuk-table__header">Date received</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Score</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Grant value</th>
+          <th scope="col" class="govuk-table__header">Status</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for o in others %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><a class="govuk-link" href="/WaterManagement/case/application?id={{ o.id }}">{{ o.id }}<span class="govuk-visually-hidden"> application</span></a>{% if o.isThis %} <span class="govuk-hint govuk-!-display-inline govuk-!-margin-bottom-0">(this application)</span>{% endif %}</td>
+          <td class="govuk-table__cell">{{ o.date }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ o.score }}%</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ o.valueDisplay }}</td>
+          <td class="govuk-table__cell">{% if o.removed %}<strong class="govuk-tag govuk-tag--red">Removed</strong>{% else %}Application received{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="/WaterManagement/case/remove?id={{ c.id }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">Remove application</a>
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

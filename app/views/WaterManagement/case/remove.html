@@ -1,0 +1,61 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — confirmation page for removing a duplicate application.
+   The note is mandatory (enforced server-side; the error re-renders this page). #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if error %}
+    <div class="govuk-error-summary govuk-!-margin-top-6" data-module="govuk-error-summary">
+      <div role="alert">
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li><a href="#removeNote">{{ error }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <form action="/WaterManagement/case/remove" method="post" novalidate>
+      <input type="hidden" name="id" value="{{ c.id }}">
+
+      <h1 class="govuk-heading-l govuk-!-margin-top-8">Are you sure you want to remove this application?</h1>
+
+      <p class="govuk-body">Removing application {{ c.id }} will:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>set its score to 0%</li>
+        <li>take it out of scoring and ranking</li>
+        <li>close the case</li>
+      </ul>
+      <p class="govuk-body">You will not be able to reopen it.</p>
+
+      <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+        <label class="govuk-label govuk-label--s" for="removeNote">Why are you removing this application?</label>
+        <div id="removeNote-hint" class="govuk-hint">For example, the ID of the application this one duplicates. You must enter a note. It is saved in the case notes for auditing purposes.</div>
+        {% if error %}<p id="removeNote-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+        <textarea class="govuk-textarea{% if error %} govuk-textarea--error{% endif %}" id="removeNote" name="removeNote" rows="5" aria-describedby="removeNote-hint{% if error %} removeNote-error{% endif %}">{{ noteText }}</textarea>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">Confirm removal</button>
+        <a class="govuk-link" href="/WaterManagement/case/tasks?id={{ c.id }}">Cancel and return</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

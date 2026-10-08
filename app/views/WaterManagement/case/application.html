@@ -1,0 +1,37 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — Application tab. Same read-only application sections as
+   the standalone page (shared include), inside the case chrome. #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "application" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">Application</h1>
+    <p class="govuk-body">Application submitted: <strong>{{ c.date }}</strong></p>
+    <p class="govuk-body">Score: <strong>{{ scores.total }}%</strong> <span class="govuk-hint govuk-!-display-inline govuk-!-margin-bottom-0">(sector {{ scores.sector }} + water scarcity {{ scores.scarcity }} + businesses {{ scores.businesses }} + planning and licence {{ scores.consents }})</span></p>
+
+    {% include "WaterManagement/includes/_application-sections.html" %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+{% include "WaterManagement/includes/_application-map-script.html" %}
+{% endblock %}

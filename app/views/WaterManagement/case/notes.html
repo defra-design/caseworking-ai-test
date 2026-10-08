@@ -1,0 +1,63 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — Notes (Notes | Add a note tabs, as the Grasslands case). #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "notes" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-tabs govuk-!-margin-top-6" data-module="govuk-tabs">
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      Notes
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a href="/WaterManagement/case/add-note?id={{ c.id }}">Add a note</a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="Notes">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-full">
+        <div class="govuk-form-group govuk-!-padding-left-3 govuk-!-padding-right-2">
+
+          <h1 class="govuk-heading-l govuk-!-margin-top-8">All notes</h1>
+
+          {% if notes.length == 0 %}
+          <h3 class="govuk-heading-s">There are no notes to display yet</h3>
+          {% else %}
+          <h2 class="govuk-heading-m">Case notes</h2>
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header custom-width-160">Date</th>
+                <th scope="col" class="govuk-table__header custom-width-160">Reason</th>
+                <th scope="col" class="govuk-table__header notes-width">Note</th>
+                <th scope="col" class="govuk-table__header custom-width-110">Added by</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for n in notes %}
+              <tr class="govuk-table__row" id="note-{{ n.id }}">
+                <td class="govuk-table__cell">{{ n.display }}</td>
+                <td class="govuk-table__cell">{{ n.reason }}</td>
+                <td class="govuk-table__cell">{{ n.note }}</td>
+                <td class="govuk-table__cell">{{ n.by }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

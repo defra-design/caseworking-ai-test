@@ -118,20 +118,22 @@
           {{ waterHeader("value", "Grant value", view, "govuk-table__header--numeric app-th-nowrap") }}
           {{ waterHeader("cumulative", "Cumulative value", view, "govuk-table__header--numeric app-th-nowrap") }}
           {{ waterHeader("date", "Date", view, "govuk-table__header--date") }}
+          <th scope="col" class="govuk-table__header">Status</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body" id="caseRows" data-ranked="{{ 'true' if (view.sort == 'rank' and not view.search) else 'false' }}">
         {% if view.rows.length == 0 %}
-        <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="6">No cases to show.</td></tr>
+        <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
         {% endif %}
         {% for c in view.rows %}
         <tr class="govuk-table__row" data-score="{{ c.score }}">
-          <td class="govuk-table__cell"><a class="govuk-link" href="#">{{ c.id }}</a></td>
+          <td class="govuk-table__cell"><a class="govuk-link" href="{% if c.isCase %}case/tasks{% else %}application{% endif %}?id={{ c.id }}">{{ c.id }}</a></td>
           <td class="govuk-table__cell">{{ c.sbi }}</td>
           <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
           <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueDisplay }}</td>
           <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.cumulativeDisplay }}</td>
           <td class="govuk-table__cell">{{ c.date }}</td>
+          <td class="govuk-table__cell">{% if c.removed %}<strong class="govuk-tag govuk-tag--red">Removed</strong>{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -200,7 +202,7 @@
       for (var r = 0; r < rows.length; r++) if (+rows[r].getAttribute('data-score') >= minScore) after = rows[r];
       var line = document.createElement('tr');
       line.className = 'govuk-table__row app-budget-line';
-      line.innerHTML = '<td class="govuk-table__cell" colspan="6" style="background:#f3f2f1; border-top:3px solid #00703c; border-bottom:3px solid #00703c; font-weight:700;"></td>';
+      line.innerHTML = '<td class="govuk-table__cell" colspan="7" style="background:#f3f2f1; border-top:3px solid #00703c; border-bottom:3px solid #00703c; font-weight:700;"></td>';
       line.firstChild.textContent = 'Budget line: cases above are funded (' + gbp(spent) + ' of ' + gbp(budget) + '), cases below are not';
       if (after) tbody.insertBefore(line, after.nextSibling); else if (rows.length) tbody.insertBefore(line, rows[0]);
     }

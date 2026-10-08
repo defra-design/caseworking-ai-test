@@ -3470,16 +3470,25 @@ const waterCasesPath = path.join(__dirname, 'data', 'water-management-cases.js')
 const WATER_SORT_KEYS = ['id', 'sbi', 'score', 'value', 'cumulative', 'date']
 function waterView (req) {
   delete require.cache[require.resolve(waterCasesPath)]
+  // Removed duplicates (session) score 0, drop to the bottom, add nothing to the
+  // cumulative value and carry a red Removed tag. Cases on SBIs with several cases
+  // (isCase) open as a case (Tasks / Application / Timeline / Notes).
+  const removedMap = (req.session && req.session.data && req.session.data.waterRemoved) || {}
+  if (req.session && req.session.data) delete req.session.data.waterFlash // opening the list means the banner has gone
+  delete require.cache[require.resolve(waterAnswersPath)]
+  const caseSbis = require(waterAnswersPath).BUSINESS_PROFILES
   let rows = require(waterCasesPath).cases.map(function (c) {
-    return Object.assign({}, c, { dateVal: grassDateVal(c.date) })
+    return Object.assign({}, c, { dateVal: grassDateVal(c.date), removed: !!removedMap[c.id], isCase: !!caseSbis[c.sbi] })
   })
-  rows.sort(function (a, b) { return (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
+  rows.forEach(function (r) { if (r.removed) r.score = 0 })
+  rows.sort(function (a, b) { return ((a.removed ? 1 : 0) - (b.removed ? 1 : 0)) || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
   let running = 0
   rows.forEach(function (r, i) {
-    running += r.value
     r.rank = i + 1
-    r.cumulative = running
     r.valueDisplay = wdGbp(r.value)
+    if (r.removed) { r.cumulative = null; r.cumulativeDisplay = '–'; return }
+    running += r.value
+    r.cumulative = running
     r.cumulativeDisplay = wdGbp(r.cumulative)
   })
   // Score tiers over the whole ranking (independent of search / sort): one entry
@@ -3488,6 +3497,7 @@ function waterView (req) {
   // always funded (or not) as a whole.
   const tiers = []
   rows.forEach(function (r) {
+    if (r.removed) return
     const t = tiers[tiers.length - 1]
     if (t && t.score === r.score) { t.count++; t.cumulative = r.cumulative } else tiers.push({ score: r.score, count: 1, cumulative: r.cumulative })
   })
@@ -3509,6 +3519,7 @@ function waterView (req) {
     const f = dir === 'desc' ? -1 : 1
     rows.sort(function (a, b) {
       if (sort === 'date') return (a.dateVal - b.dateVal) * f
+      if (sort === 'cumulative') return ((a.cumulative === null ? Infinity : a.cumulative) - (b.cumulative === null ? Infinity : b.cumulative)) * f
       if (typeof a[sort] === 'number') return (a[sort] - b[sort]) * f
       return (a[sort] < b[sort] ? -1 : a[sort] > b[sort] ? 1 : 0) * f
     })
@@ -3517,6 +3528,155 @@ function waterView (req) {
 }
 router.get('/WaterManagement/caselist', function (req, res) {
   res.render('WaterManagement/caselist', { view: waterView(req) })
+})
+
+// Application page for a case on the list (one accordion section per application
+// question). All the made-up answers and scores come from
+// data/water-management-answers.js, which also drives the caselist Score column.
+const waterAnswersPath = path.join(__dirname, 'data', 'water-management-answers.js')
+router.get('/WaterManagement/application', function (req, res) {
+  delete require.cache[require.resolve(waterCasesPath)]
+  delete require.cache[require.resolve(waterAnswersPath)]
+  const c = require(waterCasesPath).cases.find(function (x) { return x.id === req.query.id })
+  if (!c) return res.redirect('/WaterManagement/caselist')
+  res.render('WaterManagement/application', Object.assign({ c: c }, require(waterAnswersPath).waterApplication(c)))
+})
+
+// ============================================================
+// Water management CASES (the 17 applications on SBIs with more than one case).
+// A case has Tasks / Application / Timeline / Notes, in the Grasslands order. Tasks
+// holds the duplicate check: the caseworker compares the applications for the SBI
+// in their Application sections, then removes one (confirmation page, mandatory
+// note). Removal is kept in the session:
+//   data.waterRemoved[id] = { ts, display, iso, by, note, noteId }
+//   data.waterNotes[id]   = [ { id, ts, display, iso, reason, note, by, kind } ]  newest first
+// and shows on the caselist as score 0 plus a red "Removed" tag.
+// ============================================================
+const WATER_USER = 'A Jones'
+function waterStamp (d) {
+  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  let h = d.getHours()
+  const ap = h >= 12 ? 'pm' : 'am'
+  h = h % 12 || 12
+  return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear() + ' at ' + h + ':' + String(d.getMinutes()).padStart(2, '0') + ap
+}
+function waterSession (req) {
+  const d = req.session.data
+  d.waterRemoved = d.waterRemoved || {}
+  d.waterNotes = d.waterNotes || {}
+  return d
+}
+// Context for a case page, or null when the ID is not one of the 17 cases.
+function waterCaseCtx (req, id) {
+  delete require.cache[require.resolve(waterCasesPath)]
+  delete require.cache[require.resolve(waterAnswersPath)]
+  const answers = require(waterAnswersPath)
+  const cases = require(waterCasesPath).cases
+  const c = cases.find(function (x) { return x.id === id })
+  if (!c || !answers.BUSINESS_PROFILES[c.sbi]) return null
+  const d = waterSession(req)
+  const removed = d.waterRemoved[id] || null
+  const others = cases.filter(function (x) { return x.sbi === c.sbi }).map(function (x) {
+    const gone = !!d.waterRemoved[x.id]
+    return {
+      id: x.id, date: x.date, removed: gone, isThis: x.id === id,
+      score: gone ? 0 : answers.waterApplication(x).scores.total, valueDisplay: wdGbp(x.value)
+    }
+  })
+  return {
+    c: c, profile: answers.BUSINESS_PROFILES[c.sbi], removed: removed, others: others,
+    caseStatus: removed ? 'Removed' : 'Application received',
+    notes: d.waterNotes[id] || []
+  }
+}
+function waterCaseOr (req, res, id) {
+  res.set('Cache-Control', 'no-store')
+  const ctx = waterCaseCtx(req, id)
+  if (!ctx) res.redirect('/WaterManagement/caselist')
+  return ctx
+}
+router.get('/WaterManagement/case/tasks', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  const d = waterSession(req)
+  // The success banner belongs to the redirect straight after a removal: show it
+  // once, then clear the flag. no-store so the browser never replays a cached copy
+  // of that page (Back button, revisiting the case) with the banner still on it.
+  ctx.justRemoved = d.waterFlash === ctx.c.id
+  delete d.waterFlash
+  res.set('Cache-Control', 'no-store')
+  res.render('WaterManagement/case/tasks', ctx)
+})
+router.get('/WaterManagement/case/application', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagement/case/application', Object.assign(ctx, require(waterAnswersPath).waterApplication(ctx.c)))
+})
+router.get('/WaterManagement/case/timeline', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  const c = ctx.c
+  // Application received: the case's date at a made-up working-hours time.
+  const h = ((parseInt(c.id, 10) * 2654435761) >>> 0) >>> 9
+  const recv = new Date(grassDateVal(c.date))
+  recv.setHours(8 + h % 9, (h >>> 4) % 60)
+  const events = ctx.notes.map(function (n) {
+    return { title: n.kind === 'removed' ? 'Application removed' : 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
+  })
+  events.push({ title: 'Application received', by: 'the applicant', ts: recv.getTime(), display: waterStamp(recv), iso: recv.toISOString() })
+  events.sort(function (a, b) { return b.ts - a.ts })
+  ctx.events = events
+  res.render('WaterManagement/case/timeline', ctx)
+})
+router.get('/WaterManagement/case/notes', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagement/case/notes', ctx)
+})
+router.get('/WaterManagement/case/add-note', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagement/case/add-note', ctx)
+})
+router.post('/WaterManagement/case/add-note', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.body.id)
+  if (!ctx) return
+  const text = String(req.body.noteText || '').trim()
+  if (!text) {
+    ctx.error = 'Enter a note'
+    return res.render('WaterManagement/case/add-note', ctx)
+  }
+  const d = waterSession(req)
+  const now = new Date()
+  d.waterNotes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), reason: 'Note added', note: text, by: WATER_USER, kind: 'note' }].concat(d.waterNotes[ctx.c.id] || [])
+  req.session.save(function () { res.redirect('/WaterManagement/case/notes?id=' + ctx.c.id) })
+})
+router.get('/WaterManagement/case/remove', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  if (ctx.removed) return res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id)
+  res.render('WaterManagement/case/remove', ctx)
+})
+router.post('/WaterManagement/case/remove', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.body.id)
+  if (!ctx) return
+  if (ctx.removed) return res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id)
+  const text = String(req.body.removeNote || '').trim()
+  // The note is mandatory.
+  if (!text) {
+    ctx.error = 'Enter a note explaining why you are removing this application'
+    return res.render('WaterManagement/case/remove', ctx)
+  }
+  const d = waterSession(req)
+  const now = new Date()
+  const noteId = String(now.getTime())
+  d.waterRemoved[ctx.c.id] = { ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), by: WATER_USER, note: text, noteId: noteId }
+  d.waterNotes[ctx.c.id] = [{ id: noteId, ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), reason: 'Application removed', note: text, by: WATER_USER, kind: 'removed' }].concat(d.waterNotes[ctx.c.id] || [])
+  d.waterFlash = ctx.c.id
+  // The kit keeps sessions in files and writes them AFTER the redirect headers have
+  // gone out, so the next request could arrive before the removal is stored. Save
+  // first, then redirect.
+  req.session.save(function () { res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id) })
 })
 
 // ----- Woodlands routes -----

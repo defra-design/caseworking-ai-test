@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+
+{# Water management — application page. Read-only summary of what the applicant
+   submitted; one accordion section per application question, added in turn.
+   Reached from the Case ID links on the Scoring and ranking caselist
+   (/WaterManagement/application?id=<case id>). Every case shares the same example
+   answers for now; the SBI, score, grant value and date come from the case. #}
+
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagement/caselist" class="govuk-back-link">Back to scoring and ranking</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        <span class="govuk-caption-l">Case {{ c.id }} &middot; SBI {{ c.sbi }}</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Application</h1>
+        <p class="govuk-body">Application submitted: <strong>{{ c.date }}</strong></p>
+        <p class="govuk-body">Score: <strong>{{ scores.total }}%</strong> <span class="govuk-hint govuk-!-display-inline govuk-!-margin-bottom-0">(sector {{ scores.sector }} + water scarcity {{ scores.scarcity }} + businesses {{ scores.businesses }} + planning and licence {{ scores.consents }})</span></p>
+
+        {% include "WaterManagement/includes/_application-sections.html" %}
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+{% include "WaterManagement/includes/_application-map-script.html" %}
+{% endblock %}
