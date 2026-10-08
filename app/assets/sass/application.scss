@@ -2095,6 +2095,25 @@
   }
 }
 
+// Yes / No pill used as a plain on-off filter (Water management "Show SBIs with
+// multiple cases"): the words are GDS Transport, there is no Fail / Pass tag, and
+// whichever word is chosen stays dark while the other fades to grey.
+.app-yn--pill.app-yn--filter {
+  @media (min-width: 40.0625em) { .app-yn__fieldset { grid-template-columns: auto auto; column-gap: 20px; } }
+  .app-yn__legend { font-family: "GDS Transport", arial, sans-serif; }
+  .app-yn__control { --yn-no-w: 2.4em; }
+  .app-yn__word--no { width: 2.4em; }
+  .app-yn__word--yes { width: 2.6em; }
+  &:has(.app-yn__input[value="No"]:checked) .app-yn__word--no,
+  &:has(.app-yn__input[value="Yes"]:checked) .app-yn__word--yes { color: $govuk-text-colour; font-weight: 700; }
+  .app-yn__word { font-weight: 400; }
+  // Track backfill: light grey for No, the green status-tag colour for Yes
+  // (same fills as govuk-tag--grey / govuk-tag--green). Extra .app-yn so it
+  // outranks the pill's white "answered" track.
+  &.app-yn:has(.app-yn__input[value="No"]:checked) .app-yn__track { background: #eeefef; }
+  &.app-yn:has(.app-yn__input[value="Yes"]:checked) .app-yn__track { background: #cce2d8; }
+}
+
 .app-yn--square {
   // Square: the ✓ / ✕ only show beside the chosen answer. They keep their
   // space while hidden, so the switch doesn't shift when one appears.

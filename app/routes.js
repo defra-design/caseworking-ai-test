@@ -3459,6 +3459,66 @@ function wdView (req) {
   return view
 }
 
+// ============================================================
+// Water management — "Scoring and ranking" caselist (200 cases, no paging, no
+// assignment). Search on Case ID or SBI. Cases are ranked by score (highest
+// first, earliest application wins a tie); Cumulative value is the running
+// total of Grant value down that ranking, so it stays fixed to each case when
+// the table is re-sorted or searched. Data: data/water-management-cases.js.
+// ============================================================
+const waterCasesPath = path.join(__dirname, 'data', 'water-management-cases.js')
+const WATER_SORT_KEYS = ['id', 'sbi', 'score', 'value', 'cumulative', 'date']
+function waterView (req) {
+  delete require.cache[require.resolve(waterCasesPath)]
+  let rows = require(waterCasesPath).cases.map(function (c) {
+    return Object.assign({}, c, { dateVal: grassDateVal(c.date) })
+  })
+  rows.sort(function (a, b) { return (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
+  let running = 0
+  rows.forEach(function (r, i) {
+    running += r.value
+    r.rank = i + 1
+    r.cumulative = running
+    r.valueDisplay = wdGbp(r.value)
+    r.cumulativeDisplay = wdGbp(r.cumulative)
+  })
+  // Score tiers over the whole ranking (independent of search / sort): one entry
+  // per distinct score with the cumulative value once every case at that score is
+  // in. The template uses these to work out the budget cut-off, so a tier is
+  // always funded (or not) as a whole.
+  const tiers = []
+  rows.forEach(function (r) {
+    const t = tiers[tiers.length - 1]
+    if (t && t.score === r.score) { t.count++; t.cumulative = r.cumulative } else tiers.push({ score: r.score, count: 1, cumulative: r.cumulative })
+  })
+  const all = rows.slice()
+  const search = (req.query.searchWater !== undefined ? req.query.searchWater : '').toString()
+  const term = search.trim().toLowerCase()
+  if (term) rows = rows.filter(function (r) { return r.id.indexOf(term) !== -1 || r.sbi.indexOf(term) !== -1 })
+  // "Show SBIs with multiple cases": keep only cases whose SBI appears more than once.
+  const multiple = req.query.multiple === 'Yes'
+  if (multiple) {
+    const counts = {}
+    all.forEach(function (r) { counts[r.sbi] = (counts[r.sbi] || 0) + 1 })
+    rows = rows.filter(function (r) { return counts[r.sbi] > 1 })
+  }
+  // Default order is the ranking itself (rank asc); any column can be re-sorted.
+  let sort = WATER_SORT_KEYS.indexOf(req.query.sort) === -1 ? 'rank' : req.query.sort
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'
+  if (sort !== 'rank') {
+    const f = dir === 'desc' ? -1 : 1
+    rows.sort(function (a, b) {
+      if (sort === 'date') return (a.dateVal - b.dateVal) * f
+      if (typeof a[sort] === 'number') return (a[sort] - b[sort]) * f
+      return (a[sort] < b[sort] ? -1 : a[sort] > b[sort] ? 1 : 0) * f
+    })
+  }
+  return { rows: rows, total: rows.length, sort: sort, dir: dir, search: search, multiple: multiple, tiers: tiers, defaultBudget: 5000000 }
+}
+router.get('/WaterManagement/caselist', function (req, res) {
+  res.render('WaterManagement/caselist', { view: waterView(req) })
+})
+
 // ----- Woodlands routes -----
 router.get('/Woodlands/caselist', function (req, res) {
   res.render('Woodlands/caselist', { view: wdView(req) })
