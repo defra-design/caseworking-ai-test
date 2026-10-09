@@ -3460,99 +3460,220 @@ function wdView (req) {
 }
 
 // ============================================================
-// Water management — "Scoring and ranking" caselist (200 cases, no paging, no
-// assignment). Search on Case ID or SBI. Cases are ranked by score (highest
-// first, earliest application wins a tie); Cumulative value is the running
-// total of Grant value down that ranking, so it stays fixed to each case when
-// the table is re-sorted or searched. Data: data/water-management-cases.js.
+// Water management — caselist (200 cases, no paging, no assignment, three tabs).
+// Search on Case ID or SBI. Cases are ranked by score (highest first, earliest
+// application wins a tie); Cumulative value is the running total of Grant value down
+// that ranking, so it stays fixed to each case when the table is re-sorted or
+// searched. Data: data/water-management-cases.js.
 // ============================================================
 const waterCasesPath = path.join(__dirname, 'data', 'water-management-cases.js')
-const WATER_SORT_KEYS = ['id', 'sbi', 'score', 'value', 'cumulative', 'date']
-function waterView (req) {
+// Three tabs over the same 200 cases (?tab=):
+//   dedupe  (default) - applications on an SBI that has more than one case, grouped by
+//                       SBI, no cumulative value; these open as cases (duplicate check)
+//   ranking           - ranked by score with Cumulative value, the budget line and the
+//                       Progress list button
+//   all               - full case list, Grasslands columns (no assignment, so no Select
+//                       or Assignee): ID, Business, SBI, Submitted, Value (£K), Stage, Status
+// Statuses: Application received, Removed (session, duplicate removed -> score 0),
+// Withdrawn (data file, or a caseworker outcome in the session), Progressed (session, via
+// the Progress list or a caseworker's Progress application outcome).
+// The budgeting panel above the tabs is client-side (see the template).
+const WATER_TABS = ['dedupe', 'ranking', 'all']
+const WATER_SORT_KEYS = {
+  dedupe: ['id', 'sbi', 'score', 'value', 'date', 'status'],
+  ranking: ['id', 'sbi', 'score', 'value', 'cumulative', 'date'],
+  all: ['id', 'business', 'sbi', 'date', 'value', 'stage', 'status']
+}
+const WATER_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red' }
+const WATER_DEFAULT_BUDGET = 5000000
+
+function waterMaps (req) {
+  const d = (req.session && req.session.data) || {}
+  return { removed: d.waterRemoved || {}, withdrawn: d.waterWithdrawn || {}, progressed: d.waterProgressed || {} }
+}
+function waterStatusOf (c, maps) {
+  if (maps.removed[c.id]) return 'Removed'
+  if (c.status === 'Withdrawn' || maps.withdrawn[c.id]) return 'Withdrawn'
+  if (maps.progressed[c.id]) return 'Progressed'
+  return 'Application received'
+}
+// Every case, ranked: live applications (not Removed / Withdrawn) first by score
+// (highest first, earliest date breaks a tie), then the ones out of the running.
+// Cumulative value only counts live applications. Also the score tiers the budget
+// panel needs (a tier is funded only if every case at that score fits).
+function waterRanked (req) {
   delete require.cache[require.resolve(waterCasesPath)]
-  // Removed duplicates (session) score 0, drop to the bottom, add nothing to the
-  // cumulative value and carry a red Removed tag. Cases on SBIs with several cases
-  // (isCase) open as a case (Tasks / Application / Timeline / Notes).
-  const removedMap = (req.session && req.session.data && req.session.data.waterRemoved) || {}
-  if (req.session && req.session.data) delete req.session.data.waterFlash // opening the list means the banner has gone
   delete require.cache[require.resolve(waterAnswersPath)]
-  const caseSbis = require(waterAnswersPath).BUSINESS_PROFILES
-  let rows = require(waterCasesPath).cases.map(function (c) {
-    return Object.assign({}, c, { dateVal: grassDateVal(c.date), removed: !!removedMap[c.id], isCase: !!caseSbis[c.sbi] })
+  const answers = require(waterAnswersPath)
+  const maps = waterMaps(req)
+  const cases = require(waterCasesPath).cases
+  const sbiCount = {}
+  cases.forEach(function (c) { sbiCount[c.sbi] = (sbiCount[c.sbi] || 0) + 1 })
+  const rows = cases.map(function (c) {
+    const status = waterStatusOf(c, maps)
+    const live = status !== 'Removed' && status !== 'Withdrawn'
+    return Object.assign({}, c, {
+      dateVal: grassDateVal(c.date), status: status, tag: WATER_STATUS_TAG[status], live: live,
+      removed: status === 'Removed', multi: sbiCount[c.sbi] > 1,
+      score: status === 'Removed' ? 0 : c.score,
+      valueDisplay: wdGbp(c.value), valueK: (c.value / 1000).toFixed(1),
+      stage: status === 'Progressed' ? 'Agreement' : (live ? 'Application' : '—')
+    })
   })
-  rows.forEach(function (r) { if (r.removed) r.score = 0 })
-  rows.sort(function (a, b) { return ((a.removed ? 1 : 0) - (b.removed ? 1 : 0)) || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
+  rows.sort(function (a, b) { return ((a.live ? 0 : 1) - (b.live ? 0 : 1)) || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
   let running = 0
+  const tiers = []
   rows.forEach(function (r, i) {
     r.rank = i + 1
-    r.valueDisplay = wdGbp(r.value)
-    if (r.removed) { r.cumulative = null; r.cumulativeDisplay = '–'; return }
+    if (!r.live) { r.cumulative = null; r.cumulativeDisplay = '–'; return }
     running += r.value
     r.cumulative = running
-    r.cumulativeDisplay = wdGbp(r.cumulative)
-  })
-  // Score tiers over the whole ranking (independent of search / sort): one entry
-  // per distinct score with the cumulative value once every case at that score is
-  // in. The template uses these to work out the budget cut-off, so a tier is
-  // always funded (or not) as a whole.
-  const tiers = []
-  rows.forEach(function (r) {
-    if (r.removed) return
+    r.cumulativeDisplay = wdGbp(running)
     const t = tiers[tiers.length - 1]
-    if (t && t.score === r.score) { t.count++; t.cumulative = r.cumulative } else tiers.push({ score: r.score, count: 1, cumulative: r.cumulative })
+    if (t && t.score === r.score) { t.count++; t.cumulative = running } else tiers.push({ score: r.score, count: 1, cumulative: running })
   })
-  const all = rows.slice()
+  return { rows: rows, tiers: tiers, answers: answers }
+}
+// What "within the budget" means for a budget: every live application at or above the
+// lowest score whose whole tier fits.
+function waterWithinBudget (base, budget) {
+  let k = 0
+  while (k < base.tiers.length && base.tiers[k].cumulative <= budget) k++
+  const minScore = k ? base.tiers[k - 1].score : null
+  const within = minScore === null ? [] : base.rows.filter(function (r) { return r.live && r.score >= minScore })
+  const allocated = k ? base.tiers[k - 1].cumulative : 0
+  return {
+    budget: budget, minScore: minScore, withinCount: within.length, allocated: allocated, unspent: budget - allocated,
+    toProgress: within.filter(function (r) { return r.status === 'Application received' })
+  }
+}
+function waterBudgetParam (v) {
+  const n = parseInt(String(v === undefined ? '' : v).replace(/[^0-9]/g, ''), 10)
+  return isNaN(n) ? WATER_DEFAULT_BUDGET : n
+}
+function waterView (req) {
+  const d = req.session && req.session.data
+  if (d) delete d.waterFlash // opening the list means a removal banner has gone
+  const tab = WATER_TABS.indexOf(req.query.tab) === -1 ? 'dedupe' : req.query.tab
+  const base = waterRanked(req)
+  let rows = base.rows.slice()
+  if (tab === 'dedupe') rows = rows.filter(function (r) { return r.multi })
+  if (tab === 'all') rows.forEach(function (r) { r.business = base.answers.waterBusinessName(r) })
   const search = (req.query.searchWater !== undefined ? req.query.searchWater : '').toString()
   const term = search.trim().toLowerCase()
   if (term) rows = rows.filter(function (r) { return r.id.indexOf(term) !== -1 || r.sbi.indexOf(term) !== -1 })
-  // "Show SBIs with multiple cases": keep only cases whose SBI appears more than once.
-  const multiple = req.query.multiple === 'Yes'
-  if (multiple) {
-    const counts = {}
-    all.forEach(function (r) { counts[r.sbi] = (counts[r.sbi] || 0) + 1 })
-    rows = rows.filter(function (r) { return counts[r.sbi] > 1 })
-  }
-  // Default order is the ranking itself (rank asc); any column can be re-sorted.
-  let sort = WATER_SORT_KEYS.indexOf(req.query.sort) === -1 ? 'rank' : req.query.sort
+  // Default orders: ranking = the ranking itself, dedupe = grouped by SBI, all = by ID.
+  const keys = WATER_SORT_KEYS[tab]
+  const defaultSort = tab === 'ranking' ? 'rank' : (tab === 'dedupe' ? 'sbi' : 'id')
+  const sort = keys.indexOf(req.query.sort) === -1 ? defaultSort : req.query.sort
   const dir = req.query.dir === 'desc' ? 'desc' : 'asc'
   if (sort !== 'rank') {
     const f = dir === 'desc' ? -1 : 1
+    const val = function (r) {
+      if (sort === 'date') return r.dateVal
+      if (sort === 'cumulative') return r.cumulative === null ? Infinity : r.cumulative
+      if (sort === 'business') return String(r.business).toLowerCase()
+      return r[sort]
+    }
     rows.sort(function (a, b) {
-      if (sort === 'date') return (a.dateVal - b.dateVal) * f
-      if (sort === 'cumulative') return ((a.cumulative === null ? Infinity : a.cumulative) - (b.cumulative === null ? Infinity : b.cumulative)) * f
-      if (typeof a[sort] === 'number') return (a[sort] - b[sort]) * f
-      return (a[sort] < b[sort] ? -1 : a[sort] > b[sort] ? 1 : 0) * f
+      const av = val(a); const bv = val(b)
+      const c = av < bv ? -1 : av > bv ? 1 : 0
+      // within a group (e.g. one SBI) show the best score first
+      return c * f || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1)
     })
   }
-  return { rows: rows, total: rows.length, sort: sort, dir: dir, search: search, multiple: multiple, tiers: tiers, defaultBudget: 5000000 }
+  const flash = d && d.waterListFlash
+  if (d) delete d.waterListFlash
+  return { tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATER_DEFAULT_BUDGET, flash: flash || null }
 }
 router.get('/WaterManagement/caselist', function (req, res) {
+  res.set('Cache-Control', 'no-store')
   res.render('WaterManagement/caselist', { view: waterView(req) })
+})
+
+// Progress list: moves every application currently within the budget (the budget the
+// caseworker has set on the page) to Progressed. Confirmation page first.
+router.get('/WaterManagement/progress-list', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const plan = waterWithinBudget(waterRanked(req), waterBudgetParam(req.query.budget))
+  res.render('WaterManagement/progress-list', { plan: plan, budgetDisplay: wdGbp(plan.budget), allocatedDisplay: wdGbp(plan.allocated), unspentDisplay: wdGbp(plan.unspent) })
+})
+router.post('/WaterManagement/progress-list', function (req, res) {
+  const plan = waterWithinBudget(waterRanked(req), waterBudgetParam(req.body.budget))
+  const d = waterSession(req)
+  d.waterProgressed = d.waterProgressed || {}
+  const now = new Date()
+  plan.toProgress.forEach(function (r) {
+    d.waterProgressed[r.id] = { ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), by: WATER_USER, budget: plan.budget }
+  })
+  d.waterListFlash = { count: plan.toProgress.length, budget: wdGbp(plan.budget), minScore: plan.minScore }
+  // Save before redirecting (the kit writes session files after the redirect goes out).
+  req.session.save(function () { res.redirect('/WaterManagement/caselist?tab=ranking') })
 })
 
 // Application page for a case on the list (one accordion section per application
 // question). All the made-up answers and scores come from
 // data/water-management-answers.js, which also drives the caselist Score column.
 const waterAnswersPath = path.join(__dirname, 'data', 'water-management-answers.js')
+// Old standalone application URL: every application is a case now, so open its tab.
 router.get('/WaterManagement/application', function (req, res) {
-  delete require.cache[require.resolve(waterCasesPath)]
-  delete require.cache[require.resolve(waterAnswersPath)]
-  const c = require(waterCasesPath).cases.find(function (x) { return x.id === req.query.id })
-  if (!c) return res.redirect('/WaterManagement/caselist')
-  res.render('WaterManagement/application', Object.assign({ c: c }, require(waterAnswersPath).waterApplication(c)))
+  res.redirect('/WaterManagement/case/application?id=' + encodeURIComponent(req.query.id || ''))
 })
 
 // ============================================================
-// Water management CASES (the 17 applications on SBIs with more than one case).
-// A case has Tasks / Application / Timeline / Notes, in the Grasslands order. Tasks
-// holds the duplicate check: the caseworker compares the applications for the SBI
-// in their Application sections, then removes one (confirmation page, mandatory
-// note). Removal is kept in the session:
-//   data.waterRemoved[id] = { ts, display, iso, by, note, noteId }
-//   data.waterNotes[id]   = [ { id, ts, display, iso, reason, note, by, kind } ]  newest first
-// and shows on the caselist as score 0 plus a red "Removed" tag.
+// Water management CASES (every one of the 200 applications).
+// A case has Tasks / Application / Timeline / Notes, in the Grasslands order.
+//   Tasks: a task list with ONE task, "Check for duplication" (decision: No duplicate ->
+//   status Complete, Duplicate -> red Duplicate tag), then an Outcome with three options -
+//   Remove application, Withdraw application, Progress application. An outcome does not
+//   need the task to be done first (it can be done offline). Picking one reveals its
+//   mandatory note on this Tasks screen; Continue opens a confirmation page showing the
+//   note, and Confirm records it. An outcome is final: the case reloads as "Case removed / withdrawn /
+//   progressed" with a success banner (shown once).
+// Kept in the session:
+//   data.waterDup[id]       = { decision: 'duplicate' | 'no-duplicate', ts, display, iso, by }
+//   data.waterRemoved[id]   = outcome record  -> status Removed (score 0)
+//   data.waterWithdrawn[id] = outcome record  -> status Withdrawn
+//   data.waterProgressed[id]= outcome record (or a bulk record from Progress list, no note)
+//   data.waterNotes[id]     = [ { id, ts, display, iso, reason, note, by, kind } ]  newest first
+// outcome record = { ts, display, iso, by, note, noteId }
 // ============================================================
 const WATER_USER = 'A Jones'
+const WATER_OUTCOMES = {
+  remove: {
+    store: 'waterRemoved', kind: 'removed', menu: 'Remove application', menuHint: 'Takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to remove this application?',
+    bullets: ['set its score to 0%', 'take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for removing this application.',
+    button: 'Confirm removal', error: 'Enter a note explaining why you are removing this application',
+    reason: 'Application removed', title: 'Case removed', done: 'removed',
+    after: 'Its score is now 0% and it no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Removed'
+  },
+  withdraw: {
+    store: 'waterWithdrawn', kind: 'withdrawn', menu: 'Withdraw application', menuHint: 'The applicant has withdrawn it. Takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to withdraw this application?',
+    bullets: ['mark it as withdrawn', 'take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for withdrawing this application.',
+    button: 'Confirm withdrawal', error: 'Enter a note explaining why this application is being withdrawn',
+    reason: 'Application withdrawn', title: 'Case withdrawn', done: 'withdrawn',
+    after: 'It no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Withdrawn'
+  },
+  progress: {
+    store: 'waterProgressed', kind: 'progressed', menu: 'Progress application', menuHint: 'Moves it to Progressed, the next stage',
+    heading: 'Are you sure you want to progress this application?',
+    bullets: ['move it to Progressed', 'move it on to the next stage (Agreement)', 'close the tasks on this case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for progressing this application.',
+    button: 'Confirm progress', error: 'Enter a note explaining why you are progressing this application',
+    reason: 'Application progressed', title: 'Case progressed', done: 'progressed',
+    after: 'It has moved to the next stage. Your note has been saved.',
+    summary: 'Progressed'
+  }
+}
 function waterStamp (d) {
   const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   let h = d.getHours()
@@ -3563,30 +3684,40 @@ function waterStamp (d) {
 function waterSession (req) {
   const d = req.session.data
   d.waterRemoved = d.waterRemoved || {}
+  d.waterWithdrawn = d.waterWithdrawn || {}
+  d.waterProgressed = d.waterProgressed || {}
+  d.waterDup = d.waterDup || {}
   d.waterNotes = d.waterNotes || {}
   return d
 }
-// Context for a case page, or null when the ID is not one of the 17 cases.
+// Context for a case page (any of the 200 applications), or null for an unknown ID.
 function waterCaseCtx (req, id) {
   delete require.cache[require.resolve(waterCasesPath)]
   delete require.cache[require.resolve(waterAnswersPath)]
   const answers = require(waterAnswersPath)
   const cases = require(waterCasesPath).cases
   const c = cases.find(function (x) { return x.id === id })
-  if (!c || !answers.BUSINESS_PROFILES[c.sbi]) return null
+  if (!c) return null
   const d = waterSession(req)
-  const removed = d.waterRemoved[id] || null
+  const maps = waterMaps(req)
   const others = cases.filter(function (x) { return x.sbi === c.sbi }).map(function (x) {
-    const gone = !!d.waterRemoved[x.id]
-    return {
-      id: x.id, date: x.date, removed: gone, isThis: x.id === id,
-      score: gone ? 0 : answers.waterApplication(x).scores.total, valueDisplay: wdGbp(x.value)
-    }
+    const st = waterStatusOf(x, maps)
+    // likely: the same score and grant value as this case (from the data, so it does not
+    // change when a case is removed and shows as 0%)
+    return { id: x.id, isThis: x.id === id, status: st, tag: WATER_STATUS_TAG[st], likely: x.id !== id && x.score === c.score && x.value === c.value }
   })
+  const caseStatus = waterStatusOf(c, maps)
+  // The one outcome record this case has, if any (a bulk Progress list record has no note).
+  let outcome = null
+  if (caseStatus === 'Removed') outcome = Object.assign({ type: 'remove' }, d.waterRemoved[id])
+  else if (caseStatus === 'Withdrawn' && d.waterWithdrawn[id]) outcome = Object.assign({ type: 'withdraw' }, d.waterWithdrawn[id])
+  else if (caseStatus === 'Progressed') outcome = Object.assign({ type: 'progress' }, d.waterProgressed[id])
+  if (outcome && outcome.budget) outcome.budgetDisplay = wdGbp(outcome.budget)
   return {
-    c: c, profile: answers.BUSINESS_PROFILES[c.sbi], removed: removed, others: others,
-    caseStatus: removed ? 'Removed' : 'Application received',
-    notes: d.waterNotes[id] || []
+    c: c, profile: answers.waterProfileFor(c), others: others, caseStatus: caseStatus,
+    final: caseStatus !== 'Application received', outcome: outcome,
+    seededWithdrawn: caseStatus === 'Withdrawn' && !d.waterWithdrawn[id],
+    dup: d.waterDup[id] || null, notes: d.waterNotes[id] || []
   }
 }
 function waterCaseOr (req, res, id) {
@@ -3595,18 +3726,103 @@ function waterCaseOr (req, res, id) {
   if (!ctx) res.redirect('/WaterManagement/caselist')
   return ctx
 }
+function waterGoTasks (res, id, extra) { res.redirect('/WaterManagement/case/tasks?id=' + id + (extra || '')) }
+
 router.get('/WaterManagement/case/tasks', function (req, res) {
   const ctx = waterCaseOr(req, res, req.query.id)
   if (!ctx) return
-  const d = waterSession(req)
-  // The success banner belongs to the redirect straight after a removal: show it
-  // once, then clear the flag. no-store so the browser never replays a cached copy
-  // of that page (Back button, revisiting the case) with the banner still on it.
-  ctx.justRemoved = d.waterFlash === ctx.c.id
-  delete d.waterFlash
-  res.set('Cache-Control', 'no-store')
-  res.render('WaterManagement/case/tasks', ctx)
+  waterRenderTasks(req, res, ctx)
 })
+function waterRenderTasks (req, res, ctx, extra) {
+  const d = waterSession(req)
+  // The success banner belongs to the redirect straight after an outcome: show it once,
+  // then clear the flag (and the page is no-store so Back never replays it).
+  ctx.justDone = d.waterFlash === ctx.c.id
+  delete d.waterFlash
+  ctx.outcomeError = req.query.error === 'outcome'
+  ctx.outcomes = WATER_OUTCOMES
+  ctx.formType = ''      // the outcome picked when the form is shown again with an error
+  ctx.formNotes = {}     // the notes typed so far, by outcome
+  ctx.noteError = ''     // the outcome whose note is missing
+  Object.assign(ctx, extra || {})
+  res.render('WaterManagement/case/tasks', ctx)
+}
+
+// ----- the one task: Check for duplication -----
+router.get('/WaterManagement/case/task-duplicate', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  if (ctx.final) return waterGoTasks(res, ctx.c.id)
+  res.render('WaterManagement/case/task-duplicate', ctx)
+})
+router.post('/WaterManagement/case/task-duplicate', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.body.id)
+  if (!ctx) return
+  if (ctx.final) return waterGoTasks(res, ctx.c.id)
+  const decision = req.body.decision
+  if (decision !== 'duplicate' && decision !== 'no-duplicate') {
+    ctx.error = 'Select whether this application is a duplicate'
+    return res.render('WaterManagement/case/task-duplicate', ctx)
+  }
+  const d = waterSession(req)
+  const now = new Date()
+  d.waterDup[ctx.c.id] = { decision: decision, ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), by: WATER_USER }
+  req.session.save(function () { waterGoTasks(res, ctx.c.id) })
+})
+
+// ----- the three outcomes -----
+// 1. On Tasks the caseworker picks an outcome; each option reveals its note field (the
+//    note is mandatory). 2. A confirmation page shows what will happen and the note.
+//    3. Confirm records it. The chosen outcome + note wait in data.waterPending[id].
+router.post('/WaterManagement/case/outcome-choose', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.body.id)
+  if (!ctx) return
+  if (ctx.final) return waterGoTasks(res, ctx.c.id)
+  const notes = { remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
+  const type = req.body.type
+  if (!WATER_OUTCOMES[type]) return waterRenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
+  const text = String(notes[type]).trim()
+  if (!text) return waterRenderTasks(req, res, ctx, { formType: type, formNotes: notes, noteError: type })
+  const d = waterSession(req)
+  d.waterPending = d.waterPending || {}
+  d.waterPending[ctx.c.id] = { type: type, note: text }
+  req.session.save(function () { res.redirect('/WaterManagement/case/outcome?id=' + ctx.c.id) })
+})
+router.get('/WaterManagement/case/outcome', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.query.id)
+  if (!ctx) return
+  const pending = (waterSession(req).waterPending || {})[ctx.c.id]
+  if (ctx.final || !pending) return waterGoTasks(res, ctx.c.id)
+  ctx.type = pending.type
+  ctx.o = WATER_OUTCOMES[pending.type]
+  ctx.note = pending.note
+  res.render('WaterManagement/case/outcome', ctx)
+})
+router.post('/WaterManagement/case/outcome', function (req, res) {
+  const ctx = waterCaseOr(req, res, req.body.id)
+  if (!ctx) return
+  const d = waterSession(req)
+  const pending = (d.waterPending || {})[ctx.c.id]
+  if (ctx.final || !pending) return waterGoTasks(res, ctx.c.id)
+  const o = WATER_OUTCOMES[pending.type]
+  const now = new Date()
+  const noteId = String(now.getTime())
+  const rec = { ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), by: WATER_USER, note: pending.note, noteId: noteId }
+  d[o.store][ctx.c.id] = rec
+  d.waterNotes[ctx.c.id] = [{ id: noteId, ts: rec.ts, display: rec.display, iso: rec.iso, reason: o.reason, note: pending.note, by: WATER_USER, kind: o.kind }].concat(d.waterNotes[ctx.c.id] || [])
+  delete d.waterPending[ctx.c.id]
+  d.waterFlash = ctx.c.id
+  // The kit keeps sessions in files and writes them AFTER the redirect headers have
+  // gone out, so the next request could arrive before the outcome is stored. Save
+  // first, then redirect.
+  req.session.save(function () { waterGoTasks(res, ctx.c.id) })
+})
+router.get('/WaterManagement/case/remove', function (req, res) {
+  waterGoTasks(res, encodeURIComponent(req.query.id || ''))
+})
+
+
+// ----- the other tabs -----
 router.get('/WaterManagement/case/application', function (req, res) {
   const ctx = waterCaseOr(req, res, req.query.id)
   if (!ctx) return
@@ -3620,9 +3836,22 @@ router.get('/WaterManagement/case/timeline', function (req, res) {
   const h = ((parseInt(c.id, 10) * 2654435761) >>> 0) >>> 9
   const recv = new Date(grassDateVal(c.date))
   recv.setHours(8 + h % 9, (h >>> 4) % 60)
+  const titles = { removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
   const events = ctx.notes.map(function (n) {
-    return { title: n.kind === 'removed' ? 'Application removed' : 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
+    return { title: titles[n.kind] || 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
   })
+  // The task decision (the latest one saved).
+  if (ctx.dup) events.push({ title: 'Task - Check for duplication - ' + (ctx.dup.decision === 'duplicate' ? 'Duplicate' : 'No duplicate'), by: ctx.dup.by, ts: ctx.dup.ts, display: ctx.dup.display, iso: ctx.dup.iso })
+  // Progressed in bulk by Progress list (no note).
+  if (ctx.outcome && ctx.outcome.type === 'progress' && !ctx.outcome.noteId) {
+    events.push({ title: 'Application progressed', by: ctx.outcome.by, ts: ctx.outcome.ts, display: ctx.outcome.display, iso: ctx.outcome.iso })
+  }
+  if (ctx.seededWithdrawn) {
+    // Withdrawn by the applicant a few days after it was received (made up from the ID).
+    const w = new Date(recv.getTime() + (3 + (h >>> 3) % 20) * 86400000)
+    w.setHours(9 + (h >>> 7) % 8, (h >>> 11) % 60)
+    events.push({ title: 'Application withdrawn', by: 'the applicant', ts: w.getTime(), display: waterStamp(w), iso: w.toISOString() })
+  }
   events.push({ title: 'Application received', by: 'the applicant', ts: recv.getTime(), display: waterStamp(recv), iso: recv.toISOString() })
   events.sort(function (a, b) { return b.ts - a.ts })
   ctx.events = events
@@ -3650,33 +3879,6 @@ router.post('/WaterManagement/case/add-note', function (req, res) {
   const now = new Date()
   d.waterNotes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), reason: 'Note added', note: text, by: WATER_USER, kind: 'note' }].concat(d.waterNotes[ctx.c.id] || [])
   req.session.save(function () { res.redirect('/WaterManagement/case/notes?id=' + ctx.c.id) })
-})
-router.get('/WaterManagement/case/remove', function (req, res) {
-  const ctx = waterCaseOr(req, res, req.query.id)
-  if (!ctx) return
-  if (ctx.removed) return res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id)
-  res.render('WaterManagement/case/remove', ctx)
-})
-router.post('/WaterManagement/case/remove', function (req, res) {
-  const ctx = waterCaseOr(req, res, req.body.id)
-  if (!ctx) return
-  if (ctx.removed) return res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id)
-  const text = String(req.body.removeNote || '').trim()
-  // The note is mandatory.
-  if (!text) {
-    ctx.error = 'Enter a note explaining why you are removing this application'
-    return res.render('WaterManagement/case/remove', ctx)
-  }
-  const d = waterSession(req)
-  const now = new Date()
-  const noteId = String(now.getTime())
-  d.waterRemoved[ctx.c.id] = { ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), by: WATER_USER, note: text, noteId: noteId }
-  d.waterNotes[ctx.c.id] = [{ id: noteId, ts: now.getTime(), display: waterStamp(now), iso: now.toISOString(), reason: 'Application removed', note: text, by: WATER_USER, kind: 'removed' }].concat(d.waterNotes[ctx.c.id] || [])
-  d.waterFlash = ctx.c.id
-  // The kit keeps sessions in files and writes them AFTER the redirect headers have
-  // gone out, so the next request could arrive before the removal is stored. Save
-  // first, then redirect.
-  req.session.save(function () { res.redirect('/WaterManagement/case/tasks?id=' + ctx.c.id) })
 })
 
 // ----- Woodlands routes -----

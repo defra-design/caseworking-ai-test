@@ -1,7 +1,9 @@
 {% extends "layouts/main.html" %}
 
-{# Water management — Scoring and ranking caselist. One unpaged list of 200 cases,
-   no assignment / checkboxes. Search on Case ID or SBI. #}
+{# Water management caselist. The budgeting panel sits above three tabs over one set
+   of 200 cases (no assignment, no paging): Deduping (SBIs with more than one case, no
+   cumulative value), Scoring and ranking (ranked, cumulative value, budget line,
+   Progress list) and All cases (Grasslands columns). Search on Case ID or SBI. #}
 {% set containerClasses = "app-caselist-wide" %}
 {% set headerContainerClasses = "app-caselist-wide" %}
 {% set headerTitleCentred = true %}
@@ -11,59 +13,80 @@
   {% include "FRPS-D2/includes/_defra-header.html" %}
 {% endblock %}
 
-{# Sortable column header — server-side sort (?sort=key&dir=asc|desc). #}
+{# Sortable column header: server-side sort (?sort=key&dir=asc|desc) that keeps the tab and search. #}
 {% macro waterHeader(key, label, view, cls) %}
 {%- set active = (view.sort == key) -%}
 {%- set aria = (("ascending" if view.dir == "asc" else "descending") if active else "none") -%}
 {%- set nextDir = ("desc" if (active and view.dir == "asc") else "asc") -%}
-<th scope="col" class="govuk-table__header{% if cls %} {{ cls }}{% endif %}" aria-sort="{{ aria }}"><a class="govuk-link app-sort-link" href="?sort={{ key }}&amp;dir={{ nextDir }}{% if view.search %}&amp;searchWater={{ view.search | urlencode }}{% endif %}{% if view.multiple %}&amp;multiple=Yes{% endif %}">{{ label }}</a></th>
+<th scope="col" class="govuk-table__header{% if cls %} {{ cls }}{% endif %}" aria-sort="{{ aria }}"><a class="govuk-link app-sort-link" href="?tab={{ view.tab }}&amp;sort={{ key }}&amp;dir={{ nextDir }}{% if view.search %}&amp;searchWater={{ view.search | urlencode }}{% endif %}">{{ label }}</a></th>
 {% endmacro %}
+
+{# Case ID link: every application, from every tab, opens the same case view (Tasks). #}
+{% macro caseLink(c) %}<a class="govuk-link" href="case/tasks?id={{ c.id }}">{{ c.id }}</a>{% endmacro %}
+
+{# Status tag. always = also tag "Application received" (Scoring and ranking and All cases); otherwise only the exceptions (Deduping). #}
+{% macro statusTag(c, always) %}{% if always or c.status != "Application received" %}<strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>{% endif %}{% endmacro %}
 
 {% block content %}
 <div class="govuk-width-container app-caselist-wide">
   <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Scoring and ranking</h1>
-    <p class="govuk-body govuk-!-margin-bottom-6">Cases ranked by score, highest first. Cumulative value is the running total of grant value down the ranking.</p>
-
-    {# --- Budget + reporting (stats recalculate live from the budget field) --- #}
-    <div class="govuk-form-group govuk-!-margin-bottom-4">
-      <label class="govuk-label govuk-label--s" for="totalBudget">Total budget</label>
-      <div style="display:flex; align-items:flex-end; gap:10px;">
-        <div class="govuk-input__wrapper" style="max-width:14em;">
-          <div class="govuk-input__prefix" aria-hidden="true">£</div>
-          <input class="govuk-input" id="totalBudget" name="totalBudget" type="text" inputmode="numeric" autocomplete="off" value="{{ view.defaultBudget }}">
-        </div>
-        <button type="button" id="resetBudget" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Reset budget</button>
+    {% if view.flash %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">{{ view.flash.count }} application{% if view.flash.count != 1 %}s{% endif %} moved to Progressed</p>
+        <p class="govuk-body">Everything within the {{ view.flash.budget }} budget (a score of {{ view.flash.minScore }}% or more) has been progressed.</p>
       </div>
     </div>
+    {% endif %}
+
+    <h1 class="govuk-visually-hidden">Scoring and ranking</h1>
+
+    {# --- Budget + reporting. The figure in the box is only a proposal until "Update budget"
+           is selected; the stats, budget line and Progress list use the applied budget. --- #}
+    <form id="budgetForm" class="govuk-!-margin-bottom-4" novalidate>
+      <div class="govuk-form-group govuk-!-margin-bottom-2">
+        <label class="govuk-label govuk-label--s" for="totalBudget">Total budget</label>
+        <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
+          <div class="govuk-input__wrapper" style="max-width:14em;">
+            <div class="govuk-input__prefix" aria-hidden="true">£</div>
+            <input class="govuk-input" id="totalBudget" name="totalBudget" type="text" inputmode="numeric" autocomplete="off" value="{{ view.defaultBudget }}">
+          </div>
+          <button type="submit" id="updateBudget" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Update budget</button>
+          <span id="budgetPending" class="govuk-body govuk-!-margin-bottom-0" hidden style="align-self:center;"><strong>Not applied yet.</strong> The figures below still use <span id="budgetAppliedText"></span>.</span>
+        </div>
+      </div>
+    </form>
 
     <div id="budgetReport" aria-live="polite">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-quarter">
+      <div class="app-budget-cards">
+        <div class="app-budget-cards__item">
           <div class="app-stat-card app-stat-card--green">
             <p class="app-stat-card__label">Applications funded</p>
             <p class="app-stat-card__value" id="statFunded" style="font-size:30px;"></p>
             <p class="govuk-body-s govuk-!-margin-bottom-0" id="statFundedNote"></p>
           </div>
         </div>
-        <div class="govuk-grid-column-one-quarter">
+        <div class="app-budget-cards__item">
           <div class="app-stat-card app-stat-card--blue">
-            <p class="app-stat-card__label">Minimum score to be successful</p>
-            <p class="app-stat-card__value" id="statMinScore" style="font-size:30px;"></p>
+            <p class="app-stat-card__label">Minimum score</p>
+            <p class="app-stat-card__value" id="statMinScore" style="font-size:30px; color:#0b0c0c;"></p>
             <p class="govuk-body-s govuk-!-margin-bottom-0" id="statMinScoreNote"></p>
           </div>
         </div>
-        <div class="govuk-grid-column-one-quarter">
-          <div class="app-stat-card">
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card app-stat-card--yellow">
             <p class="app-stat-card__label">Budget unspent</p>
             <p class="app-stat-card__value" id="statUnspent" style="font-size:30px;"></p>
             <p class="govuk-body-s govuk-!-margin-bottom-0" id="statUnspentNote"></p>
           </div>
         </div>
-        <div class="govuk-grid-column-one-quarter">
-          <div class="app-stat-card app-stat-card--red">
-            <p class="app-stat-card__label" id="statNextLabel">Budget needed to include the next score</p>
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card">
+            <p class="app-stat-card__label" id="statNextLabel">Budget for next score</p>
             <p class="app-stat-card__value" id="statNext" style="font-size:30px;"></p>
             <p class="govuk-body-s govuk-!-margin-bottom-0" id="statNextNote"></p>
           </div>
@@ -83,61 +106,141 @@
       </div>
     </div>
 
-    <form method="get" action="caselist" class="govuk-!-margin-bottom-6">
-      <div class="govuk-form-group govuk-!-margin-bottom-0">
-        <label class="govuk-label govuk-label--s" for="searchWater">Search by case ID or SBI</label>
-        <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
-          <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
-            <input class="govuk-input" id="searchWater" name="searchWater" type="search" value="{{ view.search }}">
-          </div>
-          <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
-        </div>
-      </div>
-      <div class="govuk-form-group app-yn app-yn--pill app-yn--filter govuk-!-margin-top-4 govuk-!-margin-bottom-0">
-        <fieldset class="govuk-fieldset app-yn__fieldset">
-          <legend class="govuk-fieldset__legend app-yn__legend">Show SBIs with multiple cases</legend>
-          <div class="app-yn__control">
-            <input class="app-yn__input" id="multi-no" name="multiple" type="radio" value="No"{% if not view.multiple %} checked{% endif %}>
-            <input class="app-yn__input" id="multi-yes" name="multiple" type="radio" value="Yes"{% if view.multiple %} checked{% endif %}>
-            <label class="app-yn__word app-yn__word--no" for="multi-no">No</label>
-            <span class="app-yn__track" aria-hidden="true"><span class="app-yn__knob"></span></span>
-            <label class="app-yn__word app-yn__word--yes" for="multi-yes">Yes</label>
-          </div>
-        </fieldset>
-      </div>
-    </form>
 
-    <p class="govuk-body govuk-!-margin-bottom-2" aria-live="polite">{{ view.total }} case{% if view.total != 1 %}s{% endif %}</p>
+    {# --- Tabs (server-side, as the Grasslands caselist) --- #}
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <ul class="govuk-tabs__list">
+        <li class="govuk-tabs__list-item{% if view.tab == 'dedupe' %} govuk-tabs__list-item--selected{% endif %}">
+          {% if view.tab == 'dedupe' %}Deduping{% else %}<a href="caselist?tab=dedupe">Deduping</a>{% endif %}
+        </li>
+        <li class="govuk-tabs__list-item{% if view.tab == 'ranking' %} govuk-tabs__list-item--selected{% endif %}">
+          {% if view.tab == 'ranking' %}Scoring and ranking{% else %}<a href="caselist?tab=ranking">Scoring and ranking</a>{% endif %}
+        </li>
+        <li class="govuk-tabs__list-item{% if view.tab == 'all' %} govuk-tabs__list-item--selected{% endif %}">
+          {% if view.tab == 'all' %}All cases{% else %}<a href="caselist?tab=all">All cases</a>{% endif %}
+        </li>
+      </ul>
+      <div class="govuk-tabs__panel" id="cases">
 
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          {{ waterHeader("id", "Case ID", view) }}
-          {{ waterHeader("sbi", "SBI", view) }}
-          {{ waterHeader("score", "Score (%)", view, "govuk-table__header--numeric") }}
-          {{ waterHeader("value", "Grant value", view, "govuk-table__header--numeric app-th-nowrap") }}
-          {{ waterHeader("cumulative", "Cumulative value", view, "govuk-table__header--numeric app-th-nowrap") }}
-          {{ waterHeader("date", "Date", view, "govuk-table__header--date") }}
-          <th scope="col" class="govuk-table__header">Status</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body" id="caseRows" data-ranked="{{ 'true' if (view.sort == 'rank' and not view.search) else 'false' }}">
-        {% if view.rows.length == 0 %}
-        <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
+        {% if view.tab == 'dedupe' %}
+        <p class="govuk-body">Applications on an SBI that has more than one application. Open one to check whether they are duplicates and remove any that are.</p>
+        {% elif view.tab == 'ranking' %}
+        <p class="govuk-body">Applications ranked by score, highest first. Cumulative value is the running total of grant value down the ranking.</p>
+        <form method="get" action="progress-list" class="govuk-!-margin-bottom-4">
+          <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
+          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Progress list</button>
+        </form>
         {% endif %}
-        {% for c in view.rows %}
-        <tr class="govuk-table__row" data-score="{{ c.score }}">
-          <td class="govuk-table__cell"><a class="govuk-link" href="{% if c.isCase %}case/tasks{% else %}application{% endif %}?id={{ c.id }}">{{ c.id }}</a></td>
-          <td class="govuk-table__cell">{{ c.sbi }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueDisplay }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.cumulativeDisplay }}</td>
-          <td class="govuk-table__cell">{{ c.date }}</td>
-          <td class="govuk-table__cell">{% if c.removed %}<strong class="govuk-tag govuk-tag--red">Removed</strong>{% endif %}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+
+        <form method="get" action="caselist" class="govuk-!-margin-bottom-6">
+          <input type="hidden" name="tab" value="{{ view.tab }}">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="searchWater">Search by case ID or SBI</label>
+            <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+              <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+                <input class="govuk-input" id="searchWater" name="searchWater" type="search" value="{{ view.search }}">
+              </div>
+              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Search</button>
+            </div>
+          </div>
+        </form>
+
+        <p class="govuk-body govuk-!-margin-bottom-2" aria-live="polite">{{ view.total }} case{% if view.total != 1 %}s{% endif %}</p>
+
+        {% if view.tab == 'dedupe' %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              {{ waterHeader("id", "Case ID", view) }}
+              {{ waterHeader("sbi", "SBI", view) }}
+              {{ waterHeader("score", "Score (%)", view, "govuk-table__header--numeric") }}
+              {{ waterHeader("value", "Grant value", view, "govuk-table__header--numeric app-th-nowrap") }}
+              {{ waterHeader("date", "Date", view, "govuk-table__header--date") }}
+              {{ waterHeader("status", "Status", view) }}
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% if view.rows.length == 0 %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="6">No cases to show.</td></tr>
+            {% endif %}
+            {% for c in view.rows %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ caseLink(c) }}</td>
+              <td class="govuk-table__cell">{{ c.sbi }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueDisplay }}</td>
+              <td class="govuk-table__cell">{{ c.date }}</td>
+              <td class="govuk-table__cell">{{ statusTag(c, false) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% elif view.tab == 'ranking' %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              {{ waterHeader("id", "Case ID", view) }}
+              {{ waterHeader("sbi", "SBI", view) }}
+              {{ waterHeader("score", "Score (%)", view, "govuk-table__header--numeric") }}
+              {{ waterHeader("value", "Grant value", view, "govuk-table__header--numeric app-th-nowrap") }}
+              {{ waterHeader("cumulative", "Cumulative value", view, "govuk-table__header--numeric app-th-nowrap") }}
+              {{ waterHeader("date", "Date", view, "govuk-table__header--date") }}
+              <th scope="col" class="govuk-table__header">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body" id="caseRows" data-ranked="{{ 'true' if (view.sort == 'rank' and not view.search) else 'false' }}">
+            {% if view.rows.length == 0 %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
+            {% endif %}
+            {% for c in view.rows %}
+            <tr class="govuk-table__row" data-score="{{ c.score }}"{% if c.live %} data-live="1"{% endif %}>
+              <td class="govuk-table__cell">{{ caseLink(c) }}</td>
+              <td class="govuk-table__cell">{{ c.sbi }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.valueDisplay }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.cumulativeDisplay }}</td>
+              <td class="govuk-table__cell">{{ c.date }}</td>
+              <td class="govuk-table__cell">{{ statusTag(c, true) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% else %}
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              {{ waterHeader("id", "ID", view) }}
+              {{ waterHeader("business", "Business", view) }}
+              {{ waterHeader("sbi", "SBI", view) }}
+              {{ waterHeader("date", "Submitted", view, "govuk-table__header--date") }}
+              {{ waterHeader("value", "Value (£K)", view, "app-th-nowrap") }}
+              {{ waterHeader("stage", "Stage", view) }}
+              {{ waterHeader("status", "Status", view, "custom-width-130") }}
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% if view.rows.length == 0 %}
+            <tr class="govuk-table__row"><td class="govuk-table__cell" colspan="7">No cases to show.</td></tr>
+            {% endif %}
+            {% for c in view.rows %}
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{ caseLink(c) }}</td>
+              <td class="govuk-table__cell">{{ c.business }}</td>
+              <td class="govuk-table__cell">{{ c.sbi }}</td>
+              <td class="govuk-table__cell">{{ c.date }}</td>
+              <td class="govuk-table__cell">{{ c.valueK }}</td>
+              <td class="govuk-table__cell">{{ c.stage }}</td>
+              <td class="govuk-table__cell">{{ statusTag(c, true) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+      </div>
+    </div>
 
   </main>
 </div>
@@ -151,13 +254,14 @@
   var input = document.getElementById('totalBudget');
   var DEFAULT_BUDGET = Number('{{ view.defaultBudget }}');
   var STORE = 'waterTotalBudget';
+  var applied = DEFAULT_BUDGET; // the budget everything below actually uses
   function $(id) { return document.getElementById(id); }
   function gbp(n) { return '£' + Math.round(n).toLocaleString('en-GB'); }
   function parse(v) { var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); return isNaN(n) ? 0 : n; }
   function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
   function update() {
-    var budget = parse(input.value);
+    var budget = applied;
     // A score tier is funded only if every case at that score fits inside the budget.
     var k = 0;
     while (k < tiers.length && tiers[k].cumulative <= budget) k++;
@@ -171,17 +275,17 @@
     $('statFunded').textContent = funded;
     $('statFundedNote').textContent = 'of ' + total + ' applications';
     $('statMinScore').textContent = k ? tiers[k - 1].score + '%' : 'None';
-    $('statMinScoreNote').textContent = k ? plural(tiers[k - 1].count, 'case') + ' at this score' : 'No score fits the budget';
+    $('statMinScoreNote').textContent = k ? plural(tiers[k - 1].count, 'case') + ' at this score' : 'None fit the budget';
     $('statUnspent').textContent = gbp(unspent);
-    $('statUnspentNote').textContent = gbp(spent) + ' of ' + gbp(budget) + ' allocated';
+    $('statUnspentNote').textContent = gbp(spent) + ' allocated';
     if (next) {
-      $('statNextLabel').textContent = 'Budget needed to include ' + next.score + '%';
+      $('statNextLabel').textContent = 'Budget for ' + next.score + '%';
       $('statNext').textContent = gbp(next.cumulative);
-      $('statNextNote').textContent = gbp(next.cumulative - budget) + ' more than the current budget';
+      $('statNextNote').textContent = gbp(next.cumulative - budget) + ' more';
     } else {
-      $('statNextLabel').textContent = 'Budget needed to include the next score';
+      $('statNextLabel').textContent = 'Budget for next score';
       $('statNext').textContent = 'n/a';
-      $('statNextNote').textContent = 'All scores are already funded';
+      $('statNextNote').textContent = 'All scores funded';
     }
 
     var pct = budget > 0 ? Math.min(100, spent / budget * 100) : 0;
@@ -191,13 +295,15 @@
     $('keyAllocated').textContent = gbp(spent);
     $('keyUnspent').textContent = gbp(unspent);
 
-    // Budget line: in the default ranked view, a divider after the last funded case.
+    // Budget line (ranking tab, default order): a divider after the last funded live case.
+    var progressBudget = $('progressBudget');
+    if (progressBudget) progressBudget.value = budget;
     var tbody = $('caseRows');
-    var old = tbody.querySelector('.app-budget-line');
+    var old = tbody && tbody.querySelector('.app-budget-line');
     if (old) old.parentNode.removeChild(old);
-    if (tbody.getAttribute('data-ranked') === 'true') {
+    if (tbody && tbody.getAttribute('data-ranked') === 'true') {
       var minScore = k ? tiers[k - 1].score : 101;
-      var rows = tbody.querySelectorAll('tr[data-score]');
+      var rows = tbody.querySelectorAll('tr[data-live]');
       var after = null;
       for (var r = 0; r < rows.length; r++) if (+rows[r].getAttribute('data-score') >= minScore) after = rows[r];
       var line = document.createElement('tr');
@@ -208,24 +314,29 @@
     }
   }
 
-  // Flipping the Yes / No switch reapplies the filter straight away.
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="multiple"]'), function (radio) {
-    radio.addEventListener('change', function () { radio.form.submit(); });
-  });
+  function show(n) { return n.toLocaleString('en-GB'); }
+  function hasDigits(v) { return /\d/.test(String(v)); }
+  // "Not applied yet" while the box holds a different figure from the applied budget.
+  function pending() {
+    var differs = hasDigits(input.value) && parse(input.value) !== applied;
+    $('budgetPending').hidden = !differs;
+    $('budgetAppliedText').textContent = gbp(applied);
+  }
+  try { var saved = localStorage.getItem(STORE); if (saved && hasDigits(saved)) applied = parse(saved); } catch (e) {}
+  input.value = show(applied);
 
-  try { var saved = localStorage.getItem(STORE); if (saved) input.value = saved; } catch (e) {}
-  input.addEventListener('input', function () {
-    try { localStorage.setItem(STORE, String(parse(input.value))); } catch (e) {}
+  // Typing only changes the proposal; nothing below moves until Update budget.
+  input.addEventListener('input', pending);
+  $('budgetForm').addEventListener('submit', function (ev) {
+    ev.preventDefault(); // Enter in the box does the same as the button
+    if (!hasDigits(input.value)) { input.value = show(applied); pending(); return; } // nothing usable typed: keep the applied budget
+    applied = parse(input.value);
+    try { localStorage.setItem(STORE, String(applied)); } catch (e) {}
+    input.value = show(applied);
+    pending();
     update();
   });
-  $('resetBudget').addEventListener('click', function () {
-    input.value = DEFAULT_BUDGET.toLocaleString('en-GB');
-    try { localStorage.removeItem(STORE); } catch (e) {}
-    update();
-    input.focus();
-  });
-  input.addEventListener('blur', function () { input.value = parse(input.value).toLocaleString('en-GB'); });
-  input.value = parse(input.value).toLocaleString('en-GB');
+  pending();
   update();
 })();
 </script>

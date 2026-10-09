@@ -1,0 +1,89 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — the Check for duplication task. The caseworker compares this
+   application with the others from the same SBI (linked case numbers in the boxed list
+   style of the manual-check land parcels, straight under the title), then records the
+   Outcome: No duplicate or Duplicate (laid out like the Grasslands task pages). #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% if error %}
+    <div class="govuk-error-summary govuk-!-margin-top-6" data-module="govuk-error-summary">
+      <div role="alert">
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            <li><a href="#decision-no-duplicate">{{ error }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <form action="/WaterManagement/case/task-duplicate" method="post" novalidate>
+      <input type="hidden" name="id" value="{{ c.id }}">
+
+      <h1 class="govuk-heading-l govuk-!-margin-top-8">Check for duplication</h1>
+
+      {% set sameSbi = [] %}
+      {% for o in others %}{% if not o.isThis %}{% set _ = sameSbi.push(o) %}{% endif %}{% endfor %}
+      {% if sameSbi.length %}
+      <div class="app-lp-box">
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="same-sbi-heading">Applications from the same SBI</h2>
+        <ul class="govuk-list app-lp-list" aria-labelledby="same-sbi-heading">
+          {% for o in sameSbi %}
+          <li><a class="govuk-link" href="/WaterManagement/case/application?id={{ o.id }}">{{ o.id }}</a>{% if o.likely %}<span aria-hidden="true">*</span><span class="govuk-visually-hidden"> (same score and grant value as this case)</span>{% endif %}</li>
+          {% endfor %}
+        </ul>
+        {% set anyLikely = [] %}
+        {% for o in sameSbi %}{% if o.likely %}{% set _ = anyLikely.push(o) %}{% endif %}{% endfor %}
+        {% if anyLikely.length %}
+        <p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-2">Note: IDs marked with an * have the same score and grant value as this case.</p>
+        {% endif %}
+      </div>
+      {% else %}
+      <p class="govuk-body">No other application has been found for SBI {{ c.sbi }}.</p>
+      {% endif %}
+
+      <p class="govuk-body">There may be duplicate applications in the system for this business.</p>
+      <p class="govuk-body">Look in the <a class="govuk-link" href="/WaterManagement/case/application?id={{ c.id }}">Application</a> section of each application and check whether they really are duplicates.</p>
+
+      <h2 class="govuk-heading-m" id="outcome-heading">Outcome</h2>
+
+      <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset" aria-labelledby="outcome-heading">
+          {% if error %}<p id="decision-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="decision-no-duplicate" name="decision" type="radio" value="no-duplicate"{% if dup and dup.decision == 'no-duplicate' %} checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="decision-no-duplicate">No duplicate</label>
+            </div>
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="decision-duplicate" name="decision" type="radio" value="duplicate"{% if dup and dup.decision == 'duplicate' %} checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="decision-duplicate">Duplicate</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+        <a class="govuk-link" href="/WaterManagement/case/tasks?id={{ c.id }}">Cancel and return</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

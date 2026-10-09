@@ -1,9 +1,11 @@
 {% extends "layouts/main.html" %}
 
-{# Water management case — Tasks. Before removal: "Check for duplication" with the
-   other applications on the same SBI and the Remove application button. After
-   removal the page reloads as "Case removed" (with a success banner straight after
-   the removal). #}
+{# Water management case — Tasks. One task (Check for duplication: starts as a blue "Incomplete" tag; No duplicate ->
+   bold "Complete", Duplicate -> red "Duplicate" tag) and an Outcome with three options -
+   Remove application, Withdraw application, Progress application - which can be chosen whether or not the task
+   is not needed first (the check can be done offline). Each outcome goes to a confirmation page with a mandatory note and is
+   final: the page then reloads as "Case removed / withdrawn / progressed" with a success
+   banner (once). Cases that are no longer "Application received" show that final view. #}
 
 {% set headerServiceName = "Water management" %}
 
@@ -19,69 +21,113 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
-    {% if removed and justRemoved %}
+    {% if justDone and outcome %}
     <div class="govuk-notification-banner govuk-notification-banner--success govuk-!-margin-top-6" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
       <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Success</h2>
       </div>
       <div class="govuk-notification-banner__content">
-        <p class="govuk-notification-banner__heading">Application {{ c.id }} has been removed</p>
-        <p class="govuk-body">Its score is now 0% and it no longer counts in scoring and ranking. Your note has been saved.</p>
+        <p class="govuk-notification-banner__heading">Application {{ c.id }} has been {{ outcomes[outcome.type].done }}</p>
+        <p class="govuk-body">{{ outcomes[outcome.type].after }}</p>
       </div>
     </div>
     {% endif %}
 
-    <h1 class="govuk-heading-l govuk-!-margin-top-8">{% if removed %}Case removed{% else %}Tasks{% endif %}</h1>
+    {% if outcomeError or noteError %}
+    <div class="govuk-error-summary govuk-!-margin-top-6" data-module="govuk-error-summary">
+      <div role="alert">
+        <h2 class="govuk-error-summary__title">There is a problem</h2>
+        <div class="govuk-error-summary__body">
+          <ul class="govuk-list govuk-error-summary__list">
+            {% if outcomeError %}<li><a href="#outcome-remove">Select an outcome for this application</a></li>{% endif %}
+            {% if noteError %}<li><a href="#note-{{ noteError }}">{{ outcomes[noteError].error }}</a></li>{% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
 
-    {% if removed %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">{% if outcome %}{{ outcomes[outcome.type].title }}{% elif seededWithdrawn %}Application withdrawn{% else %}Tasks{% endif %}</h1>
 
-    <p class="govuk-body">This application was removed as a duplicate. The case is closed and cannot be reopened.</p>
-    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Removed on</dt>
-        <dd class="govuk-summary-list__value">{{ removed.display }}</dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Removed by</dt>
-        <dd class="govuk-summary-list__value">{{ removed.by }}</dd>
-      </div>
-      <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">Note</dt>
-        <dd class="govuk-summary-list__value">{{ removed.note }}</dd>
-      </div>
-    </dl>
+    {% if final %}
+
+      {% if seededWithdrawn %}
+      <p class="govuk-body">The applicant withdrew this application. There is nothing more to do on this case, and it no longer counts in scoring and ranking.</p>
+      {% elif outcome and outcome.note %}
+      <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">{{ outcomes[outcome.type].summary }} on</dt>
+          <dd class="govuk-summary-list__value">{{ outcome.display }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">{{ outcomes[outcome.type].summary }} by</dt>
+          <dd class="govuk-summary-list__value">{{ outcome.by }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Note</dt>
+          <dd class="govuk-summary-list__value">{{ outcome.note }}</dd>
+        </div>
+      </dl>
+      {% elif outcome %}
+      <p class="govuk-body">This application was progressed with the rest of the list using Progress list{% if outcome.budgetDisplay %}, within a budget of {{ outcome.budgetDisplay }}{% endif %}.</p>
+      <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Progressed on</dt>
+          <dd class="govuk-summary-list__value">{{ outcome.display }}</dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Progressed by</dt>
+          <dd class="govuk-summary-list__value">{{ outcome.by }}</dd>
+        </div>
+      </dl>
+      {% endif %}
 
     {% else %}
 
-    <h2 class="govuk-heading-m">Check for duplication</h2>
-    <p class="govuk-body">There may be duplicate applications in the system for this business. Applications for SBI {{ c.sbi }} are listed below.</p>
-    <p class="govuk-body">Look in the <a class="govuk-link" href="/WaterManagement/case/application?id={{ c.id }}">Application</a> section of each application and check that they really are duplicates. If they are, remove one of them.</p>
+    <ul class="govuk-task-list">
+      <li class="govuk-task-list__item govuk-task-list__item--with-link">
+        <div class="govuk-task-list__name-and-hint">
+          <a class="govuk-link govuk-task-list__link" href="/WaterManagement/case/task-duplicate?id={{ c.id }}" aria-describedby="duplicate-status">Check for duplication</a>
+        </div>
+        <div class="govuk-task-list__status" id="duplicate-status">
+          {% if not dup %}<strong class="govuk-tag govuk-tag--blue">Incomplete</strong>
+          {% elif dup.decision == 'duplicate' %}<strong class="govuk-tag govuk-tag--red">Duplicate</strong>
+          {% else %}<strong>Complete</strong>{% endif %}
+        </div>
+      </li>
+    </ul>
 
-    <table class="govuk-table govuk-!-margin-bottom-6">
-      <caption class="govuk-table__caption govuk-table__caption--s">Applications for SBI {{ c.sbi }}</caption>
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">Application</th>
-          <th scope="col" class="govuk-table__header">Date received</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Score</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Grant value</th>
-          <th scope="col" class="govuk-table__header">Status</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        {% for o in others %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell"><a class="govuk-link" href="/WaterManagement/case/application?id={{ o.id }}">{{ o.id }}<span class="govuk-visually-hidden"> application</span></a>{% if o.isThis %} <span class="govuk-hint govuk-!-display-inline govuk-!-margin-bottom-0">(this application)</span>{% endif %}</td>
-          <td class="govuk-table__cell">{{ o.date }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ o.score }}%</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ o.valueDisplay }}</td>
-          <td class="govuk-table__cell">{% if o.removed %}<strong class="govuk-tag govuk-tag--red">Removed</strong>{% else %}Application received{% endif %}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <h2 class="govuk-heading-m govuk-!-margin-top-8">Decision</h2>
 
-    <a href="/WaterManagement/case/remove?id={{ c.id }}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">Remove application</a>
+    {# The outcome does not depend on the task: the check can also be done offline. #}
+    <form method="post" action="/WaterManagement/case/outcome-choose" novalidate>
+      <input type="hidden" name="id" value="{{ c.id }}">
+      <div class="govuk-form-group{% if outcomeError %} govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-fieldset__legend govuk-visually-hidden">Decision</legend>
+          {% if outcomeError %}<p id="outcome-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select an outcome for this application</p>{% endif %}
+          <div class="govuk-radios" data-module="govuk-radios">
+            {% for key in ["remove", "withdraw", "progress"] %}
+            {% set o = outcomes[key] %}
+            {% set picked = (formType == key) %}
+            <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id="outcome-{{ key }}" name="type" type="radio" value="{{ key }}" data-aria-controls="conditional-{{ key }}"{% if picked %} checked{% endif %}>
+              <label class="govuk-label govuk-radios__label" for="outcome-{{ key }}">{{ o.menu }}</label>
+            </div>
+            <div class="govuk-radios__conditional{% if not picked %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ key }}">
+              <div class="govuk-form-group{% if noteError == key %} govuk-form-group--error{% endif %}">
+                <label class="govuk-label" for="note-{{ key }}">{{ o.noteLabel }}</label>
+                <div id="note-{{ key }}-hint" class="govuk-hint">{{ o.hint }}</div>
+                {% if noteError == key %}<p id="note-{{ key }}-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ o.error }}</p>{% endif %}
+                <textarea class="govuk-textarea{% if noteError == key %} govuk-textarea--error{% endif %}" id="note-{{ key }}" name="note-{{ key }}" rows="5" aria-describedby="note-{{ key }}-hint{% if noteError == key %} note-{{ key }}-error{% endif %}">{{ formNotes[key] }}</textarea>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+      </div>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Continue</button>
+    </form>
 
     {% endif %}
 

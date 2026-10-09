@@ -206,7 +206,7 @@ function consentScore (ea, planning) { return CONSENT_SCORES[ea + '|' + planning
 // has, and its projects sit in the same part of the country (`region` is the
 // WATER_REGIONS area they are scattered around, so the water scarcity colour agrees
 // across the business's cases). All names, numbers and addresses are invented.
-// Any SBI not listed here gets the generic example business (defaultProfile).
+// Any SBI not listed here gets a generated business (waterGeneratedProfile).
 const BUSINESS_PROFILES = {
   // 4 cases: the original example business from the "Confirm your details" screen.
   '244666513': {
@@ -275,17 +275,6 @@ const BUSINESS_PROFILES = {
     personPhones: ['Mobile: 07455 918204'], personEmail: 'james.ashworth@itchenvalleywater.example.co.uk'
   }
 }
-function defaultProfile (c) {
-  return {
-    name: 'North Sussex Weald Dairy Farm Ltd',
-    address: ['15 London Road', 'Horsham', 'West Sussex', 'RH13 6PJ'],
-    phones: ['Telephone: 0191 305 7642', 'Mobile: 07392 674851'], email: 'wealddairyfarm@me.com',
-    legal: 'Limited company', companyNumber: '12345678', vat: 'GB123456789',
-    person: 'Sally Wiston', customerRef: '1234512345',
-    personAddress: ['10 Skirbeck Way', 'Maidstone', 'SK22 1DL'],
-    personPhones: ['Mobile: 01273 333000'], personEmail: 'sally.wiston@wistonlandagents.co.uk'
-  }
-}
 
 // ---------- Hand-set cases ----------
 // Cases the user asked for particular scores / SBI groupings on. Their answers are
@@ -329,6 +318,101 @@ function waterSector (id, crops) {
 const ORG_TYPES = ['Landowner/landlord', 'Landowner/owner occupier', 'Water Management Company']
 const SOURCE_OPTIONS = ['Surface water abstraction for storage', 'Rainwater harvesting', 'Borehole / aquifer']
 
+// ---------- Generated business profiles (every SBI without a hand-written one) ----------
+// Each case gets its own invented business near its project location, from the case
+// ID alone, so the caselist's Business column and the application's "Confirm your
+// details" always agree. The six hand-written BUSINESS_PROFILES above win.
+const WATER_PLACES = {
+  'Rural Kent (Ashford)': { towns: ['Ashford', 'Charing', 'Wye', 'Tenterden'], county: 'Kent', pc: ['TN23', 'TN25', 'TN26', 'TN27'], dial: '01233' },
+  'Rural Kent (Maidstone)': { towns: ['Maidstone', 'Headcorn', 'Marden', 'Yalding'], county: 'Kent', pc: ['ME15', 'ME17', 'TN12', 'TN12'], dial: '01622' },
+  'Rural Kent (Canterbury)': { towns: ['Canterbury', 'Wingham', 'Elham', 'Chartham'], county: 'Kent', pc: ['CT1', 'CT3', 'CT4', 'CT4'], dial: '01227' },
+  'Rural Sussex (Horsham)': { towns: ['Horsham', 'Billingshurst', 'Cowfold', 'Henfield'], county: 'West Sussex', pc: ['RH13', 'RH14', 'RH13', 'BN5'], dial: '01403' },
+  'Rural Surrey': { towns: ['Guildford', 'Cranleigh', 'Godalming', 'Dorking'], county: 'Surrey', pc: ['GU3', 'GU6', 'GU7', 'RH5'], dial: '01483' },
+  'Rural Hampshire': { towns: ['Alton', 'Alresford', 'Petersfield', 'Winchester'], county: 'Hampshire', pc: ['GU34', 'SO24', 'GU32', 'SO21'], dial: '01420' },
+  'Rural Dorset': { towns: ['Blandford Forum', 'Sturminster Newton', 'Dorchester', 'Shaftesbury'], county: 'Dorset', pc: ['DT11', 'DT10', 'DT2', 'SP7'], dial: '01258' },
+  'Rural Northamptonshire': { towns: ['Daventry', 'Brackley', 'Towcester', 'Thrapston'], county: 'Northamptonshire', pc: ['NN11', 'NN13', 'NN12', 'NN14'], dial: '01327' },
+  'Rural Warwickshire': { towns: ['Wellesbourne', 'Southam', 'Shipston-on-Stour', 'Alcester'], county: 'Warwickshire', pc: ['CV35', 'CV47', 'CV36', 'B49'], dial: '01789' },
+  'Rural Leicestershire': { towns: ['Melton Mowbray', 'Market Harborough', 'Loughborough', 'Oakham'], county: 'Leicestershire', pc: ['LE13', 'LE16', 'LE12', 'LE15'], dial: '01664' },
+  'Rural Derbyshire': { towns: ['Ashbourne', 'Bakewell', 'Wirksworth', 'Belper'], county: 'Derbyshire', pc: ['DE6', 'DE45', 'DE4', 'DE56'], dial: '01335' },
+  'Rural Worcestershire': { towns: ['Pershore', 'Evesham', 'Upton-upon-Severn', 'Bromyard'], county: 'Worcestershire', pc: ['WR10', 'WR11', 'WR8', 'HR7'], dial: '01386' },
+  'Rural Norfolk': { towns: ['Swaffham', 'Thetford', 'Dereham', 'Attleborough'], county: 'Norfolk', pc: ['PE37', 'IP24', 'NR19', 'NR17'], dial: '01760' },
+  'Rural Suffolk': { towns: ['Bury St Edmunds', 'Stowmarket', 'Sudbury', 'Mildenhall'], county: 'Suffolk', pc: ['IP33', 'IP14', 'CO10', 'IP28'], dial: '01284' },
+  'Cambridgeshire fens': { towns: ['Ely', 'Chatteris', 'March', 'Soham'], county: 'Cambridgeshire', pc: ['CB7', 'PE16', 'PE15', 'CB7'], dial: '01353' },
+  'Rural Powys, Wales': { towns: ['Llandrindod Wells', 'Rhayader', 'Builth Wells', 'Knighton'], county: 'Powys', pc: ['LD1', 'LD6', 'LD2', 'LD7'], dial: '01597', welsh: true },
+  'Rural Ceredigion, Wales': { towns: ['Lampeter', 'Tregaron', 'Aberaeron', 'Llandysul'], county: 'Ceredigion', pc: ['SA48', 'SY25', 'SA46', 'SA44'], dial: '01570', welsh: true },
+  'Rural Cumbria (Penrith)': { towns: ['Penrith', 'Appleby-in-Westmorland', 'Kirkby Stephen', 'Alston'], county: 'Cumbria', pc: ['CA11', 'CA16', 'CA17', 'CA9'], dial: '01768' },
+  'Rural Cumbria (Keswick)': { towns: ['Keswick', 'Cockermouth', 'Threlkeld', 'Braithwaite'], county: 'Cumbria', pc: ['CA12', 'CA13', 'CA12', 'CA12'], dial: '017687' }
+}
+const WATER_SURNAMES = ['Harrison', 'Whitlock', 'Pennington', 'Ashdown', 'Hargreaves', 'Fothergill', 'Bellamy', 'Thackeray', 'Winterbourne', 'Lockwood', 'Marchant', 'Tregear', 'Dunmore', 'Calloway', 'Stannard', 'Ravenscroft', 'Aldridge', 'Langley', 'Moorcroft', 'Hollis', 'Garnett', 'Sedgwick', 'Kingsley', 'Rowntree', 'Bannister', 'Cartwright', 'Eastwood', 'Fairweather', 'Goodwin', 'Cresswell']
+const WATER_WELSH_SURNAMES = ['Pugh', 'Evans', 'Powell', 'Jenkins', 'Lloyd', 'Rees', 'Morgan', 'Davies', 'Price', 'Bowen', 'Vaughan', 'Gwynne']
+const WATER_FIRST_NAMES = ['Sarah', 'James', 'Helen', 'Thomas', 'Rachel', 'David', 'Emma', 'Richard', 'Claire', 'Andrew', 'Joanna', 'Michael', 'Katherine', 'Peter', 'Alison', 'Simon', 'Louise', 'Mark', 'Fiona', 'Robert']
+const WATER_FARM_NAMES = ['Manor Farm', 'Home Farm', 'Hill Farm', 'Court Farm', 'Church Farm', 'The Old Dairy', 'Park Farm', 'Grange Farm', 'Mill Farm', 'Lower Farm']
+const WATER_ROADS = ['Church Lane', 'Mill Lane', 'High Street', 'Station Road', 'Common Road', 'Back Lane', 'The Green', 'Farm Lane']
+// [pattern, legal status] — "S" surname, "P" local place.
+const WATER_NAME_PATTERNS = [
+  ['S & Son', 'Partnership'], ['S Farms Ltd', 'Limited company'], ['P Growers Ltd', 'Limited company'],
+  ['S Family Farms', 'Partnership'], ['P Produce Ltd', 'Limited company'], ['S Brothers', 'Partnership'],
+  ['P Estate', 'Sole trader'], ['S (P) Ltd', 'Limited company'], ['S Agricultural Ltd', 'Limited company'],
+  ['S Farming Partnership', 'Partnership']
+]
+function pad (n, len) { return String(n).padStart(len, '0') }
+function waterGeneratedProfile (c, loc, salt) {
+  salt = salt || 0
+  const id = c.id
+  const pl = WATER_PLACES[loc.area]
+  const hh = function (mult, shift) { return waterHash(id, mult, shift) }
+  const surnames = pl.welsh ? WATER_WELSH_SURNAMES : WATER_SURNAMES
+  const sur = surnames[(hh(2654435761, 3) + salt) % surnames.length]
+  const townIx = hh(2246822519, 5) % pl.towns.length
+  const town = pl.towns[townIx]
+  const pat = WATER_NAME_PATTERNS[(hh(3266489917, 7) + salt * 3) % WATER_NAME_PATTERNS.length]
+  const name = pat[0].replace('S', sur).replace('P', town)
+  const first = WATER_FIRST_NAMES[hh(2891336453, 9) % WATER_FIRST_NAMES.length]
+  const person = first + ' ' + sur
+  const slug = name.toLowerCase().replace(/[^a-z]/g, '').slice(0, 22)
+  const dom = slug + '.example.co.uk'
+  const farm = WATER_FARM_NAMES[hh(2654435761, 11) % WATER_FARM_NAMES.length]
+  const road = WATER_ROADS[hh(2246822519, 13) % WATER_ROADS.length]
+  const pcArea = pl.pc[townIx]
+  const postcode = function (k) { return pcArea + ' ' + (1 + hh(3266489917, k) % 9) + String.fromCharCode(65 + hh(2891336453, k + 1) % 26) + String.fromCharCode(65 + hh(2654435761, k + 2) % 26) }
+  const n = parseInt(id, 10)
+  const digits = function (len, mult) { return pad((((n * mult) >>> 0) % Math.pow(10, len)), len) }
+  const legal = pat[1]
+  return {
+    name: name,
+    address: [farm, road, town, pl.county, postcode(15)],
+    phones: ['Telephone: ' + pl.dial + ' ' + digits(6, 40503)].concat(hh(2246822519, 17) % 2 ? ['Mobile: 07' + digits(3, 7919) + ' ' + digits(6, 104729)] : []),
+    email: (first + '.' + sur).toLowerCase() + '@' + dom,
+    legal: legal, companyNumber: legal === 'Limited company' ? digits(8, 2654435761) : 'Not applicable',
+    vat: 'GB' + digits(9, 40503), person: person, customerRef: digits(10, 2246822519),
+    personAddress: [(1 + hh(2891336453, 19) % 40) + ' ' + road, town, postcode(21)],
+    personPhones: ['Mobile: 07' + digits(3, 31337) + ' ' + digits(6, 27449)],
+    personEmail: (first + '.' + sur).toLowerCase() + '@' + dom
+  }
+}
+// No two generated businesses share a name: walk the cases in file order and bump a
+// per-case salt (which shifts surname and name pattern) until the name is unused.
+let waterSalts = null
+function waterSaltFor (id) {
+  if (!waterSalts) {
+    waterSalts = {}
+    const used = {}
+    Object.keys(BUSINESS_PROFILES).forEach(function (k) { used[BUSINESS_PROFILES[k].name] = true })
+    require('./water-management-cases.js').cases.forEach(function (c) {
+      if (BUSINESS_PROFILES[c.sbi]) return
+      const loc = waterLocation(c.id)
+      for (let salt = 0; salt < 200; salt++) {
+        const nm = waterGeneratedProfile(c, loc, salt).name
+        if (!used[nm]) { used[nm] = true; waterSalts[c.id] = salt; return }
+      }
+    })
+  }
+  return waterSalts[id] || 0
+}
+function waterProfile (c, loc) {
+  return BUSINESS_PROFILES[c.sbi] || waterGeneratedProfile(c, loc, waterSaltFor(c.id))
+}
+
 // The whole made-up application for a case ({id, sbi, date, ...}), including the
 // score breakdown and total. Pure function of the case.
 function waterApplication (c) {
@@ -339,8 +423,9 @@ function waterApplication (c) {
   }
   const id = c.id
   const ov = OVERRIDES[id]
-  const profile = BUSINESS_PROFILES[c.sbi] || defaultProfile(c)
-  const loc = waterLocation(id, ov && ov.colour, profile.region)
+  const region = BUSINESS_PROFILES[c.sbi] && BUSINESS_PROFILES[c.sbi].region
+  const loc = waterLocation(id, ov && ov.colour, region)
+  const profile = waterProfile(c, loc)
   const sector = waterSector(id, ov && ov.crops)
   let businesses = (ov && ov.biz) || BIZ_OPTIONS[waterHash(id, 2246822519, 10) % BIZ_OPTIONS.length]
   let consents = waterConsents(id, ov)
@@ -366,4 +451,15 @@ function waterApplication (c) {
   }
 }
 
-module.exports = { waterApplication: waterApplication, SECTOR_SCORES: SECTOR_SCORES, OVERRIDES: OVERRIDES, TWINS: TWINS, BUSINESS_PROFILES: BUSINESS_PROFILES }
+function waterBusinessName (c) {
+  const ov = OVERRIDES[TWINS[c.id] || c.id]
+  const partner = TWINS[c.id] ? require('./water-management-cases.js').cases.filter(function (x) { return x.id === TWINS[c.id] })[0] : c
+  const region = BUSINESS_PROFILES[partner.sbi] && BUSINESS_PROFILES[partner.sbi].region
+  return waterProfile(partner, waterLocation(partner.id, ov && ov.colour, region)).name
+}
+
+function waterProfileFor (c) {
+  return waterApplication(c).profile
+}
+
+module.exports = { waterProfileFor: waterProfileFor, waterBusinessName: waterBusinessName, waterApplication: waterApplication, SECTOR_SCORES: SECTOR_SCORES, OVERRIDES: OVERRIDES, TWINS: TWINS, BUSINESS_PROFILES: BUSINESS_PROFILES }

@@ -1534,6 +1534,7 @@
 .app-stat-card--blue  { background: #eef4fa; border-left-color: #1d70b8; }
 .app-stat-card--green { background: #cce2d8; border-left-color: #00703c; } // light green of the accepted tag; value stays black for contrast
 .app-stat-card--red   { background: #fbeae8; border-left-color: #d4351c; }
+.app-stat-card--yellow { background: #fff7bf; border-left-color: #ffdd00; } // GOV.UK yellow tag fill; value stays black (not a negative state)
 .app-stat-card__label {
   margin: 0 0 5px;
   font-size: 16px;
@@ -1545,6 +1546,20 @@
 .app-stat-card__value { margin: 0; font-size: 36px; line-height: 1.1; font-weight: 700; }
 .app-stat-card--blue .app-stat-card__value { color: #1d70b8; }
 .app-stat-card--red  .app-stat-card__value { color: #d4351c; }
+
+// Budget stat cards (Water management caselist): one row of content-width cards that
+// share the space, with their short text kept on one line.
+.app-budget-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.app-budget-cards__item {
+  flex: 1 1 14rem;
+}
+.app-budget-cards .app-stat-card p {
+  white-space: nowrap;
+}
 
 .app-budget-bar {
   display: flex;

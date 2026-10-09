@@ -3,18 +3,19 @@
 //  - id: unique 6-digit case ID; sbi: 9-digit string (unique per business, except 244666513 (4 cases) and 5 more SBIs with 2-4 cases each)
 //  - score: whole number 1-100 (%). DERIVED: the sum of the four scored application
 //    sections (data/water-management-answers.js), so it is always a score that can be
-//    earned. Regenerate with the rescore step in the water-management-application skill.. DERIVED: the sum of the four scored application
-//    sections (data/water-management-answers.js), so it is always a score that can be
 //    earned. Regenerate with the rescore step in the water-management-application skill.
 //  - value: grant value in £ (whole pounds)
 //  - date: application date, "D Mon YYYY"
+//  - status (optional): "Withdrawn" = the applicant withdrew it. Everything else is
+//    derived: Removed (duplicate removed by a caseworker) and Progressed (moved on by
+//    Progress list) live in the session; otherwise "Application received".
 // Ranking and Cumulative value are derived in the route (score desc, then earliest date).
 module.exports = {
   cases: [
     { id: "300101", sbi: "495004988", score: 50, value: 65300, date: "27 Jun 2026" },
     { id: "300109", sbi: "215186190", score: 65, value: 94700, date: "25 Aug 2026" },
     { id: "300117", sbi: "716950787", score: 60, value: 98100, date: "8 May 2026" },
-    { id: "300126", sbi: "203277084", score: 70, value: 12100, date: "4 May 2026" },
+    { id: "300126", sbi: "203277084", score: 70, value: 12100, date: "4 May 2026", status: "Withdrawn" },
     { id: "300130", sbi: "283425460", score: 90, value: 5900, date: "25 Jul 2026" },
     { id: "300137", sbi: "494020977", score: 85, value: 9000, date: "18 Aug 2026" },
     { id: "300144", sbi: "690164873", score: 55, value: 6200, date: "17 May 2026" },
@@ -39,7 +40,7 @@ module.exports = {
     { id: "300279", sbi: "646504592", score: 80, value: 13100, date: "9 Jun 2026" },
     { id: "300283", sbi: "591180500", score: 70, value: 19400, date: "19 Jul 2026" },
     { id: "300291", sbi: "657339371", score: 75, value: 110200, date: "9 May 2026" },
-    { id: "300297", sbi: "246930448", score: 90, value: 61000, date: "24 Jun 2026" },
+    { id: "300297", sbi: "246930448", score: 90, value: 61000, date: "24 Jun 2026", status: "Withdrawn" },
     { id: "300308", sbi: "780202447", score: 70, value: 62400, date: "8 Jul 2026" },
     { id: "300311", sbi: "286559022", score: 55, value: 14900, date: "9 Aug 2026" },
     { id: "300321", sbi: "322248736", score: 85, value: 13700, date: "18 Aug 2026" },
@@ -87,7 +88,7 @@ module.exports = {
     { id: "300614", sbi: "552347606", score: 50, value: 103200, date: "9 Jun 2026" },
     { id: "300621", sbi: "838304369", score: 70, value: 143800, date: "16 Aug 2026" },
     { id: "300626", sbi: "823753707", score: 50, value: 37700, date: "7 Jun 2026" },
-    { id: "300634", sbi: "808018656", score: 50, value: 92500, date: "5 Aug 2026" },
+    { id: "300634", sbi: "808018656", score: 50, value: 92500, date: "5 Aug 2026", status: "Withdrawn" },
     { id: "300642", sbi: "112757778", score: 80, value: 42700, date: "27 Aug 2026" },
     { id: "300647", sbi: "111799458", score: 90, value: 9700, date: "23 May 2026" },
     { id: "300655", sbi: "712919723", score: 90, value: 29200, date: "9 Jun 2026" },
@@ -110,7 +111,7 @@ module.exports = {
     { id: "300774", sbi: "801912281", score: 45, value: 21900, date: "25 May 2026" },
     { id: "300782", sbi: "126631510", score: 50, value: 37600, date: "17 Jul 2026" },
     { id: "300788", sbi: "923703485", score: 65, value: 41500, date: "29 Jun 2026" },
-    { id: "300796", sbi: "542563656", score: 85, value: 33700, date: "31 May 2026" },
+    { id: "300796", sbi: "542563656", score: 85, value: 33700, date: "31 May 2026", status: "Withdrawn" },
     { id: "300803", sbi: "772010035", score: 90, value: 34100, date: "5 May 2026" },
     { id: "300810", sbi: "552347606", score: 55, value: 8100, date: "3 Aug 2026" },
     { id: "300819", sbi: "824231248", score: 65, value: 179100, date: "27 May 2026" },
@@ -131,9 +132,9 @@ module.exports = {
     { id: "300923", sbi: "467221005", score: 50, value: 10000, date: "31 Jul 2026" },
     { id: "300929", sbi: "410457871", score: 70, value: 5700, date: "24 Jul 2026" },
     { id: "300935", sbi: "143095723", score: 80, value: 12100, date: "25 Jun 2026" },
-    { id: "300942", sbi: "184394497", score: 80, value: 90100, date: "3 Aug 2026" },
+    { id: "300942", sbi: "184394497", score: 80, value: 90100, date: "3 Aug 2026", status: "Withdrawn" },
     { id: "300949", sbi: "563696491", score: 45, value: 98300, date: "6 May 2026" },
-    { id: "300957", sbi: "102879930", score: 60, value: 49600, date: "26 Jul 2026" },
+    { id: "300957", sbi: "102879930", score: 60, value: 49600, date: "26 Jul 2026", status: "Withdrawn" },
     { id: "300964", sbi: "832824297", score: 40, value: 103200, date: "6 Jun 2026" },
     { id: "300970", sbi: "325026537", score: 75, value: 92700, date: "19 Aug 2026" },
     { id: "300978", sbi: "474944270", score: 70, value: 16400, date: "18 Jul 2026" },
@@ -175,7 +176,7 @@ module.exports = {
     { id: "301229", sbi: "922270445", score: 40, value: 33400, date: "24 Jul 2026" },
     { id: "301236", sbi: "244666513", score: 90, value: 17400, date: "19 Jul 2026" },
     { id: "301246", sbi: "244666513", score: 95, value: 68900, date: "8 Jun 2026" },
-    { id: "301250", sbi: "491607922", score: 90, value: 60400, date: "27 Jul 2026" },
+    { id: "301250", sbi: "491607922", score: 90, value: 60400, date: "27 Jul 2026", status: "Withdrawn" },
     { id: "301259", sbi: "382484849", score: 75, value: 123300, date: "3 Aug 2026" },
     { id: "301265", sbi: "844231139", score: 50, value: 71800, date: "11 Jul 2026" },
     { id: "301272", sbi: "301817536", score: 35, value: 17300, date: "19 Jun 2026" },
@@ -193,7 +194,7 @@ module.exports = {
     { id: "301357", sbi: "364610860", score: 75, value: 4400, date: "1 Jun 2026" },
     { id: "301364", sbi: "918754291", score: 45, value: 62400, date: "1 Jul 2026" },
     { id: "301371", sbi: "596652650", score: 40, value: 36600, date: "7 Aug 2026" },
-    { id: "301379", sbi: "976228435", score: 45, value: 34900, date: "8 Jul 2026" },
+    { id: "301379", sbi: "976228435", score: 45, value: 34900, date: "8 Jul 2026", status: "Withdrawn" },
     { id: "301384", sbi: "844482583", score: 75, value: 6900, date: "15 May 2026" },
     { id: "301391", sbi: "556878321", score: 90, value: 103000, date: "13 Aug 2026" },
     { id: "301399", sbi: "438035254", score: 85, value: 41400, date: "2 May 2026" },
@@ -205,7 +206,7 @@ module.exports = {
     { id: "301441", sbi: "166987934", score: 90, value: 60000, date: "28 May 2026" },
     { id: "301445", sbi: "527266021", score: 60, value: 14100, date: "8 May 2026" },
     { id: "301453", sbi: "769942236", score: 70, value: 134300, date: "8 Jun 2026" },
-    { id: "301459", sbi: "601328012", score: 70, value: 63500, date: "4 May 2026" },
+    { id: "301459", sbi: "601328012", score: 70, value: 63500, date: "4 May 2026", status: "Withdrawn" },
     { id: "301470", sbi: "670202909", score: 45, value: 90400, date: "25 May 2026" },
     { id: "301474", sbi: "300548320", score: 80, value: 103200, date: "12 Jul 2026" },
     { id: "301483", sbi: "915250006", score: 70, value: 13800, date: "25 Aug 2026" },

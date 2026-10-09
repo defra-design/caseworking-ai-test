@@ -1,0 +1,49 @@
+{% extends "layouts/main.html" %}
+
+{# Water management case — confirmation page for an outcome (remove, withdraw or
+   progress). The mandatory note was entered on the Tasks screen (conditional reveal) and is
+   only shown here. #}
+
+{% set headerServiceName = "Water management" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% include "WaterManagement/includes/_case-header.html" %}
+{% endblock %}
+
+{% block content %}
+{% set activeNavItem = "tasks" %}
+{% include "WaterManagement/includes/_case-nav.html" %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <form action="/WaterManagement/case/outcome" method="post" novalidate>
+      <input type="hidden" name="id" value="{{ c.id }}">
+      <input type="hidden" name="type" value="{{ type }}">
+
+      <h1 class="govuk-heading-l govuk-!-margin-top-8">{{ o.heading }}</h1>
+
+      <p class="govuk-body">This will:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for b in o.bullets %}<li>{{ b }}</li>{% endfor %}
+      </ul>
+      <p class="govuk-body">You will not be able to change it afterwards.</p>
+
+      <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Note</dt>
+          <dd class="govuk-summary-list__value">{{ note }}</dd>
+          <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/WaterManagement/case/tasks?id={{ c.id }}">Change<span class="govuk-visually-hidden"> note</span></a></dd>
+        </div>
+      </dl>
+
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">{{ o.button }}</button>
+        <a class="govuk-link" href="/WaterManagement/case/tasks?id={{ c.id }}">Cancel and return</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
