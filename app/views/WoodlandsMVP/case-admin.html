@@ -37,7 +37,7 @@
                it; without it the form only creates the first item. #}
             <input type="hidden" name="mode" value="{{ mode }}">
 
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">{% if mode == 'change' %}Change claim{% else %}Create claim{% endif %}</h3>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">{% if mode == 'change' %}Change claimable item{% else %}Create claimable item{% endif %}</h3>
 
             <p class="govuk-body">Enter the total area of woodland approved by the Forestry Commission. This will be used to calculate the amount the customer can claim.</p>
 
@@ -98,7 +98,7 @@
         <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claimable item</th>
               <th scope="col" class="govuk-table__header app-console-table__col--desc">Description</th>
               <th scope="col" class="govuk-table__header app-console-table__col--created">Created</th>
               <th scope="col" class="govuk-table__header app-console-table__col--action"><span class="govuk-visually-hidden">Action</span></th>
@@ -149,11 +149,10 @@
               <td class="govuk-table__cell">Woodland management plan</td>
               <td class="govuk-table__cell">{{ e.haDisplay }} ha</td>
               {# Nothing has been claimed against this item yet, so the area can
-                 still be changed or the item removed altogether. Left-aligned so
-                 the links start under Created in the table above. #}
+                 still be changed. (Delete removed - out of scope.) Left-aligned so
+                 the link starts under Created in the table above. #}
               <td class="govuk-table__cell">
-                <a class="govuk-link govuk-!-margin-right-3" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for the woodland management plan</span></a>
-                <a class="govuk-link" href="/WoodlandsMVP/case-admin/delete?id={{ c.id }}">Delete<span class="govuk-visually-hidden"> the woodland management plan claim type</span></a>
+                <a class="govuk-link" href="?id={{ c.id }}&amp;change=1#create">Change<span class="govuk-visually-hidden"> the area for the woodland management plan</span></a>
               </td>
             </tr>
             {% endfor %}

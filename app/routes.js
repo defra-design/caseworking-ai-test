@@ -4182,7 +4182,7 @@ function wmvpRenderConsole (req, res, id, opts) {
   // Drop a success banner that no longer matches the state (e.g. a bookmarked
   // ?created=1 after the item has been deleted).
   let banner = opts.banner || null
-  if (banner === 'Claim deleted') { if (created !== null || claimed) banner = null }
+  if (banner === 'Claimable item deleted') { if (created !== null || claimed) banner = null }
   else if (banner && created === null) banner = null
   res.render('WoodlandsMVP/case-admin', {
     con: WD_CONSOLE,
@@ -4227,9 +4227,9 @@ router.get('/WoodlandsMVP/case-admin', function (req, res) {
   wmvpRenderConsole(req, res, req.query.id, {
     openForm: req.query.create === '1' || req.query.change === '1',
     mode: req.query.change === '1' ? 'change' : 'create',
-    banner: (req.query.created === '1' ? 'Claim created'
-      : (req.query.changed === '1' ? 'Claim changed'
-        : (req.query.deleted === '1' ? 'Claim deleted' : null)))
+    banner: (req.query.created === '1' ? 'Claimable item created'
+      : (req.query.changed === '1' ? 'Claimable item changed'
+        : (req.query.deleted === '1' ? 'Claimable item deleted' : null)))
   })
 })
 

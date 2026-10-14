@@ -164,73 +164,84 @@
   </thead> 
 
   <tbody class="govuk-table__body">
-  <tr class="govuk-table__row">
-
-      <td class="govuk-table__cell">12 Sept 2025</td>
-
-      <td class="govuk-table__cell">
-        Approval reason
-      </td>
-      <td class="govuk-table__cell">
-        Approved application as passed available area, intersecting data layers and supplement actions checks. Ready for agreement offer.
-      </td>
-
-      <td class="govuk-table__cell"> A Jones</td>
-
-
-    </tr>
-
-      <tr class="govuk-table__row">
-
-      <td class="govuk-table__cell">12 Sept 2025</td>
-
-      <td class="govuk-table__cell">
-        Task<a href="#task1"></a>
-      </td>
-      <td class="govuk-table__cell">
-        Sent Sally an email to check if she wanted to apply for full eligible area for land parcel SO3757 ID0120 on 12 September. Sally {% if (data.readMore === 'Yes') %}  responded on 12 September (see 'customer contact') and said yes. Checked in LIPIS, and updated map in Siti Agri with full eligible area to 3.5125 ha. {% else %} ... <br> <a href="/readMoreT1">read full text</a>{% endif %}
-      </td>
-
-      <td class="govuk-table__cell"> A Jones</td>
-
-
-    </tr>
-
-      <tr class="govuk-table__row">
-
-      <td class="govuk-table__cell">11 Sept 2025</td>
-
-      <td class="govuk-table__cell">
-        General
-      </td>
-      <td class="govuk-table__cell">
-        Reviewed submitted SFI application
-      </td>
-
-      <td class="govuk-table__cell"> A Jones</td>
-
-
-    </tr>
-
+    {# Rows appear as the caseworker decides tasks and the application (newest first). #}
+    {% if (data.decision1) %}
     <tr class="govuk-table__row">
-
-      <td class="govuk-table__cell">10 Sept 2025</td>
-
-      <td class="govuk-table__cell">
-        Assignment
-      </td>
-      <td class="govuk-table__cell">
-        Assigned application to myself
-      </td>
-
-      <td class="govuk-table__cell"> A Jones</td>
-
-
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Application decision: {{ data['decision1'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredReviewNote'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
     </tr>
-
-
-
-
+    {% endif %}
+    {% if (data.noteActionAgreeTask2) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Notify customer that draft agreement is ready – {{ data['noteActionAgreeTask2'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote2A'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionAgreeTask1) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Check draft funding agreement – {{ data['noteActionAgreeTask1'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote1A'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask6) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Review scheme budget as a finance officer – {{ data['noteActionTask6'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote6'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask5) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Check payment amount – {{ data['noteActionTask5'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote5'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask3) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Check if any land parcels are within an SSSI – {{ data['noteActionTask3'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote3'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask2) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Review land parcel rule calculations – {{ data['noteActionTask2'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote2'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {% if (data.noteActionTask1) %}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">12 Sept 2025</td>
+      <td class="govuk-table__cell">Task: Check customer details – {{ data['noteActionTask1'] }}</td>
+      <td class="govuk-table__cell">{{ data['filteredNote1'] }}</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    {% endif %}
+    {# Case history before review started. #}
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">11 Sept 2025</td>
+      <td class="govuk-table__cell">General</td>
+      <td class="govuk-table__cell">Reviewed submitted SFI application</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
+    <tr class="govuk-table__row">
+      <td class="govuk-table__cell">10 Sept 2025</td>
+      <td class="govuk-table__cell">Assignment</td>
+      <td class="govuk-table__cell">Assigned application to myself</td>
+      <td class="govuk-table__cell">A Jones</td>
+    </tr>
   </tbody>
 </table>
 </fieldset>
