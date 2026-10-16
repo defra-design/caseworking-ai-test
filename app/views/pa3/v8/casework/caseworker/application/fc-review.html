@@ -1,0 +1,79 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Forestry Commission review
+      </h1>
+
+      <p class="govuk-body">The application is being reviewed by the Forestry Commission.</p>
+      <p class="govuk-body">When the Forestry Commission notifies you that its review is complete, record the outcome here. </p>
+      
+      <form method="post">
+
+        {% for app in data['pa3'][v]['applications'] %}
+          {% if app.ref == ref %}
+
+            {% set rejectedHtml %}
+              {{ govukTextarea({
+                id: "fc-review-rejected-notes",
+                name: "fc-review-rejected-notes",
+                label: {
+                  text: "Why did the Forestry Commission reject this application?"
+                },
+                value: data['fc-review-rejected-notes']
+              }) }}
+            {% endset -%}
+
+            {{ govukRadios({
+              name: "fc-review",
+              fieldset: {
+                legend: {
+                  text: "Outcome",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Accepted",
+                  text: "Accepted",
+                  checked: data['fc-review'] == "Accepted"
+                },
+                {
+                  value: "Rejected",
+                  text: "Rejected",
+                  checked: data['fc-review'] == "Rejected",
+                  conditional: {
+                    html: rejectedHtml
+                  }
+                }
+              ]
+            }) }}
+
+          {% endif %}
+        {% endfor %}
+        
+        {{ govukButton({
+          classes: "govuk-!-margin-top-5",
+          text: "Confirm"
+        }) }}
+
+      </form>
+
+      <p class="govuk-body"><a href="tasklist-fcoutcome" class="govuk-link">Cancel and return</a></p>
+            
+
+    </div>
+  </div>
+
+{% endblock %}

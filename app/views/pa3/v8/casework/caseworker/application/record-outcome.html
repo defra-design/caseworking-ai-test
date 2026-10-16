@@ -1,0 +1,95 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Record the total eligible area of woodland included in the plan
+      </h1>
+      
+      <form method="post">
+
+        {% for app in data['pa3'][v]['applications'] %}
+          {% if app.ref == ref %}
+
+            <p class="govuk-body">Follow these steps to record the WMP claim details:</p>
+            <ol class="govuk-list govuk-list--number">
+              <li><a href="../../claim-service/{{ app['ref'] }}/enter-area" class="govuk-link" target="_blank">Go to the claims service (opens in new tab)</a> to record the total eligible area</li>
+              <li>Confirm the amount the customer can claim</li>
+              <li>Come back to this page and confirm that the claim details have been recorded (or explain why you cannot record them)</li>
+            </ol>
+
+            {% set recordedHtml %}
+              {{ govukInput({
+                id: "record-area-notes-recorded",
+                name: "record-area-notes-recorded",
+                label: {
+                  text: "What is the reference for the recorded claim details?"
+                },
+                value: data['record-area-notes-recorded']
+              }) }}
+            {% endset -%}
+
+            {% set notRecordedHtml %}
+              {{ govukTextarea({
+                id: "record-area-notes-notrecorded",
+                name: "record-area-notes-notrecorded",
+                label: {
+                  text: "Why were the claim details not recorded?"
+                },
+                value: data['record-area-notes-notrecorded']
+              }) }}
+            {% endset -%}
+
+            {{ govukRadios({
+              name: "record-area",
+              fieldset: {
+                legend: {
+                  text: "Confirm claim details have been recorded",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Claim details recorded",
+                  text: "Claim details recorded",
+                  checked: data['record-area'] == "Claim details recorded",
+                  conditional: {
+                    html: recordedHtml
+                  }
+                },
+                {
+                  value: "Not recorded",
+                  text: "Not recorded",
+                  checked: data['record-area'] == "Not recorded",
+                  conditional: {
+                    html: notRecordedHtml
+                  }
+                }
+              ]
+            }) }}
+
+          {% endif %}
+        {% endfor %}
+        
+        {{ govukButton({
+          classes: "govuk-!-margin-top-5",
+          text: "Confirm"
+        }) }}
+
+      </form>
+            
+
+    </div>
+  </div>
+
+{% endblock %}

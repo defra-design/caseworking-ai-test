@@ -1,0 +1,27 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Waiting for the customer to claim
+      </h1>
+
+      <p class="govuk-body">The customer has been notified that they can claim against their agreement and you don’t need to do anything else.</p>
+
+      <p class="govuk-body"><a href="../../case-list" class="govuk-link">Back to applications</a></p>
+            
+
+    </div>
+  </div>
+
+{% endblock %}

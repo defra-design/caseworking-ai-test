@@ -1,0 +1,13 @@
+[
+  {
+    "email": "caseworker@defra.gov.uk",
+    "type": "caseworker",
+    "name": "Example Caseworker"
+  },
+  {
+    "email": "manager@defra.gov.uk",
+    "type": "manager",
+    "name": "Example Manager"
+  }
+]
+

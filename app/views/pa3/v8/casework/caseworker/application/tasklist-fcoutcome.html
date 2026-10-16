@@ -1,0 +1,146 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{#
+  Stage 1 task: Record Forestry Commission decision (replaces the old FC review
+  task list + decision). One page, three options each with a mandatory reason:
+    - Accept   -> progress straight to the stage 2 task list (tasklist)
+    - Reject / Withdraw -> "Are you sure?" confirmation (confirm-decision), then
+      the case is closed.
+  POST handled in routes/pa3/v8/casework.js.
+#}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if errors and errors.length %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">Record Forestry Commission decision</h1>
+
+      {% for app in data['pa3'][v]['applications'] %}
+        {% if app.ref == ref %}
+
+          {% set decision = app['caseworking']['decision'] %}
+
+          {% if decision and decision.type != "Progress" %}
+
+            {# Reject / Withdraw has been confirmed: show it, nothing more to do #}
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Decision</dt>
+                <dd class="govuk-summary-list__value">
+                  {% if decision.type == "Reject" %}Agreement rejected{% else %}Agreement withdrawn{% endif %}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date</dt>
+                <dd class="govuk-summary-list__value">{{ decision.date | prettyDateShort }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Reason</dt>
+                <dd class="govuk-summary-list__value">{{ decision.note }}</dd>
+              </div>
+            </dl>
+            <p class="govuk-body"><a href="/pa3/{{ v }}/casework/caseworker/case-list" class="govuk-link">Back to applications</a></p>
+
+          {% else %}
+
+            <p class="govuk-body">Record the Forestry Commission decision here.</p>
+
+            <form method="post">
+
+              {% set progressHtml %}
+                {{ govukTextarea({
+                  id: "fc-decision-notes-progress",
+                  name: "fc-decision-notes-progress",
+                  rows: 5,
+                  label: { text: "You must include a reason for progressing this application to claim stage.", classes: "govuk-hint" },
+                  value: notes.progress,
+                  errorMessage: { text: noteError.progress } if noteError and noteError.progress
+                }) }}
+              {% endset -%}
+
+              {% set rejectHtml %}
+                {{ govukTextarea({
+                  id: "fc-decision-notes-reject",
+                  name: "fc-decision-notes-reject",
+                  rows: 5,
+                  label: { text: "You must include a reason for why this agreement has been rejected.", classes: "govuk-hint" },
+                  value: notes.reject,
+                  errorMessage: { text: noteError.reject } if noteError and noteError.reject
+                }) }}
+              {% endset -%}
+
+              {% set withdrawHtml %}
+                {{ govukTextarea({
+                  id: "fc-decision-notes-withdraw",
+                  name: "fc-decision-notes-withdraw",
+                  rows: 5,
+                  label: { text: "You must include a reason for withdrawing this agreement.", classes: "govuk-hint" },
+                  value: notes.withdraw,
+                  errorMessage: { text: noteError.withdraw } if noteError and noteError.withdraw
+                }) }}
+              {% endset -%}
+
+              {{ govukRadios({
+                name: "fc-decision",
+                fieldset: {
+                  legend: { text: "Decision", classes: "govuk-fieldset__legend--m" }
+                },
+                errorMessage: { text: decisionError } if decisionError,
+                items: [
+                  {
+                    id: "fc-decision-progress",
+                    value: "Progress",
+                    text: "Accept the agreement and progress to next stage",
+                    checked: selected == "Progress",
+                    conditional: { html: progressHtml }
+                  },
+                  {
+                    id: "fc-decision-reject",
+                    value: "Reject",
+                    text: "Reject the agreement and notify the customer",
+                    checked: selected == "Reject",
+                    conditional: { html: rejectHtml }
+                  },
+                  {
+                    id: "fc-decision-withdraw",
+                    value: "Withdraw",
+                    text: "Withdraw agreement",
+                    checked: selected == "Withdraw",
+                    conditional: { html: withdrawHtml }
+                  }
+                ]
+              }) }}
+
+              {{ govukButton({
+                classes: "govuk-!-margin-top-5",
+                text: "Confirm"
+              }) }}
+
+            </form>
+
+            <p class="govuk-body"><a href="/pa3/{{ v }}/casework/caseworker/case-list" class="govuk-link">Cancel and return</a></p>
+
+          {% endif %}
+
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+{% endblock %}

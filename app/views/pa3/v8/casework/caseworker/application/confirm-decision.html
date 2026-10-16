@@ -1,0 +1,57 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{#
+  Confirmation shown after Reject or Withdraw is chosen on the Record Forestry
+  Commission decision page. Yes closes the case; No returns to the decision.
+#}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if error %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: [{ text: error, href: "#confirm-decision" }]
+        }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">Are you sure you want to {{ verb }} this agreement?</h1>
+
+      <p class="govuk-body">{{ verbIng }} this agreement will:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>stop all future payments</li>
+        <li>end all actions and standards</li>
+        <li>close the agreement</li>
+      </ul>
+
+      {{ govukWarningText({
+        text: "You will not be able to update or reopen.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      <form method="post">
+        {{ govukRadios({
+          name: "confirm-decision",
+          idPrefix: "confirm-decision",
+          fieldset: {
+            legend: { text: verbCap + " the agreement?", classes: "govuk-fieldset__legend--m" }
+          },
+          errorMessage: { text: error } if error,
+          items: [
+            { value: "Yes", text: "Yes" },
+            { value: "No", text: "No" }
+          ]
+        }) }}
+
+        {{ govukButton({ text: "Continue" }) }}
+      </form>
+
+      <p class="govuk-body"><a href="/pa3/{{ v }}/casework/caseworker/application/{{ ref }}/tasklist-fcoutcome" class="govuk-link">Cancel and return</a></p>
+
+    </div>
+  </div>
+
+{% endblock %}

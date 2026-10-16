@@ -2203,3 +2203,71 @@
   }
 }
 
+
+
+// PA3 v8 caseworking journey (copied from the Woodlands prototype)
+.lg-div {
+  padding-bottom: govuk-spacing(4);
+}
+
+.app-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  column-gap: govuk-spacing(6);
+  row-gap: govuk-spacing(1);
+}
+
+.app-summary-row p {
+  margin-bottom: 0;
+}
+
+.app-table__cell--nowrap {
+  white-space: nowrap;
+}
+
+.govuk-width-container.app-width-container--wide {
+  max-width: none;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-width-container.app-width-container--wide {
+    margin-right: 30px;
+    margin-left: 30px;
+  }
+}
+
+// PA3 v8 header: logo, title and signed-in account on one row (only headers
+// that contain the account block)
+@media (min-width: 48.0625em) {
+  .defra-internal-header .govuk-width-container:has(.defra-internal-account) {
+    display: flex;
+    align-items: center;
+  }
+
+  .defra-internal-header .govuk-width-container:has(.defra-internal-account) .defra-logo {
+    display: block;
+    width: auto;
+    flex: 0 0 175px;
+    margin-bottom: 0;
+  }
+
+  .defra-internal-header .govuk-width-container:has(.defra-internal-account) .defra-internal-service-name {
+    display: block;
+    width: auto;
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0 2em;
+  }
+
+  .defra-internal-account {
+    flex: 0 0 auto;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .defra-internal-account p {
+    margin-bottom: 0;
+  }
+}

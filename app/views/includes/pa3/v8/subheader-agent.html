@@ -1,0 +1,25 @@
+{% for org in data['pa3'][v]['orgs'] %}
+  {% if org['sbi'] == data['pa3'][v]['apply']['sbi'] %}
+    <div class="govuk-width-container">
+      <main class="govuk-main-wrapper govuk-!-padding-bottom-0 govuk-!-padding-top-0">
+        <div class="govuk-grid-row govuk-!-padding-top-3">
+          <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-2">{{ org['name'] }}</h3>
+            <p class="govuk-body sbi-number govuk-!-margin-bottom-1"><strong>SBI:</strong> {{ org['sbi'] }}</p>
+          </div>
+          <div class="govuk-grid-column-one-third govuk-!-text-align-right">
+              {% if data['pa3'][v]['apply']['applicant-name']  %}
+                <p class="govuk-body sbi-number govuk-!-margin-bottom-2"><strong>Applicant:</strong> {{ data['pa3'][v]['apply']['applicant-name'] }}</p> 
+              {% endif %}
+            {% for user in data['pa3'][v]['users'] %}
+              {% if user['crn'] == data['pa3'][v]['apply']['crn'] %}
+                <p class="govuk-body sbi-number govuk-!-margin-bottom-0"><strong>Agent:</strong> {{ user['name'] }}</p>   
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </main>
+    </div>
+    <hr>
+  {% endif %}
+{% endfor %}

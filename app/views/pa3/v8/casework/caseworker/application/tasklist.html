@@ -1,0 +1,117 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Forestry Commission review
+      </h1>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-9">
+        Tasks
+      </h2>
+
+      {% for app in data['pa3'][v]['applications'] %}
+        {% if app.ref == ref %}
+
+          {% set recordArea = app['caseworking']['fcreview']['record-area'] %}
+          {% set tellCustomer = app['caseworking']['fcreview']['tell-customer'] %}
+
+          {% set canTellCustomer = recordArea == "Created" %}
+          {% set canCompleteReview = recordArea == "Created" and tellCustomer == "Notification sent" %}
+
+          <ul class="govuk-task-list">
+
+            {# Task 1: always actionable #}
+            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+
+              <div class="govuk-task-list__name-and-hint">
+                <a class="govuk-link govuk-task-list__link" href="record-area" aria-describedby="record-area-status">
+                  Record total eligible area of woodland
+                </a>
+              </div>
+              <div class="govuk-task-list__status" id="record-area-status">
+                {% if recordArea == "Created" %}
+                  {{ govukTag({
+                    classes: "govuk-tag--green",
+                    text: "Completed"
+                  }) }}
+                {% elseif recordArea == "Not created" %}
+                  {{ govukTag({
+                    classes: "govuk-tag--red",
+                    text: "Not created"
+                  }) }}
+                {% else %}
+                  {{ govukTag({
+                    text: "Incomplete"
+                  }) }}
+                {% endif %}
+              </div>
+
+            </li>
+
+            {# Task 2: locked until task 1 is completed #}
+            <li class="govuk-task-list__item{% if canTellCustomer %} govuk-task-list__item--with-link{% endif %}">
+
+              <div class="govuk-task-list__name-and-hint">
+                {% if canTellCustomer %}
+                  <a class="govuk-link govuk-task-list__link" href="tell-customer" aria-describedby="tell-customer-status">
+                    Tell the customer they can make a claim
+                  </a>
+                {% else %}
+                  Tell the customer they can make a claim
+                {% endif %}
+              </div>
+              <div class="govuk-task-list__status" id="tell-customer-status">
+                {% if not canTellCustomer %}
+                  {{ govukTag({
+                    classes: "govuk-tag--grey",
+                    text: "Cannot start yet"
+                  }) }}
+                {% elseif tellCustomer == "Notification sent" %}
+                  {{ govukTag({
+                    classes: "govuk-tag--green",
+                    text: "Completed"
+                  }) }}
+                {% elseif tellCustomer == "Could not send notification" %}
+                  {{ govukTag({
+                    classes: "govuk-tag--red",
+                    html: "Could not<br>complete"
+                  }) }}
+                {% else %}
+                  {{ govukTag({
+                    text: "Incomplete"
+                  }) }}
+                {% endif %}
+              </div>
+
+            </li>
+
+          </ul>
+
+          
+          {% if canCompleteReview %}
+            <form method="post">
+              {{ govukButton({
+                classes: "govuk-!-margin-top-5",
+                text: "Complete Forestry Commission review"
+              }) }}
+            </form>
+          {% endif %}
+
+        {% endif %}
+      {% endfor %}
+
+    </div>
+  </div>
+
+{% endblock %}

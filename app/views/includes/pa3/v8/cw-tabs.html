@@ -1,0 +1,38 @@
+
+    <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+      <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+        Menu
+      </button>
+      
+      {% for app in data['pa3'][v]['applications'] %}
+        {% if app.ref == ref %}
+
+          <nav class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+              <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" {% if applicationTab == "tasks" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Tasks</a>
+              </li>
+              <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" {% if applicationTab == "view" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Application</a>
+              </li>
+              <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link"  {% if applicationTab == "agreement" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Agreement</a>
+              </li>
+              {% if app['status'] == "Awaiting claim" %}
+                <li class="moj-sub-navigation__item">
+                  <a class="moj-sub-navigation__link"  {% if applicationTab == "claims" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Claims</a>
+                </li>
+              {% endif %}
+              <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" {% if applicationTab == "timeline" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Timeline</a>
+              </li>
+              <li class="moj-sub-navigation__item">
+                <a class="moj-sub-navigation__link" {% if applicationTab == "notes" %}aria-current="page"{% endif %} href="javascript:preventDefault();">Notes</a>
+              </li>
+            </ul>
+          </nav>
+          
+        {% endif %}
+      {% endfor %}
+
+    </nav>

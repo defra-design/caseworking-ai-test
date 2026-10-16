@@ -3343,7 +3343,23 @@ function wdCases () {
     return m ? Object.assign({}, c, { business: m.business, sbi: m.sbi }) : c
   })
 }
-function wdFindCase (id) { return wdCases().find(function (c) { return c.id === id }) }
+// PA3 v8 caseworking applications (data/pa3/v8) that are not in the Woodlands
+// caselist still open the case admin: build a minimal case from the v8 record.
+function wdV8Case (id) {
+  const apps = require('./data/pa3/v8/applications.json')
+  const orgs = require('./data/pa3/v8/organisations.json')
+  const a = apps.find(function (x) { return x.ref === id })
+  if (!a) return null
+  const o = orgs.find(function (x) { return x.sbi === a.sbi })
+  const area = Math.round((Number(a.overten) + Number(a.underten)) * 100) / 100
+  return {
+    id: a.ref, business: o ? o.name : a.name, sbi: a.sbi, appliedAreaHa: area,
+    fcAreaHa: null, stage: 'Application', status: 'In review', tag: 'blue'
+  }
+}
+function wdFindCase (id) {
+  return wdCases().find(function (c) { return c.id === id }) || wdV8Case(id)
+}
 
 // £ with thousands separators, no decimals.
 function wdGbp (n) {
@@ -4166,6 +4182,13 @@ router.post('/WoodlandsMVP/confirm', function (req, res) {
 // ----- v2 case admin console -----
 // Same three lifecycle positions as V1, wired to the top two caselist rows: the
 // claimed case is locked; the empty case can create its one claim type.
+// Claimed state: the seeded case starts claimed; the footer shortcuts override it
+// per session (wmvpConsoleClaimed[id] = true / false).
+function wmvpIsClaimed (req, id) {
+  const map = (req.session.data && req.session.data.wmvpConsoleClaimed) || {}
+  if (map[id] !== undefined) return map[id] === true
+  return id === WMVP_CONSOLE_CLAIMED_ID
+}
 function wmvpCreatedFor (req, id) {
   const map = (req.session.data && req.session.data.wmvpConsoleCreated) || {}
   return map[id] || null
@@ -4174,7 +4197,7 @@ function wmvpRenderConsole (req, res, id, opts) {
   opts = opts || {}
   const c = wdFindCase(id)
   if (!c) return res.redirect('/WoodlandsMVP/caselist')
-  const claimed = (id === WMVP_CONSOLE_CLAIMED_ID)
+  const claimed = wmvpIsClaimed(req, id)
   const created = claimed ? null : wmvpCreatedFor(req, id)
   const createdCount = claimed ? 1 : (created ? 1 : 0)
   const canCreate = createdCount < WD_CONSOLE.maxCreatable && !claimed
@@ -4224,6 +4247,14 @@ router.get('/WoodlandsMVP/start-case', function (req, res) {
 })
 
 router.get('/WoodlandsMVP/case-admin', function (req, res) {
+  // Opened in a new tab from the PA3 v8 "Record area" task: point the back link
+  // at that task.
+  if (req.query.from === 'v8' && req.query.id) {
+    req.session.data.wmpEntReturn = '/pa3/v8/casework/caseworker/application/' + encodeURIComponent(req.query.id) + '/record-area'
+    return req.session.save(function () {
+      res.redirect('/WoodlandsMVP/case-admin?id=' + encodeURIComponent(req.query.id))
+    })
+  }
   wmvpRenderConsole(req, res, req.query.id, {
     openForm: req.query.create === '1' || req.query.change === '1',
     mode: req.query.change === '1' ? 'change' : 'create',
@@ -4241,7 +4272,7 @@ router.post('/WoodlandsMVP/case-admin', function (req, res) {
   if (!c) return res.redirect('/WoodlandsMVP/caselist')
   const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
   // A claim has been made — the claim type is locked; nothing to create.
-  if (id === WMVP_CONSOLE_CLAIMED_ID) return res.redirect(backToCase)
+  if (wmvpIsClaimed(req, id)) return res.redirect(backToCase)
   const mode = req.body.mode === 'change' ? 'change' : 'create'
   const existing = wmvpCreatedFor(req, id)
   // Nothing to change (already deleted, or a stale form) — start again.
@@ -4260,6 +4291,29 @@ router.post('/WoodlandsMVP/case-admin', function (req, res) {
   res.redirect(backToCase + (mode === 'change' ? '&changed=1' : '&created=1'))
 })
 
+// Prototype shortcut (footer link): jump the case straight to "Awaiting a claim"
+// with a 12 ha Woodland management plan.
+router.get('/WoodlandsMVP/case-admin/set-awaiting', function (req, res) {
+  const id = req.query.id
+  const c = wdFindCase(id)
+  if (!c) return res.redirect('/WoodlandsMVP/caselist')
+  if (!req.session.data.wmvpConsoleClaimed) req.session.data.wmvpConsoleClaimed = {}
+  req.session.data.wmvpConsoleClaimed[id] = false
+  if (!req.session.data.wmvpConsoleCreated) req.session.data.wmvpConsoleCreated = {}
+  req.session.data.wmvpConsoleCreated[id] = { ha: 12, value: wdClaimAmount(12) }
+  res.redirect('/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id))
+})
+
+// Prototype shortcut (footer link): set the case to "Submitted claim".
+router.get('/WoodlandsMVP/case-admin/set-claimed', function (req, res) {
+  const id = req.query.id
+  if (!wdFindCase(id)) return res.redirect('/WoodlandsMVP/caselist')
+  if (!req.session.data.wmvpConsoleClaimed) req.session.data.wmvpConsoleClaimed = {}
+  req.session.data.wmvpConsoleClaimed[id] = true
+  if (req.session.data.wmvpConsoleCreated) delete req.session.data.wmvpConsoleCreated[id]
+  res.redirect('/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id))
+})
+
 // Delete the claim type awaiting a claim — confirmation screen, then removal.
 // Only reachable while the item exists and nothing has been claimed against it.
 router.get('/WoodlandsMVP/case-admin/delete', function (req, res) {
@@ -4267,7 +4321,7 @@ router.get('/WoodlandsMVP/case-admin/delete', function (req, res) {
   const c = wdFindCase(id)
   if (!c) return res.redirect('/WoodlandsMVP/caselist')
   const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
-  const created = (id === WMVP_CONSOLE_CLAIMED_ID) ? null : wmvpCreatedFor(req, id)
+  const created = wmvpIsClaimed(req, id) ? null : wmvpCreatedFor(req, id)
   if (!created) return res.redirect(backToCase)
   res.render('WoodlandsMVP/case-admin-delete', {
     con: WD_CONSOLE,
@@ -4281,7 +4335,7 @@ router.post('/WoodlandsMVP/case-admin/delete', function (req, res) {
   const c = wdFindCase(id)
   if (!c) return res.redirect('/WoodlandsMVP/caselist')
   const backToCase = '/WoodlandsMVP/case-admin?id=' + encodeURIComponent(id)
-  if (id === WMVP_CONSOLE_CLAIMED_ID) return res.redirect(backToCase)
+  if (wmvpIsClaimed(req, id)) return res.redirect(backToCase)
   const map = (req.session.data && req.session.data.wmvpConsoleCreated) || null
   if (!map || !map[id]) return res.redirect(backToCase)
   delete map[id]
@@ -6598,3 +6652,8 @@ router.get('/endTerminateMVP', function (req, res) {
   }
   res.redirect('/GrassMVP/caseMVP/tasklist-stage');
 });
+
+// ----- PA3 v8 caseworking journey (copied from the Woodlands prototype) -----
+// Sign-in -> caselist -> FC review -> record area (launches the v2 case admin in a
+// new tab) -> tell customer. Views in views/pa3/v8, routes in routes/pa3/v8.
+require('./routes/pa3/v8/casework.js')(router)

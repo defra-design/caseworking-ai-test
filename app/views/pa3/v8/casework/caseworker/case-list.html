@@ -1,0 +1,198 @@
+{% extends "layouts/pa3/v8/cw-generic-wide.html" %}
+
+{% block content %}
+
+
+      <h2 class="govuk-heading-m">
+        Search for cases
+      </h2>
+      <p class="govuk-body">You can search by case ID or SBI.</p>
+      <div style="display: inline-block">
+        <input class="govuk-input govuk-input--width-20" id="search" name="search" type="text" value="">
+      </div>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Search</button>
+
+      
+      {% if data['pa3'][v]['applications'] %}
+
+        {% set appcount = 0 %}
+        {% for app in data['pa3'][v]['applications'] %}
+          {% set appcount = appcount +1 %}
+        {% endfor %}
+
+        <div class="govuk-tabs" data-module="govuk-tabs">
+          <ul class="govuk-tabs__list">
+            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+              <a class="govuk-tabs__tab" href="#all-cases">
+                All cases ({{ appcount }})
+              </a>
+            </li>
+          </ul>
+          <div class="govuk-tabs__panel" id="all-cases">
+            <!--h2 class="govuk-heading-l">All cases</h2-->
+            
+          <button type="submit" class="govuk-button" data-module="govuk-button">
+            Assign
+          </button>
+
+          <table class="govuk-table" data-module="moj-sortable-table">
+            <!--caption class="govuk-table__caption">All cases</caption-->
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Select</th>
+                <th scope="col" class="govuk-table__header">
+                  <svg aria-hidden="true" height="20" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 511.999"><path d="M476.335 35.664v.001c47.554 47.552 47.552 125.365.002 172.918l-101.729 101.73c-60.027 60.025-162.073 42.413-194.762-32.45 35.888-31.191 53.387-21.102 87.58-6.638 20.128 8.512 43.74 3.955 60.08-12.387l99.375-99.371c21.49-21.493 21.492-56.662 0-78.155-21.489-21.488-56.677-21.472-78.151 0l-71.278 71.28c-23.583-11.337-50.118-14.697-75.453-10.07a121.476 121.476 0 0118.767-24.207l82.651-82.65c47.554-47.551 125.365-47.555 172.918-.001zM35.664 476.334l.001.001c47.554 47.552 125.365 47.552 172.917 0l85.682-85.682a121.496 121.496 0 0019.325-25.157c-27.876 6.951-57.764 4.015-83.932-8.805l-70.192 70.19c-21.472 21.471-56.658 21.492-78.149 0-21.492-21.491-21.493-56.658 0-78.149l99.375-99.376c20.363-20.363 61.002-26.435 91.717 1.688 29.729-3.133 41.275-8.812 59.742-26.493-39.398-69.476-137.607-80.013-194.757-22.863L35.664 303.417c-47.552 47.553-47.552 125.364 0 172.917z"></path></svg><span class="govuk-visually-hidden">Linked cases</span>
+                </th>
+                <th scope="col" class="govuk-table__header" aria-sort="none">Type</th>
+                <th scope="col" class="govuk-table__header app-table__cell--nowrap" aria-sort="none">ID</th>
+                <th scope="col" class="govuk-table__header">Business</th>
+                <th scope="col" class="govuk-table__header">SBI</th>
+                <th scope="col" class="govuk-table__header" aria-sort="ascending">Submitted</th>
+                <th scope="col" class="govuk-table__header app-table__cell--nowrap">Status</th>
+                <th scope="col" class="govuk-table__header">Assignee</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+
+              {% for app in data['pa3'][v]['applications'] %}
+                {% for org in data['pa3'][v]['orgs'] %}
+                  {% if org['sbi'] == app['sbi'] %}
+
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">
+                        
+                        <div class="govuk-radios__item">
+                          <input class="govuk-radios__input" id="caseselect" name="caseselect" type="radio" value="{{ app['ref'] }}">
+                          <label class="govuk-label govuk-radios__label" for="caseselect">
+                          </label>
+                        </div>
+
+                      </td>
+                      <td class="govuk-table__cell"></td>
+                      <td class="govuk-table__cell">{{ app['grant'] | schemeName }}</td>
+                      <td class="govuk-table__cell app-table__cell--nowrap">
+                        {% if app['status'] == "FC approved" %}
+                          {{ app['ref'] }}
+                        {% elseif app['status'] == "Application received" or app['status'] == "Agreement in review" %}
+                          <a href="javascript:preventDefault();" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Agreement drafted" %}
+                          <a href="javascript:preventDefault();" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Agreement offered" %}
+                          <a href="javascript:preventDefault();" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Agreement accepted" or app['status'] == "Application in review" %}
+                          <a href="javascript:preventDefault();" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Application sent" %}
+                          <a href="javascript:preventDefault();" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Awaiting Forestry Commission review" %}
+                          <a href="application/{{ app['ref'] }}/tasklist-fcoutcome" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Awaiting claim" %}
+                          <a href="application/{{ app['ref'] }}/waiting-for-claim" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Rejected by Forestry Commission" %}
+                          <a href="application/{{ app['ref'] }}/tasklist-fcoutcome" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Rejected" or app['status'] == "Withdrawn" %}
+                          <a href="application/{{ app['ref'] }}/tasklist-fcoutcome" class="govuk-link">{{ app['ref'] }}</a>
+                        {% elseif app['status'] == "Accepted by Forestry Commission" %}
+                          <a href="application/{{ app['ref'] }}/tasklist" class="govuk-link">{{ app['ref'] }}</a>
+                        {% endif %}
+                      </td>
+                      <td class="govuk-table__cell">{{ org['name'] }}</td>
+                      <td class="govuk-table__cell">{{ org['sbi'] }}</td>
+                      <td class="govuk-table__cell" data-sort-value="{{ app['submitdate'] }}">{{ app['submitdate'] | prettyDateShort }}</td>
+                      <td class="govuk-table__cell">
+                        {% if app['status'] == "Agreement in review" %}
+                          {{ govukTag({
+                            text: "Agreement in review",
+                            classes: "govuk-tag--blue govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Application in review" %}
+                          {{ govukTag({
+                            text: "Application in review",
+                            classes: "govuk-tag--blue govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "On hold" %}
+                          {{ govukTag({
+                            text: "On hold",
+                            classes: "govuk-tag--yellow govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Application received" %}
+                          {{ govukTag({
+                            text: "Application received",
+                            classes: "govuk-tag--grey govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Agreement drafted" %}
+                          {{ govukTag({
+                            text: "Agreement drafted",
+                            classes: "govuk-tag--blue govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Agreement offered" %}
+                          {{ govukTag({
+                            text: "Agreement offered",
+                            classes: "govuk-tag--blue govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Agreement accepted" %}
+                          {{ govukTag({
+                            text: "Agreement accepted",
+                            classes: "govuk-tag--green govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Application sent" %}
+                          {{ govukTag({
+                            text: "Sent to FC",
+                            classes: "govuk-tag--purple govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Rejected" %}
+                          {{ govukTag({
+                            text: "Rejected",
+                            classes: "govuk-tag--red govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Withdrawn" %}
+                          {{ govukTag({
+                            text: "Withdrawn",
+                            classes: "govuk-tag--orange govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "FC approved" %}
+                          {{ govukTag({
+                            text: "FC approved",
+                            classes: "govuk-tag--green govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Awaiting Forestry Commission review" %}
+                          {{ govukTag({
+                            html: "Awaiting Forestry<br>Commission review",
+                            classes: "govuk-tag--yellow govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Awaiting claim" %}
+                          {{ govukTag({
+                            text: "Awaiting claim",
+                            classes: "govuk-tag--yellow govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Rejected by Forestry Commission" %}
+                          {{ govukTag({
+                            html: "Rejected by<br>Forestry Commission",
+                            classes: "govuk-tag--red govuk-!-font-size-16"
+                          }) }}
+                        {% elseif app['status'] == "Accepted by Forestry Commission" %}
+                          {{ govukTag({
+                            html: "Accepted by<br>Forestry Commission",
+                            classes: "govuk-tag--green govuk-!-font-size-16"
+                          }) }}
+                        {% endif %}
+                      </td>
+                      <td class="govuk-table__cell">Not assigned</td>
+                    </tr>
+
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    {% else %}
+
+      [empty state]
+        
+    {% endif %}
+
+  
+{% endblock %}

@@ -17,9 +17,16 @@
 
 {% set headerTitleCentred = true %}
 {% set headerTitleFullCentred = true %}
-{% set headerServiceName = "Grant management" %}
+{% set headerServiceName = "Case admin system" %}
 
 {% block header %}
+  {# Case admin system: blue scheme (footer blues) to read as a different system
+     from the green caseworking service. #}
+  <style>
+    .defra-internal-header { border-bottom-color: #1d70b8; }
+    .defra-internal-service-name__link { font-weight: 700; }
+    .lg-div { background-color: #f4f8fb; }
+  </style>
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
 {% endblock %}
@@ -89,6 +96,9 @@
           </div>
           <div class="govuk-notification-banner__content">
             <h3 class="govuk-notification-banner__heading">{{ banner }}</h3>
+            {% if banner == 'Claimable item created' %}
+            <p class="govuk-body">Return to caseworking to record this</p>
+            {% endif %}
           </div>
         </div>
         {% endif %}
@@ -138,7 +148,7 @@
         <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claimable item</th>
               <th scope="col" class="govuk-table__header app-console-table__col--desc">Area</th>
               <th scope="col" class="govuk-table__header app-console-table__col--rest"><span class="govuk-visually-hidden">Actions</span></th>
             </tr>
@@ -171,7 +181,7 @@
         <table class="govuk-table app-console-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header app-console-table__col--type">Claim type</th>
+              <th scope="col" class="govuk-table__header app-console-table__col--type">Claimable item</th>
               <th scope="col" class="govuk-table__header app-console-table__col--area">Area</th>
               <th scope="col" class="govuk-table__header app-console-table__col--value">Settlement value</th>
               <th scope="col" class="govuk-table__header app-console-table__col--date">Payment date</th>
@@ -198,4 +208,26 @@
 
   </main>
 </div>
+{% endblock %}
+
+{# Prototype shortcut in the footer: jump the case between "awaiting a claim" and
+   "submitted claim". Hidden while nothing has been created. #}
+{% block footer %}
+<footer class="govuk-footer">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__meta">
+      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+        {% if claim %}
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/WoodlandsMVP/case-admin/set-awaiting?id={{ c.id }}">Set awaiting a claim</a></li>
+        </ul>
+        {% elif createdCount > 0 %}
+        <ul class="govuk-footer__inline-list">
+          <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/WoodlandsMVP/case-admin/set-claimed?id={{ c.id }}">Set claim submitted</a></li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer>
 {% endblock %}

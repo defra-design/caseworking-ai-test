@@ -11,9 +11,16 @@
 
 {% set headerTitleCentred = true %}
 {% set headerTitleFullCentred = true %}
-{% set headerServiceName = "Grant management" %}
+{% set headerServiceName = "Case admin system" %}
 
 {% block header %}
+  {# Case admin system: blue scheme (footer blues) to read as a different system
+     from the green caseworking service. #}
+  <style>
+    .defra-internal-header { border-bottom-color: #1d70b8; }
+    .defra-internal-service-name__link { font-weight: 700; }
+    .lg-div { background-color: #f4f8fb; }
+  </style>
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% include "WoodlandsMVP/includes/_wmvp-context-strip.html" %}
 {% endblock %}

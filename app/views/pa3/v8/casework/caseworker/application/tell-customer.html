@@ -1,0 +1,95 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Tell the customer they can make a claim
+      </h1>
+
+      <p class="govuk-body">Contact the customer to tell them they can make a WMP claim</p>
+      
+      <form method="post">
+
+        {% for app in data['pa3'][v]['applications'] %}
+          {% if app.ref == ref %}
+
+            {% set savedTellCustomer = app['caseworking']['fcreview']['tell-customer'] %}
+            {% set savedSentNotes = app['caseworking']['fcreview']['tell-customer-notes-sent'] %}
+            {% set savedNotSentNotes = app['caseworking']['fcreview']['tell-customer-notes-notsent'] %}
+
+            {% set sentHtml %}
+              {{ govukInput({
+                id: "tell-customer-notes-sent",
+                name: "tell-customer-notes-sent",
+                label: {
+                  text: "Enter the unique ID email reference (for example EML:12345) from the CRM to confirm the draft agreement has been sent."
+                },
+                value: savedSentNotes
+              }) }}
+            {% endset -%}
+
+            {% set notSentHtml %}
+              {{ govukTextarea({
+                id: "tell-customer-notes-notsent",
+                name: "tell-customer-notes-notsent",
+                label: {
+                  text: "Explain why the notification could not be sent."
+                },
+                value: savedNotSentNotes
+              }) }}
+            {% endset -%}
+
+            {{ govukRadios({
+              name: "tell-customer",
+              fieldset: {
+                legend: {
+                  text: "Confirm you have notified the customer",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Notification sent",
+                  text: "Notification sent",
+                  checked: savedTellCustomer == "Notification sent",
+                  conditional: {
+                    html: sentHtml
+                  }
+                },
+                {
+                  value: "Could not send notification",
+                  text: "Could not send notification",
+                  checked: savedTellCustomer == "Could not send notification",
+                  conditional: {
+                    html: notSentHtml
+                  }
+                }
+              ]
+            }) }}
+
+          {% endif %}
+        {% endfor %}
+        
+        {{ govukButton({
+          classes: "govuk-!-margin-top-5",
+          text: "Confirm"
+        }) }}
+
+      </form>
+
+      <p class="govuk-body"><a href="tasklist" class="govuk-link">Cancel and return</a></p>
+
+    </div>
+  </div>
+
+{% endblock %}

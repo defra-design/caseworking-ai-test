@@ -1,0 +1,29 @@
+<div class="govuk-service-navigation-white" data-module="govuk-service-navigation">
+  
+  <div class="govuk-service-navigation__container">
+    <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+      <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
+        Menu
+      </button>
+      <ul class="govuk-service-navigation__list" id="navigation">
+        <li class="govuk-service-navigation__item-c{% if claimTab == "tasks" %} govuk-service-navigation__item--active{% endif %}">
+          <a class="govuk-service-navigation__link" href="javascript:preventDefault();" aria-current="true">
+            <strong class="govuk-service-navigation__active-fallback">Tasks</strong>
+          </a>
+        </li> 
+        <li class="govuk-service-navigation__item-c{% if claimTab == "view" %} govuk-service-navigation__item--active{% endif %}">
+          <a class="govuk-service-navigation__link" href="javascript:preventDefault();">
+            Claim
+          </a>
+        </li>
+        <li class="govuk-service-navigation__item-c{% if claimTab == "documents" %} govuk-service-navigation__item--active{% endif %}">
+          <a class="govuk-service-navigation__link" href="javascript:preventDefault();">
+            Documents
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+    
+</div>

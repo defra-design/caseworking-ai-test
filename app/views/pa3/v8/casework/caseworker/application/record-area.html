@@ -1,0 +1,84 @@
+{% extends "layouts/pa3/v8/cw-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {% include "/includes/pa3/"+v+"/cw-tabs.html" %}
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Record total eligible approved area of woodland
+      </h1>
+      
+      <form method="post">
+        {% for app in data['pa3'][v]['applications'] %}
+          {% if app.ref == ref %}
+
+            {% set savedArea = app['caseworking']['fcreview']['record-area'] %}
+            {% set savedAreaNotes = app['caseworking']['fcreview']['record-area-notes-notrecorded'] %}
+
+            <p class="govuk-body">Follow these steps to record the WMP claim details:</p>
+            <ol class="govuk-list govuk-list--number">
+              <li>Go to <a href="/WoodlandsMVP/case-admin?id={{ ref }}&amp;from=v8" class="govuk-link" target="_blank" rel="noopener">Grant management (opens in new tab)</a></li>
+              <li>Create a new claim for ‘Woodland Management Plan’</li>
+              <li>Come back to this page and confirm that the claim has been created (or explain why it cannot be created)</li>
+            </ol>
+
+            {% set notRecordedHtml %}
+              {{ govukTextarea({
+                id: "record-area-notes-notrecorded",
+                name: "record-area-notes-notrecorded",
+                label: {
+                  text: "Why was the claim not created?"
+                },
+                value: savedAreaNotes
+              }) }}
+            {% endset -%}
+
+            {{ govukRadios({
+              name: "record-area",
+              fieldset: {
+                legend: {
+                  text: "Confirm claim has been created",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Created",
+                  text: "Created",
+                  checked: savedArea == "Created"
+                },
+                {
+                  value: "Not created",
+                  text: "Not created",
+                  checked: savedArea == "Not created",
+                  conditional: {
+                    html: notRecordedHtml
+                  }
+                }
+              ]
+            }) }}
+
+          {% endif %}
+        {% endfor %}
+        
+        {{ govukButton({
+          classes: "govuk-!-margin-top-5",
+          text: "Continue"
+        }) }}
+
+      </form>
+
+      <p class="govuk-body"><a href="tasklist" class="govuk-link">Cancel and return</a></p>
+
+    </div>
+  </div>
+
+{% endblock %}

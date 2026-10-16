@@ -1,0 +1,71 @@
+{% extends "layouts/pa3/v8/cs-details.html" %}
+{% set applicationTab = "tasks" %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-l">
+        Total amount the customer can claim
+      </h1>
+
+      {% set totalArea = data['cs-total-area'] | float or 21.43 %}
+
+      {% if totalArea <= 50 %}
+        {% set claimAmount = 1500 %}
+      {% elif totalArea <= 100 %}
+        {% set claimAmount = 1500 + ((totalArea - 50) * 30) %}
+      {% else %}
+        {% set claimAmount = 3000 + ((totalArea - 100) * 15) %}
+      {% endif %}
+
+      <p class="govuk-body">Total area of eligible woodland: <strong>{{ totalArea }}</strong> hectares</p>
+      
+      {{ govukInsetText({
+        html: "Total amount available to claim: <strong>£" + (claimAmount | currencyGBP) + "</strong>"
+      }) }}
+
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            How is the claim amount calculated?
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p class="govuk-body">Threshold payments for eligible land in hectares (ha):</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>
+              0.5 hectares (ha) to 50ha: flat rate of £1,500
+            </li>
+            <li>
+              51ha to 100ha: flat rate of £1,500 for the first 50ha, plus £30 for each additional hectare up to and including 100ha
+            </li>
+            <li>
+              more than 100ha: flat rate of £3,000, plus £15 for each additional hectare over 100ha
+            </li>
+          </ul>
+        </div>
+      </details>
+      
+      <form method="post">
+
+        <input type="hidden" name="claim-amount" value="{{ claimAmount | currencyGBP }}">
+        
+        {{ govukButton({
+          classes: "govuk-!-margin-top-5",
+          text: "Confirm claim amount"
+        }) }}
+
+      </form>
+
+      {{ govukBackLink({
+        text: "Back to total area of eligible woodland",
+        href: "enter-area"
+      }) }}
+            
+
+    </div>
+  </div>
+
+{% endblock %}

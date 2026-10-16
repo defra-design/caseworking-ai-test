@@ -1,0 +1,76 @@
+[
+  {
+    "crn": "1234512345",
+    "type": "agent",
+    "name": "Sally Wiston",
+    "email": "sally.wiston@wistonlandagents.co.uk",
+    "address-1": "10 Skirbeck Way",
+    "address-2": "",
+    "address-towncity": "Maidstone",
+    "address-postcode": "SK22 1DL",
+    "phone-mobile": "01273 333000",
+    "orgs": [
+      {
+        "sbi": "182593764"
+      },
+      {
+        "sbi": "578230194"
+      },
+      {
+        "sbi": "459382617"
+      }
+    ]
+  },
+  {
+    "crn": "9876598765",
+    "type": "farmer",
+    "name": "Christopher Hart",
+    "email": "chirshart1961@me.com",
+    "address-1": "10 Skirbeck Way",
+    "address-2": "",
+    "address-towncity": "Maidstone",
+    "address-postcode": "SK22 1DL",
+    "phone-mobile": "07701234567",
+    "orgs": [
+      {
+        "sbi": "274918305"
+      }
+    ]
+  },
+  {
+    "crn": "4543454388",
+    "type": "delegated",
+    "name": "Charlie Edwards",
+    "email": "charlieedwards32@me.com",
+    "address-1": "10 Skirbeck Way",
+    "address-2": "",
+    "address-towncity": "Maidstone",
+    "address-postcode": "SK22 1DL",
+    "phone-mobile": "07988 203475",
+    "orgs": [
+      {
+        "sbi": "195827640"
+      }
+    ]
+  },
+  {
+    "crn": "2233445566",
+    "type": "agent",
+    "name": "Harry Collins",
+    "email": "harrycollins111@me.com",
+    "address-1": "10 Skirbeck Way",
+    "address-2": "",
+    "address-towncity": "Maidstone",
+    "address-postcode": "SK22 1DL",
+    "phone-mobile": "07988 203475",
+    "orgs": [
+      {
+        "sbi": "347051386"
+      },
+      {
+        "sbi": "716940283"
+      }
+    ]
+  }
+]
+
