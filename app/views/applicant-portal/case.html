@@ -9,6 +9,14 @@
 </ol></nav>
 {% endblock %}
 {% block content %}
+<nav class="app-ap-tabs" aria-label="Prototype phases">
+  <span class="app-ap-tabs__label">Phase</span>
+  <ul class="app-ap-tabs__list">
+    {% for x in phases %}<li><a class="app-ap-tabs__tab{{ ' app-ap-tabs__tab--on' if x.id == p.id }}" href="/applicant-portal/phase/{{ g }}/{{ x.id }}"{% if x.id == p.id %} aria-current="page"{% endif %}>{{ loop.index }}. {{ x.n }}</a></li>{% endfor %}
+    <li><a class="app-ap-tabs__tab app-ap-tabs__tab--util" href="/applicant-portal">All applications</a></li>
+    <li><a class="app-ap-tabs__tab app-ap-tabs__tab--util" href="/applicant-portal/reset">Reset</a></li>
+  </ul>
+</nav>
 <div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
 
   {% if banner %}
@@ -58,12 +66,6 @@
     </div>
   </div>
   {% endfor %}
-
-  <div class="app-ap-controls" id="controls">
-    <h2 class="govuk-heading-s">Prototype controls: jump to a phase</h2>
-    {% for x in phases %}<a class="govuk-link app-ap-ph{{ ' govuk-!-font-weight-bold' if x.id == p.id }}" href="/applicant-portal/phase/{{ g }}/{{ x.id }}">{{ loop.index }}. {{ x.n }}</a>{% endfor %}
-    <p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-0"><a class="govuk-link" href="/applicant-portal">All applications</a> · <a class="govuk-link" href="/applicant-portal/reset">Reset</a></p>
-  </div>
 
 </div></div>
 {% endblock %}

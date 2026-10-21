@@ -74,4 +74,22 @@
 
   .govuk-footer { background:var(--bq-grey) !important; border-top:2px solid var(--bq-ink) !important; }
   .govuk-footer__licence-logo, .govuk-footer__copyright-logo, .govuk-footer__crown, .govuk-footer svg { filter:grayscale(1); }
+  .app-ap-tabs { margin:0 0 30px; }
+  .app-ap-tabs__label { font-size:.85rem; color:#555; }
+  .app-ap-tabs__list { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 0; padding:0; list-style:none; }
+  .app-ap-tabs__tab { display:block; padding:4px 10px; border:2px solid #000; border-radius:7px 5px 0 0; background:#e6e6e6; color:#000 !important; text-decoration:none !important; font-size:.9rem; }
+  .app-ap-tabs__tab:hover { background:#fff9a8; }
+  .app-ap-tabs__tab--on { background:#fff9a8; font-weight:700; border-bottom-width:4px; }
+  .app-ap-tabs__tab--util { background:#fff; border-style:dashed; }
+  /* progress indicator: numbered steps on a connecting line */
+  .app-ap-trk { counter-reset:step; gap:0 !important; max-width:640px; margin-bottom:30px !important; }
+  .app-ap-trk li { counter-increment:step; position:relative; border:0 !important; background:transparent !important; border-radius:0 !important; padding:38px 2px 0 !important; color:#555; font-size:.85rem; }
+  .app-ap-trk li::before { content:counter(step); position:absolute; top:0; left:50%; transform:translateX(-50%); z-index:1; width:30px; height:30px; box-sizing:border-box; border:2px solid #000; border-radius:50%; background:#fff; color:#555; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.9rem; }
+  .app-ap-trk li::after { content:""; position:absolute; top:15px; left:calc(-50% + 15px); width:calc(100% - 30px); border-top:2px dashed #888; }
+  .app-ap-trk li:first-child::after { display:none; }
+  .app-ap-trk li.done, .app-ap-trk li.now { color:#000; }
+  .app-ap-trk li.done::before { content:"✓"; background:#e6e6e6; color:#000; }
+  .app-ap-trk li.done::after, .app-ap-trk li.now::after { border-top:2px solid #000; }
+  .app-ap-trk li.now::before { background:#fff9a8; color:#000; box-shadow:0 0 0 3px #fff, 0 0 0 5px #000; }
+  .app-ap-trk li.now { font-weight:700; }
 </style>
