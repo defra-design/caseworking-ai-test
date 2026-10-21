@@ -62,23 +62,12 @@
 
             <form method="post">
 
-              {% set progressHtml %}
-                {{ govukTextarea({
-                  id: "fc-decision-notes-progress",
-                  name: "fc-decision-notes-progress",
-                  rows: 5,
-                  label: { text: "You must include a reason for progressing this application to claim stage.", classes: "govuk-hint" },
-                  value: notes.progress,
-                  errorMessage: { text: noteError.progress } if noteError and noteError.progress
-                }) }}
-              {% endset -%}
-
               {% set rejectHtml %}
                 {{ govukTextarea({
                   id: "fc-decision-notes-reject",
                   name: "fc-decision-notes-reject",
                   rows: 5,
-                  label: { text: "You must include a reason for why this agreement has been rejected.", classes: "govuk-hint" },
+                  label: { text: "You must include a reason for why this plan has been rejected.", classes: "govuk-hint" },
                   value: notes.reject,
                   errorMessage: { text: noteError.reject } if noteError and noteError.reject
                 }) }}
@@ -105,21 +94,21 @@
                   {
                     id: "fc-decision-progress",
                     value: "Progress",
-                    text: "Accept the agreement and progress to next stage",
-                    checked: selected == "Progress",
-                    conditional: { html: progressHtml }
+                    text: "Approved the plan",
+                    hint: { text: "Progress to next stage" },
+                    checked: selected == "Progress"
                   },
                   {
                     id: "fc-decision-reject",
                     value: "Reject",
-                    text: "Reject the agreement and notify the customer",
+                    text: "Rejected the plan",
                     checked: selected == "Reject",
                     conditional: { html: rejectHtml }
                   },
                   {
                     id: "fc-decision-withdraw",
                     value: "Withdraw",
-                    text: "Withdraw agreement",
+                    text: "Withdrawal requested by customer",
                     checked: selected == "Withdraw",
                     conditional: { html: withdrawHtml }
                   }

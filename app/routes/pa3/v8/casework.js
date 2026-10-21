@@ -172,7 +172,8 @@ module.exports = function(router) {
 
       // every option needs an explanation
       const note = notes[keys[selected]];
-      if (!note) {
+      // Approving the plan needs no explanation; reject / withdraw do
+      if (!note && selected != "Progress") {
         const noteError = {};
         noteError[keys[selected]] = reasons[selected];
         return res.render(page, {
@@ -214,6 +215,7 @@ module.exports = function(router) {
       return {
         verb: reject ? "reject" : "withdraw",
         verbIng: reject ? "Rejecting" : "Withdrawing",
+        verbPast: reject ? "rejected" : "withdrawn",
         verbCap: reject ? "Reject" : "Withdraw"
       };
     }

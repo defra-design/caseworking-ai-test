@@ -18,26 +18,16 @@
         }) }}
       {% endif %}
 
-      <h1 class="govuk-heading-l">Are you sure you want to {{ verb }} this agreement?</h1>
+      <h1 class="govuk-heading-l">Are you sure you want to record this decision as {{ verbPast }}?</h1>
 
-      <p class="govuk-body">{{ verbIng }} this agreement will:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>stop all future payments</li>
-        <li>end all actions and standards</li>
-        <li>close the agreement</li>
-      </ul>
-
-      {{ govukWarningText({
-        text: "You will not be able to update or reopen.",
-        iconFallbackText: "Warning"
-      }) }}
+      <p class="govuk-body">{{ verbIng }} the plan will terminate the agreement.<br>You will not be able to update or reopen.</p>
 
       <form method="post">
         {{ govukRadios({
           name: "confirm-decision",
           idPrefix: "confirm-decision",
           fieldset: {
-            legend: { text: verbCap + " the agreement?", classes: "govuk-fieldset__legend--m" }
+            legend: { text: "Record this decision as " + verbPast + "?", classes: "govuk-visually-hidden" }
           },
           errorMessage: { text: error } if error,
           items: [
