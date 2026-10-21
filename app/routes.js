@@ -6657,3 +6657,6 @@ router.get('/endTerminateMVP', function (req, res) {
 // Sign-in -> caselist -> FC review -> record area (launches the v2 case admin in a
 // new tab) -> tell customer. Views in views/pa3/v8, routes in routes/pa3/v8.
 require('./routes/pa3/v8/casework.js')(router)
+
+// ----- Applicant portal prototype (landing page by phase + mini journeys) -----
+require('./routes/applicant-portal/index.js')(router)

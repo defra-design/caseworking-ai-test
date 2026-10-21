@@ -1,0 +1,411 @@
+{% extends "layouts/main.html" %}
+
+{# Applicant portal: landing page sketch, one frame per lifecycle phase.
+   Two grants (Water management, Grasslands) plus a table of applicant interactions inferred from the
+   Grasslands caseworking prototype. Sketch only: each frame shows just the options that apply in that phase.
+   Frames are rendered from the PHASES data in the script below. #}
+
+{% block pageTitle %}Applicant landing page sketch{% endblock %}
+{% block header %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<style>
+  .sk { font-family: "GDS Transport", arial, sans-serif; color:#0b0c0c; }
+  .sk button, .sk h1, .sk h2, .sk h3, .sk h4 { font-family: inherit; }
+  .sk { --ink:#0b0c0c; --mid:#505a5f; --line:#b1b4b6; --wash:#f3f2f1; --warn:#ffdd00; }
+  .sk-wrap { max-width: 1280px; margin: 0 auto; padding: 20px 24px 80px; }
+  .sk h1.sk-title { font-size: 32px; margin: 0 0 6px; }
+  .sk-lede { color: var(--mid); max-width: 70ch; margin: 0 0 18px; }
+  .sk-tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 0 0 18px; }
+  .sk-tab { font: inherit; padding: 8px 16px; border: 2px solid var(--ink); background:#fff; cursor:pointer; font-weight:700; }
+  .sk-tab[aria-pressed="true"] { background: var(--ink); color:#fff; }
+  .sk-layout { display:grid; grid-template-columns: 220px 1fr; gap: 28px; align-items:start; }
+  .sk-rail { position: sticky; top: 12px; font-size: 15px; }
+  .sk-rail a { display:block; padding: 5px 8px; color: var(--ink); text-decoration:none; border-left: 4px solid var(--line); margin-bottom: 4px; }
+  .sk-rail a:hover { background: var(--wash); }
+  .sk-rail small { display:block; color: var(--mid); }
+  .sk-phase { margin: 0 0 44px; scroll-margin-top: 12px; }
+  .sk-phase-h { display:flex; align-items:baseline; gap:12px; margin: 0 0 10px; }
+  .sk-phase-h b { font-size: 22px; }
+  .sk-phase-h span { color: var(--mid); }
+  .sk-row { display:grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 24px; align-items:start; }
+
+  /* the sketched page */
+  .pg { border: 2px dashed #6f777b; background:#fff; border-radius: 6px; font-size: 14px; line-height: 1.35; overflow:hidden; }
+  .pg-bar { background: #0b0c0c; color:#fff; padding: 8px 14px; font-weight:700; font-size: 14px; display:flex; justify-content:space-between; }
+  .pg-bar i { font-style:normal; font-weight:400; opacity:.8; }
+  .pg-in { padding: 12px 14px 16px; }
+  .pg-crumb { color: var(--mid); font-size: 12px; margin-bottom: 8px; }
+  .pg-cap { color: var(--mid); font-size: 13px; }
+  .pg h2.pg-h { font-size: 24px; line-height:1.15; margin: 2px 0 6px; }
+  .pg-meta { color: var(--mid); font-size: 12.5px; margin-bottom: 10px; }
+  .trk { display:flex; margin: 8px 0 12px; }
+  .trk div { flex:1; text-align:center; font-size: 11px; padding: 5px 2px; border-top: 5px solid var(--line); color: var(--mid); }
+  .trk div.done { border-top-color: #00703c; color: var(--ink); }
+  .trk div.now { border-top-color: var(--ink); color: var(--ink); font-weight:700; }
+  .tg { display:inline-block; font-size: 11px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; padding: 2px 7px; background:#dbd5d3; color:#383f43; white-space:nowrap; }
+  .tg.blue { background:#d2e2f1; color:#144e81; } .tg.green { background:#cce2d8; color:#005a30; }
+  .tg.yellow { background:#fff7bf; color:#594d00; } .tg.red { background:#f4cdc6; color:#942514; } .tg.orange { background:#fcd6c3; color:#6e3619; }
+  .todo { border: 1px solid var(--line); border-left: 8px solid var(--warn); margin: 0 0 12px; background:#fff; }
+  .todo.none { border-left-color: var(--line); background: var(--wash); padding: 10px 12px; color: var(--mid); }
+  .todo > h3 { margin:0; padding: 8px 12px; font-size: 15px; background: var(--wash); }
+  .todo-i { padding: 10px 12px; border-top: 1px solid var(--line); }
+  .todo-i b { display:block; }
+  .todo-i small { color: var(--mid); display:block; margin: 2px 0 6px; }
+  .btn { display:inline-block; background:#00703c; color:#fff; padding: 6px 12px; font-weight:700; box-shadow: 0 2px 0 #002d18; font-size: 13px; }
+  .btn.sec { background:#f3f2f1; color:var(--ink); box-shadow: 0 2px 0 #929191; }
+  .btn.warn { background:#d4351c; box-shadow: 0 2px 0 #55150b; }
+  .lnk { color:#1d70b8; text-decoration: underline; margin-right: 12px; white-space:nowrap; }
+  .sc { border: 1px solid var(--line); margin: 0 0 12px; }
+  .sc-h { background: var(--wash); padding: 7px 12px; display:flex; justify-content:space-between; align-items:center; gap:8px; border-bottom:1px solid var(--line); }
+  .sc-h b { font-size: 15px; }
+  .sc-b { padding: 4px 12px 8px; }
+  .sc-r { display:grid; grid-template-columns: 38% 1fr; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e5e5e5; }
+  .sc-r:last-child { border-bottom: 0; }
+  .sc-r dt { font-weight:700; margin:0; } .sc-r dd { margin:0; }
+  .sc-a { padding: 6px 12px 10px; border-top: 1px solid #e5e5e5; font-size: 13px; }
+  .bar { height: 10px; background: #e5e5e5; margin: 4px 0; position:relative; } .bar i { position:absolute; inset:0 auto 0 0; background:#1d70b8; }
+  .bar u { position:absolute; top:-3px; bottom:-3px; width:2px; background:#d4351c; }
+
+  /* annotation */
+  .an { font-size: 14px; border-left: 4px solid var(--line); padding-left: 14px; }
+  .an h4 { margin: 0 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing:.4px; color: var(--mid); }
+  .an p, .an ul { margin: 0 0 12px; } .an ul { padding-left: 18px; } .an li { margin-bottom: 2px; }
+  .an .hid li { color: #6f777b; text-decoration: line-through; text-decoration-color: #b1b4b6; }
+  .an .var { background: var(--wash); padding: 8px 10px; }
+
+  table.sk-t { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .sk-t th, .sk-t td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align:left; vertical-align: top; }
+  .sk-t th { background: var(--wash); position: sticky; top: 0; }
+  .sk-t tr.grp td { background: #e8e8e8; font-weight:700; }
+  .cov-y { color:#005a30; font-weight:700; } .cov-p { color:#6e3619; font-weight:700; } .cov-n { color:#942514; font-weight:700; }
+  .sk-note { background: var(--wash); border-left: 6px solid var(--ink); padding: 12px 14px; margin: 0 0 22px; max-width: 80ch; }
+  @media (max-width: 1250px) { .sk-row { grid-template-columns: 1fr; } .an { margin-top: 4px; } }
+  @media (max-width: 1000px) { .sk-layout { grid-template-columns: 1fr; } .sk-rail { position:static; } }
+</style>
+
+<div class="sk"><div class="sk-wrap">
+  <h1 class="sk-title">Applicant landing page: phase sketches</h1>
+  <p class="sk-lede">One landing page per phase of the application and agreement. Each frame shows only what the applicant can do or needs to know in that phase; unavailable options are dropped (listed struck through beside each frame for review).</p>
+
+  <div class="sk-tabs" role="group" aria-label="View">
+    <button class="sk-tab" data-view="water" aria-pressed="true">Water management</button>
+    <button class="sk-tab" data-view="grass" aria-pressed="false">Grasslands</button>
+    <button class="sk-tab" data-view="infer" aria-pressed="false">Interactions implied by the Grasslands prototype</button>
+  </div>
+
+  <div id="sk-out"></div>
+</div></div>
+
+{% raw %}
+<script>
+(function () {
+  // ---------- data ----------
+  var TRK = {
+    water: ['Submitted', 'Assessed', 'Offer', 'Delivery', 'Claims', 'Closed'],
+    grass: ['Submitted', 'In review', 'Offer', 'Live', 'Ended']
+  };
+  var HEAD = {
+    water: { cap: 'Application WM-2026-0412', h: 'Your Water management application', meta: 'Manor Farm (SBI 105874236) · Water management grant' },
+    grass: { cap: 'Application GR-2026-0287', h: 'Your Grasslands application', meta: 'Manor Farm (SBI 105874236) · Grasslands' }
+  };
+  var COMMON = [
+    'Business and permissions line (collapsed: "Details"), with who can act',
+    'Messages count and case officer contact, only when a case officer is assigned',
+    'Activity timeline (submitted, checks started, query raised, decision), applicant-safe wording only'
+  ];
+
+  var PHASES = [
+    // ================= WATER =================
+    { g:'water', id:'w1', n:'Submitted and in assessment', stage:0, tag:['Under assessment','blue'], ref:'Submitted 14 Mar 2026 · Last updated 2 Apr 2026',
+      todo: null,
+      cards:[
+        { t:'Your application', tag:['Submitted','green'], rows:[['Reference','WM-2026-0412'],['Submitted','14 Mar 2026'],['Funding decision','Expected by 30 Jun 2026'],['Score and ranking','Shared when assessment closes']], links:['View your application','Withdraw your application'] },
+        { t:'Messages', rows:[['Messages','None. We will email the SBI contact if we need anything.']] }
+      ],
+      hidden:['Amend your application','Agreement, claims, evidence, variations','Score (not released until decision)'],
+      why:'Nothing is waiting on the applicant, so the page says so plainly rather than listing disabled rows. Withdraw stays because it is permitted any time before acceptance.',
+      src:'Application status; submitted date; decision window; withdraw permitted flag (needs Submit).',
+      vars:['Duplicate found by caseworker (the Water duplicate-check task): moves to w2 with a "which application do you want us to keep" query.'] },
+
+    { g:'water', id:'w2', n:'Information or evidence requested', stage:1, tag:['Information needed','yellow'], ref:'Submitted 14 Mar 2026 · Query raised 2 Apr 2026',
+      todo:[
+        { t:'Reply to our query about your application', s:'Due 16 Apr 2026. Assessment is paused until you reply.', b:'Reply to query', due:true },
+        { t:'Upload the evidence we asked for', s:'Supplier quote for item 2. Due 16 Apr 2026.', b:'Upload evidence', sec:true }
+      ],
+      cards:[
+        { t:'Your query', tag:['1 open','yellow'], rows:[['From','Case officer, Water management team'],['About','Your application, item 2'],['Raised','2 Apr 2026'],['Reply by','16 Apr 2026']], links:['Read the full message'] },
+        { t:'Your application', tag:['Submitted','green'], rows:[['Reference','WM-2026-0412'],['Status','Under assessment (paused)']], links:['View your application','Withdraw your application'] }
+      ],
+      hidden:['Agreement, claims, variations','Funding decision date (paused)'],
+      why:'Two tasks sit in the "What you need to do" card, most urgent first, because both are time-bound. Each opens the matching in-portal mini journey (query response, evidence upload) and returns here.',
+      src:'Next actions (label, due date, primary flag); open query; evidence request linked to the application.',
+      vars:['Duplicate application: query text reads "We found another application from your business (WM-2026-0399). Tell us which to keep." with actions Keep this one / Withdraw this one.','Paused for internal checks: status "On hold", no actions, no reason shown beyond "We are carrying out extra checks".'] },
+
+    { g:'water', id:'w3', n:'Returned to you to amend', stage:1, tag:['Returned','orange'], ref:'Returned 8 Apr 2026 · New draft WM-2026-0412-2',
+      todo:[ { t:'Amend and resubmit your application', s:'We created a copy for you to change. Start from the draft. Resubmit by 30 Apr 2026 to stay in this window.', b:'Continue your application', due:true } ],
+      cards:[
+        { t:'Why we returned it', rows:[['Reason','Item 3 cost does not match the quote provided'],['Returned by','Water management team, 8 Apr 2026']], links:['Read the full message'] },
+        { t:'Original application WM-2026-0412', tag:['Closed','grey'], rows:[['Status','View only'],['Replaced by','WM-2026-0412-2 (draft)']], links:['View original application'] }
+      ],
+      hidden:['Withdraw original (already closed)','Agreement, claims','Score and ranking'],
+      why:'Grasslands return creates a new identical application and closes the original as view only (see the prototype\'s "return to customer" confirmation). The applicant needs the link to the new draft, the reason, and a clear sense the old one is finished.',
+      src:'Return reason; linked case reference (the prototype timeline shows two linked cases); link-out to the application flow.',
+      vars:['Applicant-initiated amendment (Grasslands "amend" flow): original shows "Closed by your amendment, replaced by WM-2026-0412-2" and a copy is opened in the application flow.'] },
+
+    { g:'water', id:'w4', n:'Not successful or rejected', stage:1, tag:['Unsuccessful','red'], ref:'Decision made 30 Jun 2026',
+      todo:null,
+      cards:[
+        { t:'Our decision', tag:['Unsuccessful','red'], rows:[['Outcome','Not funded in this round'],['Reason','Funding allocated to higher-ranked applications'],['Your score','62 out of 100'],['Cut-off score','71']], links:['View decision letter','Ask us a question about this decision'] },
+        { t:'What you can do next', rows:[['Review or appeal','Follow the steps in your decision letter (within 60 days)'],['Other funding','Check grants you may be eligible for']], links:['Find other grants'] }
+      ],
+      hidden:['Everything agreement-related','Withdraw (decision made)'],
+      why:'A closing page: the decision and the reason come first, then what is still open (query, review outside the portal, other grants). Score and cut-off show only if the scheme releases them.',
+      src:'Decision, reason and score from the ranking outcome; review-and-appeal handled outside the portal (the document\'s assumption).',
+      vars:['"Cannot accept" at a task, or "remove" at the scoring outcome: same page, different reason text.','Withdrawn by applicant: "Withdrawn on 20 Apr 2026", view only.'] },
+
+    { g:'water', id:'w5', n:'Offer issued: review and sign', stage:2, tag:['Offer issued','yellow'], ref:'Offer issued 30 Jun 2026 · Expires 30 Jul 2026',
+      todo:[ { t:'Review and sign your grant funding agreement', s:'24 days left to accept. If you do not respond by 30 Jul 2026 the offer lapses.', b:'Review and sign your agreement', due:true } ],
+      cards:[
+        { t:'Your offer', tag:['Offer issued','yellow'], rows:[['Reference','GFA-WM-0412'],['Grant offered','£62,400 (60% of £104,000)'],['Grant you applied for','£68,000'],['Why it changed','Reference costs applied to item 2'],['Project start deadline','3 months after your agreement start date']], links:['View your offer','Download your offer','Reject this offer'] },
+        { t:'Your application', tag:['Accepted into funding','green'], rows:[['Reference','WM-2026-0412']], links:['View your application'] }
+      ],
+      hidden:['Withdraw application (now "Reject offer")','Claims, variations, evidence'],
+      why:'One primary action with a countdown. The "applied for vs offered" row matters: the prototype\'s payment-amount check can change the value and the applicant should not discover it inside the agreement.',
+      src:'Offer expiry; signature method; agreement terms version; value applied vs offered.',
+      vars:['Agreement drafted but not yet issued: card reads "We are preparing your agreement", no action.','Corrected offer (a "problem" found at the agreement check): older version listed under "Earlier versions: Withdrawn".'] },
+
+    { g:'water', id:'w6', n:'Agreement live: getting started', stage:3, tag:['Live','green'], ref:'Agreement starts 1 Aug 2026 · Year 1',
+      todo:[ { t:'Start your project by 1 Nov 2026', s:'Do not spend before 1 Aug 2026. Spend before the start date is not eligible.', b:'Tell us your project has started', sec:true } ],
+      cards:[
+        { t:'Your agreement', tag:['Live','green'], rows:[['Reference','GFA-WM-0412'],['Grant value','£62,400'],['Start to end','1 Aug 2026 to 31 Jul 2028'],['Claimed to date','£0 of £53,040 (85% before final claim)']], links:['View your agreement','Download'] },
+        { t:'Your claim schedule', rows:[['Claim 1','Due 31 Jan 2027, about £15,000'],['Claim 2','Due 30 Jun 2027, about £22,000'],['Final claim','Due 31 Jul 2028']], links:['See what evidence each claim needs'] },
+        { t:'Changing your project', links:['Request a variation','Report exceptional circumstances'] }
+      ],
+      hidden:['Submit a claim (opens when a claim is due)','Progress report (not yet due)','Accept or reject offer','Withdraw application'],
+      why:'Delivery starts quietly. The 3-month start deadline is the one hard date. The claim schedule is shown for planning, but no claim button appears until one is due.',
+      src:'GFA start and end; start deadline; claim schedule with amounts; 85% cap.',
+      vars:[] },
+
+    { g:'water', id:'w7', n:'Agreement live: claim or report due', stage:4, tag:['Action needed','yellow'], ref:'Year 1 of 2',
+      todo:[
+        { t:'Submit claim 1', s:'Due 31 Jan 2027. Minimum claim £2,000. Invoices and redacted bank statements needed.', b:'Submit claim 1', due:true },
+        { t:'Submit your progress report', s:'Due 31 Jan 2027.', b:'Start progress report', sec:true }
+      ],
+      cards:[
+        { t:'Claims and payments', rows:[['Claimed to date','£0 of £53,040 cap'],['Next payment','After claim 1 is approved (we aim for 60 working days)'],['Payments held','None']], links:['View claim schedule','View payments'] },
+        { t:'Your agreement', tag:['Live','green'], rows:[['Reference','GFA-WM-0412'],['Open requests','None']], links:['View your agreement','Request a variation','Report exceptional circumstances','Upload evidence'] }
+      ],
+      hidden:['Claim 2 and final claim (not yet due)','Start your project','Offer actions'],
+      why:'The claim and progress report are the only items competing for attention, so they lead. Cap and minimum value rules are shown at the point of claiming, not as errors afterwards.',
+      src:'Next actions with due date and penalty; claims-to-date; claim type, minimum and cap from grant configuration.',
+      vars:['Variation pending: agreement card shows "Variation request submitted 3 Feb, we will reply by ..." and the variation link is replaced by "View request".','Payment held: card gains a row with the reason and the action that fixes it.'] },
+
+    { g:'water', id:'w8', n:'Completed: records and retention', stage:5, tag:['Completed','grey'], ref:'Final payment 14 Oct 2028',
+      todo:[ { t:'Complete your post-payment monitoring report', s:'Requested 1 Nov 2028. Due 1 Dec 2028.', b:'Start monitoring report', due:true } ],
+      cards:[
+        { t:'Final statement', rows:[['Total paid','£62,400'],['Final payment','14 Oct 2028']], links:['View final statement','Download all records'] },
+        { t:'What you must keep', rows:[['Asset register','Keep and notify changes until 14 Oct 2033'],['Project records','Keep until 14 Oct 2035'],['Publicity','Plaque or poster displayed (done)']], links:['View asset register'] },
+        { t:'What next', links:['Find other grants'] }
+      ],
+      hidden:['Claims, variations, progress reports','Withdraw, offer actions'],
+      why:'The "ended" state is a records page, not an empty page: retention end dates and the optional monitoring report are the only live obligations.',
+      src:'Retention dates; monitoring report request; asset register status.',
+      vars:[] },
+
+    // ================= GRASSLANDS =================
+    { g:'grass', id:'g1', n:'Submitted and under review', stage:0, tag:['Submitted','blue'], ref:'Submitted 14 Feb 2026 · Checks started 20 Feb 2026',
+      todo:null,
+      cards:[
+        { t:'Your application', tag:['In review','blue'], rows:[['Reference','GR-2026-0287'],['Submitted','14 Feb 2026'],['Annual payment applied for','£406.60']], links:['View your application','Amend your application','Withdraw your application'] },
+        { t:'Recent activity', rows:[['20 Feb 2026','We started checking your application'],['14 Feb 2026','You submitted your application']] }
+      ],
+      hidden:['Agreement, claims, declaration','Evidence upload (nothing requested)'],
+      why:'"Amend" stays because the Grasslands prototype lets the applicant withdraw and amend a copy before a decision; it must carry the warning that review restarts. (The lifecycle document says SFI cannot be amended, so this is configurable per grant.)',
+      src:'Application status; amend and withdraw permitted flags; activity timeline.',
+      vars:['After the case officer has started tasks the amend link text changes to "Amend (checks will restart)".'] },
+
+    { g:'grass', id:'g2', n:'We need something from you', stage:1, tag:['Information needed','yellow'], ref:'Query raised 24 Feb 2026',
+      todo:[
+        { t:'Confirm you sent your notice of planned activity to Natural England', s:'Parcels SD7146 5820 and SD7146 6431 are in a site of special scientific interest. Reply by 10 Mar 2026.', b:'Reply to query', due:true },
+        { t:'Fix 2 land parcels that failed our checks', s:'Land is not linked to your business, or overlaps another agreement. Update your land details, then tell us.', b:'Update land details', sec:true }
+      ],
+      cards:[
+        { t:'Land checks', tag:['2 parcels need attention','yellow'], rows:[['SD7146 5820','Not linked to your business'],['SD7146 6431','Overlaps another live agreement'],['Passed','38 parcels']], links:['See all parcel results'] },
+        { t:'Your application', tag:['In review (paused)','blue'], rows:[['Reference','GR-2026-0287']], links:['View your application','Withdraw your application'] }
+      ],
+      hidden:['Amend (a query is the lighter route)','Agreement and later stages'],
+      why:'Review tasks in the prototype end in "Request information from customer" for different reasons (customer details versus Rural Payments records, parcel calculations, SSSI notice, stacking with the Less Favoured Area, ponds, payment amount). Each reason needs its own plain-language ask and the right fix route: land fixes link out to the Farm and Land Service.',
+      src:'Open queries with the checked-rule name; failed parcels from the calculations; link-out to Farm and Land Service with return URL.',
+      vars:['"Pause for internal investigation": status "On hold", no actions, neutral wording.','Customer details mismatch: single action "Check your business details" linking out.'] },
+
+    { g:'grass', id:'g3', n:'Returned or closed by amendment', stage:1, tag:['Returned','orange'], ref:'Returned 3 Mar 2026 · New draft GR-2026-0301',
+      todo:[ { t:'Amend and resubmit your application', s:'We copied your application into a new draft. Review the changes we asked for and resubmit.', b:'Continue your application', due:true } ],
+      cards:[
+        { t:'Why we returned it', rows:[['Reason','Ditch on parcel SD7146 5820 is in a SSSI. Choose a different action or remove it.']], links:['Read the full message'] },
+        { t:'Original application GR-2026-0287', tag:['Closed','grey'], rows:[['Status','View only'],['Replaced by','GR-2026-0301 (draft)']], links:['View original application'] }
+      ],
+      hidden:['Withdraw original','Review progress','Agreement'],
+      why:'The prototype\'s return confirmation says it closes the application as view only, creates an identical new application and restarts casework from scratch. The page makes the two-case relationship obvious (the caseworker timeline calls this "multiple cases").',
+      src:'Return reason; linked case reference; link-out to the application flow.',
+      vars:['Closed by applicant amendment: heading "You amended this application", reason row replaced by "You chose to amend on 3 Mar 2026".'] },
+
+    { g:'grass', id:'g4', n:'Agreement offered', stage:2, tag:['Offer issued','yellow'], ref:'Offer issued 14 Apr 2026 · Expires 14 May 2026',
+      todo:[ { t:'Accept your proposed agreement', s:'30 days to accept. No agreement is formed until you accept.', b:'Accept your proposed agreement', due:true } ],
+      cards:[
+        { t:'Your agreement offer', tag:['Action needed','yellow'], rows:[['Reference','AD2456781 (version 3)'],['Annual payment','£406.60'],['Length','3 years'],['Actions','6 actions on 4 parcels'],['Payments','Quarterly, no claims needed']], links:['View your proposed agreement','Reject this offer','Earlier versions (2)'] },
+        { t:'Your application', tag:['Accepted into funding','green'], rows:[['Reference','GR-2026-0287']], links:['View your application'] }
+      ],
+      hidden:['Amend application (decision made)','Withdraw application (now "Reject offer")','Claims, declaration'],
+      why:'Matches the screenshot you shared, minus the rows that were "Not available". The agreement tab in the prototype keeps version history (rejected, withdrawn, drafted), so earlier versions are one link, not a table.',
+      src:'Offer expiry; terms version; version history; accept permitted (Submit).',
+      vars:['Agreement drafted, not yet issued: "We are preparing your agreement", no action.','Signature by someone without Submit: button hidden, "Ask [name] to accept".'] },
+
+    { g:'grass', id:'g5', n:'Agreement accepted, not yet started', stage:3, tag:['Agreement accepted','green'], ref:'Accepted 28 Apr 2026 · Starts 1 Jan 2027',
+      todo:null,
+      cards:[
+        { t:'Your agreement', tag:['Accepted','green'], rows:[['Reference','AD2456781'],['Starts','1 Jan 2027'],['Annual payment','£406.60'],['First payment','From April 2027, then quarterly']], links:['View your agreement','Download'] },
+        { t:'Your actions', rows:[['6 actions on 4 parcels','Hedgerow, ditch, pond, grassland actions'],['Records to keep','Photos, input and stocking records per action']], links:['See actions and records you need to keep'] }
+      ],
+      hidden:['Annual declaration (not due until the final 2 months of year 1)','Quarterly payments (none yet)','Submit a claim (never: Grasslands pays automatically)'],
+      why:'The prototype separates "accepted" from "started" (the agreement tab shows "Date accepted" and "Start date: Not started"), so there is a quiet phase where the useful thing is knowing what you will have to do.',
+      src:'Agreement start date; action list per parcel; record-keeping requirement per action.',
+      vars:[] },
+
+    { g:'grass', id:'g6', n:'Agreement live: declaration due', stage:3, tag:['Action needed','yellow'], ref:'Year 1 of 3',
+      todo:[ { t:'Make your annual declaration', s:'Due by 31 Oct 2027. Your final payment for year 1 is held until you submit it.', b:'Make your annual declaration', due:true } ],
+      cards:[
+        { t:'Your payments', tag:['1 held','orange'], rows:[['Quarter 1','£101.65, paid 1 Apr'],['Quarter 2','£101.65, paid 1 Jul'],['Quarter 3','£101.65, due 1 Oct'],['Quarter 4','£101.65, held until you make your declaration']], links:['View payments and statements'] },
+        { t:'Your agreement', tag:['Live','green'], rows:[['Reference','AD2456781'],['Actions','6 actions on 4 parcels']], links:['View your agreement','Upload evidence for an action','Report a change to your land or business','Request a change to your agreement'] }
+      ],
+      hidden:['Submit a claim','Accept or reject offer','Amend application'],
+      why:'The only task carries its money consequence (final quarter held). Change options are grouped, because land transfer, exceptional circumstances and amendments all begin from "something changed".',
+      src:'Declaration window per agreement start date; held payment with reason; transfer-out repayment warning.',
+      vars:['Land transfer: "Report a change" shows a warning that payments may need repaying before continuing.'] },
+
+    { g:'grass', id:'g7', n:'Agreement live: land check in progress', stage:3, tag:['Checks in progress','blue'], ref:'6-month check started 2 Jul 2027',
+      todo:[ { t:'Tell us about parcel SD7146 5820', s:'It no longer appears to be linked to your business. Update your land details or reply to our query. Reply by 16 Jul 2027.', b:'Reply to query', due:true } ],
+      cards:[
+        { t:'We are checking your land', tag:['In progress','blue'], rows:[['What we check','Land parcel calculations, management control, land records'],['Result so far','1 parcel needs attention'],['Payment','Next quarter may be held if this is not resolved']], links:['See parcel results'] },
+        { t:'Your agreement', tag:['Live','green'], rows:[['Reference','AD2456781']], links:['View your agreement','Report a change to your land or business','Request a change to your agreement'] }
+      ],
+      hidden:['Annual declaration (not in window)','Submit a claim'],
+      why:'The prototype has 5- and 6-month "payment control" tasks, run by the caseworker, that re-run calculations and check management control, tenure and mapping. They can raise requests to the applicant mid-agreement, a case the document does not mention.',
+      src:'Agreement checks status; open query; payment held flag and reason; link-out to Farm and Land Service.',
+      vars:['No problems found: no notice at all (silent), only a line in the activity timeline.','Escalated to an internal investigation: status "Checks in progress", no applicant actions.'] },
+
+    { g:'grass', id:'g8', n:'Agreement terminated', stage:3, tag:['Terminated','red'], ref:'Terminated 10 Aug 2027',
+      todo:[ { t:'Check the repayment we have asked for', s:'We found payments to recover. Repayment due by 10 Oct 2027.', b:'View repayment', due:true } ],
+      cards:[
+        { t:'Our decision', tag:['Terminated','red'], rows:[['Effective','10 Aug 2027'],['Reason','Management control of the land is no longer with your business'],['Future payments','Stopped'],['Amount to repay','£203.30']], links:['View decision letter','Ask us a question about this decision'] },
+        { t:'What you can do next', rows:[['Review or appeal','Follow the steps in your decision letter (within 60 days)']], links:['View final statement','Find other grants'] }
+      ],
+      hidden:['Everything delivery-related (actions, declaration, evidence, changes)','Reinstatement (a caseworker can end the termination process)'],
+      why:'The prototype\'s "Preparing to terminate" stage runs a payment-recovery check, can be ended (returning the agreement to accepted) and is irreversible once confirmed. The applicant sees the outcome and the repayment, not the internal stage.',
+      src:'Termination decision, effective date, repayment amount from the recovery check; review/appeal outside the portal.',
+      vars:['Notice stage ("Preparing to terminate"): decide whether the applicant is told. Suggested: "We are considering ending your agreement", a reply route, and nothing else. If the process is ended, a message "Your agreement continues".'] },
+
+    { g:'grass', id:'g9', n:'Ending soon, then ended', stage:4, tag:['Ending soon','orange'], ref:'Agreement ends 31 Dec 2029',
+      todo:[
+        { t:'Apply for a successor agreement', s:'You can start early. Your agreement ends in 5 months.', b:'Start your application', due:true },
+        { t:'Check your final declaration is in', s:'Final declaration due by 31 Oct 2029.', b:'View declaration', sec:true }
+      ],
+      cards:[
+        { t:'Your agreement', tag:['Ending soon','orange'], rows:[['Reference','AD2456781'],['Ends','31 Dec 2029'],['Year','3 of 3']], links:['View your agreement','View payments and statements'] },
+        { t:'After it ends', rows:[['Records','Keep records until 31 Dec 2036']], links:['Download your records'] }
+      ],
+      hidden:['Report change and amend (limited in last months, configurable)','Submit a claim'],
+      why:'The last phase mixes one forward action (successor) with one housekeeping action (final declaration). After it ends the page becomes a records page like Water w8.',
+      src:'Ending-soon flag; successor eligibility; retention end date.',
+      vars:['Ended: tag "Ended", todo card removed, only records, final statement and "Find other grants".'] }
+  ];
+
+  var INFER = [
+    ['Grasslands: "return application to customer" (closes original, opens identical new draft, casework restarts)', 'Return confirmation page', 'Applicant needs: reason, link to the new draft, deadline, and the old case shown as closed (view only). Two linked cases under one SBI.', 'n', 'Returned state (Water w3, Grasslands g3) with link to the new draft'],
+    ['Grasslands: applicant-initiated amendment before a decision (withdraws, opens a copy)', 'Amend confirmation, "Case close by amendment" status', 'Applicant sees "closed by your amendment, replaced by [ref]". The lifecycle document says SFI cannot be amended after submit, so it must be a per-grant option.', 'p', 'Configurable "Amend" secondary action on Submitted'],
+    ['Query for each failed review task: customer details vs RPS, parcel calculations, SSSI notice, stacking with LFA, ponds, payment amount', 'Task pages with "Request information from customer"', 'Seven different asks, each with its own fix route (reply, upload, Farm and Land Service, tell Natural England). One generic "respond to a query" loses the reason.', 'p', 'Query card names the rule; action is typed (reply, upload, link-out)'],
+    ['Pause for internal investigation', 'Outcome on every review task', 'Applicant needs a neutral "On hold" status with no action, so they do not chase or panic.', 'n', 'On-hold status variant in w2 and g2'],
+    ['"Cannot accept" outcome', 'Outcome on every review task', 'A rejection reason must reach the applicant as a decision, with a route to ask or appeal.', 'p', 'Decision page (w4)'],
+    ['Land parcel calculation failures', 'Calculations tab, "fails only" filter', 'Applicant-visible summary of which parcels failed and why, so they can fix land data before replying. Parcel results are a candidate shared component.', 'n', 'Land checks card (g2, g7)'],
+    ['Payment amount check and recalculation', 'Task 5 "Check payment amount"', 'Offered value can differ from applied value after rates and rounding are checked. Show both with the reason.', 'n', 'Offer card row (w5)'],
+    ['Scheme budget review (finance officer) and, for Water, scoring and ranking with outcomes remove, withdraw, progress', 'Task 6; Water outcome page', 'Applicant outcome of "unsuccessful, budget allocated" with score and cut-off, plus ranking shown only when released.', 'p', 'Decision page (w4), score row (w1)'],
+    ['Duplicate application check (Water)', 'Task "Check for duplication", linked cases', 'Applicant may be asked which of two applications to keep, or told one was closed as a duplicate.', 'n', 'Query variant (w2)'],
+    ['Agreement drafted, issued, rejected, withdrawn, superseded (version history)', 'Agreement tab', 'Applicant should see only the current offer, with earlier versions behind one link. A drafted agreement is not yet visible to them.', 'p', 'Offer card and "Earlier versions" link (g4)'],
+    ['"There is a problem" at the funding agreement check', 'Agreement task outcome', 'A corrected agreement replaces an issued one. Applicant must be told the old offer is withdrawn.', 'n', 'Corrected offer variant (w5)'],
+    ['Agreement accepted but not yet started', 'Agreement tab: Date accepted vs Start date "Not started"', 'A quiet pre-start phase, useful for showing actions, record keeping and first payment date.', 'n', 'Accepted-not-started page (g5)'],
+    ['5-month and 6-month payment control checks (re-run calculations, management control, Siti Tenure, LPIS mapping)', 'Task sets 5m and 6m, full 6-month phase', 'Mid-agreement requests to the applicant about land they thought was settled; payments can be held. The document has inspections but not these routine checks.', 'n', 'Land check in progress page (g7)'],
+    ['Termination: "Preparing to terminate", payment-recovery check, end process (reinstate), terminate', 'Termination task pages', 'Applicant-facing: notice of intent (to be decided), reinstatement message, final decision, repayment amount, review or appeal route.', 'p', 'Terminated page (g8) and notice variant'],
+    ['Caseworker notes and "explain this outcome" for audit', 'Every task outcome; Notes tab', 'Notes are internal, but the applicant-safe reason must be written separately. Needs an applicant-visible message field that is not the audit note.', 'n', 'Reason rows on decision and query cards'],
+    ['Timeline of case events', 'Timeline tab', 'A filtered applicant timeline (submitted, checks started, query, decision) builds trust and cuts "where is my application" calls.', 'p', 'Recent activity card'],
+    ['Assignment to a caseworker', 'Assignment page, "my cases"', 'Applicant may want a named contact; only show where the grant assigns one (document lists it as optional).', 'p', 'Case officer line'],
+    ['Linked cases under one SBI', 'Timeline "multiple cases" table', 'Landing page needs a case switcher or a grouped list when an SBI has several applications or an original plus its copy.', 'n', 'Related applications link on every frame'],
+    ['Read-only closed cases', 'Return and amend close the case view only', 'Closed applications stay viewable, labelled "View only".', 'p', 'Original application card (w3, g3)'],
+    ['Email notifications to the registered address', 'Implied by every status change', 'Every state change here should have a matching email with a deep link back to the same grant view.', 'p', 'Not on the page; spec separately']
+  ];
+
+  // ---------- rendering ----------
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var tag = function (t) { return t ? '<span class="tg ' + (t[1] === 'grey' ? '' : t[1]) + '">' + esc(t[0]) + '</span>' : ''; };
+
+  function tracker(g, i) {
+    return '<div class="trk">' + TRK[g].map(function (s, k) {
+      return '<div class="' + (k < i ? 'done' : k === i ? 'now' : '') + '">' + esc(s) + '</div>';
+    }).join('') + '</div>';
+  }
+  function todo(items) {
+    if (!items) return '<div class="todo none">Nothing you need to do right now. We will email you if that changes.</div>';
+    return '<div class="todo"><h3>What you need to do</h3>' + items.map(function (it) {
+      return '<div class="todo-i"><b>' + esc(it.t) + '</b><small>' + esc(it.s) + '</small><span class="btn' + (it.sec ? ' sec' : '') + '">' + esc(it.b) + '</span></div>';
+    }).join('') + '</div>';
+  }
+  function card(c) {
+    var rows = (c.rows || []).map(function (r) { return '<dl class="sc-r" style="margin:0"><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></dl>'; }).join('');
+    var links = (c.links || []).map(function (l) { return '<span class="lnk">' + esc(l) + '</span>'; }).join('');
+    return '<div class="sc"><div class="sc-h"><b>' + esc(c.t) + '</b>' + tag(c.tag) + '</div>' +
+      (rows ? '<div class="sc-b">' + rows + '</div>' : '') + (links ? '<div class="sc-a">' + links + '</div>' : '') + '</div>';
+  }
+  function frame(p) {
+    var h = HEAD[p.g];
+    return '<div class="pg"><div class="pg-bar">GOV.UK &nbsp; Grant Application Portal<i>Sign out</i></div><div class="pg-in">' +
+      '<div class="pg-crumb">Home › Your applications › ' + esc(h.cap.replace('Application ', '')) + '</div>' +
+      '<div class="pg-cap">' + esc(h.cap) + ' &nbsp; ' + tag(p.tag) + '</div><h2 class="pg-h">' + esc(h.h) + '</h2>' +
+      '<div class="pg-meta">' + esc(h.meta) + '<br>' + esc(p.ref) + '</div>' + tracker(p.g, p.stage) + todo(p.todo) +
+      p.cards.map(card).join('') + '</div></div>';
+  }
+  function notes(p) {
+    return '<div class="an"><h4>Why this page looks like this</h4><p>' + esc(p.why) + '</p>' +
+      '<h4>Not shown in this phase</h4><ul class="hid">' + p.hidden.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul>' +
+      '<h4>Comes from the BFF</h4><p>' + esc(p.src) + '</p>' +
+      (p.vars && p.vars.length ? '<h4>Variants</h4><div class="var"><ul style="margin:0">' + p.vars.map(function (v) { return '<li>' + esc(v) + '</li>'; }).join('') + '</ul></div>' : '') + '</div>';
+  }
+  function grant(g) {
+    var ps = PHASES.filter(function (p) { return p.g === g; });
+    var rail = '<nav class="sk-rail" aria-label="Phases">' + ps.map(function (p, i) { return '<a href="#' + p.id + '">' + (i + 1) + '. ' + esc(p.n) + '</a>'; }).join('') + '</nav>';
+    var body = ps.map(function (p, i) {
+      return '<section class="sk-phase" id="' + p.id + '"><div class="sk-phase-h"><b>' + (i + 1) + '. ' + esc(p.n) + '</b></div><div class="sk-row">' + frame(p) + notes(p) + '</div></section>';
+    }).join('');
+    var intro = '<div class="sk-note"><b>On every page in this grant</b><ul style="margin:6px 0 0;padding-left:18px">' + COMMON.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul></div>';
+    return '<div class="sk-layout">' + rail + '<div>' + intro + body + '</div></div>';
+  }
+  function infer() {
+    var lab = { y: ['Covered', 'cov-y'], p: ['Partly', 'cov-p'], n: ['Not in the document', 'cov-n'] };
+    return '<p class="sk-lede">Applicant-facing interactions that the Grasslands caseworking prototype implies, and whether the lifecycle document covers them. These feed the phase sketches.</p>' +
+      '<table class="sk-t"><thead><tr><th>Caseworking behaviour</th><th>Where in the prototype</th><th>What the applicant experiences</th><th>In the document?</th><th>Where it appears in the sketches</th></tr></thead><tbody>' +
+      INFER.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td class="' + lab[r[3]][1] + '">' + lab[r[3]][0] + '</td><td>' + esc(r[4]) + '</td></tr>'; }).join('') + '</tbody></table>';
+  }
+
+  var out = document.getElementById('sk-out');
+  function show(v) {
+    out.innerHTML = v === 'infer' ? infer() : grant(v);
+    document.querySelectorAll('.sk-tab').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'); });
+    try { history.replaceState(null, '', '#view=' + v); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.sk-tab').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
+  var m = /view=(water|grass|infer)/.exec(location.hash);
+  show(m ? m[1] : 'water');
+})();
+</script>
+{% endraw %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}Not in this prototype{% endblock %}
+{% block header %}{% include "applicant-portal/includes/_header.html" %}{% endblock %}
+{% block beforeContent %}<a href="/applicant-portal/case/{{ g }}" class="govuk-back-link">Back to your application</a>{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-xl">{{ label }}</h1>
+  <p class="govuk-body">This page is not part of the prototype yet. It would open from this link in the real service.</p>
+  <a class="govuk-button" href="/applicant-portal/case/{{ g }}">Back to your application</a>
+</div></div>
+{% endblock %}

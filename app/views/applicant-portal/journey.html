@@ -1,0 +1,47 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}{{ j.title }}{% endblock %}
+{% block header %}{% include "applicant-portal/includes/_header.html" %}{% endblock %}
+{% block beforeContent %}<a href="/applicant-portal/case/{{ g }}" class="govuk-back-link">Back to your application</a>{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+  <h1 class="govuk-heading-xl">{{ j.title }}</h1>
+  {% if j.intro %}<p class="govuk-body">{{ j.intro }}</p>{% endif %}
+  {% if j.warning %}<div class="govuk-warning-text"><span class="govuk-warning-text__icon" aria-hidden="true">!</span><strong class="govuk-warning-text__text"><span class="govuk-visually-hidden">Warning</span>{{ j.warning }}</strong></div>{% endif %}
+  {% if j.kind == 'linkout' %}
+  <div class="govuk-inset-text">Opens in {{ j.out }} (a new tab in the real service). You return to this page when you finish.</div>
+  {% endif %}
+
+  <form method="post" action="/applicant-portal/complete/{{ g }}/{{ key }}" novalidate>
+  {% for f in j.fields %}
+    {% set grp = 'radios' if f.type == 'radios' else 'checkboxes' %}
+    <div class="govuk-form-group">
+    {% if f.type == 'textarea' %}
+      <label class="govuk-label govuk-label--m" for="{{ f.name }}">{{ f.label }}</label>
+      <textarea class="govuk-textarea" id="{{ f.name }}" name="{{ f.name }}" rows="5"></textarea>
+    {% elif f.type == 'text' %}
+      <label class="govuk-label govuk-label--m" for="{{ f.name }}">{{ f.label }}</label>
+      {% if f.hint %}<div class="govuk-hint">{{ f.hint }}</div>{% endif %}
+      <input class="govuk-input {{ f.width }}" id="{{ f.name }}" name="{{ f.name }}" type="text">
+    {% elif f.type == 'file' %}
+      <label class="govuk-label govuk-label--m" for="{{ f.name }}">{{ f.label }}</label>
+      {% if f.hint %}<div class="govuk-hint">{{ f.hint }}</div>{% endif %}
+      <input class="govuk-file-upload" id="{{ f.name }}" name="{{ f.name }}" type="file">
+    {% elif f.type == 'select' %}
+      <label class="govuk-label govuk-label--m" for="{{ f.name }}">{{ f.label }}</label>
+      <select class="govuk-select" id="{{ f.name }}" name="{{ f.name }}">{% for o in f.options %}<option>{{ o }}</option>{% endfor %}</select>
+    {% else %}
+      <fieldset class="govuk-fieldset"><legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ f.label }}</legend>
+      <div class="govuk-{{ grp }}" data-module="govuk-{{ grp }}">
+        {% for o in f.options %}
+        <div class="govuk-{{ grp }}__item">
+          <input class="govuk-{{ grp }}__input" id="{{ f.name }}-{{ loop.index }}" name="{{ f.name }}" type="{{ 'radio' if f.type == 'radios' else 'checkbox' }}" value="{{ o }}">
+          <label class="govuk-label govuk-{{ grp }}__label" for="{{ f.name }}-{{ loop.index }}">{{ o }}</label>
+        </div>{% endfor %}
+      </div></fieldset>
+    {% endif %}
+    </div>
+  {% endfor %}
+    <button class="govuk-button" data-module="govuk-button">{{ j.button }}</button>
+  </form>
+</div></div>
+{% endblock %}

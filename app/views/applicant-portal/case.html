@@ -1,0 +1,69 @@
+{% extends "layouts/main.html" %}
+{% block pageTitle %}{{ head.h }}{% endblock %}
+{% block header %}{% include "applicant-portal/includes/_header.html" %}{% endblock %}
+{% block beforeContent %}
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb"><ol class="govuk-breadcrumbs__list">
+  <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="/applicant-portal">Home</a></li>
+  <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="/applicant-portal">Your applications</a></li>
+  <li class="govuk-breadcrumbs__list-item" aria-current="page">{{ head.cap | replace("Application ", "") }}</li>
+</ol></nav>
+{% endblock %}
+{% block content %}
+<div class="govuk-grid-row"><div class="govuk-grid-column-two-thirds">
+
+  {% if banner %}
+  <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header"><h2 class="govuk-notification-banner__title">Success</h2></div>
+    <div class="govuk-notification-banner__content"><p class="govuk-notification-banner__heading">{{ banner }}</p></div>
+  </div>
+  {% endif %}
+
+  <span class="govuk-caption-l">{{ head.cap }}</span>
+  <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ head.h }}</h1>
+  <p class="govuk-body govuk-!-margin-bottom-1">{{ head.meta }}</p>
+  <p class="govuk-body-s govuk-hint">{{ p.ref }}</p>
+
+  {% if p.stage >= 0 %}
+  <ol class="app-ap-trk" aria-label="Progress">
+    {% for s in trk %}<li class="{{ 'done' if loop.index0 < p.stage else ('now' if loop.index0 == p.stage else '') }}">{{ s }}</li>{% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if todo %}
+  <div class="app-ap-todo">
+    <h2 class="govuk-heading-m govuk-!-margin-0">What you need to do</h2>
+    {% for t in todo %}
+    <div class="app-ap-todo__i">
+      <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">{{ t.t }}</p>
+      <p class="govuk-body-s govuk-hint govuk-!-margin-bottom-3">{{ t.s }}</p>
+      <a href="{{ t.href }}" role="button" draggable="false" class="govuk-button{{ ' govuk-button--secondary' if t.sec }}" data-module="govuk-button">{{ t.b }}</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="govuk-inset-text" style="max-width:640px;margin-top:0">Nothing you need to do right now. We will email you if that changes.</div>
+  {% endif %}
+
+  {% for c in cards %}
+  <div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title">{{ c.t }}</h2>
+      {% if c.tag %}<strong class="govuk-tag govuk-tag--{{ c.tag[1] }}">{{ c.tag[0] }}</strong>{% endif %}
+    </div>
+    <div class="govuk-summary-card__content">
+      {% if c.rows.length %}<dl class="govuk-summary-list{{ ' govuk-summary-list--no-border' if c.links.length }}">
+        {% for r in c.rows %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ r[0] }}</dt><dd class="govuk-summary-list__value">{{ r[1] }}</dd></div>{% endfor %}
+      </dl>{% endif %}
+      {% if c.links.length %}<ul class="app-ap-card-actions govuk-!-margin-top-2">{% for l in c.links %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="app-ap-controls" id="controls">
+    <h2 class="govuk-heading-s">Prototype controls: jump to a phase</h2>
+    {% for x in phases %}<a class="govuk-link app-ap-ph{{ ' govuk-!-font-weight-bold' if x.id == p.id }}" href="/applicant-portal/phase/{{ g }}/{{ x.id }}">{{ loop.index }}. {{ x.n }}</a>{% endfor %}
+    <p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-0"><a class="govuk-link" href="/applicant-portal">All applications</a> · <a class="govuk-link" href="/applicant-portal/reset">Reset</a></p>
+  </div>
+
+</div></div>
+{% endblock %}
