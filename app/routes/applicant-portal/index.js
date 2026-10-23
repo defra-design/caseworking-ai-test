@@ -11,7 +11,11 @@ const APPS = {
 
 function state (req) {
   const d = req.session.data
-  if (!d.ap) d.ap = { phase: { water: START.water, grass: START.grass }, done: {}, banner: {}, reason: {} }
+  if (!d.ap) d.ap = { phase: { water: START.water, grass: START.grass }, done: {}, banner: {}, reason: {}, evidence: { water: [], grass: [] } }
+  // sessions created before a key existed (e.g. evidence) get it filled in rather than breaking
+  if (!d.ap.evidence) d.ap.evidence = { water: [], grass: [] }
+  if (!d.ap.evidence.water) d.ap.evidence.water = []
+  if (!d.ap.evidence.grass) d.ap.evidence.grass = []
   return d.ap
 }
 function phaseOf (g, s) { return PHASES.find(function (p) { return p.id === s.phase[g] }) }
@@ -20,17 +24,27 @@ function href (g, label) { return '/applicant-portal/do/' + g + '?label=' + enco
 function buildView (g, s) {
   const p = phaseOf(g, s)
   const done = s.done[p.id] || []
-  const todo = p.todo ? p.todo.filter(function (t) { return done.indexOf(ACTIONS[t.b]) === -1 }) : null
-  const cards = p.cards.map(function (c) {
-    return {
-      t: c.t, tag: c.tag,
-      rows: (c.rows || []).map(function (r) { return [r[0], r[1] === '__REASON__' ? (s.reason[g] || 'Withdrawn by you') : r[1]] }),
-      links: (c.links || []).map(function (l) { return { label: l, href: href(g, l) } })
-    }
-  })
+  const left = p.action ? p.action.filter(function (t) { return done.indexOf(t.key || ACTIONS[t.b]) === -1 }) : null
+  const links = function (a) { return (a || []).map(function (l) { return { label: l, href: href(g, l) } }) }
+  const reason = s.reason[g] || 'Withdrawn by you'
+  const rec = p.record
   return {
-    g: g, p: p, head: HEAD[g], trk: TRK[g], cards: cards,
-    todo: todo && todo.length ? todo.map(function (t) { return Object.assign({}, t, { href: href(g, t.b) }) }) : null,
+    g: g, p: p, head: HEAD[g], trk: TRK[g],
+    // 1 Action needed
+    action: left && left.length ? left.map(function (t) { return Object.assign({}, t, { href: t.b ? href(g, t.b) : null }) }) : null,
+    next: left && left.length ? links(p.next) : [],
+    // 2 Your application / Your agreement (end-of-case next steps move here when there is no action)
+    record: { title: rec.title, tag: rec.tag, change: links(rec.change), button: rec.button ? { label: rec.button, href: href(g, rec.button) } : null,
+      links: links(rec.links.concat(left && left.length ? [] : (p.next || []))),
+      rows: rec.rows.map(function (r) { return [r[0], r[1] === '__REASON__' ? reason : r[1]] }) },
+    // 3 Payments and claims, 4 Messages, 5 History
+    pay: p.pay ? { tag: p.pay.tag, rows: p.pay.rows || [], links: links(p.pay.links) } : null,
+    msgs: p.msgs ? p.msgs.map(function (m) { return Object.assign({}, m, { links: links(m.links) }) }) : null,
+    hist: p.hist, related: links(p.related),
+    // Your evidence: the phase's seeded examples (claim or report due onwards) plus anything uploaded in this session
+    evidence: (p.evidence || []).concat(s.evidence[g]).map(function (e) {
+      return { name: e[0], when: e[1], href: href(g, e[0]) }
+    }),
     phases: PHASES.filter(function (x) { return x.g === g }),
     banner: s.banner[g]
   }
@@ -98,9 +112,14 @@ module.exports = function (router) {
     }
 
     const pid = s.phase[g]
+    if (key === 'upload') {
+      const type = String(req.body.evType || 'Evidence')
+      const when = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      s.evidence[g].push([type, 'Uploaded ' + when])
+    }
     s.done[pid] = (s.done[pid] || []).concat(key)
     const p = phaseOf(g, s)
-    const left = (p.todo || []).filter(function (t) { return s.done[pid].indexOf(ACTIONS[t.b]) === -1 })
+    const left = (p.action || []).filter(function (t) { return s.done[pid].indexOf(t.key || ACTIONS[t.b]) === -1 })
     s.banner[g] = j.banner
     if (!left.length && j.next && j.next[pid]) {
       s.phase[g] = j.next[pid]

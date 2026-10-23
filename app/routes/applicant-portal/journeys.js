@@ -15,7 +15,7 @@ const JOURNEYS = {
     title: 'Upload evidence', button: 'Upload', banner: 'Your evidence has been uploaded.',
     intro: 'Upload the evidence we asked for.',
     fields: [{ type: 'radios', name: 'evType', label: 'What are you uploading?', options: ['Supplier quote', 'Invoice or receipt', 'Photographs', 'Map or land document', 'Other'] }, GENERIC_UPLOAD],
-    next: { w2: 'w1' }
+    next: { w2: 'w1', w6b: 'w7' }
   },
   land: {
     title: 'Update your land details', button: 'I have updated my land details', banner: 'Thanks. We will re-run the land checks.',
@@ -39,7 +39,7 @@ const JOURNEYS = {
   start: {
     title: 'Tell us your project has started', button: 'Confirm', banner: 'Thanks. We have recorded your project start date.',
     fields: [{ type: 'text', name: 'startDate', label: 'Date the project started', hint: 'For example, 14 9 2026', width: 'govuk-input--width-10' }],
-    next: { w6: 'w7' }
+    next: { w6: 'w6b' }
   },
   claim: {
     title: 'Submit your claim', button: 'Submit claim', banner: 'Your claim has been submitted. We aim to pay complete claims within 60 working days.',
@@ -104,7 +104,7 @@ const ACTIONS = {
   'Reply to query': 'reply', 'Read the full message': null,
   'Upload evidence': 'upload', 'Upload evidence for an action': 'upload',
   'Update land details': 'land',
-  'Continue your application': 'resubmit',
+  'Continue your application': 'resubmit', 'Continue amended application': 'resubmit',
   'Review and sign your agreement': 'accept', 'Accept your proposed agreement': 'accept',
   'Tell us your project has started': 'start',
   'Submit claim 1': 'claim', 'Start progress report': 'report', 'Start monitoring report': 'monitor',

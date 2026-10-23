@@ -92,6 +92,7 @@
   <div class="sk-tabs" role="group" aria-label="View">
     <button class="sk-tab" data-view="water" aria-pressed="true">Water management</button>
     <button class="sk-tab" data-view="grass" aria-pressed="false">Grasslands</button>
+    <button class="sk-tab" data-view="table" aria-pressed="false">Screen inventory</button>
     <button class="sk-tab" data-view="infer" aria-pressed="false">Interactions implied by the Grasslands prototype</button>
   </div>
 
@@ -395,15 +396,38 @@
       INFER.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td><td class="' + lab[r[3]][1] + '">' + lab[r[3]][0] + '</td><td>' + esc(r[4]) + '</td></tr>'; }).join('') + '</tbody></table>';
   }
 
+  // Documented = options visible in the screenshot you supplied; everything else on a screen is implied.
+  var DOC = ['View your application', 'Amend your application', 'Withdraw your application', 'Accept your proposed agreement', 'View your proposed agreement', 'Make your annual declaration', 'Submit claim 1'];
+  function inventory() {
+    var h = '<p class="sk-lede">Every screen, its status, its sections and what the applicant can do in each. <b>Documented</b> means the option appears in the screenshot you shared. <b>Implied</b> means I inferred it from the Grasslands prototype (or the lifecycle document).</p>';
+    ['water', 'grass'].forEach(function (g) {
+      h += '<h2 style="margin:28px 0 8px">' + (g === 'water' ? 'Water management' : 'Grasslands') + '</h2><table class="sk-t"><thead><tr><th>Screen</th><th>Status</th><th>Section</th><th>Documented</th><th>Implied</th></tr></thead><tbody>';
+      PHASES.filter(function (p) { return p.g === g; }).forEach(function (p, i) {
+        var secs = [];
+        secs.push({ t: 'What you need to do', links: (p.todo || []).map(function (x) { return x.b; }), none: !p.todo });
+        p.cards.forEach(function (c) { secs.push({ t: c.t, links: c.links || [] }); });
+        secs.forEach(function (sec, k) {
+          var d = sec.links.filter(function (l) { return DOC.indexOf(l) > -1; });
+          var m = sec.links.filter(function (l) { return DOC.indexOf(l) === -1; });
+          var list = function (a) { return a.length ? a.map(esc).join('<br>') : '<span style="color:#6f777b">–</span>'; };
+          h += '<tr>' + (k === 0 ? '<td rowspan="' + secs.length + '"><b>' + (i + 1) + '. ' + esc(p.n) + '</b></td><td rowspan="' + secs.length + '">' + tag(p.tag) + '</td>' : '') +
+            '<td>' + esc(sec.t) + (sec.none ? '<br><small style="color:#6f777b">Nothing to do in this phase</small>' : '') + '</td><td>' + list(d) + '</td><td>' + list(m) + '</td></tr>';
+        });
+      });
+      h += '</tbody></table>';
+    });
+    return h;
+  }
+
   var out = document.getElementById('sk-out');
   function show(v) {
-    out.innerHTML = v === 'infer' ? infer() : grant(v);
+    out.innerHTML = v === 'infer' ? infer() : v === 'table' ? inventory() : grant(v);
     document.querySelectorAll('.sk-tab').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'); });
     try { history.replaceState(null, '', '#view=' + v); } catch (e) {}
     window.scrollTo(0, 0);
   }
   document.querySelectorAll('.sk-tab').forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.view); }); });
-  var m = /view=(water|grass|infer)/.exec(location.hash);
+  var m = /view=(water|grass|table|infer)/.exec(location.hash);
   show(m ? m[1] : 'water');
 })();
 </script>

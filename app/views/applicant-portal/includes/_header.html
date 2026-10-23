@@ -92,4 +92,28 @@
   .app-ap-trk li.done::after, .app-ap-trk li.now::after { border-top:2px solid #000; }
   .app-ap-trk li.now::before { background:#fff9a8; color:#000; box-shadow:0 0 0 3px #fff, 0 0 0 5px #000; }
   .app-ap-trk li.now { font-weight:700; }
+  .app-ap-msg + .app-ap-msg { margin-top:16px; padding-top:16px; border-top:2px dotted #777; }
+  .app-ap-todo__i:first-of-type { border-top:0; }
+  /* action needed: plain box, yellow header only */
+  .app-ap-todo { background:#fff !important; border:2px solid var(--bq-ink) !important; border-left-width:2px !important; border-radius:var(--bq-r); overflow:hidden; }
+  .app-ap-todo h2 { background:var(--bq-note) !important; border-bottom:2px solid var(--bq-ink) !important; padding:10px 20px !important; }
+  /* status tags: light blue in progress, yellow on hold or response needed, green positive, orange negative */
+  .govuk-tag--blue { background:#cfe6f7 !important; }
+  .govuk-tag--yellow { background:#fff3a0 !important; }
+  .govuk-tag--green { background:#c9ecd2 !important; }
+  .govuk-tag--orange { background:#fcd0ab !important; }
+  .govuk-summary-card__title-wrapper .govuk-tag { height:auto !important; line-height:1.3 !important; padding:3px 12px !important; border-radius:14px !important; white-space:nowrap; align-self:center; margin:0 !important; }
+  /* history timeline (right-hand column) */
+  .app-ap-hist { padding-top:6px; }
+  .app-ap-tl { list-style:none; margin:0; padding:0 0 0 22px; position:relative; }
+  .app-ap-tl::before { content:""; position:absolute; left:7px; top:8px; bottom:8px; border-left:2px solid #000; }
+  .app-ap-tl__item { position:relative; padding:0 0 22px; }
+  .app-ap-tl__item::before { content:""; position:absolute; left:-22px; top:5px; width:14px; height:14px; box-sizing:border-box; border:2px solid #000; border-radius:50%; background:#fff; }
+  .app-ap-tl__item--latest::before { background:#fff3a0; box-shadow:0 0 0 3px #fff, 0 0 0 5px #000; }
+  .app-ap-tl__date { display:block; font-weight:700; font-size:.95rem; }
+  .app-ap-tl__text { display:block; font-size:1rem; line-height:1.35; }
+  .app-ap-cols { display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); gap:0 40px; align-items:first baseline; }
+  .app-ap-cols__side .app-ap-hist { padding-top:0; }
+  .app-ap-hist h2 { margin-bottom:20px; }
+  @media (max-width: 40.0525em) { .app-ap-cols { display:block; } }
 </style>

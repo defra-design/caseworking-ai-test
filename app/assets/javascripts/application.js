@@ -39,8 +39,13 @@ window.GOVUKPrototypeKit.documentReady(() => {
 
 
 
-new MOJFrontend.MultiFileUpload({
-  container: document.querySelector(".moj-multi-file-upload"),
-  uploadUrl: "/ajax-upload",
-  deleteUrl: "/ajax-delete",
-});
+// Only start the MOJ multi file upload on pages that actually have one
+// (otherwise it throws "Root element is not of type HTMLElement" on every other page).
+var mojUploadContainer = document.querySelector(".moj-multi-file-upload");
+if (mojUploadContainer) {
+  new MOJFrontend.MultiFileUpload({
+    container: mojUploadContainer,
+    uploadUrl: "/ajax-upload",
+    deleteUrl: "/ajax-delete",
+  });
+}

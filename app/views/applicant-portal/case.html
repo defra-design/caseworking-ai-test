@@ -27,6 +27,8 @@
   {% endif %}
 
   <span class="govuk-caption-l">{{ head.cap }}</span>
+</div></div>
+<div class="app-ap-cols"><div class="app-ap-cols__main">
   <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ head.h }}</h1>
   <p class="govuk-body govuk-!-margin-bottom-1">{{ head.meta }}</p>
   <p class="govuk-body-s govuk-hint">{{ p.ref }}</p>
@@ -37,35 +39,96 @@
   </ol>
   {% endif %}
 
-  {% if todo %}
-  <div class="app-ap-todo">
-    <h2 class="govuk-heading-m govuk-!-margin-0">What you need to do</h2>
-    {% for t in todo %}
+  {# 1 Action needed: only when there is an action #}
+  {% if action %}
+  <section class="app-ap-todo" aria-labelledby="sec-action">
+    <h2 class="govuk-heading-m govuk-!-margin-0" id="sec-action">Action needed</h2>
+    {% for t in action %}
     <div class="app-ap-todo__i">
       <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">{{ t.t }}</p>
+      {% if t.warn %}
+      <div class="govuk-warning-text govuk-!-margin-bottom-3"><span class="govuk-warning-text__icon" aria-hidden="true">!</span><strong class="govuk-warning-text__text"><span class="govuk-visually-hidden">Warning</span>{{ t.s }}</strong></div>
+      {% else %}
       <p class="govuk-body-s govuk-hint govuk-!-margin-bottom-3">{{ t.s }}</p>
       <a href="{{ t.href }}" role="button" draggable="false" class="govuk-button{{ ' govuk-button--secondary' if t.sec }}" data-module="govuk-button">{{ t.b }}</a>
+      {% endif %}
     </div>
     {% endfor %}
-  </div>
-  {% else %}
-  <div class="govuk-inset-text" style="max-width:640px;margin-top:0">Nothing you need to do right now. We will email you if that changes.</div>
+    {% if next.length %}
+    <div class="app-ap-todo__i"><ul class="app-ap-card-actions">{% for l in next %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul><p class="govuk-!-margin-bottom-3"></p></div>
+    {% endif %}
+  </section>
   {% endif %}
 
-  {% for c in cards %}
-  <div class="govuk-summary-card">
+  {# 2 Your application / Your agreement #}
+  <section class="govuk-summary-card" aria-labelledby="sec-record">
     <div class="govuk-summary-card__title-wrapper">
-      <h2 class="govuk-summary-card__title">{{ c.t }}</h2>
-      {% if c.tag %}<strong class="govuk-tag govuk-tag--{{ c.tag[1] }}">{{ c.tag[0] }}</strong>{% endif %}
+      <h2 class="govuk-summary-card__title" id="sec-record">{{ record.title }}</h2>
+      {% if record.tag %}<strong class="govuk-tag govuk-tag--{{ record.tag[1] }}">{{ record.tag[0] }}</strong>{% endif %}
     </div>
     <div class="govuk-summary-card__content">
-      {% if c.rows.length %}<dl class="govuk-summary-list{{ ' govuk-summary-list--no-border' if c.links.length }}">
-        {% for r in c.rows %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ r[0] }}</dt><dd class="govuk-summary-list__value">{{ r[1] }}</dd></div>{% endfor %}
-      </dl>{% endif %}
-      {% if c.links.length %}<ul class="app-ap-card-actions govuk-!-margin-top-2">{% for l in c.links %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
+      <dl class="govuk-summary-list govuk-summary-list--no-border">
+        {% for r in record.rows %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ r[0] }}</dt><dd class="govuk-summary-list__value">{{ r[1] }}</dd></div>{% endfor %}
+      </dl>
+      {% if record.button %}<a href="{{ record.button.href }}" role="button" draggable="false" class="govuk-button govuk-!-margin-top-3 govuk-!-margin-bottom-3" data-module="govuk-button">{{ record.button.label }}</a>{% endif %}
+      {% if record.links.length %}<ul class="app-ap-card-actions govuk-!-margin-top-2">{% for l in record.links %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
+      {% if record.change.length %}<p class="govuk-body-s govuk-!-margin-top-3 govuk-!-margin-bottom-1"><b>Make a change</b></p>
+      <ul class="app-ap-card-actions">{% for l in record.change %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
     </div>
-  </div>
-  {% endfor %}
+  </section>
+
+  {# Your evidence: appears once something has been uploaded #}
+  {% if evidence.length %}
+  <section class="govuk-summary-card" aria-labelledby="sec-evidence">
+    <div class="govuk-summary-card__title-wrapper"><h2 class="govuk-summary-card__title" id="sec-evidence">Your evidence</h2></div>
+    <div class="govuk-summary-card__content">
+      <dl class="govuk-summary-list">
+        {% for e in evidence %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">{{ e.name }}</dt>
+          <dd class="govuk-summary-list__value">{{ e.when }}</dd>
+          <dd class="govuk-summary-list__actions"><a class="govuk-link" href="{{ e.href }}">View<span class="govuk-visually-hidden"> {{ e.name }}</span></a></dd>
+        </div>
+        {% endfor %}
+      </dl>
+    </div>
+  </section>
+  {% endif %}
+
+  {# 3 Payments and claims: from the offer onwards #}
+  {% if pay %}
+  <section class="govuk-summary-card" aria-labelledby="sec-pay">
+    <div class="govuk-summary-card__title-wrapper">
+      <h2 class="govuk-summary-card__title" id="sec-pay">Payments and claims</h2>
+      {% if pay.tag %}<strong class="govuk-tag govuk-tag--{{ pay.tag[1] }}">{{ pay.tag[0] }}</strong>{% endif %}
+    </div>
+    <div class="govuk-summary-card__content">
+      {% if pay.rows.length %}<dl class="govuk-summary-list govuk-summary-list--no-border">
+        {% for r in pay.rows %}<div class="govuk-summary-list__row"><dt class="govuk-summary-list__key">{{ r[0] }}</dt><dd class="govuk-summary-list__value">{{ r[1] }}</dd></div>{% endfor %}
+      </dl>{% endif %}
+      {% if pay.links.length %}<ul class="app-ap-card-actions govuk-!-margin-top-2">{% for l in pay.links %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  {# 4 Messages: removed for now (duplicated Action needed). Data is still in routes/applicant-portal/data.js as msgs; see project memory applicant-portal-messages-removed. #}
+
+</div>
+<div class="app-ap-cols__side">
+
+  {# 5 History: always shown, newest first, as a timeline #}
+  <section class="app-ap-hist" aria-labelledby="sec-hist">
+    <h2 class="govuk-heading-m" id="sec-hist">History</h2>
+    <ol class="app-ap-tl">
+      {% for h in hist %}
+      <li class="app-ap-tl__item{{ ' app-ap-tl__item--latest' if loop.first }}">
+        <span class="app-ap-tl__date">{{ h[0] }}</span>
+        <span class="app-ap-tl__text">{{ h[1] }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+    {% if related.length %}<ul class="app-ap-card-actions govuk-!-margin-top-4">{% for l in related %}<li><a class="govuk-link" href="{{ l.href }}">{{ l.label }}</a></li>{% endfor %}</ul>{% endif %}
+  </section>
 
 </div></div>
 {% endblock %}
