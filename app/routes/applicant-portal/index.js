@@ -3,7 +3,7 @@
 const { TRK, HEAD, PHASES } = require('./data.js')
 const { JOURNEYS, ACTIONS } = require('./journeys.js')
 
-const START = { water: 'w1', grass: 'g1' }
+const START = { water: 'w0', grass: 'g0' }
 const APPS = {
   water: { ref: 'WM-2026-0412', name: 'Water management grant' },
   grass: { ref: 'GR-2026-0287', name: 'Grasslands' }
@@ -29,7 +29,7 @@ function buildView (g, s) {
   const reason = s.reason[g] || 'Withdrawn by you'
   const rec = p.record
   return {
-    g: g, p: p, head: HEAD[g], trk: TRK[g],
+    g: g, p: p, head: Object.assign({}, HEAD[g], p.cap ? { cap: p.cap } : {}), trk: TRK[g],
     // 1 Action needed
     action: left && left.length ? left.map(function (t) { return Object.assign({}, t, { href: t.b ? href(g, t.b) : null }) }) : null,
     next: left && left.length ? links(p.next) : [],
@@ -106,7 +106,7 @@ module.exports = function (router) {
       return res.redirect('/applicant-portal/case/' + g)
     }
     if (j.rejectOn && answer.indexOf(j.rejectOn) === 0) {
-      s.phase[g] = START[g] === 'w1' ? 'w9' : 'g10'
+      s.phase[g] = g === 'water' ? 'w9' : 'g10'
       s.reason[g] = 'You rejected the offer'
       return res.redirect('/applicant-portal/case/' + g)
     }

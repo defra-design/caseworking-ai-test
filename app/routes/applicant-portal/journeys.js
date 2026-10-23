@@ -93,6 +93,18 @@ const JOURNEYS = {
     fields: [{ type: 'radios', name: 'sure', label: 'Are you sure you want to reject this offer?', options: ['Yes, reject the offer', 'No, go back'] }],
     yesOn: 'Yes'
   },
+  resume: {
+    title: 'Resume your application', button: 'Submit application', banner: 'Your application has been submitted.',
+    kind: 'linkout', out: 'the application',
+    intro: 'This opens your saved draft where you left off. You started it on GOV.UK. Prototype shortcut: this page stands in for that flow.',
+    next: { w0: 'w1', g0: 'g1' }
+  },
+  deletedraft: {
+    title: 'Delete your draft', button: 'Confirm', banner: null, forceTo: { water: 'w9', grass: 'g10' }, reason: 'You deleted your draft',
+    intro: 'Deleting your draft removes everything you have entered. You cannot undo this.',
+    fields: [{ type: 'radios', name: 'sure', label: 'Are you sure you want to delete your draft?', options: ['Yes, delete my draft', 'No, keep my draft'] }],
+    yesOn: 'Yes'
+  },
   successor: {
     title: 'Start a successor application', button: 'Back to your agreement', banner: null,
     kind: 'linkout', out: 'the application', intro: 'In the real service this opens the Grasslands application, with your agreement details carried across. This prototype stops here.'
@@ -112,7 +124,8 @@ const ACTIONS = {
   'Request a variation': 'variation', 'Request a change to your agreement': 'variation',
   'Report exceptional circumstances': 'exceptional', 'Report a change to your land or business': 'change',
   'Withdraw your application': 'withdraw', 'Amend your application': 'amend', 'Reject this offer': 'reject',
-  'Start your application': 'successor'
+  'Start your application': 'successor',
+  'Resume your application': 'resume', 'Delete your draft': 'deletedraft'
 }
 
 module.exports = { JOURNEYS, ACTIONS }
