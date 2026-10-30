@@ -1,0 +1,89 @@
+{% extends "layouts/main.html" %}
+
+{# Water management — confirmation page for "Progress list". Moves every application
+   currently within the budget to Progressed. The budget is the one set on the list. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V2" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV2/caselist?tab=ranking" class="govuk-back-link">Back to scoring and ranking</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% if plan.toProgress.length == 0 %}
+
+        <h1 class="govuk-heading-l">There is nothing to progress</h1>
+        {% if plan.withinCount == 0 %}
+        <p class="govuk-body">No applications fit within a budget of {{ budgetDisplay }}. Change the total budget on the list and try again.</p>
+        {% else %}
+        <p class="govuk-body">All {{ plan.withinCount }} applications within a budget of {{ budgetDisplay }} have already been progressed.</p>
+        {% endif %}
+        <a class="govuk-link" href="/WaterManagementV2/caselist?tab=ranking">Return to scoring and ranking</a>
+
+        {% else %}
+
+        <h1 class="govuk-heading-l">Are you sure you want to progress the list?</h1>
+
+        <p class="govuk-body">This will move <strong>{{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %}</strong> that are currently within the budget to <strong>Progressed</strong>.</p>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Total budget</dt>
+            <dd class="govuk-summary-list__value">{{ budgetDisplay }}</dd>
+          </div>
+          {% if plan.attrition %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Attrition rate</dt>
+            <dd class="govuk-summary-list__value">{{ plan.attrition }}%</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Cases within the budget alone</dt>
+            <dd class="govuk-summary-list__value">{{ plan.baseCount }} (about {{ plan.target }} with attrition, rounded to a whole score)</dd>
+          </div>
+          {% endif %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Applications within the budget{% if plan.attrition %} and attrition{% endif %}</dt>
+            <dd class="govuk-summary-list__value">{{ plan.withinCount }}{% if plan.withinCount != plan.toProgress.length %} ({{ plan.withinCount - plan.toProgress.length }} already progressed){% endif %}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Minimum score</dt>
+            <dd class="govuk-summary-list__value">{{ plan.minScore }}%</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Budget allocated</dt>
+            <dd class="govuk-summary-list__value">{{ allocatedDisplay }}</dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{% if plan.unspent < 0 %}Over budget by{% else %}Budget unspent{% endif %}</dt>
+            <dd class="govuk-summary-list__value">{{ unspentDisplay }}</dd>
+          </div>
+        </dl>
+
+        <p class="govuk-body">Only applications still at Application received are included. Rejected, withdrawn and already progressed ones are not.</p>
+
+        <form action="/WaterManagementV2/progress-list" method="post" novalidate>
+          <input type="hidden" name="budget" value="{{ plan.budget }}">
+          <input type="hidden" name="attrition" value="{{ plan.attrition }}">
+          <input type="hidden" name="pass" value="{{ plan.minScore }}">
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+            <a class="govuk-link" href="/WaterManagementV2/caselist?tab=ranking">Cancel and return</a>
+          </div>
+        </form>
+
+        {% endif %}
+
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
