@@ -4092,7 +4092,11 @@ function waterV2View (req) {
   if (d) delete d.waterV2CapError
   // The Capped value column only appears once at least one application has a capped value.
   const anyCapped = base.rows.some(function (r) { return r.capped })
-  return { anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV2_SBI_CAP, capDisplay: wdGbp(WATERV2_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV2_DEFAULT_BUDGET, flash: flash || null }
+  // Readiness summary inputs: scores of applications still awaiting a decision, and SBIs with more than one of them.
+  const liveScores = base.rows.filter(function (r) { return r.status === 'Application received' }).map(function (r) { return r.score })
+  const multiSbis = []
+  Object.keys(bySbi).forEach(function (sbi) { if (bySbi[sbi].length > 1) multiSbis.push(bySbi[sbi].map(function (r) { return r.score })) })
+  return { liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV2_SBI_CAP, capDisplay: wdGbp(WATERV2_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV2_DEFAULT_BUDGET, flash: flash || null }
 }
 // Set a capped value for one application (from the SBI search results). Never more than its
 // grant value; entering the grant value again removes the cap. Written to the case notes.
@@ -4289,6 +4293,8 @@ function waterV2RenderTasks (req, res, ctx, extra) {
   ctx.formType = ''      // the outcome picked when the form is shown again with an error
   ctx.formNotes = {}     // the notes typed so far, by outcome
   ctx.noteError = ''     // the outcome whose note is missing
+  ctx.formDup = ''       // the duplicate application picked so far
+  ctx.dupError = false   // Reject as duplicate without picking the duplicate application
   Object.assign(ctx, extra || {})
   res.render('WaterManagementV2/case/tasks', ctx)
 }
@@ -4304,11 +4310,16 @@ router.post('/WaterManagementV2/case/outcome-choose', function (req, res) {
   const notes = { duplicate: req.body['note-duplicate'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
   const type = req.body.type
   if (!WATERV2_OUTCOMES[type]) return waterV2RenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
+  // Reject as duplicate also needs the other application of the SBI it duplicates.
+  const dupOf = String(req.body['duplicate-of'] || '')
+  if (type === 'duplicate' && !ctx.others.some(function (o) { return !o.isThis && o.id === dupOf })) {
+    return waterV2RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, dupError: true, noteError: String(notes[type]).trim() ? '' : type })
+  }
   const text = String(notes[type]).trim()
-  if (!text) return waterV2RenderTasks(req, res, ctx, { formType: type, formNotes: notes, noteError: type })
+  if (!text) return waterV2RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, noteError: type })
   const d = waterV2Session(req)
   d.waterV2Pending = d.waterV2Pending || {}
-  d.waterV2Pending[ctx.c.id] = { type: type, note: text }
+  d.waterV2Pending[ctx.c.id] = { type: type, note: text, dupOf: type === 'duplicate' ? dupOf : '' }
   req.session.save(function () { res.redirect('/WaterManagementV2/case/outcome?id=' + ctx.c.id) })
 })
 router.get('/WaterManagementV2/case/outcome', function (req, res) {
@@ -4319,6 +4330,7 @@ router.get('/WaterManagementV2/case/outcome', function (req, res) {
   ctx.type = pending.type
   ctx.o = WATERV2_OUTCOMES[pending.type]
   ctx.note = pending.note
+  ctx.dupOf = pending.dupOf || ''
   res.render('WaterManagementV2/case/outcome', ctx)
 })
 router.post('/WaterManagementV2/case/outcome', function (req, res) {
@@ -4331,8 +4343,9 @@ router.post('/WaterManagementV2/case/outcome', function (req, res) {
   const now = new Date()
   const noteId = String(now.getTime())
   const rec = { ts: now.getTime(), display: waterV2Stamp(now), iso: now.toISOString(), by: WATERV2_USER, note: pending.note, noteId: noteId }
+  if (pending.dupOf) rec.duplicateOf = pending.dupOf
   d[o.store][ctx.c.id] = rec
-  d.waterV2Notes[ctx.c.id] = [{ id: noteId, ts: rec.ts, display: rec.display, iso: rec.iso, reason: o.reason, note: pending.note, by: WATERV2_USER, kind: o.kind }].concat(d.waterV2Notes[ctx.c.id] || [])
+  d.waterV2Notes[ctx.c.id] = [{ id: noteId, ts: rec.ts, display: rec.display, iso: rec.iso, reason: o.reason, note: (pending.dupOf ? 'Duplicate of ' + pending.dupOf + '. ' : '') + pending.note, by: WATERV2_USER, kind: o.kind }].concat(d.waterV2Notes[ctx.c.id] || [])
   delete d.waterV2Pending[ctx.c.id]
   d.waterV2Flash = ctx.c.id
   // The kit keeps sessions in files and writes them AFTER the redirect headers have

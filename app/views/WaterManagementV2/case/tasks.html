@@ -28,13 +28,14 @@
     </div>
     {% endif %}
 
-    {% if outcomeError or noteError %}
+    {% if outcomeError or noteError or dupError %}
     <div class="govuk-error-summary govuk-!-margin-top-6" data-module="govuk-error-summary">
       <div role="alert">
         <h2 class="govuk-error-summary__title">There is a problem</h2>
         <div class="govuk-error-summary__body">
           <ul class="govuk-list govuk-error-summary__list">
             {% if outcomeError %}<li><a href="#outcome-duplicate">Select an outcome for this application</a></li>{% endif %}
+            {% if dupError %}<li><a href="#duplicate-of">Select the duplicate application</a></li>{% endif %}
             {% if noteError %}<li><a href="#note-{{ noteError }}">{{ outcomes[noteError].error }}</a></li>{% endif %}
           </ul>
         </div>
@@ -42,7 +43,7 @@
     </div>
     {% endif %}
 
-    <h1 class="govuk-heading-l govuk-!-margin-top-8">{% if outcome %}{{ outcomes[outcome.type].title }}{% elif seededWithdrawn %}Application withdrawn{% else %}Decision{% endif %}</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-top-8">{% if outcome %}{{ outcomes[outcome.type].title }}{% elif seededWithdrawn %}Application withdrawn{% else %}Check for duplicates{% endif %}</h1>
 
     {% if final %}
 
@@ -58,6 +59,12 @@
           <dt class="govuk-summary-list__key">{{ outcomes[outcome.type].summary }} by</dt>
           <dd class="govuk-summary-list__value">{{ outcome.by }}</dd>
         </div>
+        {% if outcome.duplicateOf %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Duplicate of</dt>
+          <dd class="govuk-summary-list__value"><a class="govuk-link" href="/WaterManagementV2/case/tasks?id={{ outcome.duplicateOf }}">{{ outcome.duplicateOf }}</a></dd>
+        </div>
+        {% endif %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Note</dt>
           <dd class="govuk-summary-list__value">{{ outcome.note }}</dd>
@@ -85,12 +92,19 @@
     <div class="app-lp-box">
       <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="same-sbi-heading">Applications from the same SBI</h2>
       <ul class="govuk-list app-lp-list" aria-labelledby="same-sbi-heading">
-        {% for o in sameSbi %}
-        <li><a class="govuk-link" href="/WaterManagementV2/case/tasks?id={{ o.id }}">{{ o.id }}</a>{% if o.status != "Application received" %} <strong class="govuk-tag govuk-tag--{{ o.tag }}">{{ o.status }}</strong>{% endif %}</li>
+        {% for o in others | sort(false, false, 'id') %}
+        <li>{% if o.isThis %}<strong>{{ o.id }}</strong>{% else %}<a class="govuk-link" href="/WaterManagementV2/case/tasks?id={{ o.id }}">{{ o.id }}</a>{% endif %}{% if o.status != "Application received" %} <strong class="govuk-tag govuk-tag--{{ o.tag }}">{{ o.status }}</strong>{% endif %}</li>
         {% endfor %}
       </ul>
     </div>
     {% endif %}
+
+    <p class="govuk-body">You need to:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>look at the details of each application</li>
+      <li>contact the applicant if you find a possible duplicate</li>
+      <li>reject the case they say is a duplicate</li>
+    </ul>
 
     <h2 class="govuk-heading-m govuk-!-margin-top-6">Decision</h2>
 
@@ -110,8 +124,18 @@
               <label class="govuk-label govuk-radios__label" for="outcome-{{ key }}">{{ o.menu }}</label>
             </div>
             <div class="govuk-radios__conditional{% if not picked %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ key }}">
+              {% if key == "duplicate" %}
+              <div class="govuk-form-group{% if dupError %} govuk-form-group--error{% endif %}">
+                <label class="govuk-label govuk-label--s" for="duplicate-of">Duplicate application</label>
+                {% if dupError %}<p id="duplicate-of-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select the duplicate application</p>{% endif %}
+                <select class="govuk-select{% if dupError %} govuk-select--error{% endif %}" id="duplicate-of" name="duplicate-of"{% if dupError %} aria-describedby="duplicate-of-error"{% endif %}>
+                  <option value="">Select an application</option>
+                  {% for o in others | sort(false, false, 'id') %}{% if not o.isThis %}<option value="{{ o.id }}"{% if formDup == o.id %} selected{% endif %}>{{ o.id }}</option>{% endif %}{% endfor %}
+                </select>
+              </div>
+              {% endif %}
               <div class="govuk-form-group{% if noteError == key %} govuk-form-group--error{% endif %}">
-                <label class="govuk-label" for="note-{{ key }}">{{ o.noteLabel }}</label>
+                <label class="govuk-label{% if key == "duplicate" %} govuk-label--s{% endif %}" for="note-{{ key }}">{{ o.noteLabel }}</label>
                 <div id="note-{{ key }}-hint" class="govuk-hint">{{ o.hint }}</div>
                 {% if noteError == key %}<p id="note-{{ key }}-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ o.error }}</p>{% endif %}
                 <textarea class="govuk-textarea{% if noteError == key %} govuk-textarea--error{% endif %}" id="note-{{ key }}" name="note-{{ key }}" rows="5" aria-describedby="note-{{ key }}-hint{% if noteError == key %} note-{{ key }}-error{% endif %}">{{ formNotes[key] }}</textarea>

@@ -45,7 +45,11 @@
     </div>
     {% endif %}
 
-    <h1 class="govuk-visually-hidden">{% if view.tab == 'ranking' %}Scoring and ranking{% else %}Deduplication{% endif %}</h1>
+    {% if view.tab == 'ranking' %}
+    <h1 class="govuk-visually-hidden">Scoring and ranking</h1>
+    {% else %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Clean the list</h1>
+    {% endif %}
 
     {# Budget, stats, score groups and the cap warning belong to Scoring and ranking only. #}
     {% if view.tab == 'ranking' %}
@@ -165,8 +169,14 @@
     <div id="cases">
 
         {% if view.tab == 'dedupe' %}
-        <p class="govuk-body">Applications on an SBI that has more than one application. Open one to see the others from the same SBI and decide whether to reject it as a duplicate.</p>
+        <p class="govuk-body">Where SBIs have more than one application, they are listed below. Review the applications and work with the applicant to reject any duplicates.</p>
         {% elif view.tab == 'ranking' %}
+        {# Readiness summary: worked out on the page so it follows the funding line. #}
+        <div class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="border-color:#b1b4b6;" id="readiness">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Ready to progress?</h2>
+          <ul class="govuk-list govuk-!-margin-bottom-2" id="readyList"></ul>
+          <p class="govuk-body govuk-!-margin-bottom-0" id="readyVerdict"></p>
+        </div>
         {# The Progress list button only appears when there are no capping issues (the page hides it). #}
         <form method="get" action="progress-list" id="progressForm" class="govuk-!-margin-bottom-4">
           <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
@@ -176,10 +186,30 @@
         </form>
         {% endif %}
 
+        {# On Clean the list the search sits in a details so a single SBI can be reviewed; it opens when a search is active. #}
+        {% if view.tab == 'dedupe' %}
+        <details class="govuk-details"{% if view.search %} open{% endif %}>
+          <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Review a single SBI</span></summary>
+          <div class="govuk-details__text">
+        <form method="get" action="caselist">
+          <input type="hidden" name="tab" value="{{ view.tab }}">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="searchWater">Choose an SBI</label>
+            <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
+              <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
+                <input class="govuk-input" id="searchWater" name="searchWater" type="search" value="{{ view.search }}">
+              </div>
+              <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Choose</button>
+            </div>
+          </div>
+        </form>
+          </div>
+        </details>
+        {% else %}
         <form method="get" action="caselist" class="govuk-!-margin-bottom-6">
           <input type="hidden" name="tab" value="{{ view.tab }}">
           <div class="govuk-form-group govuk-!-margin-bottom-0">
-            <label class="govuk-label govuk-label--s" for="searchWater">Search by case ID or SBI</label>
+            <label class="govuk-label govuk-label--s" for="searchWater">Choose an SBI</label>
             <div style="display:flex; align-items:flex-end; gap:10px; max-width:32em;">
               <div class="govuk-form-group govuk-!-margin-bottom-0" style="flex:1 1 auto; min-width:0;">
                 <input class="govuk-input" id="searchWater" name="searchWater" type="search" value="{{ view.search }}">
@@ -188,6 +218,7 @@
             </div>
           </div>
         </form>
+        {% endif %}
 
         {% if view.capError %}<p class="govuk-error-message" role="alert"><span class="govuk-visually-hidden">Error:</span> {{ view.capError.message }}</p>{% endif %}
         <p class="govuk-body govuk-!-margin-bottom-2" aria-live="polite">{{ view.total }} case{% if view.total != 1 %}s{% endif %}</p>
@@ -215,7 +246,7 @@
               <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.originalDisplay }}</td>
               <td class="govuk-table__cell">{{ c.date }}</td>
-              <td class="govuk-table__cell">{{ statusTag(c, false) }}</td>
+              <td class="govuk-table__cell">{{ statusTag(c, true) }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -448,6 +479,31 @@
     });
     var progressForm = $('progressForm');
     if (progressForm) progressForm.hidden = issues.length > 0;
+
+    // Readiness summary
+    var liveScores = {{ view.liveScores | dump | safe }};
+    var multiSbis = {{ view.multiSbis | dump | safe }};
+    var readyList = $('readyList');
+    if (readyList) {
+      var inLine = liveScores.filter(function (sc) { return sc >= cutoff; }).length;
+      var dupes = multiSbis.filter(function (scs) { return scs.filter(function (sc) { return sc >= cutoff; }).length > 1; }).length;
+      var items = [
+        { ok: k > 0, text: k ? 'Funding line set: ' + plural(inLine, 'application') + ' awaiting a decision inside the line (score of ' + tiers[k - 1].score + '% or more), ' + gbp(spent) + ' of ' + gbp(budget) : 'No applications fit the budget, so there is nothing to progress' },
+        { ok: !issues.length, text: issues.length ? plural(issues.length, 'capping issue') + ' to resolve' : 'No capping issues' },
+        { ok: dupes === 0, advice: true, text: dupes ? plural(dupes, 'SBI') + ' with more than one application inside the line: check Deduplication before you progress' : 'No SBIs with more than one application inside the line' }
+      ];
+      readyList.innerHTML = '';
+      items.forEach(function (it) {
+        var li = document.createElement('li');
+        li.textContent = (it.ok ? '✓ ' : (it.advice ? '! ' : '✗ ')) + it.text;
+        li.style.fontWeight = it.ok ? '' : '700';
+        readyList.appendChild(li);
+      });
+      var blocked = !k || issues.length > 0 || inLine === 0;
+      if (progressForm) progressForm.hidden = blocked;
+      $('readyVerdict').textContent = blocked ? 'Not ready: the Progress list button appears once the blocking items are resolved.' : 'Ready to progress ' + plural(inLine, 'application') + '.';
+    }
+
 
     var pct = budget > 0 ? Math.min(100, spent / budget * 100) : 0;
     $('barAllocated').style.width = pct + '%';

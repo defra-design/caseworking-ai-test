@@ -21,6 +21,7 @@
     <form action="/WaterManagementV2/case/outcome" method="post" novalidate>
       <input type="hidden" name="id" value="{{ c.id }}">
       <input type="hidden" name="type" value="{{ type }}">
+      <input type="hidden" name="duplicate-of" value="{{ dupOf }}">
 
       <h1 class="govuk-heading-l govuk-!-margin-top-8">{{ o.heading }}</h1>
 
@@ -31,6 +32,13 @@
       <p class="govuk-body">You will not be able to change it afterwards.</p>
 
       <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        {% if dupOf %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Duplicate of</dt>
+          <dd class="govuk-summary-list__value">{{ dupOf }}</dd>
+          <dd class="govuk-summary-list__actions"><a class="govuk-link" href="/WaterManagementV2/case/tasks?id={{ c.id }}">Change<span class="govuk-visually-hidden"> duplicate application</span></a></dd>
+        </div>
+        {% endif %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">Note</dt>
           <dd class="govuk-summary-list__value">{{ note }}</dd>
