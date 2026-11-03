@@ -4089,6 +4089,10 @@ function waterV2View (req) {
   // The capped-value inputs show when the search is one SBI on the ranking tab.
   const capEdit = tab === 'ranking' && /^\d{9}$/.test(search.trim()) && rows.some(function (r) { return r.live })
   const capError = d && d.waterV2CapError
+  // "Cleaning finished" is recorded once from Clean the list; the success banner shows once on Scoring and ranking.
+  const cleaning = (d && d.waterV2CleaningFinished) || null
+  const cleanFlash = !!(d && d.waterV2CleanFlash)
+  if (d && tab === 'ranking') delete d.waterV2CleanFlash
   if (d) delete d.waterV2CapError
   // The Capped value column only appears once at least one application has a capped value.
   const anyCapped = base.rows.some(function (r) { return r.capped })
@@ -4096,7 +4100,7 @@ function waterV2View (req) {
   const liveScores = base.rows.filter(function (r) { return r.status === 'Application received' }).map(function (r) { return r.score })
   const multiSbis = []
   Object.keys(bySbi).forEach(function (sbi) { if (bySbi[sbi].length > 1) multiSbis.push(bySbi[sbi].map(function (r) { return r.score })) })
-  return { liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV2_SBI_CAP, capDisplay: wdGbp(WATERV2_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV2_DEFAULT_BUDGET, flash: flash || null }
+  return { cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV2_SBI_CAP, capDisplay: wdGbp(WATERV2_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV2_DEFAULT_BUDGET, flash: flash || null }
 }
 // Set a capped value for one application (from the SBI search results). Never more than its
 // grant value; entering the grant value again removes the cap. Written to the case notes.
@@ -4121,6 +4125,14 @@ router.post('/WaterManagementV2/cap', function (req, res) {
       note: n === ctx.c.value ? 'Cap removed: the capped value is back to the grant value of ' + wdGbp(n) : 'Capped value set to ' + wdGbp(n) + ' (grant value ' + wdGbp(ctx.c.value) + ')', by: WATERV2_USER, kind: 'capped' }].concat(d.waterV2Notes[ctx.c.id] || [])
   }
   req.session.save(function () { res.redirect(back) })
+})
+// Clean the list: the caseworker says cleaning is finished. Recorded, then on to Scoring and ranking.
+router.post('/WaterManagementV2/cleaning-finished', function (req, res) {
+  const d = waterV2Session(req)
+  const now = new Date()
+  if (!d.waterV2CleaningFinished) d.waterV2CleaningFinished = { ts: now.getTime(), display: waterV2Stamp(now), iso: now.toISOString(), by: WATERV2_USER }
+  d.waterV2CleanFlash = true
+  req.session.save(function () { res.redirect('/WaterManagementV2/caselist?tab=ranking') })
 })
 router.get('/WaterManagementV2/caselist', function (req, res) {
   res.set('Cache-Control', 'no-store')

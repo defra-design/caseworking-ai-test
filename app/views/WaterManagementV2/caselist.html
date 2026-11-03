@@ -26,12 +26,34 @@
 {# Case ID link: every application, from every tab, opens the same case view (Tasks). #}
 {% macro caseLink(c) %}<a class="govuk-link" href="case/tasks?id={{ c.id }}">{{ c.id }}</a>{% endmacro %}
 
+{# Cleaning finished: the button (shown at the top and the bottom of Clean the list), or who finished it and when. #}
+{% macro cleaningFinished(view) %}
+{% if view.cleaning %}
+<div class="govuk-inset-text">Cleaning was finished on {{ view.cleaning.display }} by {{ view.cleaning.by }}.</div>
+{% else %}
+<form method="post" action="/WaterManagementV2/cleaning-finished" novalidate>
+  <button type="submit" class="govuk-button" data-module="govuk-button">Cleaning finished</button>
+</form>
+{% endif %}
+{% endmacro %}
+
 {# Status tag. always = also tag "Application received" (Scoring and ranking and All cases); otherwise only the exceptions (Deduplication). #}
 {% macro statusTag(c, always) %}{% if always or c.status != "Application received" %}<strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong>{% endif %}{% endmacro %}
 
 {% block content %}
 <div class="govuk-width-container app-caselist-wide">
   <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+
+    {% if view.cleanFlash %}
+    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title-clean" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title-clean">Success</h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">Cleaning finished</p>
+      </div>
+    </div>
+    {% endif %}
 
     {% if view.flash %}
     <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -170,13 +192,8 @@
 
         {% if view.tab == 'dedupe' %}
         <p class="govuk-body">Where SBIs have more than one application, they are listed below. Review the applications and work with the applicant to reject any duplicates.</p>
+        {{ cleaningFinished(view) }}
         {% elif view.tab == 'ranking' %}
-        {# Readiness summary: worked out on the page so it follows the funding line. #}
-        <div class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="border-color:#b1b4b6;" id="readiness">
-          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Ready to progress?</h2>
-          <ul class="govuk-list govuk-!-margin-bottom-2" id="readyList"></ul>
-          <p class="govuk-body govuk-!-margin-bottom-0" id="readyVerdict"></p>
-        </div>
         {# The Progress list button only appears when there are no capping issues (the page hides it). #}
         <form method="get" action="progress-list" id="progressForm" class="govuk-!-margin-bottom-4">
           <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
@@ -480,29 +497,12 @@
     var progressForm = $('progressForm');
     if (progressForm) progressForm.hidden = issues.length > 0;
 
-    // Readiness summary
+    // The Progress list button only appears once cleaning is finished, the funding line is set,
+    // there are applications inside it and no capping issues remain.
     var liveScores = {{ view.liveScores | dump | safe }};
-    var multiSbis = {{ view.multiSbis | dump | safe }};
-    var readyList = $('readyList');
-    if (readyList) {
-      var inLine = liveScores.filter(function (sc) { return sc >= cutoff; }).length;
-      var dupes = multiSbis.filter(function (scs) { return scs.filter(function (sc) { return sc >= cutoff; }).length > 1; }).length;
-      var items = [
-        { ok: k > 0, text: k ? 'Funding line set: ' + plural(inLine, 'application') + ' awaiting a decision inside the line (score of ' + tiers[k - 1].score + '% or more), ' + gbp(spent) + ' of ' + gbp(budget) : 'No applications fit the budget, so there is nothing to progress' },
-        { ok: !issues.length, text: issues.length ? plural(issues.length, 'capping issue') + ' to resolve' : 'No capping issues' },
-        { ok: dupes === 0, advice: true, text: dupes ? plural(dupes, 'SBI') + ' with more than one application inside the line: check Deduplication before you progress' : 'No SBIs with more than one application inside the line' }
-      ];
-      readyList.innerHTML = '';
-      items.forEach(function (it) {
-        var li = document.createElement('li');
-        li.textContent = (it.ok ? '✓ ' : (it.advice ? '! ' : '✗ ')) + it.text;
-        li.style.fontWeight = it.ok ? '' : '700';
-        readyList.appendChild(li);
-      });
-      var blocked = !k || issues.length > 0 || inLine === 0;
-      if (progressForm) progressForm.hidden = blocked;
-      $('readyVerdict').textContent = blocked ? 'Not ready: the Progress list button appears once the blocking items are resolved.' : 'Ready to progress ' + plural(inLine, 'application') + '.';
-    }
+    var inLine = liveScores.filter(function (sc) { return sc >= cutoff; }).length;
+    var cleaned = {{ 'true' if view.cleaning else 'false' }};
+    if (progressForm) progressForm.hidden = !cleaned || !k || issues.length > 0 || inLine === 0;
 
 
     var pct = budget > 0 ? Math.min(100, spent / budget * 100) : 0;
