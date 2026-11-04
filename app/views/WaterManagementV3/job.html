@@ -1,0 +1,63 @@
+{% extends "layouts/main.html" %}
+
+{# Clean the list: one job = the applications on one SBI. Each gets a Label (Not set, Not duplicate, Duplicate). #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V3" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV3/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV3/caselist?tab=dedupe" class="govuk-back-link">Back to clean the list</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <h1 class="govuk-heading-l">SBI {{ sbi }}</h1>
+    <p class="govuk-body">{{ business }}: {{ rows.length }} applications. Label each one, then save and continue.</p>
+    {% if dupOpen %}<div class="govuk-inset-text">This job stays in progress until each case labelled Duplicate has been withdrawn or rejected as a duplicate.</div>{% endif %}
+
+    <form method="post" action="/WaterManagementV3/job" novalidate>
+      <input type="hidden" name="sbi" value="{{ sbi }}">
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Case ID</th>
+            <th scope="col" class="govuk-table__header">SBI</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Score (%)</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Grant value</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--date">Date</th>
+            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">Label</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for c in rows %}
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell"><a class="govuk-link" href="case/tasks?id={{ c.id }}">{{ c.id }}</a></td>
+            <td class="govuk-table__cell">{{ c.sbi }}</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.originalDisplay }}</td>
+            <td class="govuk-table__cell">{{ c.date }}</td>
+            <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong></td>
+            <td class="govuk-table__cell">
+              <label class="govuk-visually-hidden" for="label-{{ c.id }}">Label for case {{ c.id }}</label>
+              <select class="govuk-select" id="label-{{ c.id }}" name="label-{{ c.id }}">
+                <option value=""{% if not c.label %} selected{% endif %}>Not set</option>
+                <option value="not-duplicate"{% if c.label == 'not-duplicate' %} selected{% endif %}>Not duplicate</option>
+                <option value="duplicate"{% if c.label == 'duplicate' %} selected{% endif %}>Duplicate</option>
+              </select>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="govuk-button" data-module="govuk-button">Save and continue</button>
+    </form>
+  </main>
+</div>
+{% endblock %}

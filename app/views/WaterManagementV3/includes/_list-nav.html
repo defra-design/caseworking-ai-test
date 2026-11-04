@@ -1,0 +1,25 @@
+{# Sub navigation under the header for the list pages (same style as the case navigation).
+   Needs activeNavItem: 'dedupe' or 'ranking'. #}
+<div class="govuk-service-navigation govuk-service-navigation-white" data-module="govuk-service-navigation" style="padding-top:20px;">
+  <div class="govuk-width-container app-caselist-wide">
+    <div class="govuk-service-navigation__container">
+      <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
+        <ul class="govuk-service-navigation__list" id="navigation">
+
+          <li class="govuk-service-navigation__item-c{% if activeNavItem === 'dedupe' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="/WaterManagementV3/caselist?tab=dedupe"{% if activeNavItem === 'dedupe' %} aria-current="true"{% endif %}>
+              {% if activeNavItem === 'dedupe' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Clean the list{% if activeNavItem === 'dedupe' %}</strong>{% endif %}
+            </a>
+          </li>
+
+          <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'ranking' %} govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="/WaterManagementV3/caselist?tab=ranking"{% if activeNavItem === 'ranking' %} aria-current="true"{% endif %}>
+              {% if activeNavItem === 'ranking' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Scoring and ranking{% if activeNavItem === 'ranking' %}</strong>{% endif %}
+            </a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

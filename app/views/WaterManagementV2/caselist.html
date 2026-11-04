@@ -9,6 +9,11 @@
 {% set headerTitleCentred = true %}
 {% set headerServiceName = "Water management V2" %}
 
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
 {% block header %}
   {% include "FRPS-D2/includes/_defra-header.html" %}
   {% set activeNavItem = view.tab %}
@@ -353,6 +358,42 @@
 {% endblock %}
 
 {% block pageScripts %}
+<script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+<script>
+// "Review a single SBI" (Clean the list): the search box becomes an autocomplete of the SBIs that have
+// more than one application. The plain text box stays as the fallback and still submits searchWater.
+(function () {
+  var details = document.querySelector('details.govuk-details');
+  var original = document.getElementById('searchWater');
+  if (!details || !original || typeof accessibleAutocomplete !== 'function') return;
+  var options = {{ view.sbiOptions | dump | safe }};
+  var start = original.value;
+  var holder = document.createElement('div');
+  holder.style.flex = '1 1 auto';
+  holder.style.minWidth = '0';
+  original.parentNode.insertBefore(holder, original);
+  original.parentNode.removeChild(original);
+  accessibleAutocomplete({
+    element: holder,
+    id: 'searchWater',
+    name: 'searchWater',
+    defaultValue: start,
+    minLength: 1,
+    showAllValues: true,
+    confirmOnBlur: false,
+    autoselect: false,
+    displayMenu: 'overlay',
+    source: function (query, populate) {
+      var q = String(query).toLowerCase().trim();
+      populate(options.filter(function (o) { return o.sbi.indexOf(q) !== -1 || o.business.toLowerCase().indexOf(q) !== -1; }));
+    },
+    templates: {
+      inputValue: function (o) { return o ? o.sbi : ''; },
+      suggestion: function (o) { return typeof o === 'string' ? o : o.sbi + ' – ' + o.business; }
+    }
+  });
+})();
+</script>
 <script>
 (function () {
   if (!document.getElementById('budgetForm')) return; // Deduplication has no budget panel
