@@ -4647,19 +4647,19 @@ function waterV3View (req) {
     sbiOptions.push({ sbi: r.sbi, business: base.answers.waterBusinessName(r) })
   })
   sbiOptions.sort(function (x, y) { return x.sbi < y.sbi ? -1 : 1 })
-  // Jobs for Clean the list: one per SBI with more than one application. Done = every application labelled.
+  // Issues for Clean the list: one per SBI with more than one application. Done = every application labelled.
   const labels = (d && d.waterV3Labels) || {}
-  const jobMap = {}
-  base.rows.forEach(function (r) { if (r.multi) (jobMap[r.sbi] = jobMap[r.sbi] || []).push(r) })
-  const jobs = Object.keys(jobMap).sort().map(function (sbi) {
-    const rs = jobMap[sbi]
+  const issueMap = {}
+  base.rows.forEach(function (r) { if (r.multi) (issueMap[r.sbi] = issueMap[r.sbi] || []).push(r) })
+  const issues = Object.keys(issueMap).sort().map(function (sbi) {
+    const rs = issueMap[sbi]
     const set = rs.filter(function (r) { return labels[r.id] }).length
-    // A case labelled Duplicate keeps the job open until it has been withdrawn or rejected as a duplicate.
-    const dupOpen = rs.filter(function (r) { return labels[r.id] === 'duplicate' && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
+    // A case labelled Duplicate keeps the issue open until it has been withdrawn or rejected as a duplicate.
+    const dupOpen = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
     return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), count: rs.length, dupOpen: dupOpen, state: (set === rs.length && !dupOpen) ? 'done' : (set ? 'started' : 'new') }
   })
-  const jobsDone = jobs.filter(function (j) { return j.state === 'done' }).length
-  return { jobs: jobs, jobsDone: jobsDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV3_SBI_CAP, capDisplay: wdGbp(WATERV3_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV3_DEFAULT_BUDGET, flash: flash || null }
+  const issuesDone = issues.filter(function (j) { return j.state === 'done' }).length
+  return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV3_SBI_CAP, capDisplay: wdGbp(WATERV3_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV3_DEFAULT_BUDGET, flash: flash || null }
 }
 // Set a capped value for one application (from the SBI search results). Never more than its
 // grant value; entering the grant value again removes the cap. Written to the case notes.
@@ -4693,8 +4693,8 @@ router.post('/WaterManagementV3/cleaning-finished', function (req, res) {
   d.waterV3CleanFlash = true
   req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=ranking') })
 })
-// A job: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate).
-router.get('/WaterManagementV3/job', function (req, res) {
+// An issue: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate).
+router.get('/WaterManagementV3/issue', function (req, res) {
   res.set('Cache-Control', 'no-store')
   const sbi = String(req.query.sbi || '')
   const base = waterV3Ranked(req)
@@ -4702,16 +4702,19 @@ router.get('/WaterManagementV3/job', function (req, res) {
   if (!rows.length) return res.redirect('/WaterManagementV3/caselist?tab=dedupe')
   const labels = waterV3Session(req).waterV3Labels
   rows.forEach(function (r) { r.label = labels[r.id] || '' })
-  const dupOpen = rows.filter(function (r) { return r.label === 'duplicate' && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
-  res.render('WaterManagementV3/job', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, dupOpen: dupOpen })
+  const dupOpen = rows.filter(function (r) { return String(r.label).indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
+  res.render('WaterManagementV3/issue', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, dupOpen: dupOpen })
 })
-router.post('/WaterManagementV3/job', function (req, res) {
+router.post('/WaterManagementV3/issue', function (req, res) {
   const sbi = String(req.body.sbi || '')
   const d = waterV3Session(req)
   const base = waterV3Ranked(req)
-  base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).forEach(function (r) {
+  const issueRows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi })
+  issueRows.forEach(function (r) {
     const v = req.body['label-' + r.id]
-    if (v === 'duplicate' || v === 'not-duplicate') d.waterV3Labels[r.id] = v
+    const other = String(v).indexOf('duplicate:') === 0 ? String(v).slice(10) : ''
+    const valid = v === 'not-duplicate' || (other && other !== r.id && issueRows.some(function (x) { return x.id === other }))
+    if (valid) d.waterV3Labels[r.id] = v
     else delete d.waterV3Labels[r.id]
   })
   req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=dedupe') })
@@ -5008,6 +5011,615 @@ router.post('/WaterManagementV3/case/add-note', function (req, res) {
   const now = new Date()
   d.waterV3Notes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterV3Stamp(now), iso: now.toISOString(), reason: 'Note added', note: text, by: WATERV3_USER, kind: 'note' }].concat(d.waterV3Notes[ctx.c.id] || [])
   req.session.save(function () { res.redirect('/WaterManagementV3/case/notes?id=' + ctx.c.id) })
+})
+
+// ===== Water management V4 (copy of V3, issues with explicit Check complete; own routes, views and session keys) =====
+// ============================================================
+// Water management — caselist (200 cases, no paging, no assignment, three tabs).
+// Search on Case ID or SBI. Cases are ranked by score (highest first, earliest
+// application wins a tie); Cumulative value is the running total of Grant value down
+// that ranking, so it stays fixed to each case when the table is re-sorted or
+// searched. Data: data/water-management-cases.js.
+// ============================================================
+const waterV4CasesPath = path.join(__dirname, 'data', 'water-management-v4-cases.js')
+// Three tabs over the same 200 cases (?tab=):
+//   dedupe  (default) - applications on an SBI that has more than one case, grouped by
+//                       SBI, no cumulative value; these open as cases (duplicate check)
+//   ranking           - ranked by score with Cumulative value, the budget line and the
+//                       Progress list button
+//   all               - full case list, Grasslands columns (no assignment, so no Select
+//                       or Assignee): ID, Business, SBI, Submitted, Value (£K), Stage, Status
+// Statuses: Application received, Removed (session, not promoted),
+// Withdrawn (data file, or a caseworker outcome in the session), Progressed (session, via
+// the Progress list or a caseworker's Progress application outcome).
+// The budgeting panel above the tabs is client-side (see the template).
+const WATERV4_TABS = ['dedupe', 'ranking']
+const WATERV4_SORT_KEYS = {
+  dedupe: ['id', 'sbi', 'score', 'value', 'date', 'status'],
+  ranking: ['id', 'sbi', 'score', 'value', 'cumulative', 'date'],
+  all: ['id', 'business', 'sbi', 'date', 'value', 'stage', 'status']
+}
+const WATERV4_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red', 'Rejected as duplicate': 'red' }
+// Ranking order: Application received first (the only ones that count towards the cumulative value
+// and can be promoted), then the rest by status, each group by score. Scores are never changed by an outcome.
+const WATERV4_STATUS_ORDER = ['Application received', 'Progressed', 'Rejected as duplicate', 'Removed', 'Withdrawn']
+// Cap on the total grant value claimable by one SBI across all its applications.
+const WATERV4_SBI_CAP = 200000
+const WATERV4_DEFAULT_BUDGET = 5000000
+
+function waterV4Maps (req) {
+  const d = (req.session && req.session.data) || {}
+  return { rejected: d.waterV4Rejected || {}, removed: d.waterV4Removed || {}, withdrawn: d.waterV4Withdrawn || {}, progressed: d.waterV4Progressed || {} }
+}
+function waterV4StatusOf (c, maps) {
+  if (maps.rejected[c.id]) return 'Rejected as duplicate'
+  if (maps.removed[c.id]) return 'Removed'
+  if (c.status === 'Withdrawn' || maps.withdrawn[c.id]) return 'Withdrawn'
+  if (maps.progressed[c.id]) return 'Progressed'
+  return 'Application received'
+}
+// Every case, ranked: live applications (not Removed / Withdrawn) first by score
+// (highest first, earliest date breaks a tie), then the ones out of the running.
+// Cumulative value only counts live applications. Also the score tiers the budget
+// panel needs (a tier is funded only if every case at that score fits).
+function waterV4Ranked (req) {
+  delete require.cache[require.resolve(waterV4CasesPath)]
+  delete require.cache[require.resolve(waterV4AnswersPath)]
+  const answers = require(waterV4AnswersPath)
+  const maps = waterV4Maps(req)
+  const cases = require(waterV4CasesPath).cases
+  const sbiCount = {}
+  cases.forEach(function (c) { sbiCount[c.sbi] = (sbiCount[c.sbi] || 0) + 1 })
+  // A caseworker can enter a capped value for an application (never more than its grant value);
+  // ranking, cumulative value and the SBI cap use it, the original value is kept alongside.
+  const cappedMap = (req.session && req.session.data && req.session.data.waterV4Capped) || {}
+  const effValue = function (c) { return cappedMap[c.id] ? cappedMap[c.id].value : c.value }
+  const sbiLive = {}
+  cases.forEach(function (c) { if (waterV4StatusOf(c, maps) === 'Application received') sbiLive[c.sbi] = (sbiLive[c.sbi] || 0) + effValue(c) })
+  const rows = cases.map(function (c) {
+    const status = waterV4StatusOf(c, maps)
+    const live = status === 'Application received'
+    return Object.assign({}, c, {
+      dateVal: grassDateVal(c.date), status: status, tag: WATERV4_STATUS_TAG[status], live: live,
+      removed: status === 'Removed' || status === 'Rejected as duplicate', multi: sbiCount[c.sbi] > 1,
+      sbiTotal: sbiLive[c.sbi] || 0,
+            value: effValue(c), originalValue: c.value, originalDisplay: wdGbp(c.value), capped: effValue(c) !== c.value,
+      valueDisplay: wdGbp(effValue(c)), valueK: (effValue(c) / 1000).toFixed(1),
+      stage: status === 'Progressed' ? 'Agreement' : (live ? 'Application' : '—')
+    })
+  })
+  rows.sort(function (a, b) { return (WATERV4_STATUS_ORDER.indexOf(a.status) - WATERV4_STATUS_ORDER.indexOf(b.status)) || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1) })
+  let running = 0
+  const tiers = []
+  rows.forEach(function (r, i) {
+    r.rank = i + 1
+    if (!r.live) { r.cumulative = null; r.cumulativeDisplay = '–'; return }
+    running += r.value
+    r.cumulative = running
+    r.cumulativeDisplay = wdGbp(running)
+    const t = tiers[tiers.length - 1]
+    if (t && t.score === r.score) { t.count++; t.cumulative = running } else tiers.push({ score: r.score, count: 1, cumulative: running })
+  })
+  return { rows: rows, tiers: tiers, answers: answers }
+}
+// What "within the budget" means for a budget: every live application at or above the
+// lowest score whose whole tier fits.
+// Attrition %: the number of cases that fit the budget (whole score groups) is increased by
+// the attrition % (25% -> about a quarter more cases), then rounded to the nearest whole
+// score group, so the line moves down. Alternatively a pass score can be set directly, which
+// gives the same result as the attrition % that reaches it (the implied attrition).
+// Never a split group; never fewer cases than the budget fits; never more than 100% extra.
+function waterV4WithinBudget (base, budget, attrition, pass) {
+  attrition = attrition || 0
+  const tiers = base.tiers
+  let k0 = 0
+  while (k0 < tiers.length && tiers[k0].cumulative <= budget) k0++
+  const cc = []
+  tiers.reduce(function (n, t, idx) { n += t.count; cc[idx] = n; return n }, 0)
+  const baseCount = k0 ? cc[k0 - 1] : 0
+  let k = k0
+  if (baseCount && pass !== null && pass !== undefined) {
+    // cases at or above the pass score
+    let idx = -1
+    tiers.forEach(function (t, n) { if (t.score >= pass) idx = n })
+    k = Math.max(k0, idx + 1)
+  } else if (attrition && baseCount) {
+    const target = baseCount * (1 + attrition / 100)
+    let best = k0
+    let bestDiff = Math.abs(baseCount - target)
+    for (let t = k0; t < tiers.length; t++) {
+      const diff = Math.abs(cc[t] - target)
+      if (diff <= bestDiff) { best = t + 1; bestDiff = diff }
+      if (cc[t] > target) break
+    }
+    k = best
+  }
+  while (k > k0 && baseCount && (cc[k - 1] / baseCount - 1) * 100 > 100) k--
+  const impliedAttrition = baseCount && k ? Math.round((cc[k - 1] / baseCount - 1) * 100) : 0
+  const minScore = k ? tiers[k - 1].score : null
+  const within = minScore === null ? [] : base.rows.filter(function (r) { return r.live && r.score >= minScore })
+  const allocated = k ? tiers[k - 1].cumulative : 0
+  return {
+    budget: budget, attrition: impliedAttrition, baseCount: baseCount, target: Math.round(baseCount * (1 + impliedAttrition / 100)),
+    minScore: minScore, withinCount: within.length, allocated: allocated, unspent: budget - allocated,
+    toProgress: within.filter(function (r) { return r.status === 'Application received' })
+  }
+}
+function waterV4PassParam (v) {
+  const n = parseInt(String(v === undefined ? '' : v).replace(/[^0-9]/g, ''), 10)
+  return isNaN(n) ? null : n
+}
+function waterV4AttritionParam (v) {
+  const n = parseInt(String(v === undefined ? '' : v).replace(/[^0-9]/g, ''), 10)
+  return isNaN(n) ? 0 : Math.min(100, n)
+}
+function waterV4BudgetParam (v) {
+  const n = parseInt(String(v === undefined ? '' : v).replace(/[^0-9]/g, ''), 10)
+  return isNaN(n) ? WATERV4_DEFAULT_BUDGET : n
+}
+// Issues for Clean the list: one per SBI with more than one application. The caseworker sets an
+// issue to Completed explicitly (Check complete); until then it is Not started (nothing labelled)
+// or In progress (some labels saved, or re-opened).
+function waterV4Issues (req, base) {
+  const d = (req.session && req.session.data) || {}
+  const labels = d.waterV4Labels || {}
+  const st = d.waterV4IssueState || {}
+  const issueMap = {}
+  base.rows.forEach(function (r) { if (r.multi) (issueMap[r.sbi] = issueMap[r.sbi] || []).push(r) })
+  return Object.keys(issueMap).sort().map(function (sbi) {
+    const rs = issueMap[sbi]
+    const set = rs.filter(function (r) { return labels[r.id] }).length
+    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), count: rs.length, state: st[sbi] === 'complete' ? 'done' : ((set || st[sbi] === 'open') ? 'started' : 'new') }
+  })
+}
+function waterV4View (req) {
+  const d = req.session && req.session.data
+  if (d) delete d.waterV4Flash // opening the list means a removal banner has gone
+  const tab = WATERV4_TABS.indexOf(req.query.tab) === -1 ? 'dedupe' : req.query.tab
+  const base = waterV4Ranked(req)
+  let rows = base.rows.slice()
+  if (tab === 'dedupe') rows = rows.filter(function (r) { return r.multi })
+  if (tab === 'all') rows.forEach(function (r) { r.business = base.answers.waterBusinessName(r) })
+  const search = (req.query.searchWater !== undefined ? req.query.searchWater : '').toString()
+  const term = search.trim().toLowerCase()
+  if (term) rows = rows.filter(function (r) { return r.id.indexOf(term) !== -1 || r.sbi.indexOf(term) !== -1 })
+  // Default orders: ranking = the ranking itself, dedupe = grouped by SBI, all = by ID.
+  const keys = WATERV4_SORT_KEYS[tab]
+  const defaultSort = tab === 'ranking' ? 'rank' : (tab === 'dedupe' ? 'sbi' : 'id')
+  const sort = keys.indexOf(req.query.sort) === -1 ? defaultSort : req.query.sort
+  const dir = req.query.dir === 'desc' ? 'desc' : 'asc'
+  if (sort !== 'rank') {
+    const f = dir === 'desc' ? -1 : 1
+    const val = function (r) {
+      if (sort === 'date') return r.dateVal
+      if (sort === 'value') return r.originalValue
+      if (sort === 'cumulative') return r.cumulative === null ? Infinity : r.cumulative
+      if (sort === 'business') return String(r.business).toLowerCase()
+      return r[sort]
+    }
+    rows.sort(function (a, b) {
+      const av = val(a); const bv = val(b)
+      const c = av < bv ? -1 : av > bv ? 1 : 0
+      // within a group (e.g. one SBI) show the best score first
+      return c * f || (b.score - a.score) || (a.dateVal - b.dateVal) || (a.id < b.id ? -1 : 1)
+    })
+  }
+  const flash = d && d.waterV4ListFlash
+  if (d) delete d.waterV4ListFlash
+  // SBIs whose applications still in play add up to more than the cap. Whether it is an issue depends
+  // on the line (only the applications inside it count), so the page works that out as the line moves.
+  const capCandidates = []
+  const bySbi = {}
+  base.rows.forEach(function (r) { if (r.live) (bySbi[r.sbi] = bySbi[r.sbi] || []).push(r) })
+  Object.keys(bySbi).forEach(function (sbi) {
+    const rs = bySbi[sbi]
+    if (rs.reduce(function (t, r) { return t + r.value }, 0) <= WATERV4_SBI_CAP) return
+    capCandidates.push({ sbi: sbi, business: base.answers.waterBusinessName(rs[0]), cases: rs.map(function (r) { return { score: r.score, value: r.value } }) })
+  })
+  // The capped-value inputs show when the search is one SBI on the ranking tab.
+  const capEdit = tab === 'ranking' && /^\d{9}$/.test(search.trim()) && rows.some(function (r) { return r.live })
+  const capError = d && d.waterV4CapError
+  // "Cleaning finished" is recorded once from Clean the list; the success banner shows once on Scoring and ranking.
+  const cleaning = (d && d.waterV4CleaningFinished) || null
+  const cleanFlash = !!(d && d.waterV4CleanFlash)
+  if (d && tab === 'ranking') delete d.waterV4CleanFlash
+  if (d) delete d.waterV4CapError
+  // The Capped value column only appears once at least one application has a capped value.
+  const anyCapped = base.rows.some(function (r) { return r.capped })
+  // Readiness summary inputs: scores of applications still awaiting a decision, and SBIs with more than one of them.
+  const liveScores = base.rows.filter(function (r) { return r.status === 'Application received' }).map(function (r) { return r.score })
+  const multiSbis = []
+  Object.keys(bySbi).forEach(function (sbi) { if (bySbi[sbi].length > 1) multiSbis.push(bySbi[sbi].map(function (r) { return r.score })) })
+  // SBIs with more than one application, for the "Review a single SBI" autocomplete on Clean the list.
+  const sbiOptions = []
+  const seenOpt = {}
+  base.rows.forEach(function (r) {
+    if (!r.multi || seenOpt[r.sbi]) return
+    seenOpt[r.sbi] = true
+    sbiOptions.push({ sbi: r.sbi, business: base.answers.waterBusinessName(r) })
+  })
+  sbiOptions.sort(function (x, y) { return x.sbi < y.sbi ? -1 : 1 })
+  const issues = waterV4Issues(req, base)
+  const issuesDone = issues.filter(function (j) { return j.state === 'done' }).length
+  return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV4_SBI_CAP, capDisplay: wdGbp(WATERV4_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV4_DEFAULT_BUDGET, flash: flash || null }
+}
+// Set a capped value for one application (from the SBI search results). Never more than its
+// grant value; entering the grant value again removes the cap. Written to the case notes.
+router.post('/WaterManagementV4/cap', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.body.id)
+  if (!ctx) return
+  const d = waterV4Session(req)
+  const back = '/WaterManagementV4/caselist?tab=ranking&searchWater=' + encodeURIComponent(ctx.c.sbi)
+  const raw = String(req.body.capped === undefined ? '' : req.body.capped).replace(/[^0-9]/g, '')
+  const n = parseInt(raw, 10)
+  if (ctx.final) return res.redirect(back)
+  if (raw === '' || isNaN(n) || n > ctx.c.value) {
+    d.waterV4CapError = { id: ctx.c.id, message: 'Enter a capped value for ' + ctx.c.id + ' of ' + wdGbp(ctx.c.value) + ' or less' }
+    return req.session.save(function () { res.redirect(back) })
+  }
+  const now = new Date()
+  const before = d.waterV4Capped[ctx.c.id] ? d.waterV4Capped[ctx.c.id].value : ctx.c.value
+  if (n === ctx.c.value) delete d.waterV4Capped[ctx.c.id]
+  else d.waterV4Capped[ctx.c.id] = { value: n, ts: now.getTime(), display: waterV4Stamp(now), iso: now.toISOString(), by: WATERV4_USER }
+  if (n !== before) {
+    d.waterV4Notes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterV4Stamp(now), iso: now.toISOString(), reason: 'Capped value set',
+      note: n === ctx.c.value ? 'Cap removed: the capped value is back to the grant value of ' + wdGbp(n) : 'Capped value set to ' + wdGbp(n) + ' (grant value ' + wdGbp(ctx.c.value) + ')', by: WATERV4_USER, kind: 'capped' }].concat(d.waterV4Notes[ctx.c.id] || [])
+  }
+  req.session.save(function () { res.redirect(back) })
+})
+// An issue: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate with <case>).
+// Two buttons: Check complete (confirmation page, then Completed) and Save progress. A Completed issue is
+// read only, with Re-open checks.
+function waterV4IssueRows (base, sbi) {
+  return base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
+}
+router.get('/WaterManagementV4/issue', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const sbi = String(req.query.sbi || '')
+  const base = waterV4Ranked(req)
+  const rows = waterV4IssueRows(base, sbi)
+  if (!rows.length) return res.redirect('/WaterManagementV4/caselist?tab=dedupe')
+  const d = waterV4Session(req)
+  rows.forEach(function (r) { r.label = d.waterV4Labels[r.id] || '' })
+  res.render('WaterManagementV4/issue', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, complete: d.waterV4IssueState[sbi] === 'complete' })
+})
+router.post('/WaterManagementV4/issue', function (req, res) {
+  const sbi = String(req.body.sbi || '')
+  const d = waterV4Session(req)
+  const base = waterV4Ranked(req)
+  const issueRows = waterV4IssueRows(base, sbi)
+  if (!issueRows.length) return res.redirect('/WaterManagementV4/caselist?tab=dedupe')
+  if (d.waterV4IssueState[sbi] === 'complete') return res.redirect('/WaterManagementV4/issue?sbi=' + sbi)
+  issueRows.forEach(function (r) {
+    const v = req.body['label-' + r.id]
+    const other = String(v).indexOf('duplicate:') === 0 ? String(v).slice(10) : ''
+    const valid = v === 'not-duplicate' || (other && other !== r.id && issueRows.some(function (x) { return x.id === other }))
+    if (valid) d.waterV4Labels[r.id] = v
+    else delete d.waterV4Labels[r.id]
+  })
+  const next = req.body.action === 'check' ? '/WaterManagementV4/issue-complete?sbi=' + sbi : '/WaterManagementV4/caselist?tab=dedupe'
+  req.session.save(function () { res.redirect(next) })
+})
+// Check complete: always asks first, whatever state the issue is in.
+router.get('/WaterManagementV4/issue-complete', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const sbi = String(req.query.sbi || '')
+  const base = waterV4Ranked(req)
+  const rows = waterV4IssueRows(base, sbi)
+  if (!rows.length) return res.redirect('/WaterManagementV4/caselist?tab=dedupe')
+  const d = waterV4Session(req)
+  if (d.waterV4IssueState[sbi] === 'complete') return res.redirect('/WaterManagementV4/issue?sbi=' + sbi)
+  const notSet = rows.filter(function (r) { return !d.waterV4Labels[r.id] })
+  const dupOpen = rows.filter(function (r) { return String(d.waterV4Labels[r.id] || '').indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' })
+  res.render('WaterManagementV4/issue-complete', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), notSet: notSet, dupOpen: dupOpen })
+})
+router.post('/WaterManagementV4/issue-complete', function (req, res) {
+  const sbi = String(req.body.sbi || '')
+  const d = waterV4Session(req)
+  if (waterV4IssueRows(waterV4Ranked(req), sbi).length) d.waterV4IssueState[sbi] = 'complete'
+  req.session.save(function () { res.redirect('/WaterManagementV4/caselist?tab=dedupe') })
+})
+// Re-open checks: back to In progress, no confirmation.
+router.post('/WaterManagementV4/issue-reopen', function (req, res) {
+  const sbi = String(req.body.sbi || '')
+  const d = waterV4Session(req)
+  if (d.waterV4IssueState[sbi] === 'complete') d.waterV4IssueState[sbi] = 'open'
+  req.session.save(function () { res.redirect('/WaterManagementV4/issue?sbi=' + encodeURIComponent(sbi)) })
+})
+router.get('/WaterManagementV4/caselist', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  res.render('WaterManagementV4/caselist', { view: waterV4View(req) })
+})
+
+// Progress list: moves every application currently within the budget (the budget the
+// caseworker has set on the page) to Progressed. Confirmation page first.
+router.get('/WaterManagementV4/progress-list', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const plan = waterV4WithinBudget(waterV4Ranked(req), waterV4BudgetParam(req.query.budget), waterV4AttritionParam(req.query.attrition), waterV4PassParam(req.query.pass))
+  const openIssues = waterV4Issues(req, waterV4Ranked(req)).filter(function (i) { return i.state !== 'done' }).length
+  res.render('WaterManagementV4/progress-list', { openIssues: openIssues, plan: plan, budgetDisplay: wdGbp(plan.budget), allocatedDisplay: wdGbp(plan.allocated), unspentDisplay: wdGbp(Math.abs(plan.unspent)) })
+})
+router.post('/WaterManagementV4/progress-list', function (req, res) {
+  const plan = waterV4WithinBudget(waterV4Ranked(req), waterV4BudgetParam(req.body.budget), waterV4AttritionParam(req.body.attrition), waterV4PassParam(req.body.pass))
+  const d = waterV4Session(req)
+  d.waterV4Progressed = d.waterV4Progressed || {}
+  const now = new Date()
+  plan.toProgress.forEach(function (r) {
+    d.waterV4Progressed[r.id] = { ts: now.getTime(), display: waterV4Stamp(now), iso: now.toISOString(), by: WATERV4_USER, budget: plan.budget, attrition: plan.attrition }
+  })
+  d.waterV4ListFlash = { count: plan.toProgress.length, budget: wdGbp(plan.budget), attrition: plan.attrition, minScore: plan.minScore }
+  // Save before redirecting (the kit writes session files after the redirect goes out).
+  req.session.save(function () { res.redirect('/WaterManagementV4/caselist?tab=ranking') })
+})
+
+// Application page for a case on the list (one accordion section per application
+// question). All the made-up answers and scores come from
+// data/water-management-answers.js, which also drives the caselist Score column.
+const waterV4AnswersPath = path.join(__dirname, 'data', 'water-management-v4-answers.js')
+// Old standalone application URL: every application is a case now, so open its tab.
+router.get('/WaterManagementV4/application', function (req, res) {
+  res.redirect('/WaterManagementV4/case/application?id=' + encodeURIComponent(req.query.id || ''))
+})
+
+// ============================================================
+// Water management CASES (every one of the 200 applications).
+// A case has Tasks / Application / Timeline / Notes, in the Grasslands order.
+//   Tasks: a task list with ONE task, "Check for duplication" (decision: No duplicate ->
+//   status Complete, Duplicate -> red Duplicate tag), then an Outcome with three options -
+//   Remove application, Withdraw application, Progress application. An outcome does not
+//   need the task to be done first (it can be done offline). Picking one reveals its
+//   mandatory note on this Tasks screen; Continue opens a confirmation page showing the
+//   note, and Confirm records it. An outcome is final: the case reloads as "Case removed / withdrawn /
+//   progressed" with a success banner (shown once).
+// Kept in the session:
+//   data.waterV4Dup[id]       = { decision: 'duplicate' | 'no-duplicate', ts, display, iso, by }
+//   data.waterV4Removed[id]   = outcome record  -> status Removed
+//   data.waterV4Withdrawn[id] = outcome record  -> status Withdrawn
+//   data.waterV4Progressed[id]= outcome record (or a bulk record from Progress list, no note)
+//   data.waterV4Notes[id]     = [ { id, ts, display, iso, reason, note, by, kind } ]  newest first
+// outcome record = { ts, display, iso, by, note, noteId }
+// ============================================================
+const WATERV4_USER = 'A Jones'
+const WATERV4_OUTCOMES = {
+  duplicate: {
+    store: 'waterV4Rejected', kind: 'rejected', menu: 'Reject as duplicate', menuHint: 'Rejects it as a duplicate of another application, takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to reject this application as a duplicate?',
+    bullets: ['reject it as a duplicate', 'take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for rejecting this application as a duplicate, for example which application it duplicates.',
+    button: 'Confirm rejection', error: 'Enter a note explaining why you are rejecting this application as a duplicate',
+    reason: 'Application rejected as a duplicate', title: 'Case rejected as a duplicate', done: 'rejected as a duplicate',
+    after: 'It no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Rejected'
+  },
+  remove: {
+    store: 'waterV4Removed', kind: 'removed', menu: 'Remove application', menuHint: 'Takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to remove this application?',
+    bullets: ['take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for removing this application.',
+    button: 'Confirm removal', error: 'Enter a note explaining why you are removing this application',
+    reason: 'Application removed', title: 'Case removed', done: 'removed',
+    after: 'It no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Removed'
+  },
+  withdraw: {
+    store: 'waterV4Withdrawn', kind: 'withdrawn', menu: 'Withdraw application', menuHint: 'The applicant has withdrawn it. Takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to withdraw this application?',
+    bullets: ['mark it as withdrawn', 'take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for withdrawing this application.',
+    button: 'Confirm withdrawal', error: 'Enter a note explaining why this application is being withdrawn',
+    reason: 'Application withdrawn', title: 'Case withdrawn', done: 'withdrawn',
+    after: 'It no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Withdrawn'
+  },
+  progress: {
+    store: 'waterV4Progressed', kind: 'progressed', menu: 'Progress application', menuHint: 'Moves it to Progressed, the next stage',
+    heading: 'Are you sure you want to progress this application?',
+    bullets: ['move it to Progressed', 'move it on to the next stage (Agreement)', 'close the tasks on this case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for progressing this application.',
+    button: 'Confirm progress', error: 'Enter a note explaining why you are progressing this application',
+    reason: 'Application progressed', title: 'Case progressed', done: 'progressed',
+    after: 'It has moved to the next stage. Your note has been saved.',
+    summary: 'Progressed'
+  }
+}
+function waterV4Stamp (d) {
+  const m = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  let h = d.getHours()
+  const ap = h >= 12 ? 'pm' : 'am'
+  h = h % 12 || 12
+  return d.getDate() + ' ' + m[d.getMonth()] + ' ' + d.getFullYear() + ' at ' + h + ':' + String(d.getMinutes()).padStart(2, '0') + ap
+}
+function waterV4Session (req) {
+  const d = req.session.data
+  d.waterV4Rejected = d.waterV4Rejected || {}
+  d.waterV4Capped = d.waterV4Capped || {}
+  d.waterV4Labels = d.waterV4Labels || {}
+  d.waterV4IssueState = d.waterV4IssueState || {}
+  d.waterV4Removed = d.waterV4Removed || {}
+  d.waterV4Withdrawn = d.waterV4Withdrawn || {}
+  d.waterV4Progressed = d.waterV4Progressed || {}
+  d.waterV4Notes = d.waterV4Notes || {}
+  return d
+}
+// Context for a case page (any of the 200 applications), or null for an unknown ID.
+function waterV4CaseCtx (req, id) {
+  delete require.cache[require.resolve(waterV4CasesPath)]
+  delete require.cache[require.resolve(waterV4AnswersPath)]
+  const answers = require(waterV4AnswersPath)
+  const cases = require(waterV4CasesPath).cases
+  const c = cases.find(function (x) { return x.id === id })
+  if (!c) return null
+  const d = waterV4Session(req)
+  const maps = waterV4Maps(req)
+  const others = cases.filter(function (x) { return x.sbi === c.sbi }).map(function (x) {
+    const st = waterV4StatusOf(x, maps)
+    // likely: the same score and grant value as this case (from the data, so it does not
+    // change when a case is removed and shows as 0%)
+    return { id: x.id, isThis: x.id === id, status: st, tag: WATERV4_STATUS_TAG[st] }
+  })
+  const caseStatus = waterV4StatusOf(c, maps)
+  // The one outcome record this case has, if any (a bulk Progress list record has no note).
+  let outcome = null
+  if (caseStatus === 'Rejected as duplicate') outcome = Object.assign({ type: 'duplicate' }, d.waterV4Rejected[id])
+  else if (caseStatus === 'Removed') outcome = Object.assign({ type: 'remove' }, d.waterV4Removed[id])
+  else if (caseStatus === 'Withdrawn' && d.waterV4Withdrawn[id]) outcome = Object.assign({ type: 'withdraw' }, d.waterV4Withdrawn[id])
+  else if (caseStatus === 'Progressed') outcome = Object.assign({ type: 'progress' }, d.waterV4Progressed[id])
+  if (outcome && outcome.budget) outcome.budgetDisplay = wdGbp(outcome.budget)
+  return {
+    c: c, profile: answers.waterProfileFor(c), others: others, caseStatus: caseStatus,
+    final: caseStatus !== 'Application received', outcome: outcome,
+    seededWithdrawn: caseStatus === 'Withdrawn' && !d.waterV4Withdrawn[id],
+    notes: d.waterV4Notes[id] || []
+  }
+}
+function waterV4CaseOr (req, res, id) {
+  res.set('Cache-Control', 'no-store')
+  const ctx = waterV4CaseCtx(req, id)
+  if (!ctx) res.redirect('/WaterManagementV4/caselist')
+  return ctx
+}
+function waterV4GoTasks (res, id, extra) { res.redirect('/WaterManagementV4/case/tasks?id=' + id + (extra || '')) }
+
+router.get('/WaterManagementV4/case/tasks', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  waterV4RenderTasks(req, res, ctx)
+})
+function waterV4RenderTasks (req, res, ctx, extra) {
+  const d = waterV4Session(req)
+  // The success banner belongs to the redirect straight after an outcome: show it once,
+  // then clear the flag (and the page is no-store so Back never replays it).
+  ctx.justDone = d.waterV4Flash === ctx.c.id
+  delete d.waterV4Flash
+  ctx.outcomeError = req.query.error === 'outcome'
+  ctx.outcomes = WATERV4_OUTCOMES
+  ctx.formType = ''      // the outcome picked when the form is shown again with an error
+  ctx.formNotes = {}     // the notes typed so far, by outcome
+  ctx.noteError = ''     // the outcome whose note is missing
+  ctx.formDup = ''       // the duplicate application picked so far
+  ctx.dupError = false   // Reject as duplicate without picking the duplicate application
+  Object.assign(ctx, extra || {})
+  res.render('WaterManagementV4/case/tasks', ctx)
+}
+
+// ----- the three outcomes -----
+// 1. On Tasks the caseworker picks an outcome; each option reveals its note field (the
+//    note is mandatory). 2. A confirmation page shows what will happen and the note.
+//    3. Confirm records it. The chosen outcome + note wait in data.waterV4Pending[id].
+router.post('/WaterManagementV4/case/outcome-choose', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.body.id)
+  if (!ctx) return
+  if (ctx.final) return waterV4GoTasks(res, ctx.c.id)
+  const notes = { duplicate: req.body['note-duplicate'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
+  const type = req.body.type
+  if (!WATERV4_OUTCOMES[type]) return waterV4RenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
+  // Reject as duplicate also needs the other application of the SBI it duplicates.
+  const dupOf = String(req.body['duplicate-of'] || '')
+  if (type === 'duplicate' && !ctx.others.some(function (o) { return !o.isThis && o.id === dupOf })) {
+    return waterV4RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, dupError: true, noteError: String(notes[type]).trim() ? '' : type })
+  }
+  const text = String(notes[type]).trim()
+  if (!text) return waterV4RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, noteError: type })
+  const d = waterV4Session(req)
+  d.waterV4Pending = d.waterV4Pending || {}
+  d.waterV4Pending[ctx.c.id] = { type: type, note: text, dupOf: type === 'duplicate' ? dupOf : '' }
+  req.session.save(function () { res.redirect('/WaterManagementV4/case/outcome?id=' + ctx.c.id) })
+})
+router.get('/WaterManagementV4/case/outcome', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  const pending = (waterV4Session(req).waterV4Pending || {})[ctx.c.id]
+  if (ctx.final || !pending) return waterV4GoTasks(res, ctx.c.id)
+  ctx.type = pending.type
+  ctx.o = WATERV4_OUTCOMES[pending.type]
+  ctx.note = pending.note
+  ctx.dupOf = pending.dupOf || ''
+  res.render('WaterManagementV4/case/outcome', ctx)
+})
+router.post('/WaterManagementV4/case/outcome', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.body.id)
+  if (!ctx) return
+  const d = waterV4Session(req)
+  const pending = (d.waterV4Pending || {})[ctx.c.id]
+  if (ctx.final || !pending) return waterV4GoTasks(res, ctx.c.id)
+  const o = WATERV4_OUTCOMES[pending.type]
+  const now = new Date()
+  const noteId = String(now.getTime())
+  const rec = { ts: now.getTime(), display: waterV4Stamp(now), iso: now.toISOString(), by: WATERV4_USER, note: pending.note, noteId: noteId }
+  if (pending.dupOf) rec.duplicateOf = pending.dupOf
+  d[o.store][ctx.c.id] = rec
+  d.waterV4Notes[ctx.c.id] = [{ id: noteId, ts: rec.ts, display: rec.display, iso: rec.iso, reason: o.reason, note: (pending.dupOf ? 'Duplicate of ' + pending.dupOf + '. ' : '') + pending.note, by: WATERV4_USER, kind: o.kind }].concat(d.waterV4Notes[ctx.c.id] || [])
+  delete d.waterV4Pending[ctx.c.id]
+  d.waterV4Flash = ctx.c.id
+  // The kit keeps sessions in files and writes them AFTER the redirect headers have
+  // gone out, so the next request could arrive before the outcome is stored. Save
+  // first, then redirect.
+  req.session.save(function () { waterV4GoTasks(res, ctx.c.id) })
+})
+router.get('/WaterManagementV4/case/remove', function (req, res) {
+  waterV4GoTasks(res, encodeURIComponent(req.query.id || ''))
+})
+
+
+// ----- the other tabs -----
+router.get('/WaterManagementV4/case/application', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagementV4/case/application', Object.assign(ctx, require(waterV4AnswersPath).waterApplication(ctx.c)))
+})
+router.get('/WaterManagementV4/case/timeline', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  const c = ctx.c
+  // Application received: the case's date at a made-up working-hours time.
+  const h = ((parseInt(c.id, 10) * 2654435761) >>> 0) >>> 9
+  const recv = new Date(grassDateVal(c.date))
+  recv.setHours(8 + h % 9, (h >>> 4) % 60)
+  const titles = { capped: 'Capped value set', rejected: 'Application rejected as a duplicate', removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
+  const events = ctx.notes.map(function (n) {
+    return { title: titles[n.kind] || 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
+  })
+  // Progressed in bulk by Progress list (no note).
+  if (ctx.outcome && ctx.outcome.type === 'progress' && !ctx.outcome.noteId) {
+    events.push({ title: 'Application progressed', by: ctx.outcome.by, ts: ctx.outcome.ts, display: ctx.outcome.display, iso: ctx.outcome.iso })
+  }
+  if (ctx.seededWithdrawn) {
+    // Withdrawn by the applicant a few days after it was received (made up from the ID).
+    const w = new Date(recv.getTime() + (3 + (h >>> 3) % 20) * 86400000)
+    w.setHours(9 + (h >>> 7) % 8, (h >>> 11) % 60)
+    events.push({ title: 'Application withdrawn', by: 'the applicant', ts: w.getTime(), display: waterV4Stamp(w), iso: w.toISOString() })
+  }
+  events.push({ title: 'Application received', by: 'the applicant', ts: recv.getTime(), display: waterV4Stamp(recv), iso: recv.toISOString() })
+  events.sort(function (a, b) { return b.ts - a.ts })
+  ctx.events = events
+  res.render('WaterManagementV4/case/timeline', ctx)
+})
+router.get('/WaterManagementV4/case/notes', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagementV4/case/notes', ctx)
+})
+router.get('/WaterManagementV4/case/add-note', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.query.id)
+  if (!ctx) return
+  res.render('WaterManagementV4/case/add-note', ctx)
+})
+router.post('/WaterManagementV4/case/add-note', function (req, res) {
+  const ctx = waterV4CaseOr(req, res, req.body.id)
+  if (!ctx) return
+  const text = String(req.body.noteText || '').trim()
+  if (!text) {
+    ctx.error = 'Enter a note'
+    return res.render('WaterManagementV4/case/add-note', ctx)
+  }
+  const d = waterV4Session(req)
+  const now = new Date()
+  d.waterV4Notes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterV4Stamp(now), iso: now.toISOString(), reason: 'Note added', note: text, by: WATERV4_USER, kind: 'note' }].concat(d.waterV4Notes[ctx.c.id] || [])
+  req.session.save(function () { res.redirect('/WaterManagementV4/case/notes?id=' + ctx.c.id) })
 })
 
 // ----- Woodlands routes -----

@@ -198,16 +198,16 @@
         {% if view.tab == 'dedupe' %}
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-        <p class="govuk-body">Where SBIs have more than one application, they are listed below. Each SBI is a job: open it and label each application as a duplicate or not a duplicate.</p>
-        <p class="govuk-body govuk-!-margin-bottom-6">{{ view.jobsDone }} of {{ view.jobs.length }} jobs completed.</p>
+        <p class="govuk-body">Where SBIs have more than one application, they are listed below. Each SBI is an issue: open it and label each application as a duplicate or not a duplicate.</p>
+        <p class="govuk-body govuk-!-margin-bottom-6">{{ view.issuesDone }} of {{ view.issues.length }} issues completed.</p>
         <ul class="govuk-task-list">
-          {% for j in view.jobs %}
+          {% for j in view.issues %}
           <li class="govuk-task-list__item govuk-task-list__item--with-link">
             <div class="govuk-task-list__name-and-hint">
-              <a class="govuk-link govuk-task-list__link" href="/WaterManagementV3/job?sbi={{ j.sbi }}" aria-describedby="job-{{ j.sbi }}-status">SBI {{ j.sbi }}: {{ j.business }}</a>
+              <a class="govuk-link govuk-task-list__link" href="/WaterManagementV3/issue?sbi={{ j.sbi }}" aria-describedby="issue-{{ j.sbi }}-status">SBI {{ j.sbi }}: {{ j.business }}</a>
               <div class="govuk-task-list__hint">{{ j.count }} applications</div>
             </div>
-            <div class="govuk-task-list__status" id="job-{{ j.sbi }}-status">
+            <div class="govuk-task-list__status" id="issue-{{ j.sbi }}-status">
               {% if j.state == 'done' %}Completed{% elif j.state == 'started' %}<strong class="govuk-tag govuk-tag--turquoise">In progress</strong>{% else %}<strong class="govuk-tag govuk-tag--blue">Not started</strong>{% endif %}
             </div>
           </li>
@@ -217,7 +217,7 @@
         <h2 class="govuk-heading-m govuk-!-margin-top-8">Mark as complete</h2>
         {% if view.cleaning %}
         <div class="govuk-inset-text">Cleaning was finished on {{ view.cleaning.display }} by {{ view.cleaning.by }}.</div>
-        {% elif view.jobsDone < view.jobs.length %}
+        {% elif view.issuesDone < view.issues.length %}
         <p class="govuk-body">You need to complete all reviews before you can mark the cleaning as complete.</p>
         {% else %}
         <form method="post" action="/WaterManagementV3/cleaning-finished" novalidate>

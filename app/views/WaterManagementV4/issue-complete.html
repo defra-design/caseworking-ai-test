@@ -1,0 +1,52 @@
+{% extends "layouts/main.html" %}
+
+{# Check complete: confirmation, whatever state the issue is in. Confirm sets the issue to Completed. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V4" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV4/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV4/issue?sbi={{ sbi }}" class="govuk-back-link">Back</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Are you sure the checks on SBI {{ sbi }} are complete?</h1>
+        <p class="govuk-body">{{ business }}</p>
+
+        {% if notSet.length or dupOpen.length %}
+        <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            This issue is not fully resolved.
+          </strong>
+        </div>
+        <ul class="govuk-list govuk-list--bullet">
+          {% if notSet.length %}<li>{{ notSet.length }} case{% if notSet.length != 1 %}s have{% else %} has{% endif %} no label set: {% for c in notSet %}{{ c.id }}{% if not loop.last %}, {% endif %}{% endfor %}</li>{% endif %}
+          {% if dupOpen.length %}<li>{{ dupOpen.length }} case{% if dupOpen.length != 1 %}s{% endif %} labelled as a duplicate {% if dupOpen.length != 1 %}have{% else %}has{% endif %} not been withdrawn or rejected: {% for c in dupOpen %}{{ c.id }}{% if not loop.last %}, {% endif %}{% endfor %}</li>{% endif %}
+        </ul>
+        {% else %}
+        <p class="govuk-body">Every case is labelled and every duplicate has been withdrawn or rejected.</p>
+        {% endif %}
+
+        <form method="post" action="/WaterManagementV4/issue-complete" novalidate>
+          <input type="hidden" name="sbi" value="{{ sbi }}">
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+            <a class="govuk-link" href="/WaterManagementV4/issue?sbi={{ sbi }}">Cancel and return</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
