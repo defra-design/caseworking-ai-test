@@ -3,7 +3,7 @@
 {# Clean the list: compare every application on one SBI side by side. Case ID is the column header,
    the data sits in shared rows with a Row label, grouped under section headings (no accordion).
    Each application column is the width of a two-thirds column (640px, 30px padding each side) with
-   one vertical line between them, so the table scrolls sideways. Opens in a new tab. #}
+   one vertical line between them, so the whole page scrolls sideways (no inner scroll window). Opens in a new tab. #}
 {% set containerClasses = "app-caselist-wide" %}
 {% set headerContainerClasses = "app-caselist-wide" %}
 {% set headerTitleCentred = true %}
@@ -18,7 +18,7 @@
 {% block head %}
   {{ super() }}
   <style>
-    .app-compare-scroll { overflow-x: auto; margin-bottom: 30px; }
+    .app-compare-scroll { margin-bottom: 30px; }
     .app-compare { border-collapse: collapse; table-layout: fixed; font-family: "GDS Transport", arial, sans-serif; font-size: 1.1875rem; line-height: 1.3157894737; color: #0b0c0c; }
     .app-compare th, .app-compare td { text-align: left; vertical-align: top; box-sizing: border-box; padding: 10px 30px; border-bottom: 1px solid #b1b4b6; overflow-wrap: anywhere; }
     .app-compare .app-compare__label { width: 280px; min-width: 280px; padding-left: 0; font-weight: 700; position: sticky; left: 0; background: #fff; z-index: 1; }
@@ -38,7 +38,7 @@
     <h1 class="govuk-heading-l">Compare the applications for this SBI</h1>
     <p class="govuk-body">{{ business }}: {{ compare.cases | length }} applications. Scroll sideways to see them all.</p>
 
-    <div class="app-compare-scroll" tabindex="0" role="region" aria-label="Application comparison, scrolls sideways">
+    <div class="app-compare-scroll">
       <table class="app-compare">
         <caption class="govuk-visually-hidden">Applications for SBI {{ sbi }}, one column for each case ID</caption>
         <thead>
