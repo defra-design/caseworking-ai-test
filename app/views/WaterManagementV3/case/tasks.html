@@ -1,6 +1,6 @@
 {% extends "layouts/main.html" %}
 
-{# Water management case — Decision (no tasks): the other applications from the same SBI (each opens that case) and the decision - Reject as duplicate, Withdraw or Progress application. Each goes to a confirmation page with a mandatory note and is final: the page then reloads as the final view with a success banner (once). #}
+{# Water management case — Decision (no tasks): the other applications from the same SBI (each opens that case) and the decision - Reject as duplicate (only when labelled a duplicate), Reject, Withdraw or Progress application. Each goes to a confirmation page with a mandatory note and is final: the page then reloads as the final view with a success banner (once). #}
 
 {% set headerServiceName = "Water management V3" %}
 
@@ -34,8 +34,7 @@
         <h2 class="govuk-error-summary__title">There is a problem</h2>
         <div class="govuk-error-summary__body">
           <ul class="govuk-list govuk-error-summary__list">
-            {% if outcomeError %}<li><a href="#outcome-duplicate">Select an outcome for this application</a></li>{% endif %}
-            {% if dupError %}<li><a href="#duplicate-of">Select the duplicate application</a></li>{% endif %}
+            {% if outcomeError %}<li><a href="#outcome-reject">Select an outcome for this application</a></li>{% endif %}
             {% if noteError %}<li><a href="#note-{{ noteError }}">{{ outcomes[noteError].error }}</a></li>{% endif %}
           </ul>
         </div>
@@ -117,7 +116,7 @@
           <legend class="govuk-fieldset__legend govuk-visually-hidden">Decision</legend>
           {% if outcomeError %}<p id="outcome-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select an outcome for this application</p>{% endif %}
           <div class="govuk-radios" data-module="govuk-radios">
-            {% for key in ["duplicate", "withdraw", "progress"] %}
+            {% for key in (["duplicate", "reject", "withdraw", "progress"] if labelDup else ["reject", "withdraw", "progress"]) %}
             {% set o = outcomes[key] %}
             {% set picked = (formType == key) %}
             <div class="govuk-radios__item">
@@ -125,18 +124,8 @@
               <label class="govuk-label govuk-radios__label" for="outcome-{{ key }}">{{ o.menu }}</label>
             </div>
             <div class="govuk-radios__conditional{% if not picked %} govuk-radios__conditional--hidden{% endif %}" id="conditional-{{ key }}">
-              {% if key == "duplicate" %}
-              <div class="govuk-form-group{% if dupError %} govuk-form-group--error{% endif %}">
-                <label class="govuk-label govuk-label--s" for="duplicate-of">Duplicate application</label>
-                {% if dupError %}<p id="duplicate-of-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> Select the duplicate application</p>{% endif %}
-                <select class="govuk-select{% if dupError %} govuk-select--error{% endif %}" id="duplicate-of" name="duplicate-of"{% if dupError %} aria-describedby="duplicate-of-error"{% endif %}>
-                  <option value="">Select an application</option>
-                  {% for o in others | sort(false, false, 'id') %}{% if not o.isThis %}<option value="{{ o.id }}"{% if formDup == o.id %} selected{% endif %}>{{ o.id }}</option>{% endif %}{% endfor %}
-                </select>
-              </div>
-              {% endif %}
               <div class="govuk-form-group{% if noteError == key %} govuk-form-group--error{% endif %}">
-                <label class="govuk-label{% if key == "duplicate" %} govuk-label--s{% endif %}" for="note-{{ key }}">{{ o.noteLabel }}</label>
+                <label class="govuk-label" for="note-{{ key }}">{{ o.noteLabel }}</label>
                 <div id="note-{{ key }}-hint" class="govuk-hint">{{ o.hint }}</div>
                 {% if noteError == key %}<p id="note-{{ key }}-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ o.error }}</p>{% endif %}
                 <textarea class="govuk-textarea{% if noteError == key %} govuk-textarea--error{% endif %}" id="note-{{ key }}" name="note-{{ key }}" rows="5" aria-describedby="note-{{ key }}-hint{% if noteError == key %} note-{{ key }}-error{% endif %}">{{ formNotes[key] }}</textarea>

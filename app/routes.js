@@ -4462,20 +4462,21 @@ const WATERV3_SORT_KEYS = {
   ranking: ['id', 'sbi', 'score', 'value', 'cumulative', 'date'],
   all: ['id', 'business', 'sbi', 'date', 'value', 'stage', 'status']
 }
-const WATERV3_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red', 'Rejected as duplicate': 'red' }
+const WATERV3_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red', 'Rejected as duplicate': 'red', 'Rejected': 'red' }
 // Ranking order: Application received first (the only ones that count towards the cumulative value
 // and can be promoted), then the rest by status, each group by score. Scores are never changed by an outcome.
-const WATERV3_STATUS_ORDER = ['Application received', 'Progressed', 'Rejected as duplicate', 'Removed', 'Withdrawn']
+const WATERV3_STATUS_ORDER = ['Application received', 'Progressed', 'Rejected as duplicate', 'Rejected', 'Removed', 'Withdrawn']
 // Cap on the total grant value claimable by one SBI across all its applications.
 const WATERV3_SBI_CAP = 300000
 const WATERV3_DEFAULT_BUDGET = 5000000
 
 function waterV3Maps (req) {
   const d = (req.session && req.session.data) || {}
-  return { rejected: d.waterV3Rejected || {}, removed: d.waterV3Removed || {}, withdrawn: d.waterV3Withdrawn || {}, progressed: d.waterV3Progressed || {} }
+  return { rejected: d.waterV3Rejected || {}, rejectedAny: d.waterV3RejectedAny || {}, removed: d.waterV3Removed || {}, withdrawn: d.waterV3Withdrawn || {}, progressed: d.waterV3Progressed || {} }
 }
 function waterV3StatusOf (c, maps) {
   if (maps.rejected[c.id]) return 'Rejected as duplicate'
+  if (maps.rejectedAny[c.id]) return 'Rejected'
   if (maps.removed[c.id]) return 'Removed'
   if (c.status === 'Withdrawn' || maps.withdrawn[c.id]) return 'Withdrawn'
   if (maps.progressed[c.id]) return 'Progressed'
@@ -4504,7 +4505,7 @@ function waterV3Ranked (req) {
     const live = status === 'Application received'
     return Object.assign({}, c, {
       dateVal: grassDateVal(c.date), status: status, tag: WATERV3_STATUS_TAG[status], live: live,
-      removed: status === 'Removed' || status === 'Rejected as duplicate', multi: sbiCount[c.sbi] > 1,
+      removed: status === 'Removed' || status === 'Rejected as duplicate' || status === 'Rejected', multi: sbiCount[c.sbi] > 1,
       sbiTotal: sbiLive[c.sbi] || 0,
             value: effValue(c), originalValue: c.value, originalDisplay: wdGbp(c.value), capped: effValue(c) !== c.value,
       valueDisplay: wdGbp(effValue(c)), valueK: (effValue(c) / 1000).toFixed(1),
@@ -4696,26 +4697,19 @@ router.post('/WaterManagementV3/cleaning-finished', function (req, res) {
   req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=ranking') })
 })
 // An issue: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate).
-// Who is working an issue: one of four caseworkers, or blank. Saved straight from the Clean the list page.
+// Who owns an issue: one of four caseworkers, or blank. Set on the issue page and saved with the labels.
 const WATERV3_WHO = ['A Jones', 'M Walker', 'R Singh', 'T Okafor']
-router.post('/WaterManagementV3/issue-who', function (req, res) {
-  const d = req.session.data
-  d.waterV3Who = d.waterV3Who || {}
-  const sbi = String(req.body.sbi || '')
-  const who = String(req.body.who || '')
-  if (/^[0-9]+$/.test(sbi)) {
-    if (WATERV3_WHO.indexOf(who) === -1) delete d.waterV3Who[sbi]
-    else d.waterV3Who[sbi] = who
-  }
-  req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=dedupe') })
-})
 // Compare every application on one SBI side by side (opens in a new tab from the issue).
 router.get('/WaterManagementV3/compare', function (req, res) {
   res.set('Cache-Control', 'no-store')
   const sbi = String(req.query.sbi || '')
   const base = waterV3Ranked(req)
-  const rows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
+  let rows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
   if (!rows.length) return res.redirect('/WaterManagementV3/caselist?tab=dedupe')
+  // Only the ticked applications, when two or more were chosen on the issue page.
+  const ids = [].concat(req.query.ids || []).map(String)
+  const picked = rows.filter(function (r) { return ids.indexOf(r.id) !== -1 })
+  if (picked.length >= 2) rows = picked
   const compare = require('./data/water-compare.js').buildCompare(rows, require(waterV3AnswersPath).waterApplication)
   res.render('WaterManagementV3/compare', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), compare: compare })
 })
@@ -4728,13 +4722,19 @@ router.get('/WaterManagementV3/issue', function (req, res) {
   const labels = waterV3Session(req).waterV3Labels
   rows.forEach(function (r) { r.label = labels[r.id] || '' })
   const dupOpen = rows.filter(function (r) { return String(r.label).indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
-  res.render('WaterManagementV3/issue', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, dupOpen: dupOpen })
+  res.render('WaterManagementV3/issue', { whoNames: WATERV3_WHO, who: (waterV3Session(req).waterV3Who || {})[sbi] || '', sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, dupOpen: dupOpen })
 })
 router.post('/WaterManagementV3/issue', function (req, res) {
   const sbi = String(req.body.sbi || '')
   const d = waterV3Session(req)
   const base = waterV3Ranked(req)
   const issueRows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi })
+  if (issueRows.length) {
+    d.waterV3Who = d.waterV3Who || {}
+    const who = String(req.body.who || '')
+    if (WATERV3_WHO.indexOf(who) === -1) delete d.waterV3Who[sbi]
+    else d.waterV3Who[sbi] = who
+  }
   issueRows.forEach(function (r) {
     const v = req.body['label-' + r.id]
     const other = String(v).indexOf('duplicate:') === 0 ? String(v).slice(10) : ''
@@ -4809,6 +4809,17 @@ const WATERV3_OUTCOMES = {
     after: 'It no longer counts in scoring and ranking. Your note has been saved.',
     summary: 'Rejected'
   },
+  reject: {
+    store: 'waterV3RejectedAny', kind: 'rejected-case', menu: 'Reject', menuHint: 'Rejects the application, takes it out of scoring and ranking and closes the case',
+    heading: 'Are you sure you want to reject this application?',
+    bullets: ['reject the application', 'take it out of scoring and ranking', 'close the case'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for rejecting this application.',
+    button: 'Confirm rejection', error: 'Enter a note explaining why you are rejecting this application',
+    reason: 'Application rejected', title: 'Case rejected', done: 'rejected',
+    after: 'It no longer counts in scoring and ranking. Your note has been saved.',
+    summary: 'Rejected'
+  },
   remove: {
     store: 'waterV3Removed', kind: 'removed', menu: 'Remove application', menuHint: 'Takes it out of scoring and ranking and closes the case',
     heading: 'Are you sure you want to remove this application?',
@@ -4856,6 +4867,7 @@ function waterV3Session (req) {
   d.waterV3Capped = d.waterV3Capped || {}
   d.waterV3Labels = d.waterV3Labels || {}
   d.waterV3Removed = d.waterV3Removed || {}
+  d.waterV3RejectedAny = d.waterV3RejectedAny || {}
   d.waterV3Withdrawn = d.waterV3Withdrawn || {}
   d.waterV3Progressed = d.waterV3Progressed || {}
   d.waterV3Notes = d.waterV3Notes || {}
@@ -4881,11 +4893,13 @@ function waterV3CaseCtx (req, id) {
   // The one outcome record this case has, if any (a bulk Progress list record has no note).
   let outcome = null
   if (caseStatus === 'Rejected as duplicate') outcome = Object.assign({ type: 'duplicate' }, d.waterV3Rejected[id])
+  else if (caseStatus === 'Rejected') outcome = Object.assign({ type: 'reject' }, d.waterV3RejectedAny[id])
   else if (caseStatus === 'Removed') outcome = Object.assign({ type: 'remove' }, d.waterV3Removed[id])
   else if (caseStatus === 'Withdrawn' && d.waterV3Withdrawn[id]) outcome = Object.assign({ type: 'withdraw' }, d.waterV3Withdrawn[id])
   else if (caseStatus === 'Progressed') outcome = Object.assign({ type: 'progress' }, d.waterV3Progressed[id])
   if (outcome && outcome.budget) outcome.budgetDisplay = wdGbp(outcome.budget)
   return {
+    labelDup: String(d.waterV3Labels[id] || '').indexOf('duplicate:') === 0 ? String(d.waterV3Labels[id]).slice(10) : '',
     c: c, profile: answers.waterProfileFor(c), others: others, caseStatus: caseStatus,
     final: caseStatus !== 'Application received', outcome: outcome,
     seededWithdrawn: caseStatus === 'Withdrawn' && !d.waterV3Withdrawn[id],
@@ -4930,16 +4944,14 @@ router.post('/WaterManagementV3/case/outcome-choose', function (req, res) {
   const ctx = waterV3CaseOr(req, res, req.body.id)
   if (!ctx) return
   if (ctx.final) return waterV3GoTasks(res, ctx.c.id)
-  const notes = { duplicate: req.body['note-duplicate'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
+  const notes = { duplicate: req.body['note-duplicate'] || '', reject: req.body['note-reject'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
   const type = req.body.type
   if (!WATERV3_OUTCOMES[type]) return waterV3RenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
-  // Reject as duplicate also needs the other application of the SBI it duplicates.
-  const dupOf = String(req.body['duplicate-of'] || '')
-  if (type === 'duplicate' && !ctx.others.some(function (o) { return !o.isThis && o.id === dupOf })) {
-    return waterV3RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, dupError: true, noteError: String(notes[type]).trim() ? '' : type })
-  }
+  // Reject as duplicate is only offered when the case is labelled "Duplicate with <case ID>"; that label gives the duplicate.
+  const dupOf = ctx.labelDup
+  if (type === 'duplicate' && !dupOf) return waterV3RenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
   const text = String(notes[type]).trim()
-  if (!text) return waterV3RenderTasks(req, res, ctx, { formType: type, formNotes: notes, formDup: dupOf, noteError: type })
+  if (!text) return waterV3RenderTasks(req, res, ctx, { formType: type, formNotes: notes, noteError: type })
   const d = waterV3Session(req)
   d.waterV3Pending = d.waterV3Pending || {}
   d.waterV3Pending[ctx.c.id] = { type: type, note: text, dupOf: type === 'duplicate' ? dupOf : '' }
@@ -4995,7 +5007,7 @@ router.get('/WaterManagementV3/case/timeline', function (req, res) {
   const h = ((parseInt(c.id, 10) * 2654435761) >>> 0) >>> 9
   const recv = new Date(grassDateVal(c.date))
   recv.setHours(8 + h % 9, (h >>> 4) % 60)
-  const titles = { capped: 'Capped value set', rejected: 'Application rejected as a duplicate', removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
+  const titles = { 'rejected-case': 'Application rejected', capped: 'Capped value set', rejected: 'Application rejected as a duplicate', removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
   const events = ctx.notes.map(function (n) {
     return { title: titles[n.kind] || 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
   })
@@ -5300,7 +5312,7 @@ router.post('/WaterManagementV4/cap', function (req, res) {
 function waterV4IssueRows (base, sbi) {
   return base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
 }
-// Who is working an issue: one of four caseworkers, or blank. Saved straight from the Clean the list page.
+// Who owns an issue: one of four caseworkers, or blank. Set on the issue page and saved with the labels.
 const WATERV4_WHO = ['A Jones', 'M Walker', 'R Singh', 'T Okafor']
 router.post('/WaterManagementV4/issue-who', function (req, res) {
   const d = req.session.data

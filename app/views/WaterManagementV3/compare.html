@@ -9,11 +9,8 @@
 {% set headerTitleCentred = true %}
 {% set headerServiceName = "Water management V3" %}
 
-{% block header %}
-  {% include "FRPS-D2/includes/_defra-header.html" %}
-  {% set activeNavItem = 'dedupe' %}
-  {% include "WaterManagementV3/includes/_list-nav.html" %}
-{% endblock %}
+{# No site header or navigation on this page: it opens in its own tab for side-by-side reading. #}
+{% block header %}{% endblock %}
 
 {% block head %}
   {{ super() }}
