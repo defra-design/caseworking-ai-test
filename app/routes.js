@@ -4467,7 +4467,7 @@ const WATERV3_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'gree
 // and can be promoted), then the rest by status, each group by score. Scores are never changed by an outcome.
 const WATERV3_STATUS_ORDER = ['Application received', 'Progressed', 'Rejected as duplicate', 'Removed', 'Withdrawn']
 // Cap on the total grant value claimable by one SBI across all its applications.
-const WATERV3_SBI_CAP = 200000
+const WATERV3_SBI_CAP = 300000
 const WATERV3_DEFAULT_BUDGET = 5000000
 
 function waterV3Maps (req) {

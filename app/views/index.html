@@ -68,7 +68,7 @@
 
     <table class="govuk-table">
       <caption class="govuk-table__caption govuk-table__caption--l">
-        Scoring and Ranking
+        Water Ranking and Scoring
       </caption>
 
       <thead class="govuk-table__head">
@@ -83,15 +83,30 @@
       <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
           <th scope="row" class="govuk-table__header">
+            <a href="/WaterManagementV3/caselist">Cleaning prototype for testing</a><br>
+            <p class="govuk-body-s">Based on Water V3, for user testing of cleaning the list</p>
+          </th>
+          <td class="govuk-table__cell">
+            <strong class="govuk-tag govuk-tag--purple">Testing</strong>
+          </td>
+          <td class="govuk-table__cell">11/11/26</td>
+          <td class="govuk-table__cell">
+            Includes amendments from review with RPA. Tests how a caseworker cleans duplicate applications before ranking.
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0"><li>One issue per SBI that has more than one application</li><li>Label each application: not duplicate, or duplicate of another case</li><li>The system marks an issue Completed once every application is labelled and duplicates are closed</li><li>No overall "Cleaning finished" button</li><li>Test set: a mixed group of five, a business with a pair and a reservoir with and without pipes, and one false positive</li></ul>
+          </td>
+        </tr>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header">
             <a href="/WaterManagement/caselist">Water 1st draft</a><br>
             <p class="govuk-body-s">Water management caselist</p>
           </th>
           <td class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--blue">New</strong>
+            <strong class="govuk-tag govuk-tag--grey">Draft</strong>
           </td>
           <td class="govuk-table__cell">08/10/26</td>
           <td class="govuk-table__cell">
-            Water management caselist (<code>views/WaterManagement/</code>, data in <code>data/water-management-cases.js</code>) with the budgeting panel above three tabs: <strong>Deduping</strong> (applications on SBIs with more than one case, opening as cases with a duplicate check and Remove application), <strong>Scoring and ranking</strong> (ranked by score with cumulative value, a budget line and a Progress list button) and <strong>All cases</strong> (Grasslands columns; statuses Application received, Progressed, Withdrawn, Removed). No paging, no assignment; search on case ID or SBI.
+            The original caselist, before any rework.
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0"><li>Three tabs: Deduping, Scoring and ranking, All cases</li><li>Duplicates are rejected or withdrawn case by case</li><li>Budget panel and Progress list button for ranking</li></ul>
           </td>
         </tr>
         <tr class="govuk-table__row">
@@ -100,24 +115,12 @@
             <p class="govuk-body-s">Copy of Water 1st draft, for reworking</p>
           </th>
           <td class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--blue">New</strong>
+            <strong class="govuk-tag govuk-tag--grey">Draft</strong>
           </td>
           <td class="govuk-table__cell">30/10/26</td>
           <td class="govuk-table__cell">
-            V2 of the Water management ranking and scoring area (<code>views/WaterManagementV2/</code>). An independent copy of Water 1st draft (own routes and session data, shared case data) where the changes from the Stage 1 user needs are made.
-          </td>
-        </tr>
-        <tr class="govuk-table__row">
-          <th scope="row" class="govuk-table__header">
-            <a href="/WaterManagementV3/caselist">Water V3 (ranking and scoring)</a><br>
-            <p class="govuk-body-s">Copy of Water V2, for cleaning the list</p>
-          </th>
-          <td class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--blue">New</strong>
-          </td>
-          <td class="govuk-table__cell">04/11/26</td>
-          <td class="govuk-table__cell">
-            V3 of the Water management ranking and scoring area (<code>views/WaterManagementV3/</code>). An independent copy of Water V2 (own routes, session data and case data files) for cleaning the list.
+            First rework of ranking and scoring, from the Stage 1 user needs.
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0"><li>One list of every application on an SBI with more than one</li><li>Caseworker decides once, at the end, with a single Cleaning finished button</li><li>Nothing stops it being pressed early; it records who and when</li></ul>
           </td>
         </tr>
         <tr class="govuk-table__row">
@@ -126,11 +129,12 @@
             <p class="govuk-body-s">Copy of Water V3, issues are checked off one by one</p>
           </th>
           <td class="govuk-table__cell">
-            <strong class="govuk-tag govuk-tag--blue">New</strong>
+            <strong class="govuk-tag govuk-tag--grey">Draft</strong>
           </td>
           <td class="govuk-table__cell">06/11/26</td>
           <td class="govuk-table__cell">
-            V4 of the Water management ranking and scoring area (<code>views/WaterManagementV4/</code>). An independent copy of Water V3 (own routes, session data and case data files). Each issue has Check complete and Save progress; there is no overall Cleaning finished step.
+            Same issues and labels as the cleaning prototype, but the caseworker decides when each issue is done.
+            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0"><li>Each issue has Save progress and Check complete</li><li>Can be completed with gaps, after a confirmation page listing what is missing</li><li>Completed issues are read only until re-opened</li><li>No overall Cleaning finished; progressing the list warns if any issue is open</li></ul>
           </td>
         </tr>
       </tbody>

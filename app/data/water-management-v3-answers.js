@@ -117,7 +117,10 @@ function waterItems (id, targetGrant) {
   let resM3 = 5000 + (((n * 40503) >>> 0) % 151) * 500
   let tankM3 = 20 + (((n * 31337) >>> 0) % 21) * 5
   let mainM = 200 + (((n * 27449) >>> 0) % 97) * 50
-  if (targetGrant) {
+  const ex = EXPLICIT_ITEMS[id]
+  if (ex) {
+    resType = 'clay'; resM3 = ex.clay; tank = false; tankM3 = 0; main = !!ex.main; mainM = ex.main || 0
+  } else if (targetGrant) {
     // Whole-number quantities that add up to exactly cost = grant / 0.4.
     let rem = Math.round(targetGrant * 2.5)
     if (rem >= 60000 && ((h >>> 7) % 3) === 0) {
@@ -304,7 +307,19 @@ const OVERRIDES = {
   '301236': { colour: 'Red', crops: ['Top & Stone Fruit'], biz: 'Five or more', planning: 'Yes', ea: 'Yes' },
   '300245': { colour: 'Red', crops: ['Ornamentals'], biz: 'Two to four', planning: 'No', ea: 'No' },
   '301305': { colour: 'Red', crops: ['Field scale vegetables'], biz: 'Two to four', planning: 'Yes', ea: 'Not needed' },
-  '300819': { colour: 'Red', crops: ['Arable'], biz: 'One', planning: 'No', ea: 'Not needed' }
+  '300819': { colour: 'Red', crops: ['Arable'], biz: 'One', planning: 'No', ea: 'Not needed' },
+  // Cleaning prototype test set: same site as another application, reservoir plus pipes (apparent replacement).
+  '301489': { colour: 'Red', crops: ['Ornamentals'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' },
+  '301483': { colour: 'Red', crops: ['Arable'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' }
+}
+// Same reservoir site as another application (same easting / northing), and exact items, so the pairs
+// agree with their grant values: 300245 = 56,300 m3 clay (40% of 140,750 = 56,300); 301489 adds 11,850 m of pipes.
+// Cases moved off a business with a region onto an SBI of their own keep the area they were in, so their scores stand.
+const KEEP_REGION = { '300733': 'Rural Warwickshire', '300810': 'Rural Powys, Wales', '301061': 'Rural Hampshire', '301193': 'Rural Norfolk' }
+const SAME_SITE = { '301489': '300245', '301483': '300819' }
+const EXPLICIT_ITEMS = {
+  '300245': { clay: 56300 }, '301489': { clay: 56300, main: 11850 },
+  '300819': { clay: 48000 }, '301483': { clay: 48000, main: 6000 }
 }
 // Everything else is capped at 90 so the hand-set top case (95) stays the clear top.
 const NATURAL_MAX = 90
@@ -413,7 +428,7 @@ function waterSaltFor (id) {
     Object.keys(BUSINESS_PROFILES).forEach(function (k) { used[BUSINESS_PROFILES[k].name] = true })
     require('./water-management-v3-cases.js').cases.forEach(function (c) {
       if (BUSINESS_PROFILES[c.sbi]) return
-      const loc = waterLocation(c.id)
+      const loc = waterLocation(c.id, undefined, KEEP_REGION[c.id])
       for (let salt = 0; salt < 200; salt++) {
         const nm = waterGeneratedProfile(c, loc, salt).name
         if (!used[nm]) { used[nm] = true; waterSalts[c.id] = salt; return }
@@ -436,8 +451,8 @@ function waterApplication (c) {
   }
   const id = c.id
   const ov = OVERRIDES[id]
-  const region = BUSINESS_PROFILES[c.sbi] && BUSINESS_PROFILES[c.sbi].region
-  const loc = waterLocation(id, ov && ov.colour, region)
+  const region = (BUSINESS_PROFILES[c.sbi] && BUSINESS_PROFILES[c.sbi].region) || KEEP_REGION[id]
+  const loc = waterLocation(SAME_SITE[id] || id, ov && ov.colour, region)
   const profile = waterProfile(c, loc)
   const sector = waterSector(id, ov && ov.crops)
   let businesses = (ov && ov.biz) || BIZ_OPTIONS[waterHash(id, 2246822519, 10) % BIZ_OPTIONS.length]
@@ -467,8 +482,8 @@ function waterApplication (c) {
 function waterBusinessName (c) {
   const ov = OVERRIDES[TWINS[c.id] || c.id]
   const partner = TWINS[c.id] ? require('./water-management-v3-cases.js').cases.filter(function (x) { return x.id === TWINS[c.id] })[0] : c
-  const region = BUSINESS_PROFILES[partner.sbi] && BUSINESS_PROFILES[partner.sbi].region
-  return waterProfile(partner, waterLocation(partner.id, ov && ov.colour, region)).name
+  const region = (BUSINESS_PROFILES[partner.sbi] && BUSINESS_PROFILES[partner.sbi].region) || KEEP_REGION[partner.id]
+  return waterProfile(partner, waterLocation(SAME_SITE[partner.id] || partner.id, ov && ov.colour, region)).name
 }
 
 function waterProfileFor (c) {
