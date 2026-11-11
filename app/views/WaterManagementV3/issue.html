@@ -20,6 +20,7 @@
     <h1 class="govuk-heading-l">SBI {{ sbi }}</h1>
     <p class="govuk-body">{{ business }}: {{ rows.length }} applications. Label each one, then save and continue.</p>
     {% if dupOpen %}<div class="govuk-inset-text">This issue stays in progress until each case labelled as a duplicate has been withdrawn or rejected as a duplicate.</div>{% endif %}
+    <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV3/compare?sbi={{ sbi }}" target="_blank" rel="noopener noreferrer">Compare the applications for this SBI (opens in new tab)</a></p>
 
     <form method="post" action="/WaterManagementV3/issue" novalidate>
       <input type="hidden" name="sbi" value="{{ sbi }}">

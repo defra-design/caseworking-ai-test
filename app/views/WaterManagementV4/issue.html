@@ -20,6 +20,7 @@
   <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
     <h1 class="govuk-heading-l">SBI {{ sbi }}</h1>
     <p class="govuk-body">{{ business }}: {{ rows | length }} applications.{% if complete %} The checks on this issue are complete.{% else %} Label each one, then save your progress or check the issue complete.{% endif %}</p>
+    <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV4/compare?sbi={{ sbi }}" target="_blank" rel="noopener noreferrer">Compare the applications for this SBI (opens in new tab)</a></p>
 
     <form method="post" action="/WaterManagementV4/{{ 'issue-reopen' if complete else 'issue' }}" novalidate>
       <input type="hidden" name="sbi" value="{{ sbi }}">

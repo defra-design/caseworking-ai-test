@@ -4656,7 +4656,9 @@ function waterV3View (req) {
     const set = rs.filter(function (r) { return labels[r.id] }).length
     // A case labelled Duplicate keeps the issue open until it has been withdrawn or rejected as a duplicate.
     const dupOpen = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
-    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), count: rs.length, dupOpen: dupOpen, state: (set === rs.length && !dupOpen) ? 'done' : (set ? 'started' : 'new') }
+    const nNot = rs.filter(function (r) { return labels[r.id] === 'not-duplicate' }).length
+    const nDup = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 }).length
+    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), who: ((d && d.waterV3Who) || {})[sbi] || '', count: rs.length, nNotSet: rs.length - nNot - nDup, nNotDup: nNot, nDup: nDup, dupOpen: dupOpen, state: (set === rs.length && !dupOpen) ? 'done' : (set ? 'started' : 'new') }
   })
   const issuesDone = issues.filter(function (j) { return j.state === 'done' }).length
   return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV3_SBI_CAP, capDisplay: wdGbp(WATERV3_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV3_DEFAULT_BUDGET, flash: flash || null }
@@ -4694,6 +4696,29 @@ router.post('/WaterManagementV3/cleaning-finished', function (req, res) {
   req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=ranking') })
 })
 // An issue: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate).
+// Who is working an issue: one of four caseworkers, or blank. Saved straight from the Clean the list page.
+const WATERV3_WHO = ['A Jones', 'M Walker', 'R Singh', 'T Okafor']
+router.post('/WaterManagementV3/issue-who', function (req, res) {
+  const d = req.session.data
+  d.waterV3Who = d.waterV3Who || {}
+  const sbi = String(req.body.sbi || '')
+  const who = String(req.body.who || '')
+  if (/^[0-9]+$/.test(sbi)) {
+    if (WATERV3_WHO.indexOf(who) === -1) delete d.waterV3Who[sbi]
+    else d.waterV3Who[sbi] = who
+  }
+  req.session.save(function () { res.redirect('/WaterManagementV3/caselist?tab=dedupe') })
+})
+// Compare every application on one SBI side by side (opens in a new tab from the issue).
+router.get('/WaterManagementV3/compare', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const sbi = String(req.query.sbi || '')
+  const base = waterV3Ranked(req)
+  const rows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
+  if (!rows.length) return res.redirect('/WaterManagementV3/caselist?tab=dedupe')
+  const compare = require('./data/water-compare.js').buildCompare(rows, require(waterV3AnswersPath).waterApplication)
+  res.render('WaterManagementV3/compare', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), compare: compare })
+})
 router.get('/WaterManagementV3/issue', function (req, res) {
   res.set('Cache-Control', 'no-store')
   const sbi = String(req.query.sbi || '')
@@ -5169,7 +5194,9 @@ function waterV4Issues (req, base) {
   return Object.keys(issueMap).sort().map(function (sbi) {
     const rs = issueMap[sbi]
     const set = rs.filter(function (r) { return labels[r.id] }).length
-    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), count: rs.length, state: st[sbi] === 'complete' ? 'done' : ((set || st[sbi] === 'open') ? 'started' : 'new') }
+    const nNot = rs.filter(function (r) { return labels[r.id] === 'not-duplicate' }).length
+    const nDup = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 }).length
+    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), who: (d.waterV4Who || {})[sbi] || '', count: rs.length, nNotSet: rs.length - nNot - nDup, nNotDup: nNot, nDup: nDup, state: st[sbi] === 'complete' ? 'done' : ((set || st[sbi] === 'open') ? 'started' : 'new') }
   })
 }
 function waterV4View (req) {
@@ -5273,6 +5300,29 @@ router.post('/WaterManagementV4/cap', function (req, res) {
 function waterV4IssueRows (base, sbi) {
   return base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
 }
+// Who is working an issue: one of four caseworkers, or blank. Saved straight from the Clean the list page.
+const WATERV4_WHO = ['A Jones', 'M Walker', 'R Singh', 'T Okafor']
+router.post('/WaterManagementV4/issue-who', function (req, res) {
+  const d = req.session.data
+  d.waterV4Who = d.waterV4Who || {}
+  const sbi = String(req.body.sbi || '')
+  const who = String(req.body.who || '')
+  if (/^[0-9]+$/.test(sbi)) {
+    if (WATERV4_WHO.indexOf(who) === -1) delete d.waterV4Who[sbi]
+    else d.waterV4Who[sbi] = who
+  }
+  req.session.save(function () { res.redirect('/WaterManagementV4/caselist?tab=dedupe') })
+})
+// Compare every application on one SBI side by side (opens in a new tab from the issue).
+router.get('/WaterManagementV4/compare', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const sbi = String(req.query.sbi || '')
+  const base = waterV4Ranked(req)
+  const rows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
+  if (!rows.length) return res.redirect('/WaterManagementV4/caselist?tab=dedupe')
+  const compare = require('./data/water-compare.js').buildCompare(rows, require(waterV4AnswersPath).waterApplication)
+  res.render('WaterManagementV4/compare', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]), compare: compare })
+})
 router.get('/WaterManagementV4/issue', function (req, res) {
   res.set('Cache-Control', 'no-store')
   const sbi = String(req.query.sbi || '')

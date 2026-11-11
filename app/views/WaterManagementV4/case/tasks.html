@@ -93,7 +93,8 @@
       <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="same-sbi-heading">Applications from the same SBI</h2>
       <ul class="govuk-list app-lp-list" aria-labelledby="same-sbi-heading">
         {% for o in others | sort(false, false, 'id') %}
-        <li>{% if o.isThis %}<strong>{{ o.id }}</strong>{% else %}<a class="govuk-link" href="/WaterManagementV4/case/tasks?id={{ o.id }}">{{ o.id }}</a>{% endif %}{% if o.status != "Application received" %} <strong class="govuk-tag govuk-tag--{{ o.tag }}">{{ o.status }}</strong>{% endif %}</li>
+        {% set isRej = o.status.indexOf("Reject") === 0 %}{% set isWd = o.status == "Withdrawn" %}
+        <li>{% if isRej %}<strong class="govuk-tag govuk-tag--red" title="Rejected as duplicate" style="padding:2px 6px; background:#d4351c; color:#ffffff;"><span aria-hidden="true">R</span><span class="govuk-visually-hidden">Rejected:</span></strong> {% elif isWd %}<strong class="govuk-tag govuk-tag--orange" title="Withdrawn" style="padding:2px 6px; background:#f47738; color:#0b0c0c;"><span aria-hidden="true">W</span><span class="govuk-visually-hidden">Withdrawn:</span></strong> {% endif %}{% if o.isThis %}<strong>{{ o.id }}</strong>{% else %}<a class="govuk-link" href="/WaterManagementV4/case/tasks?id={{ o.id }}">{{ o.id }}</a>{% endif %}{% if o.status != "Application received" and not isRej and not isWd %} <strong class="govuk-tag govuk-tag--{{ o.tag }}">{{ o.status }}</strong>{% endif %}</li>
         {% endfor %}
       </ul>
     </div>

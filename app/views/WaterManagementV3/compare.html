@@ -1,0 +1,72 @@
+{% extends "layouts/main.html" %}
+
+{# Clean the list: compare every application on one SBI side by side. Case ID is the column header,
+   the data sits in shared rows with a Row label, grouped under section headings (no accordion).
+   Each application column is the width of a two-thirds column (640px, 30px padding each side) with
+   one vertical line between them, so the table scrolls sideways. Opens in a new tab. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V3" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV3/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <style>
+    .app-compare-scroll { overflow-x: auto; margin-bottom: 30px; }
+    .app-compare { border-collapse: collapse; table-layout: fixed; font-family: "GDS Transport", arial, sans-serif; font-size: 1.1875rem; line-height: 1.3157894737; color: #0b0c0c; }
+    .app-compare th, .app-compare td { text-align: left; vertical-align: top; box-sizing: border-box; padding: 10px 30px; border-bottom: 1px solid #b1b4b6; overflow-wrap: anywhere; }
+    .app-compare .app-compare__label { width: 280px; min-width: 280px; padding-left: 0; font-weight: 700; position: sticky; left: 0; background: #fff; z-index: 1; }
+    .app-compare .app-compare__case { width: 640px; min-width: 640px; border-left: 1px solid #0b0c0c; }
+    .app-compare thead th { border-bottom: 2px solid #0b0c0c; }
+    .app-compare .app-compare__section th, .app-compare .app-compare__section td { border-bottom: 0; padding-top: 30px; padding-bottom: 10px; }
+    .app-compare .app-compare__section th { font-size: 1.5rem; line-height: 1.25; }
+    .app-compare tbody td .govuk-hint { margin-top: 5px; }
+    .app-compare .app-compare__none { color: #505a5f; }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <span class="govuk-caption-l">SBI {{ sbi }}</span>
+    <h1 class="govuk-heading-l">Compare the applications for this SBI</h1>
+    <p class="govuk-body">{{ business }}: {{ compare.cases | length }} applications. Scroll sideways to see them all.</p>
+
+    <div class="app-compare-scroll" tabindex="0" role="region" aria-label="Application comparison, scrolls sideways">
+      <table class="app-compare">
+        <caption class="govuk-visually-hidden">Applications for SBI {{ sbi }}, one column for each case ID</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="app-compare__label"><span class="govuk-visually-hidden">Row label</span></th>
+            {% for c in compare.cases %}
+            <th scope="col" class="app-compare__case"><span class="govuk-heading-m govuk-!-margin-bottom-0">Case {{ c.id }}</span></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        {% for s in compare.sections %}
+        <tbody>
+          <tr class="app-compare__section">
+            <th scope="colgroup" class="app-compare__label" colspan="1">{{ s.title }}</th>
+            {% for c in compare.cases %}<td class="app-compare__case" aria-hidden="true"></td>{% endfor %}
+          </tr>
+          {% for r in s.rows %}
+          <tr>
+            <th scope="row" class="app-compare__label">{{ r.label }}</th>
+            {% for v in r.values %}
+            <td class="app-compare__case">{% if v === null %}<span class="app-compare__none">Not asked</span>{% else %}{{ v | safe }}{% endif %}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% endfor %}
+      </table>
+    </div>
+  </main>
+</div>
+{% endblock %}

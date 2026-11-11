@@ -189,19 +189,41 @@
           <div class="govuk-grid-column-two-thirds">
         <p class="govuk-body">Where SBIs have more than one application, they are listed below. Each SBI is an issue: open it, label each application, then check it complete when you are happy with it.</p>
         <p class="govuk-body govuk-!-margin-bottom-6">{{ view.issuesDone }} of {{ view.issues.length }} issues completed.</p>
+        {% set whoNames = ['A Jones', 'M Walker', 'R Singh', 'T Okafor'] %}
+        <style>
+          .app-issue-list .govuk-task-list__item { display: flex; align-items: center; gap: 15px; }
+          .app-issue-list .govuk-task-list__name-and-hint { flex: 1 1 auto; }
+          .app-issue-list .app-issue-who { flex: 0 0 150px; position: relative; z-index: 2; }
+          .app-issue-list .govuk-task-list__status { flex: 0 0 110px; text-align: left; }
+          .app-issue-list .app-issue-who .govuk-select { width: 100%; min-width: 0; }
+          .app-issue-list__head { display: flex; gap: 15px; padding-bottom: 5px; }
+          .app-issue-list__head .app-issue-pad { flex: 0 0 110px; margin-left: auto; }
+        </style>
+        <div class="app-issue-list">
+        <div class="app-issue-list__head govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0" aria-hidden="true"><span class="app-issue-pad"></span><span class="app-issue-who">Who</span></div>
         <ul class="govuk-task-list">
           {% for j in view.issues %}
           <li class="govuk-task-list__item govuk-task-list__item--with-link">
             <div class="govuk-task-list__name-and-hint">
               <a class="govuk-link govuk-task-list__link" href="/WaterManagementV4/issue?sbi={{ j.sbi }}" aria-describedby="issue-{{ j.sbi }}-status">SBI {{ j.sbi }}: {{ j.business }}</a>
-              <div class="govuk-task-list__hint">{{ j.count }} applications</div>
+              <div class="govuk-task-list__hint">{{ j.count }} applications: {% if j.nNotSet %}{{ j.nNotSet }} Not set{% if j.nNotDup or j.nDup %}, {% endif %}{% endif %}{% if j.nNotDup %}{{ j.nNotDup }} Not duplicate{% if j.nDup %}, {% endif %}{% endif %}{% if j.nDup %}<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="vertical-align:-2px"><path d="M12 2 1 21h22L12 2z" fill="#f47738" stroke="#0b0c0c" stroke-width="1.5" stroke-linejoin="round"/><rect x="11" y="9" width="2" height="6" fill="#0b0c0c"/><rect x="11" y="16.5" width="2" height="2" fill="#0b0c0c"/></svg> {{ j.nDup }} Duplicate{% endif %}</div>
             </div>
             <div class="govuk-task-list__status" id="issue-{{ j.sbi }}-status">
               {% if j.state == 'done' %}Completed{% elif j.state == 'started' %}<strong class="govuk-tag govuk-tag--turquoise">In progress</strong>{% else %}<strong class="govuk-tag govuk-tag--blue">Not started</strong>{% endif %}
             </div>
+            <form method="post" action="/WaterManagementV4/issue-who" class="app-issue-who" novalidate>
+              <input type="hidden" name="sbi" value="{{ j.sbi }}">
+              <label class="govuk-visually-hidden" for="who-{{ j.sbi }}">Who is working SBI {{ j.sbi }}</label>
+              <select class="govuk-select" id="who-{{ j.sbi }}" name="who" onchange="this.form.submit()">
+                <option value=""{% if not j.who %} selected{% endif %}>Not set</option>
+                {% for n in whoNames %}<option value="{{ n }}"{% if j.who == n %} selected{% endif %}>{{ n }}</option>{% endfor %}
+              </select>
+              <noscript><button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-top-1 govuk-!-margin-bottom-0" data-module="govuk-button">Save</button></noscript>
+            </form>
           </li>
           {% endfor %}
         </ul>
+        </div>
           </div>
         </div>
         {% elif view.tab == 'ranking' %}
