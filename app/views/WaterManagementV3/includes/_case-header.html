@@ -3,7 +3,13 @@
   <div class="govuk-width-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <a href="/WaterManagementV3/caselist?tab=dedupe" class="govuk-back-link">Back to applications</a>
+        <nav class="govuk-breadcrumbs govuk-!-margin-top-3" aria-label="Breadcrumb">
+          <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="/WaterManagementV3/caselist?tab=dedupe">Cleaning the list</a></li>
+            <li class="govuk-breadcrumbs__list-item"><a class="govuk-breadcrumbs__link" href="/WaterManagementV3/issue?sbi={{ c.sbi }}">Issue {{ c.sbi }}</a></li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">{{ c.id }}</li>
+          </ol>
+        </nav>
         <h2 class="govuk-heading-m">{{ profile.name }}</h2>
       </div>
     </div>

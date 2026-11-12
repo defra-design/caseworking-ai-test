@@ -4462,17 +4462,17 @@ const WATERV3_SORT_KEYS = {
   ranking: ['id', 'sbi', 'score', 'value', 'cumulative', 'date'],
   all: ['id', 'business', 'sbi', 'date', 'value', 'stage', 'status']
 }
-const WATERV3_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red', 'Rejected as duplicate': 'red', 'Rejected': 'red' }
+const WATERV3_STATUS_TAG = { 'Application received': 'grey', 'Customer review': 'on-hold', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Removed': 'red', 'Rejected as duplicate': 'red', 'Rejected': 'red' }
 // Ranking order: Application received first (the only ones that count towards the cumulative value
 // and can be promoted), then the rest by status, each group by score. Scores are never changed by an outcome.
-const WATERV3_STATUS_ORDER = ['Application received', 'Progressed', 'Rejected as duplicate', 'Rejected', 'Removed', 'Withdrawn']
+const WATERV3_STATUS_ORDER = ['Application received', 'Customer review', 'Progressed', 'Rejected as duplicate', 'Rejected', 'Removed', 'Withdrawn']
 // Cap on the total grant value claimable by one SBI across all its applications.
 const WATERV3_SBI_CAP = 300000
 const WATERV3_DEFAULT_BUDGET = 5000000
 
 function waterV3Maps (req) {
   const d = (req.session && req.session.data) || {}
-  return { rejected: d.waterV3Rejected || {}, rejectedAny: d.waterV3RejectedAny || {}, removed: d.waterV3Removed || {}, withdrawn: d.waterV3Withdrawn || {}, progressed: d.waterV3Progressed || {} }
+  return { rejected: d.waterV3Rejected || {}, rejectedAny: d.waterV3RejectedAny || {}, removed: d.waterV3Removed || {}, withdrawn: d.waterV3Withdrawn || {}, progressed: d.waterV3Progressed || {}, onHold: d.waterV3OnHold || {} }
 }
 function waterV3StatusOf (c, maps) {
   if (maps.rejected[c.id]) return 'Rejected as duplicate'
@@ -4480,6 +4480,7 @@ function waterV3StatusOf (c, maps) {
   if (maps.removed[c.id]) return 'Removed'
   if (c.status === 'Withdrawn' || maps.withdrawn[c.id]) return 'Withdrawn'
   if (maps.progressed[c.id]) return 'Progressed'
+  if (maps.onHold && maps.onHold[c.id]) return 'Customer review'
   return 'Application received'
 }
 // Every case, ranked: live applications (not Removed / Withdrawn) first by score
@@ -4659,7 +4660,12 @@ function waterV3View (req) {
     const dupOpen = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
     const nNot = rs.filter(function (r) { return labels[r.id] === 'not-duplicate' }).length
     const nDup = rs.filter(function (r) { return String(labels[r.id] || '').indexOf('duplicate:') === 0 }).length
-    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), who: ((d && d.waterV3Who) || {})[sbi] || '', count: rs.length, nNotSet: rs.length - nNot - nDup, nNotDup: nNot, nDup: nDup, dupOpen: dupOpen, state: (set === rs.length && !dupOpen) ? 'done' : (set ? 'started' : 'new') }
+    const nMaybe = rs.filter(function (r) { return labels[r.id] === 'maybe-duplicate' }).length
+    // Complete only when every application is resolved: a rejected / withdrawn case (any label),
+    // or labelled Not duplicate. Not set, May be a duplicate and Duplicate with (not yet rejected) keep it open.
+    const closed = function (r) { return r.status === 'Withdrawn' || r.status === 'Rejected as duplicate' || r.status === 'Rejected' }
+    const unresolved = rs.filter(function (r) { return !closed(r) && labels[r.id] !== 'not-duplicate' }).length
+    return { sbi: sbi, business: base.answers.waterBusinessName(rs[0]), who: ((d && d.waterV3Who) || {})[sbi] || '', count: rs.length, nNotSet: rs.length - nNot - nDup - nMaybe, nMaybe: nMaybe, nNotDup: nNot, nDup: nDup, dupOpen: dupOpen, state: !unresolved ? 'done' : ((set || unresolved < rs.length) ? 'started' : 'new') }
   })
   const issuesDone = issues.filter(function (j) { return j.state === 'done' }).length
   return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV3_SBI_CAP, capDisplay: wdGbp(WATERV3_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV3_DEFAULT_BUDGET, flash: flash || null }
@@ -4720,8 +4726,11 @@ router.get('/WaterManagementV3/issue', function (req, res) {
   const rows = base.rows.filter(function (r) { return r.sbi === sbi && r.multi }).sort(function (a, b) { return a.id < b.id ? -1 : 1 })
   if (!rows.length) return res.redirect('/WaterManagementV3/caselist?tab=dedupe')
   const labels = waterV3Session(req).waterV3Labels
-  rows.forEach(function (r) { r.label = labels[r.id] || '' })
-  const dupOpen = rows.filter(function (r) { return String(r.label).indexOf('duplicate:') === 0 && r.status !== 'Withdrawn' && r.status !== 'Rejected as duplicate' }).length
+  rows.forEach(function (r) {
+    r.label = labels[r.id] || ''
+    r.loc = require(waterV3AnswersPath).waterApplication(r).loc
+  })
+  const dupOpen = rows.filter(function (r) { return ['Withdrawn', 'Rejected as duplicate', 'Rejected'].indexOf(r.status) === -1 && r.label !== 'not-duplicate' }).length
   res.render('WaterManagementV3/issue', { whoNames: WATERV3_WHO, who: (waterV3Session(req).waterV3Who || {})[sbi] || '', sbi: sbi, business: base.answers.waterBusinessName(rows[0]), rows: rows, dupOpen: dupOpen })
 })
 router.post('/WaterManagementV3/issue', function (req, res) {
@@ -4738,7 +4747,7 @@ router.post('/WaterManagementV3/issue', function (req, res) {
   issueRows.forEach(function (r) {
     const v = req.body['label-' + r.id]
     const other = String(v).indexOf('duplicate:') === 0 ? String(v).slice(10) : ''
-    const valid = v === 'not-duplicate' || (other && other !== r.id && issueRows.some(function (x) { return x.id === other }))
+    const valid = v === 'not-duplicate' || v === 'maybe-duplicate' || (other && other !== r.id && issueRows.some(function (x) { return x.id === other }))
     if (valid) d.waterV3Labels[r.id] = v
     else delete d.waterV3Labels[r.id]
   })
@@ -4842,6 +4851,17 @@ const WATERV3_OUTCOMES = {
     after: 'It no longer counts in scoring and ranking. Your note has been saved.',
     summary: 'Withdrawn'
   },
+  hold: {
+    store: 'waterV3OnHold', kind: 'on-hold', menu: 'On hold for customer review', menuHint: 'Pauses the case while the applicant reviews it. Takes it out of scoring and ranking until you make a decision',
+    heading: 'Are you sure you want to put this application on hold for customer review?',
+    bullets: ['set the status to Customer review', 'take it out of scoring and ranking while it is on hold'],
+    noteLabel: 'Explain this decision',
+    hint: 'You must include a reason for putting this application on hold, for example what the customer needs to review.',
+    button: 'Confirm on hold', error: 'Enter a note explaining why you are putting this application on hold',
+    reason: 'Application put on hold for customer review', title: 'Case on hold for customer review', done: 'put on hold for customer review',
+    after: 'It is paused and no longer counts in scoring and ranking until you make a decision. Your note has been saved.',
+    summary: 'Put on hold'
+  },
   progress: {
     store: 'waterV3Progressed', kind: 'progressed', menu: 'Progress application', menuHint: 'Moves it to Progressed, the next stage',
     heading: 'Are you sure you want to progress this application?',
@@ -4870,6 +4890,7 @@ function waterV3Session (req) {
   d.waterV3RejectedAny = d.waterV3RejectedAny || {}
   d.waterV3Withdrawn = d.waterV3Withdrawn || {}
   d.waterV3Progressed = d.waterV3Progressed || {}
+  d.waterV3OnHold = d.waterV3OnHold || {}
   d.waterV3Notes = d.waterV3Notes || {}
   return d
 }
@@ -4897,11 +4918,12 @@ function waterV3CaseCtx (req, id) {
   else if (caseStatus === 'Removed') outcome = Object.assign({ type: 'remove' }, d.waterV3Removed[id])
   else if (caseStatus === 'Withdrawn' && d.waterV3Withdrawn[id]) outcome = Object.assign({ type: 'withdraw' }, d.waterV3Withdrawn[id])
   else if (caseStatus === 'Progressed') outcome = Object.assign({ type: 'progress' }, d.waterV3Progressed[id])
+  else if (caseStatus === 'Customer review') outcome = Object.assign({ type: 'hold' }, d.waterV3OnHold[id])
   if (outcome && outcome.budget) outcome.budgetDisplay = wdGbp(outcome.budget)
   return {
     labelDup: String(d.waterV3Labels[id] || '').indexOf('duplicate:') === 0 ? String(d.waterV3Labels[id]).slice(10) : '',
     c: c, profile: answers.waterProfileFor(c), others: others, caseStatus: caseStatus,
-    final: caseStatus !== 'Application received', outcome: outcome,
+    final: caseStatus !== 'Application received' && caseStatus !== 'Customer review', onHold: caseStatus === 'Customer review', outcome: outcome,
     seededWithdrawn: caseStatus === 'Withdrawn' && !d.waterV3Withdrawn[id],
     notes: d.waterV3Notes[id] || []
   }
@@ -4944,7 +4966,7 @@ router.post('/WaterManagementV3/case/outcome-choose', function (req, res) {
   const ctx = waterV3CaseOr(req, res, req.body.id)
   if (!ctx) return
   if (ctx.final) return waterV3GoTasks(res, ctx.c.id)
-  const notes = { duplicate: req.body['note-duplicate'] || '', reject: req.body['note-reject'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', progress: req.body['note-progress'] || '' }
+  const notes = { duplicate: req.body['note-duplicate'] || '', reject: req.body['note-reject'] || '', remove: req.body['note-remove'] || '', withdraw: req.body['note-withdraw'] || '', hold: req.body['note-hold'] || '', progress: req.body['note-progress'] || '' }
   const type = req.body.type
   if (!WATERV3_OUTCOMES[type]) return waterV3RenderTasks(req, res, ctx, { outcomeError: true, formNotes: notes })
   // Reject as duplicate is only offered when the case is labelled "Duplicate with <case ID>"; that label gives the duplicate.
@@ -5007,7 +5029,7 @@ router.get('/WaterManagementV3/case/timeline', function (req, res) {
   const h = ((parseInt(c.id, 10) * 2654435761) >>> 0) >>> 9
   const recv = new Date(grassDateVal(c.date))
   recv.setHours(8 + h % 9, (h >>> 4) % 60)
-  const titles = { 'rejected-case': 'Application rejected', capped: 'Capped value set', rejected: 'Application rejected as a duplicate', removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
+  const titles = { 'rejected-case': 'Application rejected', 'on-hold': 'Application put on hold for customer review', capped: 'Capped value set', rejected: 'Application rejected as a duplicate', removed: 'Application removed', withdrawn: 'Application withdrawn', progressed: 'Application progressed', note: 'Note added' }
   const events = ctx.notes.map(function (n) {
     return { title: titles[n.kind] || 'Note added', by: n.by, ts: n.ts, display: n.display, iso: n.iso, noteId: n.id }
   })

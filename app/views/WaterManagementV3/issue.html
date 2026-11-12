@@ -17,32 +17,41 @@
   <a href="/WaterManagementV3/caselist?tab=dedupe" class="govuk-back-link">Back to clean the list</a>
 
   <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
-    <h1 class="govuk-heading-l">SBI {{ sbi }}</h1>
-    <p class="govuk-body">{{ business }}: {{ rows.length }} applications. Set the issue owner, label each application, then save and continue.</p>
-    {% if dupOpen %}<div class="govuk-inset-text">This issue stays in progress until each case labelled as a duplicate has been withdrawn or rejected as a duplicate.</div>{% endif %}
+    <h1 class="govuk-heading-l">Investigate multiple applications for {{ sbi }}</h1>
+    <p class="govuk-body">{{ business }}: {{ rows.length }} applications.</p>
+    {% if dupOpen %}<div class="govuk-inset-text">This issue stays in progress until every application is labelled Not duplicate, or has been rejected or withdrawn.</div>{% endif %}
+
+    <h3 class="govuk-heading-s">1. Assign the issue</h3>
+    <div class="govuk-form-group" style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <label class="govuk-label" for="who" style="margin:0;">Issue owner</label>
+      <select class="govuk-select" id="who" name="who" form="issueForm">
+        <option value=""{% if not who %} selected{% endif %}>Not set</option>
+        {% for n in whoNames %}<option value="{{ n }}"{% if who == n %} selected{% endif %}>{{ n }}</option>{% endfor %}
+      </select>
+    </div>
+
+    <h3 class="govuk-heading-s">2. Review applications</h3>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>look at the table below and choose applications to compare</li>
+      <li>then attach a label to each issue</li>
+      <li>if you know an application is a duplicate then reject it as a duplicate within the case</li>
+      <li>Save and continue to record your progress</li>
+    </ul>
 
     <form method="get" action="/WaterManagementV3/compare" target="_blank" id="compareForm" novalidate>
       <input type="hidden" name="sbi" value="{{ sbi }}">
-      <button type="submit" class="govuk-button govuk-button--secondary" id="compareButton" data-module="govuk-button" disabled aria-disabled="true">Compare applications</button>
-    </form>
+      <button type="submit" class="govuk-button govuk-button--secondary" id="compareButton" data-module="govuk-button">Compare applications</button>    </form>
 
-    <form method="post" action="/WaterManagementV3/issue" novalidate>
+    <form method="post" action="/WaterManagementV3/issue" id="issueForm" novalidate>
       <input type="hidden" name="sbi" value="{{ sbi }}">
-      <div class="govuk-form-group">
-        <label class="govuk-label govuk-label--s" for="who">Issue owner</label>
-        <select class="govuk-select" id="who" name="who">
-          <option value=""{% if not who %} selected{% endif %}>Not set</option>
-          {% for n in whoNames %}<option value="{{ n }}"{% if who == n %} selected{% endif %}>{{ n }}</option>{% endfor %}
-        </select>
-      </div>
       <table class="govuk-table">
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Select to compare</span></th>
+            <th scope="col" class="govuk-table__header">Select</th>
             <th scope="col" class="govuk-table__header">Case ID</th>
-            <th scope="col" class="govuk-table__header">SBI</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Score (%)</th>
-            <th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Grant value</th>
+            <th scope="col" class="govuk-table__header">Location</th>
+            <th scope="col" class="govuk-table__header">Score (%)</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Grant value</th>
             <th scope="col" class="govuk-table__header govuk-table__header--date">Date</th>
             <th scope="col" class="govuk-table__header">Status</th>
             <th scope="col" class="govuk-table__header">Label</th>
@@ -60,9 +69,9 @@
               </div>
             </td>
             <td class="govuk-table__cell"><a class="govuk-link" href="case/tasks?id={{ c.id }}">{{ c.id }}</a></td>
-            <td class="govuk-table__cell">{{ c.sbi }}</td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
-            <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.originalDisplay }}</td>
+            <td class="govuk-table__cell">E:{{ c.loc.easting }}<br>N:{{ c.loc.northing }}</td>
+            <td class="govuk-table__cell">{{ c.score }}%</td>
+            <td class="govuk-table__cell">{{ c.originalDisplay }}</td>
             <td class="govuk-table__cell">{{ c.date }}</td>
             <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong></td>
             <td class="govuk-table__cell">
@@ -70,6 +79,7 @@
               <select class="govuk-select" id="label-{{ c.id }}" name="label-{{ c.id }}">
                 <option value=""{% if not c.label %} selected{% endif %}>Not set</option>
                 <option value="not-duplicate"{% if c.label == 'not-duplicate' %} selected{% endif %}>Not duplicate</option>
+                <option value="maybe-duplicate"{% if c.label == 'maybe-duplicate' %} selected{% endif %}>May be a duplicate</option>
                 {% for o in rows %}{% if o.id != c.id %}<option value="duplicate:{{ o.id }}"{% if c.label == 'duplicate:' + o.id %} selected{% endif %}>Duplicate with {{ o.id }}</option>{% endif %}{% endfor %}
               </select>
             </td>
@@ -81,14 +91,4 @@
     </form>
   </main>
 </div>
-<script>
-  (function () {
-    var ticks = document.querySelectorAll('.app-compare-tick'), btn = document.getElementById('compareButton')
-    function update () {
-      var n = 0; ticks.forEach(function (t) { if (t.checked) n++ })
-      btn.disabled = n < 2; btn.setAttribute('aria-disabled', n < 2 ? 'true' : 'false')
-    }
-    ticks.forEach(function (t) { t.addEventListener('change', update) }); update()
-  })()
-</script>
 {% endblock %}
