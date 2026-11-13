@@ -310,16 +310,19 @@ const OVERRIDES = {
   '300819': { colour: 'Red', crops: ['Arable'], biz: 'One', planning: 'No', ea: 'Not needed' },
   // Cleaning prototype test set: same site as another application, reservoir plus pipes (apparent replacement).
   '301489': { colour: 'Red', crops: ['Ornamentals'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' },
-  '301483': { colour: 'Red', crops: ['Arable'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' }
+  '301483': { colour: 'Red', crops: ['Arable'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' },
+  // Window closed scenario: late duplicate of 300493 with more piping (same answers, same site).
+  '301502': { crops: ['Forest Nursery'], biz: 'One', planning: 'Not needed', ea: 'No' }
 }
 // Same reservoir site as another application (same easting / northing), and exact items, so the pairs
 // agree with their grant values: 300245 = 56,300 m3 clay (40% of 140,750 = 56,300); 301489 adds 11,850 m of pipes.
 // Cases moved off a business with a region onto an SBI of their own keep the area they were in, so their scores stand.
 const KEEP_REGION = { '300733': 'Rural Warwickshire', '300810': 'Rural Powys, Wales', '301061': 'Rural Hampshire', '301193': 'Rural Norfolk' }
-const SAME_SITE = { '301489': '300245', '301483': '300819' }
+const SAME_SITE = { '301489': '300245', '301483': '300819', '301502': '300493' }
 const EXPLICIT_ITEMS = {
   '300245': { clay: 56300 }, '301489': { clay: 56300, main: 11850 },
-  '300819': { clay: 48000 }, '301483': { clay: 48000, main: 6000 }
+  '300819': { clay: 48000 }, '301483': { clay: 48000, main: 6000 },
+  '301502': { clay: 104200, main: 24600 }
 }
 // Everything else is capped at 90 so the hand-set top case (95) stays the clear top.
 const NATURAL_MAX = 90

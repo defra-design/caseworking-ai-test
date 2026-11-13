@@ -73,7 +73,7 @@
     {% endif %}
 
     {% if view.tab == 'ranking' %}
-    <h1 class="govuk-visually-hidden">Scoring and ranking</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-top-6">Model the list and progress applications</h1>
     {% else %}
     <h1 class="govuk-heading-l govuk-!-margin-top-6">Clean the list</h1>
     {% endif %}
@@ -83,38 +83,6 @@
 
     {# --- Budget + reporting. The figure in the box is only a proposal until "Update budget"
            is selected; the stats, budget line and Progress list use the applied budget. --- #}
-    <form id="budgetForm" class="govuk-!-margin-bottom-4" novalidate>
-      <div class="govuk-form-group govuk-!-margin-bottom-2">
-        <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
-          <div class="govuk-form-group govuk-!-margin-bottom-0">
-            <label class="govuk-label govuk-label--s" for="totalBudget">Total budget</label>
-            <div class="govuk-input__wrapper" style="max-width:14em;">
-              <div class="govuk-input__prefix" aria-hidden="true">£</div>
-              <input class="govuk-input" id="totalBudget" name="totalBudget" type="text" inputmode="numeric" autocomplete="off" value="{{ view.defaultBudget }}">
-            </div>
-          </div>
-          <div class="govuk-form-group govuk-!-margin-bottom-0">
-            <label class="govuk-label govuk-label--s" for="attrition">Attrition rate</label>
-            <div class="govuk-input__wrapper">
-              <input class="govuk-input govuk-input--width-3" id="attrition" name="attrition" type="text" inputmode="numeric" autocomplete="off" value="0">
-              <div class="govuk-input__suffix" aria-hidden="true">%</div>
-            </div>
-          </div>
-          <div class="govuk-form-group govuk-!-margin-bottom-0">
-            <label class="govuk-label govuk-label--s" for="passScore">Pass score</label>
-            <div class="govuk-input__wrapper">
-              <input class="govuk-input govuk-input--width-3" id="passScore" name="passScore" type="text" inputmode="numeric" autocomplete="off" value="">
-              <div class="govuk-input__suffix" aria-hidden="true">%</div>
-            </div>
-          </div>
-          <button type="submit" id="updateBudget" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" style="font-size:1.5rem; line-height:1.2; min-height:3.1rem; padding:8px 28px;">Update</button>
-          <span id="budgetPending" class="govuk-body govuk-!-margin-bottom-0" hidden style="align-self:center;"><strong>Not applied yet.</strong> The figures below still use <span id="budgetAppliedText"></span>.</span>
-        </div>
-        <p class="govuk-hint govuk-!-margin-top-2 govuk-!-margin-bottom-0" id="attritionNote"></p>
-        <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0" id="passNote"></p>
-      </div>
-    </form>
-
     <div id="budgetReport" aria-live="polite">
       <div class="app-budget-cards">
         <div class="app-budget-cards__item">
@@ -146,6 +114,50 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <details class="govuk-details govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="modellingControls">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Show modelling controls</span></summary>
+      <div class="govuk-details__text">
+    <form id="budgetForm" class="govuk-!-margin-bottom-4" novalidate>
+      <div class="govuk-form-group govuk-!-margin-bottom-2">
+        <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="totalBudget">Total budget</label>
+            <div class="govuk-input__wrapper" style="max-width:14em;">
+              <div class="govuk-input__prefix" aria-hidden="true">£</div>
+              <input class="govuk-input" id="totalBudget" name="totalBudget" type="text" inputmode="numeric" autocomplete="off" value="{{ view.defaultBudget }}">
+            </div>
+          </div>
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="attrition">Attrition rate</label>
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-3" id="attrition" name="attrition" type="text" inputmode="numeric" autocomplete="off" value="0">
+              <div class="govuk-input__suffix" aria-hidden="true">%</div>
+            </div>
+          </div>
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="passScore">Pass score</label>
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-3" id="passScore" name="passScore" type="text" inputmode="numeric" autocomplete="off" value="">
+              <div class="govuk-input__suffix" aria-hidden="true">%</div>
+            </div>
+          </div>
+          <div class="govuk-form-group govuk-!-margin-bottom-0">
+            <label class="govuk-label govuk-label--s" for="minScore">Minimum score</label>
+            <div class="govuk-input__wrapper">
+              <input class="govuk-input govuk-input--width-3" id="minScore" name="minScore" type="text" inputmode="numeric" autocomplete="off" value="0">
+              <div class="govuk-input__suffix" aria-hidden="true">%</div>
+            </div>
+          </div>
+          <button type="submit" id="updateBudget" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button" style="font-size:1.5rem; line-height:1.2; min-height:3.1rem; padding:8px 28px;">Update</button>
+          <span id="budgetPending" class="govuk-body govuk-!-margin-bottom-0" hidden style="align-self:center;"><strong>Not applied yet.</strong> The figures below still use <span id="budgetAppliedText"></span>.</span>
+        </div>
+        <p class="govuk-hint govuk-!-margin-top-2 govuk-!-margin-bottom-0" id="attritionNote"></p>
+        <p class="govuk-hint govuk-!-margin-top-1 govuk-!-margin-bottom-0" id="passNote"></p>
+      </div>
+    </form>
+      <div aria-live="polite">
 
       <h2 class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-2" id="aroundHeading">Score groups either side of the line</h2>
       <table class="govuk-table govuk-!-margin-bottom-4" aria-labelledby="aroundHeading">
@@ -175,21 +187,62 @@
           <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--free"></span><span class="app-budget-key__label" id="keyUnspentLabel">Unspent&nbsp;</span><strong class="app-budget-key__figure" id="keyUnspent"></strong></span>
         </div>
       </div>
-    </div>
-
-
-    {# Capping issues: SBIs whose applications inside the line add up to more than the cap. Worked out on the page, so it moves with the line and clears as capped values are set. #}
-    <div id="capWarning" class="govuk-!-margin-bottom-6" style="border:2px solid #0b0c0c; padding:20px;" hidden>
-      <div class="govuk-warning-text govuk-!-margin-bottom-4">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-          <span class="govuk-visually-hidden">Warning</span>
-          <span id="capTitle"></span>
-        </strong>
       </div>
-      <p class="govuk-body">Deal with the capping issues before you can progress the list.</p>
-      <ul class="govuk-list govuk-!-margin-bottom-0" id="capList" aria-label="SBIs over the cap"></ul>
+      </div>
+    </details>
+
+
+    {# SBIs where capping has occurred. Information only, not links. #}
+    <details class="govuk-details govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="cappingIssues">
+      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Capping issues</span></summary>
+      <div class="govuk-details__text">
+    <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="cappedHeading">SBIs where capping has occurred</h2>
+    {% if view.cappedSbis.length %}
+    <p class="govuk-body">Applications for one SBI can add up to {{ view.capDisplay }} at most. Later applications for the SBI (lower score) have a capped value so the total stays within the cap.</p>
+    <table class="govuk-table govuk-!-margin-bottom-6" aria-labelledby="cappedHeading">
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">SBI</th>
+          <th scope="col" class="govuk-table__header">Business</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Applications</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Applications capped</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total value</th>
+          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total after capping</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        {% for s in view.cappedSbis %}
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">{{ s.sbi }}</td>
+          <td class="govuk-table__cell">{{ s.business }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.count }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.cappedCount }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.totalDisplay }}</td>
+          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.cappedTotalDisplay }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="govuk-body govuk-!-margin-bottom-6">No SBI has applications adding up to more than {{ view.capDisplay }}.</p>
+    {% endif %}
+      </div>
+    </details>
+
+    {# Window closed only: the modelled list can be progressed. #}
+    {% if view.windowState == 'closed' %}
+    <div class="govuk-!-margin-bottom-6" style="border:2px solid #0b0c0c; padding:20px;">
+      <h2 class="govuk-heading-m">Progress to invite stage</h2>
+      <p class="govuk-body">The application window is closed. Progress the applications inside the budget line above to the invite stage. Check the budget, attrition and pass score first.</p>
+      <form method="get" action="progress-list" id="progressForm" class="govuk-!-margin-bottom-0">
+        <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
+        <input type="hidden" name="attrition" id="progressAttrition" value="0">
+        <input type="hidden" name="pass" id="progressPass" value="">
+        <input type="hidden" name="min" id="progressMin" value="0">
+        <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Progress list</button>
+      </form>
     </div>
+    {% endif %}
 
     {% endif %}
 
@@ -229,14 +282,6 @@
 
           </div>
         </div>
-        {% elif view.tab == 'ranking' %}
-        {# The Progress list button only appears when there are no capping issues (the page hides it). #}
-        <form method="get" action="progress-list" id="progressForm" class="govuk-!-margin-bottom-4">
-          <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
-          <input type="hidden" name="attrition" id="progressAttrition" value="0">
-          <input type="hidden" name="pass" id="progressPass" value="">
-          <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Progress list</button>
-        </form>
         {% endif %}
 
         {# On Clean the list the search sits in a details so a single SBI can be reviewed; it opens when a search is active. #}
@@ -254,9 +299,9 @@
             </div>
           </div>
         </form>
+        {% if view.tab == 'ranking' %}<p class="govuk-body govuk-!-margin-bottom-6" style="margin-top:-15px;"><a class="govuk-link" id="jumpBoundary" href="#budgetLineRow">Jump to the successful score boundary</a></p>{% endif %}
         {% endif %}
 
-        {% if view.capError %}<p class="govuk-error-message" role="alert"><span class="govuk-visually-hidden">Error:</span> {{ view.capError.message }}</p>{% endif %}
         {% if view.tab != 'dedupe' %}<p class="govuk-body govuk-!-margin-bottom-2" aria-live="polite">{{ view.total }} case{% if view.total != 1 %}s{% endif %}</p>{% endif %}
 
         {% if view.tab == 'ranking' %}
@@ -266,12 +311,11 @@
               {{ waterHeader("id", "Case ID", view) }}
               {{ waterHeader("sbi", "SBI", view) }}
               {{ waterHeader("score", "Score (%)", view, "govuk-table__header--numeric") }}
-              {{ waterHeader("value", "Grant value", view, "govuk-table__header--numeric app-th-nowrap") }}
-              {% if view.anyCapped %}<th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Capped value</th>{% endif %}
+              {{ waterHeader("value", "Value", view, "govuk-table__header--numeric app-th-nowrap") }}
+              <th scope="col" class="govuk-table__header govuk-table__header--numeric app-th-nowrap">Capped value</th>
               {{ waterHeader("cumulative", "Cumulative value", view, "govuk-table__header--numeric app-th-nowrap") }}
               {{ waterHeader("date", "Date", view, "govuk-table__header--date") }}
               <th scope="col" class="govuk-table__header">Status</th>
-              {% if view.capEdit %}<th scope="col" class="govuk-table__header">Set capped value</th>{% endif %}
             </tr>
           </thead>
           <tbody class="govuk-table__body" id="caseRows" data-ranked="{{ 'true' if (view.sort == 'rank') else 'false' }}">
@@ -284,21 +328,10 @@
               <td class="govuk-table__cell">{{ c.sbi }}</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.score }}%</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.originalDisplay }}</td>
-              {% if view.anyCapped %}<td class="govuk-table__cell govuk-table__cell--numeric">{% if c.capped %}{{ c.valueDisplay }}{% else %}–{% endif %}</td>{% endif %}
+              <td class="govuk-table__cell govuk-table__cell--numeric">{% if c.capped %}{{ c.valueDisplay }}{% else %}–{% endif %}</td>
               <td class="govuk-table__cell govuk-table__cell--numeric">{{ c.cumulativeDisplay }}</td>
               <td class="govuk-table__cell">{{ c.date }}</td>
               <td class="govuk-table__cell">{{ statusTag(c, true) }}</td>
-              {% if view.capEdit %}
-              <td class="govuk-table__cell">
-                {% if c.live %}
-                <form method="post" action="/WaterManagementV3/cap" style="display:flex; gap:8px; align-items:center; margin:0;">
-                  <input type="hidden" name="id" value="{{ c.id }}">
-                  <input class="govuk-input" name="capped" type="text" inputmode="numeric" autocomplete="off" value="{{ c.value }}" aria-label="Capped value for case {{ c.id }}" style="width:6.5em; height:34px; padding:4px 8px; font-size:1rem;">
-                  <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" style="margin:0; padding:5px 12px; min-height:34px; font-size:1rem; line-height:1.2; white-space:nowrap; box-shadow:none;">Set capped value</button>
-                </form>
-                {% endif %}
-              </td>
-              {% endif %}
             </tr>
             {% endfor %}
           </tbody>
@@ -350,10 +383,9 @@
 // "Review a single SBI" (Clean the list): the search box becomes an autocomplete of the SBIs that have
 // more than one application. The plain text box stays as the fallback and still submits searchWater.
 (function () {
-  var details = document.querySelector('details.govuk-details');
   var original = document.getElementById('searchWater');
-  if (!details || !original || typeof accessibleAutocomplete !== 'function') return;
-  var options = {{ view.sbiOptions | dump | safe }};
+  if (!original || typeof accessibleAutocomplete !== 'function') return;
+  var options = {{ (view.allSbiOptions if view.tab == 'ranking' else view.sbiOptions) | dump | safe }};
   var start = original.value;
   var holder = document.createElement('div');
   holder.style.flex = '1 1 auto';
@@ -365,8 +397,8 @@
     id: 'searchWater',
     name: 'searchWater',
     defaultValue: start,
-    minLength: 1,
-    showAllValues: true,
+    minLength: 3,
+    showAllValues: false,
     confirmOnBlur: false,
     autoselect: false,
     displayMenu: 'overlay',
@@ -386,14 +418,14 @@
   if (!document.getElementById('budgetForm')) return; // Deduplication has no budget panel
   // Score tiers over the whole ranking: {score, count, cumulative}, highest score first.
   var tiers = {{ view.tiers | dump | safe }};
-  // SBIs whose live applications add up to more than the cap, with each application's score and (capped) value.
-  var capCandidates = {{ view.capCandidates | dump | safe }};
-  var CAP = {{ view.cap }};
   var input = document.getElementById('totalBudget');
   var DEFAULT_BUDGET = Number('{{ view.defaultBudget }}');
   var STORE = 'waterV3TotalBudget';
   var STORE_A = 'waterV3Attrition';
   var STORE_P = 'waterV3PassScore';
+  var STORE_M = 'waterV3MinScore';
+  var minInput = document.getElementById('minScore');
+  var appliedM = 0;             // minimum score: nothing below it is funded (0 = no minimum)
   var attInput = document.getElementById('attrition');
   var passInput = document.getElementById('passScore');
   var applied = DEFAULT_BUDGET; // the budget everything below actually uses
@@ -413,7 +445,7 @@
 
   // How many tiers (k) are funded for a budget, attrition % and optional pass score. Only whole
   // score groups; never fewer than the budget fits; never more than 100% extra cases.
-  function line(budget, a, pass) {
+  function line(budget, a, pass, floor) {
     var k0 = 0;
     while (k0 < tiers.length && tiers[k0].cumulative <= budget) k0++;
     var base = k0 ? cc[k0 - 1] : 0;
@@ -436,13 +468,18 @@
     var capped = false;
     while (k > k0 && base && (cc[k - 1] / base - 1) * 100 > 100) { k--; capped = true; }
     if (capped) note = 'That is more than 100% attrition, so the lowest score group within 100% is used.';
+    if (floor) {
+      var allowed = 0;
+      tiers.forEach(function (t) { if (t.score >= floor) allowed++; });
+      if (k > allowed) { k = allowed; note = 'The minimum score of ' + floor + '% stops anything below it being funded.'; }
+    }
     return { k: k, k0: k0, base: base, note: note };
   }
   function implied(base, count) { return base ? Math.round((count / base - 1) * 100) : 0; }
 
   function update() {
     var budget = applied;
-    var L = line(budget, appliedA, appliedP);
+    var L = line(budget, appliedA, appliedP, appliedM);
     var k = L.k, base = L.base;
     var funded = k ? cc[k - 1] : 0;
     var impl = implied(base, funded);
@@ -451,7 +488,7 @@
     var next = tiers[k];
 
     // The two boxes always show the same line: the pass score and the attrition it equals.
-    shownA = impl; shownP = k ? String(tiers[k - 1].score) : '';
+    shownA = Math.max(0, impl); shownP = k ? String(tiers[k - 1].score) : '';
     attInput.value = shownA; passInput.value = shownP;
     $('attritionNote').textContent = impl ? 'With ' + impl + '% attrition the line moves down: ' + base + ' cases fit the budget, so ' + funded + ' are funded (' + plural(funded - base, 'case') + ' more), taking in whole score groups down to ' + tiers[k - 1].score + '%.' : '';
     $('passNote').textContent = L.note;
@@ -498,40 +535,6 @@
     });
     tb.innerHTML = html;
 
-    // Capping issues: only the applications inside the line count towards an SBI's cap.
-    var cutoff = k ? tiers[k - 1].score : 101;
-    var issues = [];
-    capCandidates.forEach(function (sbi) {
-      var inV = 0, inN = 0;
-      sbi.cases.forEach(function (cs) { if (cs.score >= cutoff) { inV += cs.value; inN++; } });
-      if (inV > CAP) issues.push({ sbi: sbi.sbi, business: sbi.business, n: inN, total: inV });
-    });
-    issues.sort(function (x, y) { return y.total - x.total; });
-    var capBox = $('capWarning');
-    capBox.hidden = !issues.length;
-    $('capTitle').textContent = issues.length + ' capping issue' + (issues.length === 1 ? '' : 's');
-    var capList = $('capList');
-    capList.innerHTML = '';
-    issues.forEach(function (it) {
-      var li = document.createElement('li');
-      var a = document.createElement('a');
-      a.className = 'govuk-link';
-      a.href = 'caselist?tab=ranking&searchWater=' + encodeURIComponent(it.sbi);
-      a.textContent = it.sbi;
-      li.appendChild(a);
-      li.appendChild(document.createTextNode(' (' + it.business + '): ' + plural(it.n, 'application') + ' inside the line, ' + gbp(it.total) + ' in total, ' + gbp(it.total - CAP) + ' over the cap'));
-      capList.appendChild(li);
-    });
-    var progressForm = $('progressForm');
-    if (progressForm) progressForm.hidden = issues.length > 0;
-
-    // The Progress list button only appears once cleaning is finished, the funding line is set,
-    // there are applications inside it and no capping issues remain.
-    var liveScores = {{ view.liveScores | dump | safe }};
-    var inLine = liveScores.filter(function (sc) { return sc >= cutoff; }).length;
-    var cleaned = {{ 'true' if view.cleaning else 'false' }};
-    if (progressForm) progressForm.hidden = !cleaned || !k || issues.length > 0 || inLine === 0;
-
 
     var pct = budget > 0 ? Math.min(100, spent / budget * 100) : 0;
     $('barAllocated').style.width = pct + '%';
@@ -548,6 +551,8 @@
     if (progressAtt) progressAtt.value = impl;
     var progressPass = $('progressPass');
     if (progressPass) progressPass.value = k ? tiers[k - 1].score : '';
+    var progressMin = $('progressMin');
+    if (progressMin) progressMin.value = appliedM;
     var tbody = $('caseRows');
     var old = tbody && tbody.querySelector('.app-budget-line');
     if (old) old.parentNode.removeChild(old);
@@ -558,10 +563,13 @@
       for (var r = 0; r < rows.length; r++) if (+rows[r].getAttribute('data-score') >= minScore) after = rows[r];
       var ln = document.createElement('tr');
       ln.className = 'govuk-table__row app-budget-line';
+      ln.id = 'budgetLineRow';
       ln.innerHTML = '<td class="govuk-table__cell" colspan="' + (tbody.parentNode.querySelectorAll('thead th').length || 7) + '" style="background:#f3f2f1; border-top:3px solid #00703c; border-bottom:3px solid #00703c; font-weight:700;"></td>';
       ln.firstChild.textContent = 'Budget line: cases above are funded (' + gbp(spent) + ' against a budget of ' + gbp(budget) + (impl ? ', including ' + impl + '% attrition' : '') + '), cases below are not';
       if (after) tbody.insertBefore(ln, after.nextSibling); else if (rows.length) tbody.insertBefore(ln, rows[0]);
     }
+    var jump = $('jumpBoundary');
+    if (jump) jump.hidden = !$('budgetLineRow');
   }
 
   function show(n) { return n.toLocaleString('en-GB'); }
@@ -571,31 +579,38 @@
       localStorage.setItem(STORE, String(applied));
       localStorage.setItem(STORE_A, String(appliedA));
       localStorage.setItem(STORE_P, appliedP === null ? '' : String(appliedP));
+      localStorage.setItem(STORE_M, String(appliedM));
     } catch (e) {}
   }
   // "Not applied yet" while a box holds a different figure from the applied one.
   function pending() {
     var differs = (hasDigits(input.value) && parse(input.value) !== applied) ||
       (hasDigits(attInput.value) && Math.min(100, parse(attInput.value)) !== shownA) ||
-      (hasDigits(passInput.value) && passInput.value.trim() !== shownP);
+      (hasDigits(passInput.value) && passInput.value.trim() !== shownP) ||
+      (hasDigits(minInput.value) && Math.min(100, parse(minInput.value)) !== appliedM);
     $('budgetPending').hidden = !differs;
     $('budgetAppliedText').textContent = gbp(applied) + (shownP ? ', a pass score of ' + shownP + '%' : '') + ' and ' + shownA + '% attrition';
   }
   try {
     var saved = localStorage.getItem(STORE); if (saved && hasDigits(saved)) applied = parse(saved);
+    var savedM = localStorage.getItem(STORE_M); if (savedM && hasDigits(savedM)) appliedM = Math.min(100, parse(savedM));
     var savedP = localStorage.getItem(STORE_P);
     if (savedP && hasDigits(savedP)) appliedP = parse(savedP);
     else { var savedA = localStorage.getItem(STORE_A); if (savedA && hasDigits(savedA)) appliedA = Math.min(100, parse(savedA)); }
   } catch (e) {}
   input.value = show(applied);
+  minInput.value = appliedM;
 
   input.addEventListener('input', pending);
+  minInput.addEventListener('input', pending);
   attInput.addEventListener('input', pending);
   passInput.addEventListener('input', pending);
   $('budgetForm').addEventListener('submit', function (ev) {
     ev.preventDefault(); // Enter in a box does the same as the button
     if (hasDigits(input.value)) applied = parse(input.value);
     input.value = show(applied);
+    if (hasDigits(minInput.value)) appliedM = Math.min(100, parse(minInput.value));
+    minInput.value = appliedM;
     var attChanged = hasDigits(attInput.value) && Math.min(100, parse(attInput.value)) !== shownA;
     var passChanged = hasDigits(passInput.value) && passInput.value.trim() !== shownP;
     // Changing the attrition sets the pass score; changing the pass score sets the attrition.

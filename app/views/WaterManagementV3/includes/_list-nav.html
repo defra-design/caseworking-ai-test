@@ -8,13 +8,13 @@
 
           <li class="govuk-service-navigation__item-c{% if activeNavItem === 'dedupe' %} govuk-service-navigation__item--active{% endif %}">
             <a class="govuk-service-navigation__link" href="/WaterManagementV3/caselist?tab=dedupe"{% if activeNavItem === 'dedupe' %} aria-current="true"{% endif %}>
-              {% if activeNavItem === 'dedupe' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Clean the list{% if activeNavItem === 'dedupe' %}</strong>{% endif %}
+              {% if activeNavItem === 'dedupe' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Clean the list{% set openN = (view.openIssues if view else openIssues) %}{% if openN %} <span class="moj-badge moj-badge--red"><span class="govuk-visually-hidden">Issues not completed: </span>{{ openN }}</span>{% endif %}{% if activeNavItem === 'dedupe' %}</strong>{% endif %}
             </a>
           </li>
 
           <li class="govuk-service-navigation__item-c2{% if activeNavItem === 'ranking' %} govuk-service-navigation__item--active{% endif %}">
             <a class="govuk-service-navigation__link" href="/WaterManagementV3/caselist?tab=ranking"{% if activeNavItem === 'ranking' %} aria-current="true"{% endif %}>
-              {% if activeNavItem === 'ranking' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Scoring and ranking{% if activeNavItem === 'ranking' %}</strong>{% endif %}
+              {% if activeNavItem === 'ranking' %}<strong class="govuk-service-navigation__active-fallback">{% endif %}Model the list{% if activeNavItem === 'ranking' %}</strong>{% endif %}
             </a>
           </li>
 
