@@ -31,7 +31,7 @@
 
         {% else %}
 
-        <h1 class="govuk-heading-l">Are you sure you want to progress the list?</h1>
+        <h1 class="govuk-heading-l">{% if openIssues %}Are you sure you want to progress the list?{% else %}Confirm you want to progress the list{% endif %}</h1>
 
         {% if openIssues %}
         <div class="govuk-warning-text">
@@ -83,6 +83,8 @@
         </dl>
 
         <p class="govuk-body">Only applications still at Application received are included. Rejected, withdrawn and already progressed ones are not.</p>
+
+        <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV3/progress-list.csv?budget={{ plan.budget }}&amp;attrition={{ plan.attrition }}&amp;pass={{ plan.minScore }}&amp;min={{ plan.floor }}">Download the {{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %} to be progressed (CSV)</a></p>
 
         <form action="/WaterManagementV3/progress-list" method="post" novalidate>
           <input type="hidden" name="budget" value="{{ plan.budget }}">

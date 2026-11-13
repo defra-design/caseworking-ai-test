@@ -4807,6 +4807,20 @@ router.get('/WaterManagementV3/progress-list', function (req, res) {
   const open = issues.filter(function (j) { return j.state !== 'done' })
   res.render('WaterManagementV3/progress-list', { openIssues: open.length, totalIssues: issues.length, plan: plan, budgetDisplay: wdGbp(plan.budget), allocatedDisplay: wdGbp(plan.allocated), unspentDisplay: wdGbp(Math.abs(plan.unspent)) })
 })
+// CSV of the applications the confirmation page is about to progress (same budget, attrition, pass and minimum score).
+router.get('/WaterManagementV3/progress-list.csv', function (req, res) {
+  const base = waterV3Ranked(req)
+  const plan = waterV3WithinBudget(base, waterV3BudgetParam(req.query.budget), waterV3AttritionParam(req.query.attrition), waterV3PassParam(req.query.pass), waterV3PassParam(req.query.min) || 0)
+  const q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"' }
+  const lines = [['Rank', 'Case ID', 'SBI', 'Business', 'Score (%)', 'Value (GBP)', 'Capped value (GBP)', 'Cumulative value (GBP)', 'Date', 'Reservoir', 'Water storage tank', 'Distribution main', 'Total item cost (GBP)', 'Items'].join(',')]
+  plan.toProgress.forEach(function (r) {
+    const it = base.answers.waterApplication(r).items
+    lines.push([r.rank, r.id, r.sbi, q(base.answers.waterBusinessName(r)), r.score, r.originalValue, r.capped ? r.value : '', r.cumulative, q(r.date), q(it.reservoir || ''), q(it.tank || ''), q(it.main || ''), it.rawTotal, q((it.lines || []).join(';\n'))].join(','))
+  })
+  res.set('Content-Type', 'text/csv; charset=utf-8')
+  res.set('Content-Disposition', 'attachment; filename="applications-to-progress.csv"')
+  res.send('\ufeff' + lines.join('\r\n') + '\r\n')
+})
 router.post('/WaterManagementV3/progress-list', function (req, res) {
   const plan = waterV3WithinBudget(waterV3Ranked(req), waterV3BudgetParam(req.body.budget), waterV3AttritionParam(req.body.attrition), waterV3PassParam(req.body.pass), waterV3PassParam(req.body.min) || 0)
   const d = waterV3Session(req)
