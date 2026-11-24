@@ -1,0 +1,146 @@
+{% extends "layouts/main.html" %}
+
+{# Clean the list: one issue = the applications on one SBI. Each has an optional free-text Label (notes only, no effect on status).
+   Open: Check complete (primary) and Save progress (secondary). Completed: read only, Re-open checks. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V1.1" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV11/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV11/caselist?tab=dedupe" class="govuk-back-link">Back to clean the list</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <h1 class="govuk-heading-l">SBI {{ sbi }}: {% if complete %}<strong class="govuk-tag govuk-tag--green" style="max-width:none; vertical-align:top; position:relative; top:7px;">Completed</strong>{% elif contacted %}<strong class="govuk-tag govuk-tag--yellow" style="max-width:none; vertical-align:top; position:relative; top:7px;">Contacted customer</strong>{% elif started %}<strong class="govuk-tag govuk-tag--turquoise" style="max-width:none; vertical-align:top; position:relative; top:7px;">In progress</strong>{% else %}<strong class="govuk-tag govuk-tag--blue" style="max-width:none; vertical-align:top; position:relative; top:7px;">Not started</strong>{% endif %}</h1>
+    <p class="govuk-body"><strong>Assigned to:</strong> {{ who or "Not assigned" }}</p>
+    <p class="govuk-body">{{ business }}: {{ rows | length }} applications.{% if complete %} This issue is completed.{% else %} {% if contacted %}The customer has been contacted.{% elif started %}This issue is in progress.{% else %}Select Start when you begin work on it.{% endif %}{% endif %}</p>
+    <p class="govuk-body" style="display:flex; justify-content:space-between; align-items:center; width:calc(100% + 150px);">
+      <a class="govuk-link" href="/WaterManagementV11/compare?sbi={{ sbi }}" target="_blank" rel="noopener noreferrer">Compare all applications (opens in new tab)</a>
+      <a class="govuk-link" href="/WaterManagementV11/compare.csv?sbi={{ sbi }}" download><svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 16 20" aria-hidden="true" focusable="false" style="vertical-align:-4px; margin-right:4px; color:#0b0c0c;"><path d="M1 1h9l5 5v13H1z" fill="#fff" stroke="currentColor" stroke-width="1.95" stroke-linejoin="round"/><path d="M10 1v5h5" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linejoin="round"/><text x="8" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="5.5" font-weight="700" fill="currentColor" stroke="currentColor" stroke-width="0.4">CSV</text></svg>Download as CSV</a>
+    </p>
+
+    <style>
+      .app-tag { display: inline-block; max-width: none; white-space: nowrap; padding: 3px 8px; margin: 0 0 6px; background: #d2e2f1; color: #144e81; font-size: 19px; line-height: 1.25; text-decoration: none; }
+      .app-tag__x { margin-left: 8px; font-weight: 700; }
+      a.app-tag:hover { background: #bcd3ea; }
+      .app-tags-toggle { background: none; border: 0; padding: 0; font-family: inherit; font-size: 19px; line-height: 1.25; color: #1d70b8; text-decoration: underline; cursor: pointer; white-space: nowrap; }
+      .app-tags-toggle:hover { color: #003078; }
+      .app-tags-toggle__arrow { display: inline-block; width: 1em; text-decoration: none; }
+      .app-tags-row td { padding-top: 0; }
+    </style>
+    <noscript><style>.app-tags-row[hidden] { display: table-row; }</style></noscript>
+    <table class="govuk-table" style="width:calc(100% + 150px); max-width:none;">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header app-th-nowrap" style="padding-right:40px;">Case ID</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Location</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Score (%)</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Grant value</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap" style="padding-right:30px;">Items</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Date</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap" style="padding-right:50px; width:230px; min-width:230px;">Tags</th>
+            <th scope="col" class="govuk-table__header app-th-nowrap">Status</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          {% for c in rows %}
+          <tr class="govuk-table__row" id="case-row-{{ c.id }}">
+            <td class="govuk-table__cell" style="padding-right:40px; white-space:nowrap;"><a class="govuk-link" href="case/tasks?id={{ c.id }}">{{ c.id }}</a></td>
+            <td class="govuk-table__cell" style="white-space:nowrap;">E:{{ c.loc.easting }}<br>N:{{ c.loc.northing }}</td>
+            <td class="govuk-table__cell">{{ c.score }}%</td>
+            <td class="govuk-table__cell">{{ c.originalDisplay }}</td>
+            <td class="govuk-table__cell" style="padding-right:30px;">
+              {% if c.reservoir %}<p class="govuk-body govuk-!-margin-bottom-1"><strong>Reservoir:</strong> {{ c.reservoir }}</p>{% endif %}
+              {% if c.tank %}<p class="govuk-body govuk-!-margin-bottom-1"><strong>Storage tank:</strong> {{ c.tank }}</p>{% endif %}
+              {% if c.pipework %}<p class="govuk-body govuk-!-margin-bottom-1"><strong>Pipework:</strong> {{ c.pipework }}</p>{% endif %}
+              {% if c.sources %}<p class="govuk-body govuk-!-margin-bottom-1"><strong>Water source:</strong> {{ c.sources }}</p>{% endif %}
+              {% if not (c.reservoir or c.tank or c.pipework or c.sources) %}-{% endif %}
+            </td>
+            <td class="govuk-table__cell" style="white-space:nowrap;">{{ c.date }}</td>
+            <td class="govuk-table__cell" style="white-space:nowrap; vertical-align:top; height:1px; padding-right:50px; width:230px; min-width:230px;">
+              <div style="height:100%; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-start;">
+                <div>
+                  {% for tg in c.tags %}
+                  <div>{% if complete %}<span class="app-tag">{{ tg }}</span>{% else %}<a class="app-tag" href="/WaterManagementV11/issue-label-remove?sbi={{ sbi }}&amp;id={{ c.id }}&amp;tag={{ tg | urlencode }}"><span class="govuk-visually-hidden">Remove tag </span>{{ tg }}<span class="app-tag__x" aria-hidden="true">&times;</span></a>{% endif %}</div>
+                  {% endfor %}
+                  {% if not c.tags.length %}<p class="govuk-body govuk-!-margin-bottom-1">-</p>{% endif %}
+                </div>
+                {% if not complete %}
+                <button type="button" class="app-tags-toggle govuk-!-margin-bottom-1" data-tags-toggle="{{ c.id }}" aria-expanded="false" aria-controls="tags-row-{{ c.id }}"><span class="app-tags-toggle__arrow" aria-hidden="true">&#9656;</span>Add tags</button>
+                {% endif %}
+              </div>
+            </td>
+            <td class="govuk-table__cell"><strong class="govuk-tag govuk-tag--{{ c.tag }}">{{ c.status }}</strong></td>
+          </tr>
+          {% if not complete %}
+          <tr class="govuk-table__row app-tags-row" id="tags-row-{{ c.id }}" hidden>
+            <td class="govuk-table__cell" colspan="6"></td>
+            <td class="govuk-table__cell" colspan="2">
+              <form method="post" action="/WaterManagementV11/issue-label" novalidate class="govuk-details__text" style="margin-left:10px;">
+                <input type="hidden" name="sbi" value="{{ sbi }}">
+                <input type="hidden" name="id" value="{{ c.id }}">
+                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" style="font-weight:400;"><label for="label-{{ c.id }}">Add tag</label></h3>
+                <div style="display:flex; gap:10px; align-items:center;">
+                  <input class="govuk-input" id="label-{{ c.id }}" name="label" type="text" maxlength="120" autocomplete="off" style="width:9em;">
+                  <button type="submit" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Save</button>
+                </div>
+              </form>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    <script>
+      document.querySelectorAll('[data-tags-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-tags-toggle')
+          var row = document.getElementById('tags-row-' + id)
+          var main = document.getElementById('case-row-' + id)
+          var open = row.hasAttribute('hidden')
+          if (open) { row.removeAttribute('hidden'); document.getElementById('label-' + id).focus() } else row.setAttribute('hidden', '')
+          btn.setAttribute('aria-expanded', String(open))
+          btn.querySelector('.app-tags-toggle__arrow').innerHTML = open ? '&#9662;' : '&#9656;'
+          main.querySelectorAll('td').forEach(function (td) { td.style.borderBottom = open ? '0' : '' })
+        })
+      })
+    </script>
+
+    {% if capping %}
+    <div class="govuk-inset-text">There is a capping issue for this SBI as the total value of projects is {{ openTotalDisplay }}.</div>
+    {% endif %}
+
+    {% if complete %}
+    <form method="post" action="/WaterManagementV11/issue-reopen" novalidate>
+      <input type="hidden" name="sbi" value="{{ sbi }}">
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">Re-open checks</button>
+        <a class="govuk-link" href="/WaterManagementV11/caselist?tab=dedupe">Cancel and return</a>
+      </div>
+    </form>
+    {% elif not started and not contacted %}
+    <form method="post" action="/WaterManagementV11/issue-start" novalidate>
+      <input type="hidden" name="sbi" value="{{ sbi }}">
+      <div class="govuk-button-group">
+        <button type="submit" class="govuk-button" data-module="govuk-button">Start</button>
+      </div>
+    </form>
+    {% else %}
+    <form method="post" action="/WaterManagementV11/issue-contact" novalidate>
+      <input type="hidden" name="sbi" value="{{ sbi }}">
+      <div class="govuk-button-group">
+        {% if not contacted %}<button type="submit" class="govuk-button" data-module="govuk-button">Contact customer</button>{% endif %}
+        <button type="submit" formaction="/WaterManagementV11/issue-complete" formmethod="get" class="govuk-button{% if not contacted %} govuk-button--secondary{% endif %}" data-module="govuk-button">Completed</button>
+      </div>
+    </form>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}

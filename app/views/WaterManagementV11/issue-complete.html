@@ -1,0 +1,38 @@
+{% extends "layouts/main.html" %}
+
+{# Check complete: confirmation, whatever state the issue is in. Confirm sets the issue to Completed. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V1.1" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV11/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV11/issue?sbi={{ sbi }}" class="govuk-back-link">Back</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Are you sure SBI {{ sbi }} is completed?</h1>
+        <p class="govuk-body">{{ business }}</p>
+
+        <p class="govuk-body">Labels do not affect the status of this issue. It will be set to Completed and become read only until you re-open it.</p>
+
+        <form method="post" action="/WaterManagementV11/issue-complete" novalidate>
+          <input type="hidden" name="sbi" value="{{ sbi }}">
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+            <a class="govuk-link" href="/WaterManagementV11/issue?sbi={{ sbi }}">Cancel and return</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

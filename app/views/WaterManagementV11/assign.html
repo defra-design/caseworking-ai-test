@@ -1,0 +1,82 @@
+{% extends "layouts/main.html" %}
+
+{# Assign one or more Clean the list issues to a caseworker. Mirrors the Grasslands Assign screen. #}
+{% set headerServiceName = "Water management V1.1" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/vendor/accessible-autocomplete/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+  <a href="/WaterManagementV11/caselist?tab=dedupe" class="govuk-back-link">Back to clean the list</a>
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:20px;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% set verb = "Reassign" if anyAssigned else "Assign" %}
+        <h1 class="govuk-heading-l">{{ verb }} {{ "issues" if selected.length != 1 else "issue" }}</h1>
+
+        {% if selected.length == 0 %}
+          <p class="govuk-body">No issues were selected. <a class="govuk-link" href="/WaterManagementV11/caselist?tab=dedupe">Return to clean the list</a> and tick one or more, then choose Assign.</p>
+        {% else %}
+          <div class="govuk-inset-text">{{ verb }}ing <strong>{{ selected.length }}</strong> selected issue{{ "s" if selected.length != 1 }}.</div>
+
+          <table class="govuk-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Issue</th>
+                <th scope="col" class="govuk-table__header">Current assignee</th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for j in selected %}
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">SBI {{ j.sbi }}: {{ j.business }}</td>
+                <td class="govuk-table__cell">{{ j.who or "Not assigned" }}</td>
+                <td class="govuk-table__cell"><a class="govuk-link" href="/WaterManagementV11/issue-assign?{% for id in j.removeIds %}sbi={{ id }}{% if not loop.last %}&amp;{% endif %}{% endfor %}">Remove<span class="govuk-visually-hidden"> SBI {{ j.sbi }} from the list</span></a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+          <form action="/WaterManagementV11/issue-assign-confirm" method="get">
+            {% for j in selected %}<input type="hidden" name="sbi" value="{{ j.sbi }}">{% endfor %}
+            <div class="govuk-form-group govuk-!-width-two-thirds">
+              <label class="govuk-label govuk-label--s" for="issueAssignee">Caseworker</label>
+              <div class="govuk-hint">Start typing a name, or pick from the list.</div>
+              <select class="govuk-select" id="issueAssignee" name="assignee">
+                <option value="">Select a caseworker</option>
+                {% for cw in caseworkers %}<option value="{{ cw }}">{{ cw }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-label--s" for="issueAssignNote">Notes (optional)</label>
+              <div id="issueAssignNote-hint" class="govuk-hint">All notes will be saved for auditing purposes.</div>
+              <textarea class="govuk-textarea" id="issueAssignNote" name="note" rows="5" aria-describedby="issueAssignNote-hint"></textarea>
+            </div>
+            <button type="submit" class="govuk-button" data-module="govuk-button">{{ verb }}</button><br>
+            <a href="/WaterManagementV11/caselist?tab=dedupe" class="govuk-link">Cancel</a>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+  <script src="/vendor/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    (function () {
+      var select = document.getElementById('issueAssignee')
+      if (!select || typeof accessibleAutocomplete !== 'function') return
+      accessibleAutocomplete.enhanceSelectElement({ selectElement: select, autoselect: false, defaultValue: '', minLength: 1, showAllValues: true, confirmOnBlur: true, displayMenu: 'overlay', placeholder: 'Start typing a caseworker name' })
+    })()
+  </script>
+{% endblock %}

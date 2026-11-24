@@ -1,0 +1,22 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+(function () {
+  var el = document.getElementById('projectMap');
+  var section = el && el.closest('.govuk-accordion__section');
+  if (!el || !section || typeof L === 'undefined') return;
+  var map = null;
+  // The map can only size itself once its accordion section is open.
+  function ensureMap() {
+    if (!section.classList.contains('govuk-accordion__section--expanded')) return;
+    if (!map) {
+      var pos = [{{ loc.lat }}, {{ loc.lng }}];
+      map = L.map(el, { scrollWheelZoom: false }).setView(pos, 11);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+      L.marker(pos).addTo(map);
+    }
+    setTimeout(function () { map.invalidateSize(); }, 50);
+  }
+  new MutationObserver(ensureMap).observe(section, { attributes: true, attributeFilter: ['class'] });
+  ensureMap();
+})();
+</script>
