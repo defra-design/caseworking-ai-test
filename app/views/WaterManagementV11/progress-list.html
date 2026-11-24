@@ -13,7 +13,7 @@
 
 {% block content %}
 <div class="govuk-width-container app-caselist-wide">
-  <a href="/WaterManagementV11/caselist?tab=ranking" class="govuk-back-link">Back to scoring and ranking</a>
+  <a href="/WaterManagementV11/caselist?tab=ranking" class="govuk-back-link">Back to model the list</a>
 
   <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
     <div class="govuk-grid-row">
@@ -27,20 +27,24 @@
         {% else %}
         <p class="govuk-body">All {{ plan.withinCount }} applications within a budget of {{ budgetDisplay }} have already been progressed.</p>
         {% endif %}
-        <a class="govuk-link" href="/WaterManagementV11/caselist?tab=ranking">Return to scoring and ranking</a>
+        <a class="govuk-link" href="/WaterManagementV11/caselist?tab=ranking">Return to model the list</a>
 
         {% else %}
 
-        <h1 class="govuk-heading-l">Are you sure you want to progress the list?</h1>
+        <h1 class="govuk-heading-l">{% if openIssues %}Are you sure you want to progress the list?{% else %}Confirm you want to progress the list{% endif %}</h1>
 
         {% if openIssues %}
         <div class="govuk-warning-text">
           <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
           <strong class="govuk-warning-text__text">
             <span class="govuk-visually-hidden">Warning</span>
-            Cleaning is still in progress. {{ openIssues }} issue{% if openIssues != 1 %}s are{% else %} is{% endif %} not completed. Are you sure you want to proceed?
+            The list cleaning is not completed. {{ openIssues }} of {{ totalIssues }} issue{% if totalIssues != 1 %}s{% endif %} {% if openIssues != 1 %}are{% else %}is{% endif %} still open.
           </strong>
         </div>
+        <p class="govuk-body">Progressing the list with open issues may include duplicate applications. Are you sure you want to proceed, or would you prefer to finish cleaning the list first?</p>
+        <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV11/caselist?tab=dedupe">Finish cleaning the list</a></p>
+        {% else %}
+        <p class="govuk-body"><strong>The list cleaning is completed and it is safe to progress.</strong></p>
         {% endif %}
 
         <p class="govuk-body">This will move <strong>{{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %}</strong> that are currently within the budget to <strong>Progressed</strong>.</p>
@@ -80,13 +84,16 @@
 
         <p class="govuk-body">Only applications still at Application received are included. Rejected, withdrawn and already progressed ones are not.</p>
 
+        <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV11/progress-list.csv?budget={{ plan.budget }}&amp;attrition={{ plan.attrition }}&amp;pass={{ plan.minScore }}&amp;min={{ plan.floor }}">Download the {{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %} to be progressed (CSV)</a></p>
+
         <form action="/WaterManagementV11/progress-list" method="post" novalidate>
           <input type="hidden" name="budget" value="{{ plan.budget }}">
           <input type="hidden" name="attrition" value="{{ plan.attrition }}">
           <input type="hidden" name="pass" value="{{ plan.minScore }}">
+          <input type="hidden" name="min" value="{{ plan.floor }}">
           <div class="govuk-button-group">
-            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
-            <a class="govuk-link" href="/WaterManagementV11/caselist?tab=ranking">Cancel and return</a>
+            <button type="submit" class="govuk-button" data-module="govuk-button">{% if openIssues %}Proceed anyway{% else %}Confirm{% endif %}</button>
+            <a class="govuk-link" href="/WaterManagementV11/caselist?tab={{ 'dedupe' if openIssues else 'ranking' }}">{% if openIssues %}Finish cleaning the list first{% else %}Cancel and return{% endif %}</a>
           </div>
         </form>
 

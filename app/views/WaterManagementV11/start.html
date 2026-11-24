@@ -1,0 +1,105 @@
+{% extends "layouts/main.html" %}
+
+{# Water management grant: start page for caseworking. Budget stats and the allocation bar (from the modelling
+   settings saved on Model the list), the number of cleaning issues, and the way in to the tabbed cleaning and modelling page. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V1.1" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <span class="govuk-caption-l">Caseworking</span>
+    <h1 class="govuk-heading-xl">Water management grant</h1>
+    <p class="govuk-body">The application window is <strong>{{ view.windowState }}</strong>.</p>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Budget</h2>
+    {% include "WaterManagementV11/includes/_budget-summary.html" %}
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Cleaning issues</h2>
+    <p class="govuk-body">{{ view.issues.length }} Issues: {{ counts.started }} In progress, {{ counts.new }} not started{% if counts.contacted %}, {{ counts.contacted }} Contacted customer{% endif %}{% if counts.done %}, {{ counts.done }} Completed{% endif %}</p>
+
+    <p class="govuk-body govuk-!-margin-top-6"><a class="govuk-link" href="/WaterManagementV11/caselist?tab=dedupe">Go to cleaning and modelling</a></p>
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+(function () {
+  var tiers = {{ view.tiers | dump | safe }};
+  var DEFAULT_BUDGET = {{ view.defaultBudget }};
+  function $(id) { return document.getElementById(id); }
+  function gbp(n) { return '\u00a3' + Math.round(n).toLocaleString('en-GB'); }
+  function parse(v) { var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); return isNaN(n) ? 0 : n; }
+  function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  function get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  var budget = DEFAULT_BUDGET, attrition = 0, pass = null, floor = 0;
+  var sb = get('waterV11TotalBudget'); if (sb && /[0-9]/.test(sb)) budget = parse(sb);
+  var sm = get('waterV11MinScore'); if (sm && /[0-9]/.test(sm)) floor = Math.min(100, parse(sm));
+  var sp = get('waterV11PassScore');
+  if (sp && /[0-9]/.test(sp)) pass = parse(sp);
+  else { var sa = get('waterV11Attrition'); if (sa && /[0-9]/.test(sa)) attrition = Math.min(100, parse(sa)); }
+
+  var cc = [];
+  tiers.reduce(function (n, t, i) { n += t.count; cc[i] = n; return n; }, 0);
+  var total = cc.length ? cc[cc.length - 1] : 0;
+  // Same budget line as Model the list: whole score groups, never fewer than the budget fits, never more than 100% extra.
+  var k0 = 0;
+  while (k0 < tiers.length && tiers[k0].cumulative <= budget) k0++;
+  var base = k0 ? cc[k0 - 1] : 0, k = k0;
+  if (base && pass !== null) {
+    var idx = -1;
+    tiers.forEach(function (t, n) { if (t.score >= pass) idx = n; });
+    k = Math.max(k0, idx + 1);
+  } else if (attrition && base) {
+    var target = base * (1 + attrition / 100), best = k0, bestDiff = Math.abs(base - target);
+    for (var t = k0; t < tiers.length; t++) {
+      var diff = Math.abs(cc[t] - target);
+      if (diff <= bestDiff) { best = t + 1; bestDiff = diff; }
+      if (cc[t] > target) break;
+    }
+    k = best;
+  }
+  while (k > k0 && base && (cc[k - 1] / base - 1) * 100 > 100) k--;
+  if (floor) { var allowed = 0; tiers.forEach(function (t) { if (t.score >= floor) allowed++; }); if (k > allowed) k = allowed; }
+  var funded = k ? cc[k - 1] : 0;
+  var impl = base ? Math.round((funded / base - 1) * 100) : 0;
+  var spent = k ? tiers[k - 1].cumulative : 0;
+  var unspent = budget - spent;
+  var next = tiers[k];
+
+  $('statFunded').textContent = funded;
+  $('statFundedNote').textContent = 'of ' + total + ' applications' + (impl ? ' (' + base + ' within the budget alone)' : '');
+  $('statMinScore').textContent = k ? tiers[k - 1].score + '%' : 'None';
+  $('statMinScoreNote').textContent = k ? plural(tiers[k - 1].count, 'case') + ' at this score' : 'None fit the budget';
+  $('statUnspentLabel').textContent = unspent < 0 ? 'Over budget' : 'Budget unspent';
+  $('statUnspent').textContent = gbp(Math.abs(unspent));
+  $('statUnspentNote').textContent = gbp(spent) + ' allocated';
+  if (next) {
+    $('statNextLabel').textContent = 'Budget for ' + next.score + '%';
+    $('statNext').textContent = gbp(next.cumulative);
+    $('statNextNote').textContent = next.cumulative > budget ? gbp(next.cumulative - budget) + ' more' : gbp(budget - next.cumulative) + ' under the budget';
+  } else {
+    $('statNextLabel').textContent = 'Budget for next score';
+    $('statNext').textContent = 'n/a';
+    $('statNextNote').textContent = 'All scores funded';
+  }
+  var over = budget > 0 && spent > budget;
+  var pct = budget > 0 ? (over ? budget / spent * 100 : spent / budget * 100) : 0;
+  $('barAllocated').style.width = pct + '%';
+  $('barAllocated').textContent = over ? '100%' : (pct >= 8 ? Math.round(pct) + '%' : '');
+  $('barUnspent').className = over ? 'app-budget-bar__over' : 'app-budget-bar__free';
+  $('barUnspent').textContent = over ? (100 - pct >= 8 ? '+' + Math.round((spent - budget) / budget * 100) + '%' : '') : ((100 - pct) >= 8 ? Math.round(100 - pct) + '%' : '');
+  $('keyUnspentSwatch').className = 'app-budget-key__swatch ' + (over ? 'app-budget-key__swatch--over' : 'app-budget-key__swatch--free');
+  $('keyAllocated').textContent = gbp(spent);
+  $('keyUnspentLabel').textContent = unspent < 0 ? 'Over budget\u00a0' : 'Unspent\u00a0';
+  $('keyUnspent').textContent = gbp(Math.abs(unspent));
+})();
+</script>
+{% endblock %}

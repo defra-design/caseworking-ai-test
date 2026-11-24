@@ -318,17 +318,17 @@ const OVERRIDES = {
   'CTN-7Z9-Q8C': { colour: 'Red', crops: ['Ornamentals'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' },
   '77Q-UNC-UFF': { colour: 'Red', crops: ['Arable'], biz: 'Two to four', planning: 'Yes', ea: 'Yes' },
   // Window closed scenario: late duplicate of YRW-ZSH-FB2 with more piping (same answers, same site).
-  '301502': { crops: ['Forest Nursery'], biz: 'One', planning: 'Not needed', ea: 'No' }
+  '66T-LNB-EAT': { crops: ['Forest Nursery'], biz: 'One', planning: 'Not needed', ea: 'No' }
 }
 // Same reservoir site as another application (same easting / northing), and exact items, so the pairs
 // agree with their grant values: DD4-GZ1-JMT = 56,300 m3 clay (40% of 140,750 = 56,300); CTN-7Z9-Q8C adds 11,850 m of pipes.
 // Cases moved off a business with a region onto an SBI of their own keep the area they were in, so their scores stand.
 const KEEP_REGION = { '7CL-4T1-DQZ': 'Rural Warwickshire', 'VUE-61Q-48B': 'Rural Powys, Wales', 'CBE-N8J-Y2V': 'Rural Hampshire', '8J9-LEF-27V': 'Rural Norfolk' }
-const SAME_SITE = { 'CTN-7Z9-Q8C': 'DD4-GZ1-JMT', '77Q-UNC-UFF': 'WT5-SS3-9WR', '301502': 'YRW-ZSH-FB2' }
+const SAME_SITE = { 'CTN-7Z9-Q8C': 'DD4-GZ1-JMT', '77Q-UNC-UFF': 'WT5-SS3-9WR', '66T-LNB-EAT': 'YRW-ZSH-FB2' }
 const EXPLICIT_ITEMS = {
   'DD4-GZ1-JMT': { clay: 56300 }, 'CTN-7Z9-Q8C': { clay: 56300, main: 11850 },
   'WT5-SS3-9WR': { clay: 48000 }, '77Q-UNC-UFF': { clay: 48000, main: 6000 },
-  '301502': { clay: 104200, main: 24600 }
+  '66T-LNB-EAT': { clay: 104200, main: 24600 }
 }
 // Everything else is capped at 90 so the hand-set top case (95) stays the clear top.
 const NATURAL_MAX = 90

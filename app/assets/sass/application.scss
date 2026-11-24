@@ -1592,6 +1592,7 @@
 .app-budget-bar .app-budget-bar__onhold      { background: #fff7bf; color: #0b0c0c; }
 .app-budget-bar .app-budget-bar__notstarted  { background: #eeefef; color: #0b0c0c; }
 .app-budget-bar .app-budget-bar__free        { flex: 1 1 auto; background: #ffffff; color: #0b0c0c; }
+.app-budget-bar .app-budget-bar__over        { flex: 1 1 auto; background: #f47738; color: #0b0c0c; border-left: 3px solid #0b0c0c; }
 .app-budget-bar--outlined { border: 2px solid #0b0c0c; box-sizing: border-box; }
 
 // Key beneath the bar — a coloured swatch before each label, items left-aligned
@@ -1619,6 +1620,7 @@
 .app-budget-key__swatch--progressing { background: #1d70b8; }
 .app-budget-key__swatch--onhold      { background: #fff7bf; }
 .app-budget-key__swatch--notstarted  { background: #eeefef; }
+.app-budget-key__swatch--over        { background: #f47738; }
 .app-budget-key__swatch--free        { background: #ffffff; box-shadow: inset 0 0 0 1px #0b0c0c; }
 
 // GTIF variant — each item is absolutely positioned at its bar segment's start

@@ -5788,7 +5788,7 @@ const WATERV11_SORT_KEYS = {
   ranking: ['id', 'sbi', 'score', 'value', 'cumulative', 'date'],
   all: ['id', 'business', 'sbi', 'date', 'value', 'stage', 'status']
 }
-const WATERV11_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'yellow', 'Withdrawn as duplicate': 'yellow', 'Rejected': 'red', 'Rejected as duplicate': 'red', 'Returned to customer': 'blue' }
+const WATERV11_STATUS_TAG = { 'Application received': 'grey', 'Progressed': 'green', 'Withdrawn': 'orange', 'Withdrawn as duplicate': 'orange', 'Rejected': 'red', 'Rejected as duplicate': 'red', 'Returned to customer': 'blue' }
 // Ranking order: Application received first (the only ones that count towards the cumulative value
 // and can be promoted), then the rest by status, each group by score. Scores are never changed by an outcome.
 const WATERV11_STATUS_ORDER = ['Application received', 'Progressed', 'Returned to customer', 'Rejected as duplicate', 'Rejected', 'Withdrawn as duplicate', 'Withdrawn']
@@ -5818,23 +5818,32 @@ function waterV11Ranked (req) {
   delete require.cache[require.resolve(waterV11AnswersPath)]
   const answers = require(waterV11AnswersPath)
   const maps = waterV11Maps(req)
-  const cases = require(waterV11CasesPath).cases
+  // A late application (closedOnly) only exists once the application window has closed.
+  const windowClosed = !!(req.session && req.session.data && req.session.data.waterV11Window === 'closed')
+  const cases = require(waterV11CasesPath).cases.filter(function (c) { return !c.closedOnly || windowClosed })
   const sbiCount = {}
   cases.forEach(function (c) { sbiCount[c.sbi] = (sbiCount[c.sbi] || 0) + 1 })
-  // A caseworker can enter a capped value for an application (never more than its grant value);
-  // ranking, cumulative value and the SBI cap use it, the original value is kept alongside.
-  const cappedMap = (req.session && req.session.data && req.session.data.waterV11Capped) || {}
-  const effValue = function (c) { return cappedMap[c.id] ? cappedMap[c.id].value : c.value }
-  const sbiLive = {}
-  cases.forEach(function (c) { if (waterV11StatusOf(c, maps) === 'Application received') sbiLive[c.sbi] = (sbiLive[c.sbi] || 0) + effValue(c) })
+  // Capping: the applications for one SBI can only add up to the cap (cumulatively, best score
+  // first, earliest date breaking a tie). Applications still in play or already progressed take
+  // part, so a capped value stays put once the list is progressed. Value is kept; the capped
+  // value is what ranking and cumulative value use.
+  const capped = {}
+  const used = {}
+  cases.filter(function (c) { const s = waterV11StatusOf(c, maps); return s === 'Application received' || s === 'Progressed' })
+    .sort(function (a, b) { return (b.score - a.score) || (grassDateVal(a.date) - grassDateVal(b.date)) || (a.id < b.id ? -1 : 1) })
+    .forEach(function (c) {
+      const room = Math.max(0, WATERV11_SBI_CAP - (used[c.sbi] || 0))
+      capped[c.id] = Math.min(c.value, room)
+      used[c.sbi] = (used[c.sbi] || 0) + capped[c.id]
+    })
+  const effValue = function (c) { return capped[c.id] === undefined ? c.value : capped[c.id] }
   const rows = cases.map(function (c) {
     const status = waterV11StatusOf(c, maps)
     const live = status === 'Application received'
     return Object.assign({}, c, {
       dateVal: grassDateVal(c.date), status: status, tag: WATERV11_STATUS_TAG[status], live: live,
       removed: status === 'Rejected' || status === 'Rejected as duplicate', multi: sbiCount[c.sbi] > 1,
-      sbiTotal: sbiLive[c.sbi] || 0,
-            value: effValue(c), originalValue: c.value, originalDisplay: wdGbp(c.value), capped: effValue(c) !== c.value,
+      value: effValue(c), originalValue: c.value, originalDisplay: wdGbp(c.value), capped: effValue(c) !== c.value,
       valueDisplay: wdGbp(effValue(c)), valueK: (effValue(c) / 1000).toFixed(1),
       stage: status === 'Progressed' ? 'Agreement' : (live ? 'Application' : '—')
     })
@@ -5860,7 +5869,7 @@ function waterV11Ranked (req) {
 // score group, so the line moves down. Alternatively a pass score can be set directly, which
 // gives the same result as the attrition % that reaches it (the implied attrition).
 // Never a split group; never fewer cases than the budget fits; never more than 100% extra.
-function waterV11WithinBudget (base, budget, attrition, pass) {
+function waterV11WithinBudget (base, budget, attrition, pass, floor) {
   attrition = attrition || 0
   const tiers = base.tiers
   let k0 = 0
@@ -5886,12 +5895,14 @@ function waterV11WithinBudget (base, budget, attrition, pass) {
     k = best
   }
   while (k > k0 && baseCount && (cc[k - 1] / baseCount - 1) * 100 > 100) k--
+  // A minimum score (default 0) always wins: nothing below it is funded, whatever the budget allows.
+  if (floor) { let allowed = 0; tiers.forEach(function (t) { if (t.score >= floor) allowed++ }); k = Math.min(k, allowed) }
   const impliedAttrition = baseCount && k ? Math.round((cc[k - 1] / baseCount - 1) * 100) : 0
   const minScore = k ? tiers[k - 1].score : null
   const within = minScore === null ? [] : base.rows.filter(function (r) { return r.live && r.score >= minScore })
   const allocated = k ? tiers[k - 1].cumulative : 0
   return {
-    budget: budget, attrition: impliedAttrition, baseCount: baseCount, target: Math.round(baseCount * (1 + impliedAttrition / 100)),
+    floor: floor || 0, budget: budget, attrition: impliedAttrition, baseCount: baseCount, target: Math.round(baseCount * (1 + impliedAttrition / 100)),
     minScore: minScore, withinCount: within.length, allocated: allocated, unspent: budget - allocated,
     toProgress: within.filter(function (r) { return r.status === 'Application received' })
   }
@@ -5927,9 +5938,50 @@ function waterV11Issues (req, base) {
     return { sbi: sbi, tags: tags, business: base.answers.waterBusinessName(rs[0]), who: (d.waterV11Who || {})[sbi] || '', count: rs.length, valueDisplay: wdGbp(liveValue), state: st[sbi] === 'complete' ? 'done' : (st[sbi] === 'contacted' ? 'contacted' : (st[sbi] === 'open' ? 'started' : 'new')) }
   })
 }
+// Window closed scenario: the cleaning from the window-open state is done (duplicates rejected, issues
+// owned and completed) and only the late application on SBI 613048257 is left open. Switching back to
+// Window open takes the seeded work out again so that state starts with three open issues.
+const WATERV11_SEED = {
+  rejected: { '300245': '301489', '301085': '301489', '300348': '301305', '300819': '301483' },
+  who: { '244666513': 'M Walker', '824231248': 'R Singh', '613048257': 'A Jones' },
+  state: { '244666513': 'complete', '824231248': 'complete', '613048257': 'open' }
+}
+function waterV11SeedWindow (req, state) {
+  const d = waterV11Session(req)
+  const cases = require(waterV11CasesPath).cases
+  const idOf = function (seed) { const c = cases.filter(function (x) { return String(x.seed) === seed })[0]; return c ? c.id : null }
+  if (state === 'closed' && !d.waterV11ClosedSeeded) {
+    const now = new Date()
+    d.waterV11ClosedSeeded = true
+    Object.keys(WATERV11_SEED.rejected).forEach(function (seed) {
+      const id = idOf(seed)
+      if (!id || d.waterV11Removed[id]) return
+      const note = 'Duplicate of ' + idOf(WATERV11_SEED.rejected[seed]) + ' found while cleaning the list.'
+      d.waterV11Removed[id] = { ts: now.getTime(), display: waterV11Stamp(now), iso: now.toISOString(), by: WATERV11_USER, note: note, noteId: 'seed' + id }
+      d.waterV11Notes[id] = [{ id: 'seed' + id, ts: now.getTime(), display: waterV11Stamp(now), iso: now.toISOString(), reason: 'Application rejected', note: note, by: WATERV11_USER, kind: 'rejected' }].concat(d.waterV11Notes[id] || [])
+      d.waterV11Labels[id] = ['duplicate']
+    })
+    d.waterV11Who = d.waterV11Who || {}
+    Object.keys(WATERV11_SEED.who).forEach(function (sbi) { if (!d.waterV11Who[sbi]) d.waterV11Who[sbi] = WATERV11_SEED.who[sbi] })
+    Object.keys(WATERV11_SEED.state).forEach(function (sbi) { if (!d.waterV11IssueState[sbi]) d.waterV11IssueState[sbi] = WATERV11_SEED.state[sbi] })
+  } else if (state === 'open' && d.waterV11ClosedSeeded) {
+    d.waterV11ClosedSeeded = false
+    Object.keys(WATERV11_SEED.rejected).forEach(function (seed) {
+      const id = idOf(seed)
+      if (!id) return
+      delete d.waterV11Removed[id]; delete d.waterV11Notes[id]; delete d.waterV11Labels[id]
+    })
+    Object.keys(WATERV11_SEED.who).forEach(function (sbi) { delete (d.waterV11Who || {})[sbi] })
+    Object.keys(WATERV11_SEED.state).forEach(function (sbi) { delete d.waterV11IssueState[sbi] })
+  }
+}
 function waterV11View (req) {
   const d = req.session && req.session.data
   if (d) delete d.waterV11Flash // opening the list means a removal banner has gone
+  if (d && (req.query.window === 'open' || req.query.window === 'closed')) {
+    d.waterV11Window = req.query.window
+    waterV11SeedWindow(req, req.query.window)
+  }
   const tab = WATERV11_TABS.indexOf(req.query.tab) === -1 ? 'dedupe' : req.query.tab
   const base = waterV11Ranked(req)
   let rows = base.rows.slice()
@@ -5961,26 +6013,30 @@ function waterV11View (req) {
   }
   const flash = d && d.waterV11ListFlash
   if (d) delete d.waterV11ListFlash
-  // SBIs whose applications still in play add up to more than the cap. Whether it is an issue depends
-  // on the line (only the applications inside it count), so the page works that out as the line moves.
-  const capCandidates = []
+  // The state of the application window: 'open' (inputs can change, the list cannot be progressed)
+  // or 'closed' (the modelled list can be progressed). Set from the index links, then remembered.
+  const windowState = (d && d.waterV11Window) || 'open'
+  // SBIs where capping has occurred (the applications add up to more than the cap).
   const bySbi = {}
   base.rows.forEach(function (r) { if (r.live) (bySbi[r.sbi] = bySbi[r.sbi] || []).push(r) })
-  Object.keys(bySbi).forEach(function (sbi) {
-    const rs = bySbi[sbi]
-    if (rs.reduce(function (t, r) { return t + r.value }, 0) <= WATERV11_SBI_CAP) return
-    capCandidates.push({ sbi: sbi, business: base.answers.waterBusinessName(rs[0]), cases: rs.map(function (r) { return { score: r.score, value: r.value } }) })
+  const cappedSbis = []
+  const capSeen = {}
+  base.rows.forEach(function (r) {
+    if (!r.capped || capSeen[r.sbi]) return
+    capSeen[r.sbi] = true
+    const rs = base.rows.filter(function (x) { return x.sbi === r.sbi && (x.live || x.status === 'Progressed') })
+    cappedSbis.push({
+      sbi: r.sbi, business: base.answers.waterBusinessName(r), count: rs.length,
+      cappedCount: rs.filter(function (x) { return x.capped }).length,
+      totalDisplay: wdGbp(rs.reduce(function (t, x) { return t + x.originalValue }, 0)),
+      cappedTotalDisplay: wdGbp(rs.reduce(function (t, x) { return t + x.value }, 0))
+    })
   })
-  // The capped-value inputs show when the search is one SBI on the ranking tab.
-  const capEdit = tab === 'ranking' && /^\d{9}$/.test(search.trim()) && rows.some(function (r) { return r.live })
-  const capError = d && d.waterV11CapError
+  cappedSbis.sort(function (a, b) { return a.sbi < b.sbi ? -1 : 1 })
   // "Cleaning finished" is recorded once from Clean the list; the success banner shows once on Scoring and ranking.
   const cleaning = (d && d.waterV11CleaningFinished) || null
   const cleanFlash = !!(d && d.waterV11CleanFlash)
   if (d && tab === 'ranking') delete d.waterV11CleanFlash
-  if (d) delete d.waterV11CapError
-  // The Capped value column only appears once at least one application has a capped value.
-  const anyCapped = base.rows.some(function (r) { return r.capped })
   // Readiness summary inputs: scores of applications still awaiting a decision, and SBIs with more than one of them.
   const liveScores = base.rows.filter(function (r) { return r.status === 'Application received' }).map(function (r) { return r.score })
   const multiSbis = []
@@ -5994,34 +6050,19 @@ function waterV11View (req) {
     sbiOptions.push({ sbi: r.sbi, business: base.answers.waterBusinessName(r) })
   })
   sbiOptions.sort(function (x, y) { return x.sbi < y.sbi ? -1 : 1 })
+  // Every SBI on the list, for the search autocomplete on Model the list.
+  const allSbiOptions = []
+  const seenAll = {}
+  base.rows.forEach(function (r) {
+    if (seenAll[r.sbi]) return
+    seenAll[r.sbi] = true
+    allSbiOptions.push({ sbi: r.sbi, business: base.answers.waterBusinessName(r) })
+  })
+  allSbiOptions.sort(function (x, y) { return x.sbi < y.sbi ? -1 : 1 })
   const issues = waterV11Issues(req, base)
   const issuesDone = issues.filter(function (j) { return j.state === 'done' }).length
-  return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, anyCapped: anyCapped, capCandidates: capCandidates, capEdit: capEdit, capError: capError || null, cap: WATERV11_SBI_CAP, capDisplay: wdGbp(WATERV11_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV11_DEFAULT_BUDGET, flash: flash || null }
+  return { issues: issues, issuesDone: issuesDone, sbiOptions: sbiOptions, cleaning: cleaning, cleanFlash: cleanFlash, liveScores: liveScores, multiSbis: multiSbis, openIssues: issues.length - issuesDone, allSbiOptions: allSbiOptions, cappedSbis: cappedSbis, windowState: windowState, cap: WATERV11_SBI_CAP, capDisplay: wdGbp(WATERV11_SBI_CAP), tab: tab, rows: rows, total: rows.length, sort: sort, dir: dir, search: search, tiers: base.tiers, defaultBudget: WATERV11_DEFAULT_BUDGET, flash: flash || null }
 }
-// Set a capped value for one application (from the SBI search results). Never more than its
-// grant value; entering the grant value again removes the cap. Written to the case notes.
-router.post('/WaterManagementV11/cap', function (req, res) {
-  const ctx = waterV11CaseOr(req, res, req.body.id)
-  if (!ctx) return
-  const d = waterV11Session(req)
-  const back = '/WaterManagementV11/caselist?tab=ranking&searchWater=' + encodeURIComponent(ctx.c.sbi)
-  const raw = String(req.body.capped === undefined ? '' : req.body.capped).replace(/[^0-9]/g, '')
-  const n = parseInt(raw, 10)
-  if (ctx.final) return res.redirect(back)
-  if (raw === '' || isNaN(n) || n > ctx.c.value) {
-    d.waterV11CapError = { id: ctx.c.id, message: 'Enter a capped value for ' + ctx.c.id + ' of ' + wdGbp(ctx.c.value) + ' or less' }
-    return req.session.save(function () { res.redirect(back) })
-  }
-  const now = new Date()
-  const before = d.waterV11Capped[ctx.c.id] ? d.waterV11Capped[ctx.c.id].value : ctx.c.value
-  if (n === ctx.c.value) delete d.waterV11Capped[ctx.c.id]
-  else d.waterV11Capped[ctx.c.id] = { value: n, ts: now.getTime(), display: waterV11Stamp(now), iso: now.toISOString(), by: WATERV11_USER }
-  if (n !== before) {
-    d.waterV11Notes[ctx.c.id] = [{ id: String(now.getTime()), ts: now.getTime(), display: waterV11Stamp(now), iso: now.toISOString(), reason: 'Capped value set',
-      note: n === ctx.c.value ? 'Cap removed: the capped value is back to the grant value of ' + wdGbp(n) : 'Capped value set to ' + wdGbp(n) + ' (grant value ' + wdGbp(ctx.c.value) + ')', by: WATERV11_USER, kind: 'capped' }].concat(d.waterV11Notes[ctx.c.id] || [])
-  }
-  req.session.save(function () { res.redirect(back) })
-})
 // An issue: the applications on one SBI with a Label dropdown each (Not set / Not duplicate / Duplicate with <case>).
 // Two buttons: Check complete (confirmation page, then Completed) and Save progress. A Completed issue is
 // read only, with Re-open checks.
@@ -6042,7 +6083,7 @@ router.get('/WaterManagementV11/issue-assign', function (req, res) {
   const selected = picked.map(function (j) {
     return Object.assign({}, j, { removeIds: picked.filter(function (o) { return o.sbi !== j.sbi }).map(function (o) { return o.sbi }) })
   })
-  res.render('WaterManagementV11/assign', { selected: selected, caseworkers: WATERV11_WHO, anyAssigned: selected.some(function (j) { return j.who }) })
+  res.render('WaterManagementV11/assign', { openIssues: waterV11Issues(req, waterV11Ranked(req)).filter(function (j) { return j.state !== 'done' }).length, selected: selected, caseworkers: WATERV11_WHO, anyAssigned: selected.some(function (j) { return j.who }) })
 })
 router.get('/WaterManagementV11/issue-assign-confirm', function (req, res) {
   const d = req.session.data
@@ -6102,7 +6143,7 @@ router.get('/WaterManagementV11/issue', function (req, res) {
   })
   // Capping issue: the open applications on this SBI (not withdrawn or rejected) add up to more than the £300K cap
   const openTotal = rows.filter(function (r) { return !/^(Withdrawn|Rejected)/.test(r.status) }).reduce(function (n, r) { return n + r.originalValue }, 0)
-  res.render('WaterManagementV11/issue', { capping: openTotal > WATERV11_SBI_CAP, openTotalDisplay: wdGbp(openTotal), sbi: sbi, business: base.answers.waterBusinessName(rows[0]), started: d.waterV11IssueState[sbi] === 'open', rows: rows, issueLabel: d.waterV11IssueLabels[sbi] || '', complete: d.waterV11IssueState[sbi] === 'complete', contacted: d.waterV11IssueState[sbi] === 'contacted', who: (d.waterV11Who || {})[sbi] || '' })
+  res.render('WaterManagementV11/issue', { openIssues: waterV11Issues(req, base).filter(function (j) { return j.state !== 'done' }).length, capping: openTotal > WATERV11_SBI_CAP, openTotalDisplay: wdGbp(openTotal), sbi: sbi, business: base.answers.waterBusinessName(rows[0]), started: d.waterV11IssueState[sbi] === 'open', rows: rows, issueLabel: d.waterV11IssueLabels[sbi] || '', complete: d.waterV11IssueState[sbi] === 'complete', contacted: d.waterV11IssueState[sbi] === 'contacted', who: (d.waterV11Who || {})[sbi] || '' })
 })
 // Tags (V1.1, was Label): free text, any number per application. Added from the "Add tags" area under the row
 // (a comma separates several) and removed with the cross in the tag. They never change a status.
@@ -6173,7 +6214,7 @@ router.get('/WaterManagementV11/issue-complete', function (req, res) {
   if (!rows.length) return res.redirect('/WaterManagementV11/caselist?tab=dedupe')
   const d = waterV11Session(req)
   if (d.waterV11IssueState[sbi] === 'complete') return res.redirect('/WaterManagementV11/issue?sbi=' + sbi)
-  res.render('WaterManagementV11/issue-complete', { sbi: sbi, business: base.answers.waterBusinessName(rows[0]) })
+  res.render('WaterManagementV11/issue-complete', { openIssues: waterV11Issues(req, base).filter(function (j) { return j.state !== 'done' }).length, sbi: sbi, business: base.answers.waterBusinessName(rows[0]) })
 })
 router.post('/WaterManagementV11/issue-complete', function (req, res) {
   const sbi = String(req.body.sbi || '')
@@ -6188,6 +6229,14 @@ router.post('/WaterManagementV11/issue-reopen', function (req, res) {
   if (d.waterV11IssueState[sbi] === 'complete') d.waterV11IssueState[sbi] = 'open'
   req.session.save(function () { res.redirect('/WaterManagementV11/issue?sbi=' + encodeURIComponent(sbi)) })
 })
+// Start page for the Water grant: budget stats and bar, the number of cleaning issues, a link to the tabbed page.
+router.get('/WaterManagementV11/start', function (req, res) {
+  res.set('Cache-Control', 'no-store')
+  const view = waterV11View(req)
+  const counts = { new: 0, started: 0, contacted: 0, done: 0 }
+  view.issues.forEach(function (j) { counts[j.state] = (counts[j.state] || 0) + 1 })
+  res.render('WaterManagementV11/start', { view: view, counts: counts })
+})
 router.get('/WaterManagementV11/caselist', function (req, res) {
   res.set('Cache-Control', 'no-store')
   res.render('WaterManagementV11/caselist', { view: waterV11View(req) })
@@ -6199,7 +6248,7 @@ router.get('/WaterManagementV11/caselist', function (req, res) {
 // showing (budget, attrition and pass score come from the page, as they do for Progress list).
 router.get('/WaterManagementV11/ranking.csv', function (req, res) {
   const base = waterV11Ranked(req)
-  const plan = waterV11WithinBudget(base, waterV11BudgetParam(req.query.budget), waterV11AttritionParam(req.query.attrition), waterV11PassParam(req.query.pass))
+  const plan = waterV11WithinBudget(base, waterV11BudgetParam(req.query.budget), waterV11AttritionParam(req.query.attrition), waterV11PassParam(req.query.pass), waterV11PassParam(req.query.min) || 0)
   const q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"' }
   const lines = [['Rank', 'Case ID', 'SBI', 'Score (%)', 'Grant value', 'Capped value', 'Cumulative value', 'Date', 'Status', 'Within the budget line'].map(q).join(',')]
   base.rows.forEach(function (r) {
@@ -6214,12 +6263,27 @@ router.get('/WaterManagementV11/ranking.csv', function (req, res) {
 })
 router.get('/WaterManagementV11/progress-list', function (req, res) {
   res.set('Cache-Control', 'no-store')
-  const plan = waterV11WithinBudget(waterV11Ranked(req), waterV11BudgetParam(req.query.budget), waterV11AttritionParam(req.query.attrition), waterV11PassParam(req.query.pass))
-  const openIssues = waterV11Issues(req, waterV11Ranked(req)).filter(function (i) { return i.state !== 'done' }).length
-  res.render('WaterManagementV11/progress-list', { openIssues: openIssues, plan: plan, budgetDisplay: wdGbp(plan.budget), allocatedDisplay: wdGbp(plan.allocated), unspentDisplay: wdGbp(Math.abs(plan.unspent)) })
+  const plan = waterV11WithinBudget(waterV11Ranked(req), waterV11BudgetParam(req.query.budget), waterV11AttritionParam(req.query.attrition), waterV11PassParam(req.query.pass), waterV11PassParam(req.query.min) || 0)
+  const issues = waterV11Issues(req, waterV11Ranked(req))
+  const open = issues.filter(function (j) { return j.state !== 'done' })
+  res.render('WaterManagementV11/progress-list', { openIssues: open.length, totalIssues: issues.length, plan: plan, budgetDisplay: wdGbp(plan.budget), allocatedDisplay: wdGbp(plan.allocated), unspentDisplay: wdGbp(Math.abs(plan.unspent)) })
+})
+// CSV of the applications the confirmation page is about to progress (same budget, attrition, pass and minimum score).
+router.get('/WaterManagementV11/progress-list.csv', function (req, res) {
+  const base = waterV11Ranked(req)
+  const plan = waterV11WithinBudget(base, waterV11BudgetParam(req.query.budget), waterV11AttritionParam(req.query.attrition), waterV11PassParam(req.query.pass), waterV11PassParam(req.query.min) || 0)
+  const q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"' }
+  const lines = [['Rank', 'Case ID', 'SBI', 'Business', 'Score (%)', 'Value (GBP)', 'Capped value (GBP)', 'Cumulative value (GBP)', 'Date', 'Reservoir', 'Water storage tank', 'Distribution main', 'Total item cost (GBP)', 'Items'].join(',')]
+  plan.toProgress.forEach(function (r) {
+    const it = base.answers.waterApplication(r).items
+    lines.push([r.rank, r.id, r.sbi, q(base.answers.waterBusinessName(r)), r.score, r.originalValue, r.capped ? r.value : '', r.cumulative, q(r.date), q(it.reservoir || ''), q(it.tank || ''), q(it.main || ''), it.rawTotal, q((it.lines || []).join(';\n'))].join(','))
+  })
+  res.set('Content-Type', 'text/csv; charset=utf-8')
+  res.set('Content-Disposition', 'attachment; filename="applications-to-progress.csv"')
+  res.send('\ufeff' + lines.join('\r\n') + '\r\n')
 })
 router.post('/WaterManagementV11/progress-list', function (req, res) {
-  const plan = waterV11WithinBudget(waterV11Ranked(req), waterV11BudgetParam(req.body.budget), waterV11AttritionParam(req.body.attrition), waterV11PassParam(req.body.pass))
+  const plan = waterV11WithinBudget(waterV11Ranked(req), waterV11BudgetParam(req.body.budget), waterV11AttritionParam(req.body.attrition), waterV11PassParam(req.body.pass), waterV11PassParam(req.body.min) || 0)
   const d = waterV11Session(req)
   d.waterV11Progressed = d.waterV11Progressed || {}
   const now = new Date()

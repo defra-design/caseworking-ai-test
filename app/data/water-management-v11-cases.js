@@ -77,6 +77,8 @@ module.exports = {
     { id: "GNG-CGV-NDR", seed: 300475, sbi: "209541145", score: 25, value: 33100, date: "28 Jun 2026" },
     { id: "UMC-80Q-EGU", seed: 300480, sbi: "227262150", score: 65, value: 39800, date: "8 Jun 2026" },
     { id: "YB4-87J-5U6", seed: 300490, sbi: "106865798", score: 70, value: 116300, date: "2 May 2026" },
+    // Window closed only: a late application, apparent duplicate of 300493 with more piping.
+    { id: "66T-LNB-EAT", seed: 301502, sbi: "613048257", score: 80, value: 153400, date: "24 Aug 2026", closedOnly: true },
     { id: "YRW-ZSH-FB2", seed: 300493, sbi: "613048257", score: 80, value: 135400, date: "25 Jul 2026" },
     { id: "B34-082-BLE", seed: 300501, sbi: "772651262", score: 25, value: 93900, date: "13 May 2026" },
     { id: "JQF-89A-GJE", seed: 300510, sbi: "968892063", score: 50, value: 86800, date: "8 Jun 2026" },
