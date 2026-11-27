@@ -1,0 +1,64 @@
+{% extends "layouts/main.html" %}
+
+{# Contact customer: the caseworker has already written to the customer in the CRM. They record the CRM ID
+   (mandatory) and an optional note. Confirm sets the issue to Contacted customer. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V1.2" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+  {% set activeNavItem = 'dedupe' %}
+  {% include "WaterManagementV12/includes/_list-nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <a href="/WaterManagementV12/issue?sbi={{ sbi }}" class="govuk-back-link">Back</a>
+
+  <main class="govuk-main-wrapper" id="main-content" role="main" style="padding-top:0;">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {% if error %}
+        <div class="govuk-error-summary" data-module="govuk-error-summary">
+          <div role="alert">
+            <h2 class="govuk-error-summary__title">There is a problem</h2>
+            <div class="govuk-error-summary__body">
+              <ul class="govuk-list govuk-error-summary__list">
+                <li><a href="#crmId">{{ error }}</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <span class="govuk-caption-l">SBI {{ sbi }}: {{ business }}</span>
+        <h1 class="govuk-heading-l">Contact customer</h1>
+        <ol class="govuk-list govuk-list--number">
+          <li>Write to the customer using the CRM and ask them which applications they would like to take forward.</li>
+          <li>When you have done this, enter the CRM ID here and add any comments needed.</li>
+        </ol>
+
+        <form method="post" action="/WaterManagementV12/issue-contact" novalidate>
+          <input type="hidden" name="sbi" value="{{ sbi }}">
+          <div class="govuk-form-group{% if error %} govuk-form-group--error{% endif %}">
+            <label class="govuk-label govuk-label--s" for="crmId">CRM ID</label>
+            {% if error %}<p id="crmId-error" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> {{ error }}</p>{% endif %}
+            <input class="govuk-input govuk-input--width-20{% if error %} govuk-input--error{% endif %}" id="crmId" name="crmId" type="text" maxlength="40" autocomplete="off" value="{{ crmId }}"{% if error %} aria-describedby="crmId-error"{% endif %}>
+          </div>
+          <div class="govuk-form-group">
+            <label class="govuk-label govuk-label--s" for="contactNote">Note (optional)</label>
+            <div id="contactNote-hint" class="govuk-hint">This is saved as a group note and as a case note on each of the {{ count }} applications.</div>
+            <textarea class="govuk-textarea" id="contactNote" name="contactNote" rows="5" aria-describedby="contactNote-hint">{{ contactNote }}</textarea>
+          </div>
+          <div class="govuk-button-group">
+            <button type="submit" class="govuk-button" data-module="govuk-button">Confirm</button>
+            <a class="govuk-link" href="/WaterManagementV12/issue?sbi={{ sbi }}">Cancel and return</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

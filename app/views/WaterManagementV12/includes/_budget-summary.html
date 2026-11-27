@@ -1,0 +1,48 @@
+{# Stat cards and the budget allocation bar. Filled in by script (the caselist modelling script, or _budget-summary-script.html). #}
+    <div id="budgetReport" aria-live="polite">
+      <div class="app-budget-cards">
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card app-stat-card--green">
+            <p class="app-stat-card__label">Applications funded</p>
+            <p class="app-stat-card__value" id="statFunded" style="font-size:30px;"></p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0" id="statFundedNote"></p>
+          </div>
+        </div>
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card app-stat-card--blue">
+            <p class="app-stat-card__label">Minimum score</p>
+            <p class="app-stat-card__value" id="statMinScore" style="font-size:30px; color:#0b0c0c;"></p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0" id="statMinScoreNote"></p>
+          </div>
+        </div>
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card app-stat-card--yellow">
+            <p class="app-stat-card__label" id="statUnspentLabel">Budget unspent</p>
+            <p class="app-stat-card__value" id="statUnspent" style="font-size:30px;"></p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0" id="statUnspentNote"></p>
+          </div>
+        </div>
+        <div class="app-budget-cards__item">
+          <div class="app-stat-card">
+            <p class="app-stat-card__label" id="statNextLabel">Budget for next score</p>
+            <p class="app-stat-card__value" id="statNext" style="font-size:30px;"></p>
+            <p class="govuk-body-s govuk-!-margin-bottom-0" id="statNextNote"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-2">
+      <div>
+        <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Budget allocation</h2>
+        <div class="app-budget-bar app-budget-bar--outlined">
+          <span class="app-budget-bar__approved" id="barAllocated" style="width:0%;"></span>
+          <span class="app-budget-bar__free" id="barUnspent"></span>
+        </div>
+        <div class="app-budget-key govuk-!-margin-top-2">
+          <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--approved"></span><span class="app-budget-key__label">Allocated&nbsp;</span><strong class="app-budget-key__figure" id="keyAllocated"></strong></span>
+          <span class="app-budget-key__item"><span class="app-budget-key__swatch app-budget-key__swatch--free" id="keyUnspentSwatch"></span><span class="app-budget-key__label" id="keyUnspentLabel">Unspent&nbsp;</span><strong class="app-budget-key__figure" id="keyUnspent"></strong></span>
+        </div>
+      </div>
+    </div>

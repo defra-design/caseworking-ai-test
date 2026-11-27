@@ -38,10 +38,10 @@
   function gbp(n) { return '\u00a3' + Math.round(n).toLocaleString('en-GB'); }
   function parse(v) { var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); return isNaN(n) ? 0 : n; }
   function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  function against(v) { return v > budget ? gbp(v - budget) + ' over budget' : gbp(budget - v) + ' under budget'; }
   function get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
-  var budget = DEFAULT_BUDGET, attrition = 0, pass = null, floor = 0;
+  var budget = DEFAULT_BUDGET, attrition = 0, pass = null;
   var sb = get('waterV11TotalBudget'); if (sb && /[0-9]/.test(sb)) budget = parse(sb);
-  var sm = get('waterV11MinScore'); if (sm && /[0-9]/.test(sm)) floor = Math.min(100, parse(sm));
   var sp = get('waterV11PassScore');
   if (sp && /[0-9]/.test(sp)) pass = parse(sp);
   else { var sa = get('waterV11Attrition'); if (sa && /[0-9]/.test(sa)) attrition = Math.min(100, parse(sa)); }
@@ -67,7 +67,6 @@
     k = best;
   }
   while (k > k0 && base && (cc[k - 1] / base - 1) * 100 > 100) k--;
-  if (floor) { var allowed = 0; tiers.forEach(function (t) { if (t.score >= floor) allowed++; }); if (k > allowed) k = allowed; }
   var funded = k ? cc[k - 1] : 0;
   var impl = base ? Math.round((funded / base - 1) * 100) : 0;
   var spent = k ? tiers[k - 1].cumulative : 0;
@@ -75,18 +74,19 @@
   var next = tiers[k];
 
   $('statFunded').textContent = funded;
-  $('statFundedNote').textContent = 'of ' + total + ' applications' + (impl ? ' (' + base + ' within the budget alone)' : '');
+  var notFunded = total - funded;
+  $('statFundedNote').textContent = plural(notFunded, 'application') + ' not funded (' + gbp((tiers.length ? tiers[tiers.length - 1].cumulative : 0) - spent) + ')';
   $('statMinScore').textContent = k ? tiers[k - 1].score + '%' : 'None';
   $('statMinScoreNote').textContent = k ? plural(tiers[k - 1].count, 'case') + ' at this score' : 'None fit the budget';
-  $('statUnspentLabel').textContent = unspent < 0 ? 'Over budget' : 'Budget unspent';
-  $('statUnspent').textContent = gbp(Math.abs(unspent));
-  $('statUnspentNote').textContent = gbp(spent) + ' allocated';
+  $('statUnspentLabel').textContent = 'Current cohort value';
+  $('statUnspent').textContent = gbp(spent);
+  $('statUnspentNote').textContent = against(spent);
   if (next) {
-    $('statNextLabel').textContent = 'Budget for ' + next.score + '%';
+    $('statNextLabel').textContent = 'Cohort value at ' + next.score + '%';
     $('statNext').textContent = gbp(next.cumulative);
-    $('statNextNote').textContent = next.cumulative > budget ? gbp(next.cumulative - budget) + ' more' : gbp(budget - next.cumulative) + ' under the budget';
+    $('statNextNote').textContent = against(next.cumulative);
   } else {
-    $('statNextLabel').textContent = 'Budget for next score';
+    $('statNextLabel').textContent = 'Next cohort value';
     $('statNext').textContent = 'n/a';
     $('statNextNote').textContent = 'All scores funded';
   }

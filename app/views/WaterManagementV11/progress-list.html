@@ -84,13 +84,12 @@
 
         <p class="govuk-body">Only applications still at Application received are included. Rejected, withdrawn and already progressed ones are not.</p>
 
-        <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV11/progress-list.csv?budget={{ plan.budget }}&amp;attrition={{ plan.attrition }}&amp;pass={{ plan.minScore }}&amp;min={{ plan.floor }}">Download the {{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %} to be progressed (CSV)</a></p>
+        <p class="govuk-body"><a class="govuk-link" href="/WaterManagementV11/progress-list.csv?budget={{ plan.budget }}&amp;attrition={{ plan.attrition }}&amp;pass={{ plan.minScore }}">Download the {{ plan.toProgress.length }} application{% if plan.toProgress.length != 1 %}s{% endif %} to be progressed (CSV)</a></p>
 
         <form action="/WaterManagementV11/progress-list" method="post" novalidate>
           <input type="hidden" name="budget" value="{{ plan.budget }}">
           <input type="hidden" name="attrition" value="{{ plan.attrition }}">
           <input type="hidden" name="pass" value="{{ plan.minScore }}">
-          <input type="hidden" name="min" value="{{ plan.floor }}">
           <div class="govuk-button-group">
             <button type="submit" class="govuk-button" data-module="govuk-button">{% if openIssues %}Proceed anyway{% else %}Confirm{% endif %}</button>
             <a class="govuk-link" href="/WaterManagementV11/caselist?tab={{ 'dedupe' if openIssues else 'ranking' }}">{% if openIssues %}Finish cleaning the list first{% else %}Cancel and return{% endif %}</a>

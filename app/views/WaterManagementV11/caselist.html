@@ -77,9 +77,7 @@
 
     {# --- Budget + reporting. The figure in the box is only a proposal until "Update budget"
            is selected; the stats, budget line and Progress list use the applied budget. --- #}
-    <details class="govuk-details govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="modellingControls">
-      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Show modelling controls</span></summary>
-      <div class="govuk-details__text">
+    <div class="govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="modellingControls">
     <form id="budgetForm" class="govuk-!-margin-bottom-4" novalidate>
       <div class="govuk-form-group govuk-!-margin-bottom-2">
         <div style="display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;">
@@ -101,13 +99,6 @@
             <label class="govuk-label govuk-label--s" for="passScore">Pass score</label>
             <div class="govuk-input__wrapper">
               <input class="govuk-input govuk-input--width-3" id="passScore" name="passScore" type="text" inputmode="numeric" autocomplete="off" value="">
-              <div class="govuk-input__suffix" aria-hidden="true">%</div>
-            </div>
-          </div>
-          <div class="govuk-form-group govuk-!-margin-bottom-0">
-            <label class="govuk-label govuk-label--s" for="minScore">Minimum score</label>
-            <div class="govuk-input__wrapper">
-              <input class="govuk-input govuk-input--width-3" id="minScore" name="minScore" type="text" inputmode="numeric" autocomplete="off" value="0">
               <div class="govuk-input__suffix" aria-hidden="true">%</div>
             </div>
           </div>
@@ -138,46 +129,18 @@
       </table>
 
       </div>
-      </div>
-    </details>
+    </div>
 
 
-    {# SBIs where capping has occurred. Information only, not links. #}
-    <details class="govuk-details govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="cappingIssues">
-      <summary class="govuk-details__summary"><span class="govuk-details__summary-text">Capping issues</span></summary>
-      <div class="govuk-details__text">
-    <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="cappedHeading">SBIs where capping has occurred</h2>
-    {% if view.cappedSbis.length %}
-    <p class="govuk-body">Applications for one SBI can add up to {{ view.capDisplay }} at most. Later applications for the SBI (lower score) have a capped value so the total stays within the cap.</p>
-    <table class="govuk-table govuk-!-margin-bottom-6" aria-labelledby="cappedHeading">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">SBI</th>
-          <th scope="col" class="govuk-table__header">Business</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Applications</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Applications capped</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total value</th>
-          <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total after capping</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        {% for s in view.cappedSbis %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ s.sbi }}</td>
-          <td class="govuk-table__cell">{{ s.business }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.count }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.cappedCount }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.totalDisplay }}</td>
-          <td class="govuk-table__cell govuk-table__cell--numeric">{{ s.cappedTotalDisplay }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p class="govuk-body govuk-!-margin-bottom-6">No SBI has applications adding up to more than {{ view.capDisplay }}.</p>
-    {% endif %}
-      </div>
-    </details>
+    {# SBIs where capping has occurred, with each SBI's total value before capping. Information only, not links. #}
+    <div class="govuk-inset-text govuk-!-margin-top-4 govuk-!-margin-bottom-6" id="cappingIssues">
+      <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Capping issues</h2>
+      {% if view.cappedSbis.length %}
+      <p class="govuk-body govuk-!-margin-bottom-0">There are capping issues on each of the following SBIs: {% for s in view.cappedSbis %}{{ s.sbi }} ({{ s.totalDisplay }}){% if not loop.last %}, {% endif %}{% endfor %}.</p>
+      {% else %}
+      <p class="govuk-body govuk-!-margin-bottom-0">There are no capping issues.</p>
+      {% endif %}
+    </div>
 
     {# Window closed only: the modelled list can be progressed. #}
     {% if view.windowState == 'closed' %}
@@ -188,7 +151,6 @@
         <input type="hidden" name="budget" id="progressBudget" value="{{ view.defaultBudget }}">
         <input type="hidden" name="attrition" id="progressAttrition" value="0">
         <input type="hidden" name="pass" id="progressPass" value="">
-        <input type="hidden" name="min" id="progressMin" value="0">
         <button type="submit" class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button">Progress list</button>
       </form>
     </div>
@@ -382,9 +344,6 @@
   var STORE = 'waterV11TotalBudget';
   var STORE_A = 'waterV11Attrition';
   var STORE_P = 'waterV11PassScore';
-  var STORE_M = 'waterV11MinScore';
-  var minInput = document.getElementById('minScore');
-  var appliedM = 0;             // minimum score: nothing below it is funded (0 = no minimum)
   var attInput = document.getElementById('attrition');
   var passInput = document.getElementById('passScore');
   var applied = DEFAULT_BUDGET; // the budget everything below actually uses
@@ -395,6 +354,7 @@
   function gbp(n) { return '£' + Math.round(n).toLocaleString('en-GB'); }
   function parse(v) { var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); return isNaN(n) ? 0 : n; }
   function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  function against(v) { return v > applied ? gbp(v - applied) + ' over budget' : gbp(applied - v) + ' under budget'; }
   function signed(n) { return (n > 0 ? '+' : n < 0 ? '\u2212' : '') + Math.abs(n) + '%'; }
 
   // Cumulative case count down the tiers.
@@ -404,7 +364,7 @@
 
   // How many tiers (k) are funded for a budget, attrition % and optional pass score. Only whole
   // score groups; never fewer than the budget fits; never more than 100% extra cases.
-  function line(budget, a, pass, floor) {
+  function line(budget, a, pass) {
     var k0 = 0;
     while (k0 < tiers.length && tiers[k0].cumulative <= budget) k0++;
     var base = k0 ? cc[k0 - 1] : 0;
@@ -427,18 +387,13 @@
     var capped = false;
     while (k > k0 && base && (cc[k - 1] / base - 1) * 100 > 100) { k--; capped = true; }
     if (capped) note = 'That is more than 100% attrition, so the lowest score group within 100% is used.';
-    if (floor) {
-      var allowed = 0;
-      tiers.forEach(function (t) { if (t.score >= floor) allowed++; });
-      if (k > allowed) { k = allowed; note = 'The minimum score of ' + floor + '% stops anything below it being funded.'; }
-    }
     return { k: k, k0: k0, base: base, note: note };
   }
   function implied(base, count) { return base ? Math.round((count / base - 1) * 100) : 0; }
 
   function update() {
     var budget = applied;
-    var L = line(budget, appliedA, appliedP, appliedM);
+    var L = line(budget, appliedA, appliedP);
     var k = L.k, base = L.base;
     var funded = k ? cc[k - 1] : 0;
     var impl = implied(base, funded);
@@ -453,18 +408,19 @@
     $('passNote').textContent = L.note;
 
     $('statFunded').textContent = funded;
-    $('statFundedNote').textContent = 'of ' + total + ' applications' + (impl ? ' (' + base + ' within the budget alone)' : '');
+    var notFunded = total - funded;
+    $('statFundedNote').textContent = plural(notFunded, 'application') + ' not funded (' + gbp((tiers.length ? tiers[tiers.length - 1].cumulative : 0) - spent) + ')';
     $('statMinScore').textContent = k ? tiers[k - 1].score + '%' : 'None';
     $('statMinScoreNote').textContent = k ? plural(tiers[k - 1].count, 'case') + ' at this score' : 'None fit the budget';
-    $('statUnspentLabel').textContent = unspent < 0 ? 'Over budget' : 'Budget unspent';
-    $('statUnspent').textContent = gbp(Math.abs(unspent));
-    $('statUnspentNote').textContent = gbp(spent) + ' allocated';
+    $('statUnspentLabel').textContent = 'Current cohort value';
+    $('statUnspent').textContent = gbp(spent);
+    $('statUnspentNote').textContent = against(spent);
     if (next) {
-      $('statNextLabel').textContent = 'Budget for ' + next.score + '%';
+      $('statNextLabel').textContent = 'Cohort value at ' + next.score + '%';
       $('statNext').textContent = gbp(next.cumulative);
-      $('statNextNote').textContent = next.cumulative > budget ? gbp(next.cumulative - budget) + ' more' : gbp(budget - next.cumulative) + ' under the budget';
+      $('statNextNote').textContent = against(next.cumulative);
     } else {
-      $('statNextLabel').textContent = 'Budget for next score';
+      $('statNextLabel').textContent = 'Next cohort value';
       $('statNext').textContent = 'n/a';
       $('statNextNote').textContent = 'All scores funded';
     }
@@ -515,10 +471,8 @@
     if (progressAtt) progressAtt.value = impl;
     var progressPass = $('progressPass');
     if (progressPass) progressPass.value = k ? tiers[k - 1].score : '';
-    var progressMin = $('progressMin');
-    if (progressMin) progressMin.value = appliedM;
     var csvLink = $('csvLink');
-    if (csvLink) csvLink.href = '/WaterManagementV11/ranking.csv?budget=' + applied + '&attrition=' + impl + '&pass=' + (k ? tiers[k - 1].score : '') + '&min=' + appliedM;
+    if (csvLink) csvLink.href = '/WaterManagementV11/ranking.csv?budget=' + applied + '&attrition=' + impl + '&pass=' + (k ? tiers[k - 1].score : '');
     var tbody = $('caseRows');
     var old = tbody && tbody.querySelector('.app-budget-line');
     if (old) old.parentNode.removeChild(old);
@@ -545,38 +499,31 @@
       localStorage.setItem(STORE, String(applied));
       localStorage.setItem(STORE_A, String(appliedA));
       localStorage.setItem(STORE_P, appliedP === null ? '' : String(appliedP));
-      localStorage.setItem(STORE_M, String(appliedM));
     } catch (e) {}
   }
   // "Not applied yet" while a box holds a different figure from the applied one.
   function pending() {
     var differs = (hasDigits(input.value) && parse(input.value) !== applied) ||
       (hasDigits(attInput.value) && Math.min(100, parse(attInput.value)) !== shownA) ||
-      (hasDigits(passInput.value) && passInput.value.trim() !== shownP) ||
-      (hasDigits(minInput.value) && Math.min(100, parse(minInput.value)) !== appliedM);
+      (hasDigits(passInput.value) && passInput.value.trim() !== shownP);
     $('budgetPending').hidden = !differs;
     $('budgetAppliedText').textContent = gbp(applied) + (shownP ? ', a pass score of ' + shownP + '%' : '') + ' and ' + shownA + '% attrition';
   }
   try {
     var saved = localStorage.getItem(STORE); if (saved && hasDigits(saved)) applied = parse(saved);
-    var savedM = localStorage.getItem(STORE_M); if (savedM && hasDigits(savedM)) appliedM = Math.min(100, parse(savedM));
     var savedP = localStorage.getItem(STORE_P);
     if (savedP && hasDigits(savedP)) appliedP = parse(savedP);
     else { var savedA = localStorage.getItem(STORE_A); if (savedA && hasDigits(savedA)) appliedA = Math.min(100, parse(savedA)); }
   } catch (e) {}
   input.value = show(applied);
-  minInput.value = appliedM;
 
   input.addEventListener('input', pending);
-  minInput.addEventListener('input', pending);
   attInput.addEventListener('input', pending);
   passInput.addEventListener('input', pending);
   $('budgetForm').addEventListener('submit', function (ev) {
     ev.preventDefault(); // Enter in a box does the same as the button
     if (hasDigits(input.value)) applied = parse(input.value);
     input.value = show(applied);
-    if (hasDigits(minInput.value)) appliedM = Math.min(100, parse(minInput.value));
-    minInput.value = appliedM;
     var attChanged = hasDigits(attInput.value) && Math.min(100, parse(attInput.value)) !== shownA;
     var passChanged = hasDigits(passInput.value) && passInput.value.trim() !== shownP;
     // Changing the attrition sets the pass score; changing the pass score sets the attrition.

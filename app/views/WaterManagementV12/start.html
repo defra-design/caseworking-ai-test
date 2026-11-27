@@ -1,0 +1,34 @@
+{% extends "layouts/main.html" %}
+
+{# Water management grant: start page for caseworking. Budget stats and the allocation bar (from the modelling
+   settings saved on Model the list), the number of cleaning issues, and the way in to the tabbed cleaning and modelling page. #}
+{% set containerClasses = "app-caselist-wide" %}
+{% set headerContainerClasses = "app-caselist-wide" %}
+{% set headerTitleCentred = true %}
+{% set headerServiceName = "Water management V1.2" %}
+
+{% block header %}
+  {% include "FRPS-D2/includes/_defra-header.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container app-caselist-wide">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <span class="govuk-caption-l">Caseworking</span>
+    <h1 class="govuk-heading-xl">Water management grant</h1>
+    <p class="govuk-body">The application window is <strong>{{ view.windowState }}</strong>.</p>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Budget</h2>
+    {% include "WaterManagementV12/includes/_budget-summary.html" %}
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-6">Cleaning issues</h2>
+    <p class="govuk-body">{{ view.issues.length }} Issues: {{ counts.started }} In progress, {{ counts.new }} not started{% if counts.contacted %}, {{ counts.contacted }} Contacted customer{% endif %}{% if counts.done %}, {{ counts.done }} Completed{% endif %}</p>
+
+    <p class="govuk-body govuk-!-margin-top-6"><a class="govuk-link" href="/WaterManagementV12/caselist?tab=dedupe">Go to cleaning and modelling</a></p>
+  </main>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+{% include "WaterManagementV12/includes/_budget-summary-script.html" %}
+{% endblock %}
